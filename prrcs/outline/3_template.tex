@@ -1,0 +1,220 @@
+\documentclass[11pt,english,twocolumn]{article}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pslatex}
+\usepackage[english]{babel}
+\usepackage{blindtext}
+\usepackage{setspace}
+\usepackage{url}
+%Definitions from Simon's mya4.sty
+% Set the paper size to A4
+\setlength{\paperheight}{297mm}
+\setlength{\paperwidth}{210mm}
+% Define commands which allow the width and height of the text
+% to be specified. Centre the text on the page.
+\newcommand{\settextwidth}[1]{
+\setlength{\textwidth}{#1}
+\setlength{\oddsidemargin}{\paperwidth}
+\addtolength{\oddsidemargin}{-\textwidth}
+\setlength{\oddsidemargin}{0.5\oddsidemargin}
+\addtolength{\oddsidemargin}{-1in}
+}
+\newcommand{\settextheight}[1]{
+\setlength{\textheight}{#1}
+\setlength{\headheight}{0mm}
+\setlength{\headsep}{0mm}
+\setlength{\topmargin}{\paperheight}
+\addtolength{\topmargin}{-\textheight}
+\setlength{\topmargin}{0.5\topmargin}
+\addtolength{\topmargin}{-1in}
+}
+\addtolength{\topsep}{-3mm}% space between first item and preceding paragraph.
+\addtolength{\partopsep}{-3mm}% extra space added to \topsep when environment starts a new paragraph.
+\addtolength{\itemsep}{-5mm}% space between successive items.
+
+%End of Simon's mya4.sty
+\usepackage{graphicx}%This is necessary and it must go after mya4
+\settextwidth{176mm}
+\settextheight{257mm}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\def\baselinestretch{0.95}
+
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{*1}{*1}
+\titlespacing{\subsection}{0pt}{*1}{*0}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\titlespacing{\paragraph}{0pt}{*0}{*1}
+\titleformat*{\paragraph}{\itshape}{}{}{}
+%% --------------------------------------------------------------------------------------------------------------------------------
+\begin{document}
+\title{Abstraction in First-Order Probabilistic Models}
+
+\author{Paulius Dilkas (2146879)}
+\date{}
+\maketitle
+% TODO: mention probabilistic programming, statistical relational AI,
+% statistical relational models
+% TODO: make a case for how prob. reasoning is useful
+% TODO: uses in industry (e.g., military funding)
+
+\section{Proposed Research}
+
+\subsection{Background}
+
+While probabilistic models are great at handling uncertainty, their
+simplistic representations can be hard to interpret. On the other hand, logical
+systems have rich representations, but cannot handle uncertainty.
+\emph{First-order probabilistic models} (FOPMs) aim to unite the two into a
+representation capable of handling probabilities as well as first-order logic
+\cite{DBLP:series/sci/BrazAR08}.
+
+% Many of the commonly-used FOPMs are based
+%on either logic programming \cite{} or graphical models \cite{}.
+%in use today
+%\cite{DBLP:conf/ilp/Poole08,DBLP:conf/ijcai/RaedtKT07,DBLP:journals/ml/RichardsonD06}.
+%Nowadays, most of the work in the area focuses on improving inference speed for
+%an ever-increasing range of problems
+%\cite{DBLP:conf/uai/BrazO17,DBLP:conf/ijcai/BrazOGD16,DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cib/Venugopal17}.
+
+\subsection{Key Idea}
+
+\emph{``To investigate all aspects of abstraction applied to FOPMs, resulting in
+  new algorithms, faster inference, and more transferable learning from data.''}
+
+The ability to form abstractions is central to human cognition and perception.
+Formally, abstraction is often defined as omission of (unnecessary) detail
+\cite{doi:10.1086/670300}. While areas such as planning and verification have
+benefited from this idea in various ways \cite{saitta2013abstraction}, only
+recently has abstraction been defined for probabilistic programming
+\cite{DBLP:conf/uai/HoltzenMB17} and other FOPMs
+\cite{DBLP:journals/corr/abs-1810-02434}.
+
+This is an interesting line of research because seeking simplicity is in line
+with philosophical principles such as Occam's razor. It is also important
+because of the likely improvements in inference speed. In a way, a significant
+line of research for faster inference focusing on \emph{lifted inference} can be
+seen as a special case of abstraction.
+
+\subsection{Objectives}
+% Impact/Supporting Objectives (more like what's % good/useful about the
+% research)
+
+\begin{itemize}
+\item To further the theoretical understanding of abstraction in FOPMs.
+\item To improve inference speed by investigating abstraction as a separate
+  process as well as a component of inference.
+\item To make models learned from data simpler and more transferable.
+\item To increase the explainability of FOPMs.
+\end{itemize}
+
+%\subsection{State of the Art}
+% How others do something similar? Or related work
+%Theory of abstraction \cite{DBLP:journals/ai/GiunchigliaW92}
+
+\section{Methodology}
+% How are we going to do this?
+
+% Clearly define focus and scope
+% - Why would this problem be investigated?
+% - Why is this an interesting/important research problem?
+
+We will begin by writing a survey that uses a set of example problems to
+highlight the strengths and weaknesses of commonly-used FOPMs. This will allow
+us to choose a particular model on which further work will be focused.
+
+Then, we will develop a comprehensive list of abstraction rules
+(transformations) and define a way to categorise all queries answerable by a
+FOPM such that we could answer the following set of questions for each
+abstraction rule:
+\begin{itemize}
+\item What types of queries can no longer be answered exactly after applying the
+  abstraction rule?
+\item What is the error bound? Can it be calculated in constant time?
+\item What is the complexity of applying the abstraction?
+\end{itemize}
+
+Afterwards, we will develop and evaluate a set of greedy algorithms, exploring
+different heuristics that establish preferences over abstraction rules and
+termination conditions. The algorithms will take a model, a description of a set
+of queries that need to be supported, and an indication of how much loss in
+precision (if any) the user is willing to tolerate.
+
+Lastly, we will integrate abstraction steps into both inference and learning
+algorithms, resulting in faster inference as well as simpler and more robust
+models.
+
+%\subsection{Innovative Aspects}
+
+\subsection{Work Plan}
+% Show you have something beyond aspiration, 10 WPs + deliverables
+% once we have the survey, we can choose (or invent a new) representation
+
+\begin{itemize}
+\item Comparative survey of FOPMs (WP1)
+\item Abstraction rules (WP2)
+\item Greedy algorithms (WP3)
+\item Abstraction during inference (WP4)
+\item Abstraction in learning (WP5)
+\end{itemize}
+
+%\subsection{Comparison of Representations (WP1)}
+%As there is no consensus over the quality and capabilities of various
+%representations for probabilistic reasoning, we will begin by
+%\emph{Deliverable:} a paper showcasing a list of problems and describing how
+%well the state-of-the-art inference algorithm of each representation is able to
+%handle each problem.
+%(including problems not solved by anyone, e.g.,
+%the understanding of full symmetry, unknown number of objects (solved by
+%several), continuous variables)
+%\subsection{Abstraction Rules (WP2)}
+%Deliverables: a report detailing a list of abstraction rules and a
+%\subsection{ (WP3)}
+%Internal data structures, algorithms to apply each rule
+%while keeping track of precision. Also their complexity
+%\subsection{Greedy Algorithms (WP4)}
+%Investigating different heuristics
+%\subsection{Abstraction During Inference (WP5)}
+%\subsection{Abstraction in Learning (WP6)}
+%\subsection{Evaluation (WP7)}
+%\subsection{Dissemination (WP8)}
+%Website, quality implementations of algorithms, etc.
+
+\section{Measurable Outcomes} % relate to WPs
+\begin{itemize}
+\item A set of problems delineating the differences amongst various
+  FOPMs as well as guiding future research efforts (WP1).
+\item Demonstrated increase in exact and approximate inference speed (WP5).
+\item Demonstrated improvement in models learned from data in terms of
+  simplicity and transferability without (significant) loss in precision (WP6).
+\end{itemize}
+
+% 5. Project Management
+% 5.1. Feasibility
+% 5.2. Risks % (and mitigation)
+
+%\section{Impact and National Importance}
+\section{Impact}
+%\paragraph{National Importance:} Our proposal covers an EPSRC growth area for
+%statistics and applied probability as well as several maintenance areas such as
+%artificial intelligence technologies, logic and combinatorics, and theoretical
+%computer science.
+%\paragraph{Impact:}
+The survey will highlight the weaknesses of current approaches and direct future
+research towards open problems. Furthermore, many of the basic ideas behind
+abstraction for a particular model are likely to be transferable to many others,
+perhaps even inspiring a unifying theory behind all representations. Moreover,
+making the models more efficient and explainable should also make them more
+attractive to a larger user base, both academic and industrial.
+
+\let\oldbibliography\thebibliography
+\renewcommand{\thebibliography}[1]{\oldbibliography{#1}
+\setlength{\itemsep}{-3pt}}
+
+\bibliographystyle{abbrv}
+%\setstretch{0.8}
+{
+\scriptsize
+\bibliography{outline}
+}
+\end{document}
