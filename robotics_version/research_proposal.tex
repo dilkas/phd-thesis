@@ -1,0 +1,340 @@
+\documentclass{article}
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\usepackage{amsmath}
+\usepackage{fullpage}
+\usepackage{complexity}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows.meta}
+
+\begin{document}
+\title{Abstraction in First-Order Probabilistic Inference (500000)}
+\author{Paulius Dilkas}
+\maketitle
+
+\tikzstyle{object} = [ellipse, draw]
+\tikzstyle{process} = [rectangle, draw, font=\bfseries]
+\tikzstyle{arrow} = [-{Latex[length=2mm,width=2mm]}]
+
+\section{Introduction}
+
+Logical approaches to reasoning have dominated the fields of artificial
+intelligence (AI) and computing for many decades. They have resulted in expert
+systems that can use reasoning to make predictions and diagnose problems
+\cite{hayes1983building}, logic programming languages that allow the user to
+declaratively describe the problem and trust the inference algorithm to find the
+answer efficiently \cite{DBLP:books/sp/Lloyd87}, and automated (interactive)
+theorem proving and proof checking software that assists mathematicians in
+constructing correct proofs \cite{DBLP:books/el/RobinsonV01}. Probabilistic
+methods, on the other hand, have particularly flourished with the arrival of big
+data (and access to more data in general), transforming areas such as natural
+language processing and pattern recognition \cite{DBLP:series/sci/BrazAR08}.
+
+While probabilistic models are great at handling uncertainty, their
+simplistic representations can be hard to interpret. On the other hand, systems
+based on logic have rich representations, but cannot handle uncertainty.
+\emph{First-order probabilistic inference} (FOPI) (also known as
+\emph{statistical relational AI}) attempts to bridge the gap
+between the two and suggests a range of representations capable of handling probabilities as well as (parts of)
+first-order logic \cite{DBLP:series/sci/BrazAR08}. The models can be constructed
+manually or learned from data, and the process of computing the probability of a
+query---usually in the form of a random variable, possibly conditioned on other
+random variables---is called \emph{inference}.
+
+Most of these models are based either on adding probabilities to programming
+languages or on adding richer representational structure to probabilistic
+graphical models (PGMs). The former kind is called \emph{probabilistic
+  programming} \cite{DBLP:conf/icse/GordonHNR14} and is an active area of
+research with many implementations. A well-known example is \emph{ProbLog}
+\cite{DBLP:conf/ijcai/RaedtKT07}---a language that extends the logic programming
+language Prolog by attaching a probability to every clause in the program. A
+prominent example of the latter is a \emph{Markov logic network} (MLN)
+\cite{DBLP:journals/ml/RichardsonD06}, which is simply a collection of
+first-order statements (formulas), with a weight attached to each statement.
+
+In the last decade, we have seen applications of FOPI in a wide range of areas,
+ranging from toy problems with probabilities one might find in a textbook
+\cite{DBLP:conf/ijcai/DriesKDBR17} all the way to genetics
+\cite{DBLP:journals/jcb/SakhanenkoG12} and cancer research
+\cite{DBLP:conf/ilp/Corte-RealD017}. For instance, FOPI models have been
+integrated into recommendation systems \cite{DBLP:journals/corr/YangKAGN16} and
+stream mining software \cite{DBLP:conf/icdm/ChandraSKTA14}, and used to predict
+the remaining lifetime of hardware components \cite{vlasselaer2012statistical}
+as well as patterns of criminal and terrorist activity
+\cite{DBLP:conf/sdm/DelaneyFCWJ10}.
+
+\subsection{Key Idea}
+
+\emph{Abstraction} can be broadly defined as the process (and result) of
+omitting detail \cite{doi:10.1086/670300}. Sometimes the omitted information is
+irrelevant in answering the questions we are interested in, and sometimes an
+abstraction provides a simplified (and approximately correct) view of a
+situation that originally was too complex to be reasoned about. While areas such
+as planning and verification have benefited from abstraction in various ways
+\cite{saitta2013abstraction}, research into abstraction in FOPI has just begun
+and awaits significant contributions
+\cite{DBLP:journals/corr/abs-1810-02434,DBLP:conf/icml/HoltzenBM18,DBLP:conf/uai/HoltzenMB17}.
+
+Our goal is to develop new types of abstractions, find efficient
+algorithms for constructing an abstraction from a given model, and investigate
+how abstraction can be integrated into both inference and learning algorithms.
+Simplification and abstraction can benefit us in both efficiency and
+interpretability, i.e, simpler models are likely to result in faster inference,
+while at the same time being easier to understand by the user. Finally, the
+quest for abstraction algorithms is likely to lead to a better theoretical
+understanding of what properties can be preserved by an abstraction, what error
+bounds can be established when abstraction approximates the answer, and upper
+and lower bounds on the complexity of performing abstraction and providing the
+desired guarantees.
+
+\section{State of the Art}
+% Outline how it has been approached previously
+% Describe what worked in that approach
+
+\subsection{Inference}
+
+Recall that a ProbLog program is a set of clauses, where each clause has an
+associated probability. The ProbLog inference rule
+\cite{DBLP:series/synthesis/2016Raedt,DBLP:conf/iclp/Sato95} for calculating the
+probability of an arbitrary query $Q$ being true is
+\[
+  P(Q) = \sum_{F \models Q} \prod_{f \in F} P(f) \prod_{f \not\in F} 1 -
+  P(f).
+\]
+Here, we are summing over all instantiations of variables (called \emph{possible
+worlds}) that satisfy the query, where $F$ denotes a set of clauses that are
+evaluated as true. For each world, we calculate its probability by multiplying
+probabilities associated with clauses or their negations. With this
+definition, the inference problem becomes an instance of weighted model
+counting \cite{DBLP:series/synthesis/2016Raedt}.
+
+\emph{Weighted model counting} (WMC) is an extension of model counting, which is
+an extension of the \emph{Boolean satisfiability problem} (SAT)
+\cite{DBLP:journals/ai/ChaviraD08}. SAT asks whether one can assign values to
+variables so that a given formula evaluates to true. Model counting asks to
+count the number of ways that can be done. Weighted model counting further
+extends this problem by assigning a weight to each possible world (in whatever
+way is appropriate for the problem) and asks for the sum of the weights
+corresponding to all possible worlds where the formula (or query) is true. In
+the case of ProbLog, the weight of a world is the product of probabilities of
+all literals (whether evaluated/instantiated to true or false)
+\cite{DBLP:series/synthesis/2016Raedt}. The WMC instance is then compiled to
+some type of logical circuit for efficient inference. \emph{Knowledge
+  compilation} \cite{DBLP:conf/ijcai/BroeckTMDR11} is the state-of-the-art
+inference technique for PGMs as well as many FOPI models
+\cite{DBLP:series/synthesis/2016Raedt}.
+
+Inference for MLNs works in a similar way. We still sum over all possible
+worlds where the query is true, but the probability of a world $x$ is now
+defined as
+\[
+  P(x) = \frac{1}{Z} \exp \left( \sum_{i=1}^F w_i n_i(x) \right),
+\]
+where $Z$ is the normalising constant more commonly known as the \emph{partition
+function}, $F$ is the number of formulas in the MLN, $w_i$ is the weight of the
+$i$th formula, and $n_i(x)$ is the number of ways that formula $i$ can be
+grounded in order to satisfy world $x$. Here, \emph{grounding} a formula refers
+to replacing each variable with a value so that the formula evaluates to true.
+
+A commonly used inference algorithm for MLNs relies on \emph{probabilistic
+  theorem proving}
+\cite{DBLP:journals/cacm/GogateD16,DBLP:journals/cib/Venugopal17}
+which is an example of a \emph{lifted inference} algorithm, i.e., an algorithm
+that attempts to work directly with variables without having to consider every
+possible value \cite{DBLP:conf/ijcai/Poole03}. The underlying problem, however,
+is still WMC, and is solved using a combination of techniques well established
+in the SAT community, e.g., unit propagation and clause learning
+\cite{DBLP:journals/cib/Venugopal17}.
+
+\subsection{Abstraction}
+
+Abstraction is an important tool in human cognition and a well-studied subject
+in cognitive science. For example, Gentner and Hoyos \cite{Gentner2017-GENAAA-2}
+investigate how children learn abstract patterns from observing several
+objects with a common property, while Bransford and Franks
+\cite{BRANSFORD1971331} show how the idea conveyed by a sentence is abstracted
+away from the particulars of its syntactic expression.
+
+Abstraction is also well-known in the AI community,
+where the main goal of abstraction is to reduce the computational complexity of
+a task, while ensuring that the process of abstraction itself is reasonably
+efficient \cite{saitta2013abstraction}. For instance, abstraction plays a key
+part in modern approaches to planning, where compound tasks are used to abstract
+away the details of how those tasks can be implemented
+\cite{DBLP:journals/amai/ErolHN96}. More specifically, abstraction is essential
+in developing explainable AI \cite{DBLP:journals/access/AdadiB18}, where
+it has been used to create interpretable abstractions of observed behaviour
+\cite{DBLP:journals/corr/PenkovR17} and model the domain knowledge of the user
+as an abstraction of the system, thus producing explanations that are at the
+level of detail corresponding to the user's knowledge
+\cite{DBLP:conf/ijcai/SreedharanSK18}.
+
+Model checking and verification benefit from abstraction as well, particularly
+in the area of software verification, where a complete model of the program
+might be too big to be handled by even the most efficient methods, in which
+case an abstract model could be developed. Depending on how it is created,
+sometimes properties of the system can be verified using the abstraction
+\cite{DBLP:journals/toplas/ClarkeGL94}, while other times the abstract model
+might produce a false positive, i.e., signal about a possible problem where
+there is none. If the occurrence of a false positive is suspected, parts of the
+abstraction can be refined to provide the necessary level of detail, while
+keeping other parts as they were
+\cite{DBLP:conf/cav/ClarkeGJLV00,DBLP:conf/popl/HenzingerJMS02}.
+
+Probabilistic abstractions have been used in the context of software
+verification, where probabilities can help the verification algorithm choose
+which part of the abstract model needs to be refined
+\cite{DBLP:conf/pldi/ZhangSN17}. Meanwhile, in the probabilistic programming
+community, abstractions have been used to determine the required number of Monte
+Carlo samples in order to compute a probability within a required level of
+precision \cite{DBLP:conf/popl/Monniaux01}.
+
+However, only recently has the general case of abstraction for FOPI models been
+formalised, and the work is mostly limited to defining several key properties
+that an abstraction may have and showing how those properties interact with each
+other \cite{DBLP:journals/corr/abs-1810-02434}. While the work on probabilistic
+programming considers specific examples of abstractions
+\cite{DBLP:conf/uai/HoltzenMB17} and presents an algorithm for performing
+predicate abstraction \cite{DBLP:conf/icml/HoltzenBM18}, significant work is
+required to achieve the full generality outlined in this proposal.
+
+\section{Proposed Research} \label{section:our_solution}
+% Detail how you would approach your research topic
+
+While some theoretical groundwork for abstraction in FOPI has recently been
+developed by Belle \cite{DBLP:journals/corr/abs-1810-02434}, there are many
+questions left to be answered:
+\begin{enumerate}
+\item How to efficiently create an abstraction of an already-existing
+  model? \label{q:1}
+\item When is the correct time to stop? What is the right balance between
+  simplicity and information? \label{q:2}
+\item What makes one abstraction preferable to another? \label{q:3}
+\item How to incorporate abstraction steps into learning a model from
+  data? \label{q:4}
+\item How to provide guarantees about an abstraction? For example, we may want
+  to bound the error of an answer to any query, or to ensure that all answers
+  remain exact for a selected set of queries. \label{q:5}
+\end{enumerate}
+
+In order to answer these questions and develop the required algorithms and
+techniques, we can draw inspiration from the theory of abstraction for reasoning
+in formal systems developed by Giunchiglia and Walsh
+\cite{DBLP:journals/ai/GiunchigliaW92} and recent work on abstraction for
+structural equation models \cite{DBLP:conf/uai/RubensteinWBMJG17}. In
+particular, an abstraction is often defined as a transformation of the
+representation into a different form. One way to create such a transformation is
+via a composition of atomic operations. For example:
+\begin{itemize}
+\item In some cases, $a \rightarrow b$ and $b \rightarrow c$ can be simplified
+  to $a \rightarrow c$.
+\item If a statement $S$ is true with high probability, perhaps that probability
+  can be rounded up to $1$, eliminating the need to consider the case where $S$
+  is false.
+\item If a statement is true for all values of a variable, barring a few
+  exceptions, perhaps the exceptions can be discarded.
+\end{itemize}
+
+Consider a specific query $Q$. Applying such an abstraction rule may or may not
+change the answer to $Q$, depending on whether the removed information
+is relevant to the query. Even if the answer becomes less precise, it might be
+an acceptable approximation, given that the error is bounded to a reasonable
+degree. Either way, the abstraction can reduce the search space the inference
+algorithm has to explore in order to produce an answer.
+
+It becomes clear that it is important to consider creating abstractions with
+respect to a specific set of queries. Question \ref{q:5} can then be answered by
+considering how each abstraction rule affects different types of queries.
+Sometimes we may get a reasonable numerical upper bound on the error, while
+other times it may be too time-consuming (or impossible) to bound the error to
+any reasonable degree, forcing us to reject the abstraction rule altogether.
+
+\begin{figure}
+  \begin{tikzpicture}
+    \node [object] (model) at (0, 0) {model};
+    \node [object] (query) at (0, -2) {query};
+    \node [process] (abstraction) at (3, -1) {abstraction};
+    \node [object] (abstract_model) at (7, 0) {abstract model};
+    \node [object] (abstract_query) at (7, -2) {abstract query};
+    \node [object] (error_bound) at (7, -4) {error bound};
+    \node [process] (inference2) at (10, -1) {inference};
+    \node [object] (approximation) at (13, -1) {approximation};
+    \node [process] (inference) at (0, -5) {inference};
+    \node [object] (answer) at (13, -5) {answer};
+    \node [process] (is_within) at (13, -4) {is within};
+
+    \draw [arrow,dashed] (model) edge (abstraction);
+    \draw [arrow,dashed] (query) edge (abstraction);
+    \draw [arrow,dashed] (abstraction) edge (abstract_model);
+    \draw [arrow,dashed] (abstraction) edge (abstract_query);
+    \draw [arrow,dashed] (abstraction) edge (error_bound);
+    \draw [arrow,dashed] (abstract_model) edge (inference2);
+    \draw [arrow,dashed] (abstract_query) edge (inference2);
+    \draw [arrow,dashed] (inference2) edge (approximation);
+    \draw [arrow] (query) edge (inference);
+    \draw [-] (model) edge (query);
+    \draw [arrow] (inference) edge (answer);
+    \draw [arrow,dashed] (approximation) edge (is_within);
+    \draw [arrow,dashed] (is_within) edge (answer);
+    \draw [arrow,dashed] (error_bound) edge (is_within);
+  \end{tikzpicture}
+  \caption{A graphical representation of the role abstraction can play during
+    inference. Solid lines represent inference without abstraction, whereas
+    dashed lines show the workflow with abstraction.}
+  \label{fig:inference_scheme}
+\end{figure}
+
+See Figure \ref{fig:inference_scheme} for an example of how abstraction can
+benefit inference. The abstract model and query produced by the abstraction
+algorithm are likely to make inference faster, and the error bound
+provides a precision guarantee in case some relevant information is lost.
+
+With this goal in mind, we will develop a comprehensive list of abstraction
+rules (transformations) and define a way to categorise all queries answerable by
+a FOPI model such that we could answer the following set of questions for each
+abstraction rule:
+\begin{itemize}
+\item What types of queries can no longer be answered exactly after applying the
+  abstraction rule?
+\item What is the error bound? Can it be calculated in constant time?
+\item What is the complexity of applying the abstraction?
+\end{itemize}
+
+Questions \ref{q:2} and \ref{q:3} delve deeper into how an abstraction algorithm
+could work. If the set of rules is extensive enough, any model might
+eventually be oversimplified into something trivial. We need to measure two
+things: the amount of (relevant) information preserved by an abstraction, and
+the complexity of the model. The two metrics would provide a systematic way to
+answer both questions, while being easily adaptable to different needs (e.g.,
+how much precision are we willing to sacrifice? What queries do we want to
+support?).
+
+\section{Conclusion}
+%Describe why your idea is worth pursuing
+%Demonstrate how this is different/better than any previous approach
+
+As abstraction for expressive probabilistic models has only been defined quite
+recently \cite{DBLP:journals/corr/abs-1810-02434,DBLP:conf/uai/HoltzenMB17},
+this is the perfect time to explore the possibilities and benefits of an old
+idea applied to modern models for probabilistic inference and reasoning.
+Simplification and abstraction can benefit us in both efficiency and
+interpretability, i.e, simpler models are likely to result in faster inference,
+while at the same time being easier to understand by the user. Furthermore,
+establishing a link between abstract and concrete representations could provide
+a basis for an agent's ability to correctly interpret high-level (abstract)
+instructions. Finally, the quest for abstraction algorithms is likely to lead to
+a better theoretical understanding of what properties can be preserved by an
+abstraction, what error bounds can be established when abstraction approximates
+the answer, and upper and lower bounds on the complexity of performing
+abstraction and providing the desired guarantees.
+
+I am also interested in the following projects:
+\begin{itemize}
+\item Explaining and interpretable task planning (230005)
+\item Autonomous Agents Modelling Other Agents (230003)
+\item Ethical and responsible decision making (300003)
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{proposal}
+\end{document}
