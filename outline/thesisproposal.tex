@@ -4,6 +4,7 @@
 \usepackage[UKenglish]{isodate}
 \usepackage{fullpage}
 \usepackage{complexity}
+\usepackage{amsmath}
 
 \begin{document}
 \title{Explainability in Autonomous Agents: Interpretable Models, Abstraction,
@@ -11,7 +12,13 @@
 \author{Paulius Dilkas}
 \maketitle
 
-\section{Introduction} % TODO: rephrase in my own words
+% TODO: requirements
+% 15 pages
+% problem, methods, justification, evaluation, scheduled work plan
+
+\section{Introduction}
+% TODO: rephrase in my own words. Outline: abstraction in general -> 3 projects
+% under way
 
 Modern models for machine learning are paving the way for a new generation of
 autonomous agents. However, these agents are increasingly deployed in situations
@@ -25,9 +32,40 @@ topic of interpretability and explainability, including a framework for
 abstraction, for defining how to interface high-level instructions and low-level
 modules.
 
-\section{Proposed Research}
+\section{Abstraction in First-Order Probabilistic Inference}
 
-\subsection{Background}
+\emph{Abstraction} can be broadly defined as the process (and result) of
+omitting detail \cite{doi:10.1086/670300}. Sometimes the omitted information is
+irrelevant in answering the questions we are interested in, and sometimes an
+abstraction provides a simplified (and approximately correct) view of a
+situation that originally was too complex to be reasoned about. While areas such
+as planning and verification have benefited from abstraction in various ways
+\cite{saitta2013abstraction}, research into abstraction in FOPI has just begun
+and awaits significant contributions
+\cite{DBLP:journals/corr/abs-1810-02434,DBLP:conf/icml/HoltzenBM18,DBLP:conf/uai/HoltzenMB17}.
+
+Our goal is to develop new types of abstractions, find efficient
+algorithms for constructing an abstraction from a given model, and investigate
+how abstraction can be integrated into both inference and learning algorithms.
+Simplification and abstraction can benefit us in both efficiency and
+interpretability, i.e, simpler models are likely to result in faster inference,
+while at the same time being easier to understand by the user. Finally, the
+quest for abstraction algorithms is likely to lead to a better theoretical
+understanding of what properties can be preserved by an abstraction, what error
+bounds can be established when abstraction approximates the answer, and upper
+and lower bounds on the complexity of performing abstraction and providing the
+desired guarantees.
+
+\paragraph{Objectives}
+\begin{itemize}
+\item To further the theoretical understanding of abstraction in FOPI.
+\item To improve inference speed by investigating abstraction as a separate
+  process as well as a component of inference.
+\item To make models learned from data simpler and more transferable.
+\item To increase the explainability of FOPI models.
+\end{itemize}
+
+\subsection{Literature Review}
 
 Logical approaches to reasoning have dominated the fields of artificial
 intelligence (AI) and computing for many decades. They have resulted in expert
@@ -91,47 +129,7 @@ logic has been extended to explicitly deal with changes over time and has been
 used to model virtual spaces such as online chat rooms and massively multiplayer
 online games \cite{DBLP:conf/pkdd/ThonLR08,DBLP:journals/ml/ThonLR11}.
 
-\subsection{Key Idea}
-
-\emph{``To investigate how first-order probabilistic models can be transformed
-  into more abstract representations without losing (significant) detail
-  crucial to the set of relevant queries.''}
-
-\emph{Abstraction} can be broadly defined as the process (and result) of
-omitting detail \cite{doi:10.1086/670300}. Sometimes the omitted information is
-irrelevant in answering the questions we are interested in, and sometimes an
-abstraction provides a simplified (and approximately correct) view of a
-situation that originally was too complex to be reasoned about. While areas such
-as planning and verification have benefited from abstraction in various ways
-\cite{saitta2013abstraction}, research into abstraction in FOPI has just begun
-and awaits significant contributions
-\cite{DBLP:journals/corr/abs-1810-02434,DBLP:conf/icml/HoltzenBM18,DBLP:conf/uai/HoltzenMB17}.
-
-Our goal is to develop new types of abstractions, find efficient
-algorithms for constructing an abstraction from a given model, and investigate
-how abstraction can be integrated into both inference and learning algorithms.
-Simplification and abstraction can benefit us in both efficiency and
-interpretability, i.e, simpler models are likely to result in faster inference,
-while at the same time being easier to understand by the user. Finally, the
-quest for abstraction algorithms is likely to lead to a better theoretical
-understanding of what properties can be preserved by an abstraction, what error
-bounds can be established when abstraction approximates the answer, and upper
-and lower bounds on the complexity of performing abstraction and providing the
-desired guarantees.
-
-\subsection{Objectives}
-
-\begin{itemize}
-\item To further the theoretical understanding of abstraction in FOPI.
-\item To improve inference speed by investigating abstraction as a separate
-  process as well as a component of inference.
-\item To make models learned from data simpler and more transferable.
-\item To increase the explainability of FOPI models.
-\end{itemize}
-
-\subsection{State of the Art}
-
-\subsubsection{Inference}
+\subsubsection{State of the Art: Inference}
 
 Recall that a ProbLog program is a set of clauses, where each clause has an
 associated probability. The ProbLog inference rule
@@ -186,7 +184,7 @@ is still WMC, and is solved using a combination of techniques well established
 in the SAT community, e.g., unit propagation and clause learning
 \cite{DBLP:journals/cib/Venugopal17}.
 
-\subsubsection{Abstraction}
+\subsubsection{State of the Art: Abstraction}
 
 Abstraction is an important tool in human cognition and a well-studied subject
 in cognitive science. For example, Gentner and Hoyos \cite{Gentner2017-GENAAA-2}
@@ -312,18 +310,18 @@ Lastly, we will integrate abstraction steps into both inference and learning
 algorithms, resulting in faster inference as well as simpler and more robust
 models.
 
-\subsection{Innovative Aspects}
+\subsubsection{Innovative Aspects}
 
 We aim to innovate by expanding the idea of abstraction in AI to new domains as
 well as enhancing both inference and learning of probabilistic relational
 models.
 
-\paragraph{Abstraction in AI} The work on abstraction so far has focused almost
+\paragraph{Abstraction in AI.} The work on abstraction so far has focused almost
 exclusively on deterministic systems. We will extend previous work to target
 rich probabilistic models, resulting in new theoretical ideas and definitions as
 well as algorithms for transforming models into their abstractions.
 
-\paragraph{FOPI} As FOPI subsumes both probabilistic inference (often
+\paragraph{FOPI.} As FOPI subsumes both probabilistic inference (often
 $\#\P$-complete) and logical inference (\NP-complete)
 \cite{DBLP:journals/ml/RichardsonD06}, it is unlikely that a useful variation of
 FOPI can ever be tractable. Thus, improvements in inference speed are highly
@@ -332,12 +330,148 @@ making the algorithm recognise opportunities to reduce the complexity of the
 model before continuing the search. This is likely to yield significant benefits
 to inference speed.
 
-\paragraph{Statistical relational learning} Abstraction can also be integrated
+\paragraph{Statistical relational learning.} Abstraction can also be integrated
 into learning a FOPI model from data. This is likely to make the model more
 understandable to the user as well as increase the transferability of the model
 to previously unseen data.
 
+\section{Equivalence of Constants in Logic Programs}
+
+The overarching goal of this project is to formalise how logic programs act on
+constants and, in particular, to define what it means for constants to be
+equivalent. The main contributions are as follows:
+\begin{itemize}
+\item We show that a relational knowledge base is fundamentally defined by its
+  induced equivalence relation over tuples of constants by establishing an
+  isomorphism between logic programs that translate knowledge bases and
+  refinement relations over equivalence classes.
+\item We characterise acyclic logic programs as morphisms in a category where
+  relational knowledge bases act as objects. We show how this new category
+  relates to the category of partitions of a set.
+\item We formalise the semantics of an arbitrary expression with predicates,
+  variables, and constants as a composition of functions between sets, where
+  each atom is interpreted as a composition of two functions: a new type of
+  function based on the idea of \emph{arrangements with repetition} in
+  combinatorics, and the predicate itself.
+\end{itemize}
+
+\subsection{Related Work}
+
+While equivalence between logic programs has received a fair amount of attention
+\cite{DBLP:journals/tocl/LifschitzPV01,DBLP:conf/ecai/OikarinenJ06,DBLP:conf/iclp/EiterF03},
+the idea to formally consider equivalence of constants seems to be new. However,
+informal observations that it is useful to identify sets of constants with which
+the program's behaviour is identical can be seen in recent literature on domain
+abstractions \cite{DBLP:conf/uai/HoltzenMB17}.
+
+There have been other categorical approaches to logic programming where logic
+programs are characterised as indexed categories
+\cite{DBLP:conf/elp/KinoshitaP96}, indexed monoidal categories
+\cite{corradini1992categorical}, and $\tau$-categories
+\cite{DBLP:conf/csl/FinkelsteinFL94}. We provide a fresh perspective by thinking
+of logic programs as transformations between Herbrand universes, and so programs
+become morphisms rather than categories.
+
+Rajan and Muhammed \cite{rajan2015normal} define the category of partitions of a
+set where objects are defined as all partitions of a set (except the identity
+partition that partitions the set into one cell), and there is an arrow from
+object $A$ to object $B$ if, for every cell $a$ of partition $A$, one can find a
+cell $b$ of partition $B$ such that $a \subseteq b$. As equivalences are
+`equivalent' to partitions by the fundamental theorem of equivalence relations
+\cite{dummit2004abstract}, it is likely that one can establish a formal
+connection between the category of partitions and the category of knowledge
+bases and logic programs.
+
+\section{Using Constraint Programming to Generate Random Logic Programs}
+
+We present a novel approach to generate random logic programs using constraint
+programming. The constraint programming approach to the problem has a major
+advantage in that one can easily add additional conditions for the generated
+programs. Some of these conditions can be expressed using constraints native to
+the constraint solver Choco \cite{choco}, while novel propagation and entailment
+checking algorithms have been developed for ensuring independence and/or
+conditional independence amongst predicates. A constraint programming approach
+also benefits from many years of research into efficient constraint propagation
+algorithms which makes it likely that our model can generate larger programs
+relatively quickly.
+
+The main disadvantage of this approach is that we have no control over what
+probability distribution is being sampled. However, we can avoid generating
+programs that are very similar to each other by regularly restarting the solver,
+which makes it forget decisions that have already been made and guess/infer new
+ones. Preliminary experiments show that restarting after every solution might be
+time-consuming, but regular restarts are still feasible.
+
+While the model generates logic programs, it can be easily extended to generate
+probabilistic logic programs by adding probabilities to clauses and an
+additional constraint for avoiding negative cycles in the program.
+
+\subsection{Related Work}
+
+\paragraph{Previous work.} Logic programs have been generated before. Some
+approaches are quite restrictive, e.g., restricted to clauses with only two
+literals \cite{DBLP:conf/lpnmr/NamasivayamT09}, or to clauses of the form $a
+\gets \neg b$ \cite{DBLP:journals/tocl/WenWSL16}, but others are more
+expressive \cite{DBLP:journals/tplp/WangWM15}, e.g., defining a program only by
+the (maximum) number of atoms in the body and the total number of rules
+\cite{DBLP:conf/iclp/ZhaoL03,zhao2004answer}. Our advantages over previous work
+are twofold: our model can generate different syntactic representations of the
+same underlying probability distribution (which can be a blessing or a curse
+depending on the needs of the user), and our model allows us to integrate
+additional constraints on the program in an efficient (i.e., non-brute-force)
+manner.
+
+% TODO: inference algorithms and how badly tested they are
+
+\paragraph{Complexity and empirical hardness.} Research in computer science has
+a long history of both theoretical and empirical approaches towards
+characterising the difficulty of a problem irrespectively of its solutions. In
+both cases, many attempts have been made to discover parameters that can be used
+to predict or ensure the difficulty of the problem. On the theory side, this has
+resulted in an entire subfield of complexity theory called parameterised
+complexity \cite{DBLP:series/mcs/DowneyF99} and well-known parameters such as
+clique-width \cite{DBLP:journals/jcss/CourcelleER93,DBLP:journals/dam/Wanke94}
+and treewidth \cite{diestel2005graph}. On the empirical side, parameters were
+used to identify phase transitions---peaks in the empirical hardness of decision
+problems between problems that are so `easy' that the answer is obviously `yes'
+and problems that are so `easy' that the answer is obviously `no'
+\cite{DBLP:conf/ijcai/CheesemanKT91}. This approach has been successfully
+applied on a wide range of problems, ranging from the travelling salesman
+\cite{DBLP:journals/ai/GentW96} to voting systems
+\cite{DBLP:conf/ijcai/Walsh09}. More recently, empirical approaches to hardness
+estimation have used machine learning techniques to unveil a more detailed
+picture of the hardness landscape \cite{DBLP:journals/cacm/Leyton-BrownHHX14}
+and tackled optimisation problems by running billions of experiments to
+eliminate noise and randomness \cite{DBLP:conf/cp/McCreeshPP19}. Being able to
+generate benchmarking instances for a problem is the crucial first step towards
+a better understanding of empirical hardness and will allow us to characterise
+which (probabilistic) logic programs are easy, and which ones are hard.
+
+\paragraph{Data generation.} As probabilistic logic programs have been used to
+generate random data \cite{DBLP:conf/soict/Dries15}, one could combine random
+data generation with random program generation to generate random relational
+data that is generalisable across generative models and only satisfies some
+basic independence conditions. The results could unveil important biases in how
+the programs are generated as well as biases inherent in encoding a probability
+distribution as a probabilistic logic program.
+
+\paragraph{Learning.} Learning the structure of a probabilistic logic program
+from data remains a challenging problem. While some approaches only consider
+ground programs \cite{riguzzi2007learning,DBLP:journals/ml/Riguzzi08}, and some
+consider the problem of identifying a near-optimal subset of clauses from an
+existing program \cite{DBLP:conf/ilp/RaedtKKRT06}, there have been no successful
+attempts to tackle the problem in its full generality. Generating suitable
+structures and testing them against the data would serve as a baseline algorithm
+for structure learning.
+
+\section{Predicate Invention for Probabilistic Logic Programs}
+
+% TODO: describe the idea
+
+\subsection{Related Work}
+
 \section{Methodology}
+% TODO: update
 
 \subsection{Comparative Survey of FOPI Models (WP1)}
 
