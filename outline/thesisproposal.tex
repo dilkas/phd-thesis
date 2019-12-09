@@ -5,6 +5,7 @@
 \usepackage{fullpage}
 \usepackage{complexity}
 \usepackage{amsmath}
+\usepackage{cleveref}
 
 \begin{document}
 \title{Explainability in Autonomous Agents: Interpretable Models, Abstraction,
@@ -12,25 +13,24 @@
 \author{Paulius Dilkas}
 \maketitle
 
-% TODO: requirements
 % 15 pages
 % problem, methods, justification, evaluation, scheduled work plan
-
 \section{Introduction}
-% TODO: rephrase in my own words. Outline: abstraction in general -> 3 projects
-% under way
 
-Modern models for machine learning are paving the way for a new generation of
-autonomous agents. However, these agents are increasingly deployed in situations
-where they have to interact with human users, and in that setting, humans may
-need communicate their knowledge to these agents, as well as understand the
-internal logic of the decisions taken by the agents. Fundamentally, this boils
-down to the question of interpretable decision making, and whether humans can
-understand the inner workings of the machine learning models used in those
-agents. In this project, we will look at fundamental questions pertaining to the
-topic of interpretability and explainability, including a framework for
-abstraction, for defining how to interface high-level instructions and low-level
-modules.
+As black-box machine learning algorithms become more powerful, an important
+issue emerges: how much are we willing to trust a man-made tool without knowing
+how it works, and why it suggest the answer that it does? Thus, the topics of
+explainability and interpretability gather importance. Perhaps information is
+more interpretable when expressed in a richer language or representation.
+Perhaps possible interpretations become obvious after eliminating unnecessary
+detail. These ideas form the foundation of the work presented in this proposal.
+
+We begin by considering abstraction in a relatively general setting: we
+review what has been accomplished so far and the broad strokes of the work
+envisioned in this proposal. \Crefrange{sec:1}{sec:3} then outline three
+specific projects that are under way. \Cref{sec:methodology} then divides the
+work into executable work packages, and we use \Crefrange{sec:7}{sec:9} to
+briefly consider outcomes, risks, and impact.
 
 \section{Abstraction in First-Order Probabilistic Inference}
 
@@ -56,28 +56,28 @@ bounds can be established when abstraction approximates the answer, and upper
 and lower bounds on the complexity of performing abstraction and providing the
 desired guarantees.
 
-\paragraph{Objectives}
+\paragraph{Objectives.}
 \begin{itemize}
 \item To further the theoretical understanding of abstraction in FOPI.
 \item To improve inference speed by investigating abstraction as a separate
   process as well as a component of inference.
 \item To make models learned from data simpler and more transferable.
-\item To increase the explainability of FOPI models.
+\item To increase the interpretability of FOPI models.
 \end{itemize}
 
 \subsection{Literature Review}
 
-Logical approaches to reasoning have dominated the fields of artificial
-intelligence (AI) and computing for many decades. They have resulted in expert
-systems that can use reasoning to make predictions and diagnose problems
-\cite{hayes1983building}, logic programming languages that allow the user to
-declaratively describe the problem and trust the inference algorithm to find the
-answer efficiently \cite{DBLP:books/sp/Lloyd87}, and automated (interactive)
-theorem proving and proof checking software that assists mathematicians in
-constructing correct proofs \cite{DBLP:books/el/RobinsonV01}. Probabilistic
-methods, on the other hand, have particularly flourished with the arrival of big
-data and access to more data in general, transforming areas such as natural
-language processing and pattern recognition \cite{DBLP:series/sci/BrazAR08}.
+Logical approaches to reasoning have dominated the fields of AI and computing
+for many decades. They have resulted in expert systems that can use reasoning to
+make predictions and diagnose problems \cite{hayes1983building}, logic
+programming languages that allow the user to declaratively describe the problem
+and trust the inference algorithm to find the answer efficiently
+\cite{DBLP:books/sp/Lloyd87}, and automated (interactive) theorem proving and
+proof checking software that assists mathematicians in constructing correct
+proofs \cite{DBLP:books/el/RobinsonV01}. Probabilistic methods, on the other
+hand, have particularly flourished with the arrival of big data and access to
+more data in general, transforming areas such as natural language processing and
+pattern recognition \cite{DBLP:series/sci/BrazAR08}.
 
 While probabilistic models are great at handling uncertainty, their
 simplistic representations can be hard to interpret. On the other hand, systems
@@ -335,7 +335,7 @@ into learning a FOPI model from data. This is likely to make the model more
 understandable to the user as well as increase the transferability of the model
 to previously unseen data.
 
-\section{Equivalence of Constants in Logic Programs}
+\section{Equivalence of Constants in Logic Programs} \label{sec:1}
 
 The overarching goal of this project is to formalise how logic programs act on
 constants and, in particular, to define what it means for constants to be
@@ -348,11 +348,10 @@ equivalent. The main contributions are as follows:
 \item We characterise acyclic logic programs as morphisms in a category where
   relational knowledge bases act as objects. We show how this new category
   relates to the category of partitions of a set.
-\item We formalise the semantics of an arbitrary expression with predicates,
-  variables, and constants as a composition of functions between sets, where
-  each atom is interpreted as a composition of two functions: a new type of
-  function based on the idea of \emph{arrangements with repetition} in
-  combinatorics, and the predicate itself.
+\item We formalise the semantics of an arbitrary formula as a composition of
+  functions between sets, where each atom is interpreted as a composition of two
+  functions: a new type of function based on the idea of \emph{arrangements with
+    repetition} in combinatorics, and the predicate itself.
 \end{itemize}
 
 \subsection{Related Work}
@@ -382,7 +381,7 @@ cell $b$ of partition $B$ such that $a \subseteq b$. As equivalences are
 connection between the category of partitions and the category of knowledge
 bases and logic programs.
 
-\section{Using Constraint Programming to Generate Random Logic Programs}
+\section{Using Constraint Programming to Generate Random Logic Programs} \label{sec:2}
 
 We present a novel approach to generate random logic programs using constraint
 programming. The constraint programming approach to the problem has a major
@@ -408,7 +407,7 @@ additional constraint for avoiding negative cycles in the program.
 
 \subsection{Related Work}
 
-\paragraph{Previous work.} Logic programs have been generated before. Some
+\paragraph{Previous approaches.} Logic programs have been generated before. Some
 approaches are quite restrictive, e.g., restricted to clauses with only two
 literals \cite{DBLP:conf/lpnmr/NamasivayamT09}, or to clauses of the form $a
 \gets \neg b$ \cite{DBLP:journals/tocl/WenWSL16}, but others are more
@@ -421,7 +420,23 @@ depending on the needs of the user), and our model allows us to integrate
 additional constraints on the program in an efficient (i.e., non-brute-force)
 manner.
 
-% TODO: inference algorithms and how badly tested they are
+\paragraph{Inference algorithms and their evaluation.} How confidently can we
+claim that an algorithm works well if it is only tested on a couple types of
+problems? Perhaps the `inferior' algorithm is actually better in some specific
+circumstances. Perhaps there are clearly identifiable types of programs that
+make every algorithm default to exponential behaviour that could be easily
+overcome with the right strategy. At present, most inference algorithms for
+probabilistic (logic) programs are only evaluated on 1--4 different problems:
+sometimes just a single network
+\cite{DBLP:journals/tplp/KimmigDRCR11,DBLP:journals/corr/abs-1112-3785,DBLP:conf/iclp/KimmigCRDR08},
+sometimes two
+\cite{DBLP:journals/corr/abs-1009-3798,DBLP:conf/ecai/BruynoogheMKGVJR10} or
+even four networks \cite{DBLP:conf/ijcai/VlasselaerBKMR15} coming from a range
+of areas such as social networks and citation/genetic/biological data sets. In
+order to better understand the strengths and weaknesses of these algorithms,
+along with real data they should also be evaluated on a range of synthetic
+problems that accurately represent the potential complexities that have to be
+handled by a well-designed solver.
 
 \paragraph{Complexity and empirical hardness.} Research in computer science has
 a long history of both theoretical and empirical approaches towards
@@ -464,89 +479,98 @@ attempts to tackle the problem in its full generality. Generating suitable
 structures and testing them against the data would serve as a baseline algorithm
 for structure learning.
 
-\section{Predicate Invention for Probabilistic Logic Programs}
+\section{Predicate Invention for Probabilistic Logic Programs} \label{sec:3}
 
-% TODO: describe the idea
+Different syntactic representations of the same program can certainly differ in
+interpretability. This is especially important when the program is learned from
+data. Can they differ in inference speed? How much can a program be transformed
+without changing any of its answers to a set of relevant questions?
+
+This project is most closely related to the initial topic of the proposal and
+examines one particular type of transformation, namely creating a new predicate
+that can replace a formula. We propose a number of transformations (depending on
+the underlying formula), prove their correctness, and examine their empirical
+implications and composability.
 
 \subsection{Related Work}
 
-\section{Methodology}
-% TODO: update
+This project is related to predicate invention as it is known in the context of
+inductive logic programming and meta-interpretive learning
+\cite{DBLP:conf/ruleml/Muggleton17,DBLP:journals/ml/MuggletonLT15}, but there
+are several key differences. First, predicate invention is typically considered
+in the context of learning a first-order representation from data
+\cite{kramer1995predicate,DBLP:journals/jetai/Muggleton94}, while my work
+invents new predicates in order to transform an already existing program.
+Second, situating the work in probabilistic logic means that my arguments for
+the correctness of the transformations are expressed primarily in a
+probabilistic rather than logical setting.
 
-\subsection{Comparative Survey of FOPI Models (WP1)}
+Besold et al. \cite{DBLP:conf/ilp/SchmidZBTM16} identify an issue with predicate
+invention: the newly invented predicate is often left without an interpretable
+name. In our setting, however, this is less of a problem because the new
+predicate can be named after its underlying structure (as long as it is not too
+complicated), e.g., the new predicate meant to replace $\mathsf{father}(X, Y)
+\lor \mathsf{mother}(X, Y)$, for lack of a better automatically-identifiable
+alternative, could be called $\mathsf{fatherORmother}(X, Y)$.
 
-As there is no consensus over the quality and capabilities of various
-FOPI models, we will develop a list of problems that can be used to compare and
-challenge state-of-the-art inference algorithms for various representations. We
-will draw inspiration from problems that already exist in the literature and
-have been used to propose new approaches, e.g., the classic `a friend of a
-smoker is likely to be a smoker' example commonly used to introduce FOPI
-representations
-\cite{DBLP:series/sci/BrazAR08,DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/ml/RichardsonD06,DBLP:journals/cib/Venugopal17}
-and the urn-and-balls scenario that requires handling uncertainty about the
-number of objects and their identities \cite{DBLP:conf/ijcai/MilchMRSOK05}.
-These and other example problems will allow us to compare modern FOPI models
-in terms of what complexities of the problem can be represented in a reasonable
-way, and efficiency of inference (both empirical and in terms of computational
-complexity). \textbf{Deliverable:} a report with a list of problems, indication of
-which representations are able to solve each problem, the computational
-complexity of each solution, and plots comparing the performance of different
-models for each problem.
+The idea to use predicate invention for interpretability is similar to the idea
+of splitting a logic program into a `top' part and a `bottom' part
+\cite{DBLP:conf/iclp/LifschitzT94,DBLP:conf/aaai/JiWHY15}. In
+both cases, the goal is to identify a high-level structure that is mostly
+independent from the low-level details, as observed from the perspective of
+either interpretability or inference.
 
-\subsection{Abstraction Rules and Their Properties (WP2)}
+\section{Methodology} \label{sec:methodology}
 
-Developing a list of abstraction rules (transformations) that can be composed to
-achieve any (even a trivial) abstraction is an important step in our proposal.
-While some examples have already been mentioned here and more can be found in
-previous work
-\cite{DBLP:journals/corr/abs-1810-02434,DBLP:journals/ai/GiunchigliaW92,DBLP:conf/uai/HoltzenMB17,saitta2013abstraction},
-our aim is to develop a complete list of abstraction rules that are able to
-simplify individual snippets of first-order logic, their probabilities, and
-interactions among two or more snippets. After constructing such a list, we will
-investigate whether (or to what extent) it satisfies several key properties (the
-first three as defined by Belle \cite{DBLP:journals/corr/abs-1810-02434}):
+\subsection{Theory Paper: On the Equivalence of Constants in Logic Programs
+  (WP1)}
 
-\begin{description}
-\item[Soundness] Do events that were possible before the abstraction stay
-  possible?
-\item[Completeness] Were events that are possible after applying the abstraction
-  possible before?
-\item[Exactness] Are all computable probabilities in the abstraction equal to
-  the corresponding probabilities before the abstraction was applied?
-\item[Commutativity] Can the order of two transformations be changed without
-  changing the result?
-\item[Thoroughness] Is the list of abstraction rules extensive enough to
-  simplify any model into a trivial one? It is unlikely that we would do so in
-  practice, but the list should be rich enough to support that.
-\end{description}
+While the main results of the paper have already been developed, they need to be
+revised to ensure a sufficient level of mathematical rigour, good (and
+well-explained) use of terminology, an inviting and understandable explanation,
+and a convincing motivation for why the results are not only interesting but
+also impactful and valuable. \textbf{Duration:} two months.
+\textbf{Deliverables:} a paper submitted for publication.
 
-\textbf{Deliverables:} a report detailing a list of abstraction rules, their
-properties, and the required proofs as described above.
+\subsection{Using Constraint Programming to Generate Random Logic Programs
+  (WP2)}
 
-\subsection{Applying Abstraction Rules in Practice (WP3)}
+While a custom propagation algorithm for independence has already been
+implemented, it needs to be extended to support an arbitrary number of
+predicates. The algorithm for conditional independence, while designed, still
+needs to be implemented and tested. As this would be useful for many
+applications, there should also be a constraint to ensure that the model does
+not generate two or more programs with different syntactic expressions that are
+also clearly logically equivalent. This could be achieved by restricting the
+format of each clause.
 
-We will build on the work produced in the previous WP to bring the theory closer
-to a useful implementation. Specifically, we will decide on a particular
-internal representation for our chosen FOPI model in order to achieve efficient
-application of abstraction rules. We will implement algorithms for applying each
-rule, consider their computational complexity, and detail our findings in a
-report with pseudocode snippets and investigations into the efficiency of
-applying each transformation. \textbf{Deliverables:} a working implementation
-featuring internal data structures, some example problems, and algorithms for
-applying abstraction rules; a report describing our findings.
+The model should be primarily evaluated on the basis of its speed as measured by
+the time it takes to produce the first program and the time between subsequent
+programs as a function of various parameters of the model. Having generated a
+set of programs, we can then further motivate the work by running multiple
+inference algorithms on a range of synthetic problems and outlining the types of
+programs that cause difficulty to all algorithms and the types of programs that
+are easy for some but difficult for others. \textbf{Duration:} six months.
+\textbf{Deliverables:} a software product as well as a paper describing the
+model, empirical results, and observations.
 
-\subsection{Ensuring a Sufficient Level of Precision (WP4)}
+\subsection{Predicate Invention: Implementation and Theory (WP3)}
 
-While knowing which abstraction rules are exact is useful, we would also
-like to ensure that non-exact rules maintain a sufficient level of precision.
-For each such rule, we will describe what queries can no longer be answered
-exactly after applying the rule. Then, we will construct algorithms to bound the
-error caused by the rule, and investigate their performance in terms of
-computational complexity as well as empirical studies. \textbf{Deliverables:} a
-report detailing how non-exactness affects classes of queries, implementation of
-error-bounding algorithms, their theoretical and empirical analysis.
+The predicate invention project, while under way, requires significantly more
+work on both the theoretical and the empirical aspects:
+\begin{itemize}
+\item A number of important theorems have been defined but still need to be
+  proven.
+\item When looking for formulas that could be abstracted, the algorithm should
+  take into account rules such as De Morgan's laws.
+\item While the theory is formulated to work on any number of predicates, the
+  implementation is only able to handle two predicates at a time.
+\end{itemize}
+\textbf{Duration:} three months. \textbf{Deliverables:} a list of theorems with
+proofs and software that can execute the transformations suggested by the
+theorems.
 
-\subsection{Greedy Algorithms (WP5)}
+\subsection{Greedy Algorithms (WP4)}
 
 At this point, we can reason about applying multiple abstraction rules in
 sequence. We will aim to answer two key questions:
@@ -571,12 +595,13 @@ prefer rules that have little effect on precision. While a natural termination
 condition could be an inability to apply an abstraction rule without losing too
 much precision, the process could also be terminated because either the loss in
 precision or the expected running time of applying the abstraction is too high
-for the predicted benefits in inference speed. \textbf{Deliverables:}
-implementations of the algorithms as well as one or more papers detailing the
-reasoning behind design decisions, observed empirical performance, and the
-differences in inference speed before and after running each algorithm.
+for the predicted benefits in inference speed. \textbf{Duration:} six months.
+\textbf{Deliverables:} implementations of the algorithms as well as one or more
+papers detailing the reasoning behind design decisions, observed empirical
+performance, and the differences in inference speed before and after running
+each algorithm.
 
-\subsection{Abstraction During Inference (WP6)}
+\subsection{Abstraction During Inference (WP5)}
 
 There is no reason to limit abstraction to the intermediate stage between
 constructing (or learning) a model and performing inference. Thus, we will
@@ -586,11 +611,11 @@ For example, a common way to compute a conditional probability $P(Q \mid E)$
 inside a model $\Delta$ using WMC is by calculating the WMC of $\Delta \land Q
 \land E$ and $\Delta \land E$ separately, and then dividing one by the other
 \cite{DBLP:journals/ai/ChaviraD08}. It is likely that the two computations would
-benefit from different abstractions. \textbf{Deliverables:} an implementation of a
-new inference algorithm with abstraction, and a report describing its design and
-performance.
+benefit from different abstractions. \textbf{Duration:} six months.
+\textbf{Deliverables:} an implementation of a new inference algorithm with
+abstraction, and a report describing its design and performance.
 
-\subsection{Abstraction in Learning (WP7)}
+\subsection{Abstraction in Learning (WP6)}
 
 A learned model is, in a way, an abstraction of the training data. Performing
 abstraction afterwards is suboptimal, since the algorithm would attempt to
@@ -603,32 +628,23 @@ the end as an extra step, but rather a fully integrated part of the learning
 process that concerns itself primarily with a meaningful and accurate
 representation of data. The abstraction ideas developed in previous work
 packages will help ensure that the learned models are both more explainable and
-transferable to new kinds of data. \textbf{Deliverables:} an implementation of a
-learning algorithm with integrated abstraction, and a report describing the
-rationale for its design as well as observed performance.
+transferable to new kinds of data. \textbf{Duration:} six months.
+\textbf{Deliverables:} an implementation of a learning algorithm with integrated
+abstraction, and a report describing the rationale for its design as well as
+observed performance.
 
-\subsection{Dissemination (WP8)}
-
-We will make the implementations of abstraction, inference, and learning
-algorithms (as well as the newly constructed test data) publicly available in a
-repository. A website dedicated to the project will provide a coherent view of
-all developments as they are being implemented and written. We will aim to
-produce a series of papers detailing both theoretical contributions and
-empirical results in journals and conferences such as JAIR, UAI, IJCAI, AAAI,
-NeurIPS, etc. \textbf{Deliverables:} project website, code repository,
-dissemination activities.
-
-\section{Measurable Outcomes}
+\section{Measurable Outcomes} \label{sec:7}
 
 \begin{itemize}
-\item A set of problems delineating the differences amongst various
-  representations as well as guiding future research efforts (WP1).
-\item Demonstrated increase in exact and approximate inference speed (WP6).
+\item A thoroughly-described landscape of probabilistic logic programs,
+  identifying programs that are challenging to some or all of the inference
+  algorithms. (WP2).
+\item Demonstrated increase in exact and approximate inference speed (WP5).
 \item Demonstrated improvement in models learned from data in terms of
-  simplicity and transferability without (significant) loss in precision (WP7).
+  simplicity and transferability without (significant) loss in precision (WP6).
 \end{itemize}
 
-\section{Risks}
+\section{Risks} \label{sec:8}
 
 Creating a new algorithm always carries a risk that the algorithm may not
 perform well compared to what has already been achieved. Fortunately, previous
@@ -650,29 +666,26 @@ definitely be implemented in linear time. This suggests that with a big enough
 model the gains in inference speed should eventually overtake the time taken to
 construct the abstraction.
 
-\section{Impact and National Importance}
+\section{Impact and National Importance} \label{sec:9}
 
-\paragraph{National Importance}
-
-Our proposal covers an EPSRC growth area for statistics and applied probability
-as well as several maintenance areas such as AI technologies, logic and
-combinatorics, and theoretical computer science. Furthermore, our work will
-contribute to areas such as big data (as more scalable inference will allow
-expressive probabilistic models to be used with more data) as well as other
-scientific disciplines (as both abstraction and richness of representation are
-important topics in social sciences and medicine). Moreover, abstraction for
-FOPI models is a new yet promising research area
-\cite{DBLP:conf/icml/HoltzenBM18} which is likely to see many major
+\paragraph{National Importance.} Our proposal covers an EPSRC growth area for
+statistics and applied probability as well as several maintenance areas such as
+AI technologies, logic and combinatorics, and theoretical computer science.
+Furthermore, our work will contribute to areas such as big data (as more
+scalable inference will allow expressive probabilistic models to be used with
+more data) as well as other scientific disciplines (as both abstraction and
+richness of representation are important topics in social sciences and
+medicine). Moreover, abstraction for FOPI models is a new yet promising research
+area \cite{DBLP:conf/icml/HoltzenBM18} which is likely to see many major
 developments.
 
-\paragraph{Impact}
-
-The survey will highlight the weaknesses of current approaches and direct future
-research towards open problems. Furthermore, many of the basic ideas behind
-abstraction for a particular model are likely to be transferable to many others,
-perhaps even inspiring a unifying theory behind all representations. Moreover,
-making the models more efficient and explainable should also make them more
-attractive to a larger user base, both academic and industrial.
+\paragraph{Impact.} The survey will highlight the weaknesses of current
+approaches and direct future research towards open problems. Furthermore, many
+of the basic ideas behind abstraction for a particular model are likely to be
+transferable to many others, perhaps even inspiring a unifying theory behind all
+representations. Moreover, making the models more efficient and explainable
+should also make them more attractive to a larger user base, both academic and
+industrial.
 
 \bibliographystyle{acm}
 \bibliography{thesisproposal}
