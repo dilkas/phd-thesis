@@ -3,16 +3,22 @@
 \usepackage[UKenglish]{babel}
 \usepackage[UKenglish]{isodate}
 \usepackage{fullpage}
-\usepackage{cleveref}
 \usepackage[affil-it]{authblk}
 \usepackage{pdfpages}
+\usepackage{amsfonts}
+\usepackage[capitalise]{cleveref}
 
-\title{Foundations of Statistical Relational Models}
+\newtheorem{theorem}{Theorem}
+
+\title{Foundations of Probabilistic Logic Programs}
 \author{Paulius Dilkas \\[1ex] {\small Supervisors: Dr Vaishak Belle and Dr Ron
     Petrick}}
 \affil{School of Informatics, University of Edinburgh}
 
+% TODO: cite things in other sections (not just introduction)
+% TODO: unify the use of abbreviations
 % This document will typically be around 15-25 pages long.
+% Presentation: 30 min, mostly pictures/diagrams, maybe equations
 \begin{document}
 \maketitle
 
@@ -30,20 +36,227 @@
 % of the topic area? Is the proposed approach to the topic appropriate and
 % promising?
 
+% TODO: introduce WMC, relational knowledge bases, (probabilistic) logic
+% programs, abstraction, logical stuff, polyadic/boolean equivalents, unifying
+% name = probabilistic relational models
+
 \section{Work Plan}
+
 % Your Approach: What new approach / angle / idea are you proposing to pursue?
 % Why does it seem promising?
+
 % Your Plan: What are the sub-goals that need to be achieved? What is your
 % planned order of attack, and how long do you expect each task to take? Does
 % the schedule make it plausible that you will achieve the required work within
-% the prescribed period of the PhD programme?  And what are the risks in this
+% the prescribed period of the PhD programme? And what are the risks in this
 % plan and how will you address them (contingency plans)?
 % Plan and Resources: Is there an explicit plan, at an appropriate level of
 % detail? Is the plan appropriate, realistic, and achievable? Are risks
-% identified and do contingency plans seem appropriate? Are the resources
-% required to carry out the plan available? If some required resources are not
-% currently available, are they guaranteed to be available in time? Is any
-% further training required?
+% identified and do contingency plans seem appropriate?
+
+% subgoals, expected duration, risks, contingencies
+
+\subsection{Logic programs as morphisms between relational knowledge bases}
+
+A recent paper \cite{DBLP:conf/ijcai/DumancicGMB19} inspired the question:
+`given two relational knowledge bases, when is there a logic program that can
+transform one into the other?' The first of the two papers in the appendix (`On
+the Equivalence of Constants in Relational Knowledge Bases') answers this
+question in full, although the first submission attempt was unsuccessful.
+
+As it stands, the paper is fairly mature, although, depending on the paper
+length requirements of the next attempted venue, could be extended with one or
+both of:
+\begin{itemize}
+\item a category-theoretic perspective on the subject, i.e., a construction of a
+  category and a reformulation of the main result as an equivalence of
+  categories;
+\item an extension to the approximate case, where the knowledge base after
+  applying the logic program is only similar but not equal to the desired
+  knowledge base.
+\end{itemize}
+In the latter extension, consider two knowledge bases $\Delta_1$ and $\Delta_2$
+and suppose that Theorem~2 of the paper shows that there is no logic
+program that could transform $\Delta_1$ into $\Delta_2$. The paper could be
+extended by considering a metric between knowledge bases, establishing a theorem
+for the smallest possible distance between $\Delta_2$ and everything reachable
+from $\Delta_1$ via logic programs, and showing how to construct a logic program
+and/or a knowledge base that demonstrates that minimum. {\bf Estimated
+  duration:} two months.
+
+\paragraph{Risks and contingencies.} As the contribution of this paper is purely
+theoretical and not easily applied, the paper is likely to be difficult to
+publish. As a last resort, the work could be extended and refocused to make it
+directly applicable to a problem of interest, although that would distort the
+beauty of the topic. More realistically, a sufficiently long list of potential
+venues, combined with adjustments according to reviewers' comments and a hint
+of luck should eventually yield a publication. This plan is further justified by
+several positive reviewers who were interested in and excited by the idea.
+
+\subsection{Random instances of (probabilistic) logic programs and the empirical
+  hardness of inference}
+
+% TODO: I probably need to expand on this to make it clearer, depending on what
+% I mention in the introduction
+The idea to use constraint programming to generate random (probabilistic) logic
+programs was motivated primarily by the research strand into (the empirical
+testing of) abstraction, although, in the paper, it is being motivated by the
+empirical hardness of inference algorithms. Although some reviewers suggested
+that perhaps simpler methods (than CP) might be just as useful, the use of CP is
+motivated in two ways:
+\begin{itemize}
+\item The main benefit of a constraint-based approach is the ability to add
+  additional constraints as needed. Specifically, we can regulate what parts of
+  the program must be independent, require certain formulas to be included, etc.
+\item A simpler method such as a probabilistic context-free grammar (as
+  suggested by one of the reviewers) would not be able to encode even such
+  simple constraints as the fact that the order of clauses is immaterial or that
+  each predicate should have at least one clause associated to it. A likely
+  consequence is that the majority of generated programs would need to be
+  discarded, and the method would be too inefficient. On the other hand, a
+  constraint solver considers constraints much earlier in the search process,
+  which ensures both efficiency and customisability.
+\end{itemize}
+
+Before the next submission, the paper could be improved by including an
+experimental comparison of ProbLog inference algorithms using the random
+programs generated by my model, hopefully showing interesting results about how
+properties of the input program affect the runtime of each inference algorithm.
+This involves constructing one or more scripts to generate programs and run the
+experiments, and running them on suitable hardware. {\bf Estimated duration:}
+four months.
+
+\paragraph{Risks and contingencies.} The main two risks associated with the
+remaining part of this project are that
+\begin{itemize}
+\item the program generation process could be too slow either for sufficiently
+  large programs or in some specific situations (e.g., during thrashing or after
+  making an incorrect decision early on),
+\item or the number of experiments needed to properly cover a wide range of
+  values across all relevant variables could be too large.
+\end{itemize}
+The former can be solved in a number of ways:
+\begin{itemize}
+\item by improving various aspects of the procedure even further, e.g., by
+  adding redundant constraints, improving (or inventing new) propagation
+  algorithms, or adjusting the variable ordering heuristic;
+\item by parallelising program generation task and employing more powerful
+  hardware;
+\item or by settling for smaller programs (or fewer of them).
+\end{itemize}
+Similarly, the latter risk can also be avoided by adjusting the process to
+efficiently use hardware resources and by adjusting the parameter values under
+investigation.
+
+\subsection{The hidden assumptions behind WMC and how to overcome them for
+  (algebraic) fun and (computational) profit} \label{sec:ba}
+
+WMC can be interpreted as a measure over a Boolean algebra. However, not every
+measure on a BA can be defined using WMC, i.e, a measure $m$ is WMC-definable if
+and only if all literals are independent according to $m$. The formal version of
+the theorem (reproduced below) constitutes the first contribution of the
+upcoming paper.
+
+\begin{theorem}
+  Let $\mathbf{B}$ be a free BA over $\{ l_i \}_{i=1}^n$ (for some $n \in
+  \mathbb{N}$) with measure $m\colon \mathbf{B} \to \mathbb{R}_{\ge 0}$, and let
+  $L = \{ l_i \}_{i = 1}^n \cup \{ \neg l_i \}_{i = 1}^n$. Then there exists a
+  weight function $w\colon L \to \mathbb{R}_{\ge 0}$ such that $m =
+  \mathrm{WMC}_w$ if and only if
+  \[
+  m(l \land l') = m(l)m(l')
+  \]
+  for all distinct $l, l' \in L$ such that $l \ne \neg l'$.
+\end{theorem}
+
+Given this requirement for independence, a well-known way to represent
+probability distributions that do not consist entirely of independent variables
+is by adding more literals \cite{DBLP:journals/ai/ChaviraD08}. We show that one
+can always extend a BA $\mathbf{B}$ into a larger BA $\mathbf{B'}$ such that any
+measure on $\mathbf{B}$ can be represented as a WMC measure on $\mathbf{B'}$.
+
+Furthermore, we show how the independence requirement of WMC can be seen as a
+consequence of constructing the BA using coproducts. Similarly, conditional
+independence constraints on the measure can be constructed using pushouts. This
+suggests a way to relax the definition of WMC so that the independence structure
+of the algebra accurately represents the independence structure of the
+probability distribution. We conjecture that this change to the definition
+of WMC can come at no cost to most modern inference algorithms and result in
+faster inference. The plan to complete the (empirical part of the) paper is as
+follows.
+\begin{itemize}
+\item Prove that my definition of WMC allows one to encode a Bayesian network as
+  a WMC problem with fewer variables and a shorter theory than ENC1 and ENC2.
+\item Modify a state-of-the-art \#SAT solver to work with the new definition of
+  WMC.
+\item Choose a collection of Bayesian networks, making sure to cover both fully
+  independent and fully dependent probability distributions.
+\item Consider three different ways to encode a Bayesian network into an
+  instance of WMC (writing conversion scripts as needed): ENC1, ENC2, and my new
+  encoding.
+\item Run the algorithm on the three encodings, gathering runtime and memory
+  consumption data.
+\end{itemize}
+{\bf Estimated duration:} six months.
+
+\paragraph{Risks and contingencies.} The main risk of this project is that (for
+some as-of-yet unknown reason) the empirical performance may not meet the
+expectations. Alternatively, even if my encoding successfully outperforms the
+other two, the contribution as a whole may be judged as too marginal by
+reviewers. If the empirical results are positive but weak, they should still be
+publishable with a sufficiently polished theoretical section. If my version of
+WMC yields performance on par with the traditional WMC, the theoretical part of
+this work can still be combined with the work described in
+\cref{sec:abstractions}.
+
+\subsection{Abstractions as polyadic homomorphisms} \label{sec:abstractions}
+
+Belle \cite{DBLP:journals/corr/abs-1810-02434} proposed a theory of
+abstraction for probabilistic relational models based on defining a refinement
+mapping $m$ from a high-level theory to a low-level theory, the definition of
+which reads:
+\begin{quote}
+  The mapping $m$ is assumed to extend to complex formulas $\phi \in
+  \mathit{Lang}(\Delta_h)$ inductively: for atoms $\phi = p$, $m(\phi)$ is as
+  above; $m(\neg\phi) = \neg m(\phi)$; $m(\phi \land \psi) = m(\phi) \land
+  m(\psi)$.
+\end{quote}
+This clearly describes a homomorphism, but what is the structure that is being
+preserved? The main claim behind this project is that these refinement mappings
+are polyadic homomorphisms. Preliminary investigations have shown that one can
+define a measure on a PA that is consistent with the underlying BA and can
+represent any PRM.
+
+% TODO: need to prove the third one
+The remaining work is as follows.
+\begin{itemize}
+\item Formalise the connection between homomorphisms and refinements,
+  considering both Boolean and polyadic algebras.
+\item Map properties of abstractions such as soundness and completeness into
+  existence/surjectivity of (restrictions of) polyadic homomorphisms.
+\item Many results in the original paper provide \emph{sufficient} conditions to
+  ensure that the abstraction is `well-behaved' with respect to the probability
+  measure or the logical/algebraic structure. These results can be strengthened
+  by identifying conditions that are both \emph{necessary and sufficient}.
+\item Previous work can also be expanded by considering the necessary conditions
+  for constructing an abstraction from the original low-level theory itself by,
+  e.g., clustering constants into classes or replacing multiple predicates with
+  a single predicate. More specifically, we can consider (the already-defined)
+  properties of abstractions and the necessary conditions to preserve them under
+  this more-detailed view of abstraction construction.
+\item Considering the algebraic structure behind each algebra (e.g., coproducts
+  and pushouts, as described in \cref{sec:ba}) will allow us to consider the
+  preservation of independence and conditional independence---properties of
+  probabilistic models that were beyond the reach of previous logical
+  frameworks.
+\end{itemize}
+{\bf Estimated duration:} twelve months.
+% TODO: maybe quote Walsh?
+
+\paragraph{Risks and contingencies.} The main risk associated with the search of
+significant theoretical contributions is that the results may end up
+underwhelming. Considering the vast array of unanswered questions and the
+novelty of this approach, the risk is minimal.
 
 \section{Progress}
 % A section on the work achieved so far in executing that proposal.
@@ -59,10 +272,17 @@
 % there relevant work and/or alternative approaches that the student should
 % consider?
 
+% TODO: introduce the two appended papers and describe how they fit into the proposal/plan
+% TODO: briefly mention all the other things I've done so far
+% TODO: maybe a summary of polyadic algebras?
+
+\bibliographystyle{acm}
+\bibliography{review}
+
 \includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
   \put(70,725){%
     \parbox{\textwidth}{\appendix\section{Submitted Papers}}
-  }}]{../../equivalence/paper.pdf}
-\includepdf[pages=-,pagecommand=\thispagestyle{plain}]{../../random-logic-programs/paper/paper.pdf}
+  }}]{../../published/equivalence/1/paper.pdf}
+\includepdf[pages=-,pagecommand=\thispagestyle{plain}]{../../published/random-logic-programs/paper/paper.pdf}
 
 \end{document}
