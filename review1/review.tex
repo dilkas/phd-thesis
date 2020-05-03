@@ -5,107 +5,165 @@
 \usepackage{fullpage}
 \usepackage[affil-it]{authblk}
 \usepackage{pdfpages}
+\usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage[capitalise]{cleveref}
+\usepackage{mathrsfs}
+\usepackage{complexity}
+\usepackage{epigraph}
+\usepackage{pgfgantt}
 
-\newtheorem{theorem}{Theorem}
-
-\title{Foundations of Probabilistic Logic Programs}
-\author{Paulius Dilkas \\[1ex] {\small Supervisors: Dr Vaishak Belle and Dr Ron
+\title{Foundations for Inference in Probabilistic Relational Models}
+\author{Paulius Dilkas \\[1ex] {\small Supervisors: Mr Vaishak Belle and Dr Ron
     Petrick}}
 \affil{School of Informatics, University of Edinburgh}
 
-% TODO: cite things in other sections (not just introduction)
-% TODO: unify the use of abbreviations
-% This document will typically be around 15-25 pages long.
-% Presentation: 30 min, mostly pictures/diagrams, maybe equations
+% 0. Presentation: 30 min, mostly pictures/diagrams, maybe equations
+% 1. Research Topic:
+% What is the problem?
+% Why is it interesting?
+% What has already been done by other people to address it?
+% Why are these existing approaches / solutions inadequate?
+% Is the topic well-defined and focused?
+% Is the proposed approach to the topic appropriate and promising?
+% 2. Your Approach:
+% What new approach / angle / idea are you proposing to pursue?
+% Why does it seem promising?
+
 \begin{document}
 \maketitle
 
+\epigraph{I am fully assured, that no \emph{general} method for the solution of
+  questions in the theory of probabilities can be established which does not
+  explicitly recognize, not only the special numerical bases of the science, but
+  also those universal laws of thought which are the basis of all reasoning, and
+  which, whatever they may be as to their essence, are at least mathematical as
+  to their form.}{George Boole \cite{boole1854v}}
+
 \section{Introduction}
-% Research Topic: What is the problem? Why is it interesting? What has already
-% been done by other people to address it? Why are these existing approaches /
-% solutions inadequate?
-% The literature review produced earlier in the year could be included as a
-% section or as an appendix as part of the answer to the "What has already been
-% done by other people?" question.
-% Research Topic and Approach: Is the topic well-defined and focussed? Is it
-% interesting and timely? Does it suit the student's abilities / background /
-% inclinations? Is it likely to lead to an acceptable PhD thesis (making an
-% original contribution to knowledge etc.)? Does the student have a good grasp
-% of the topic area? Is the proposed approach to the topic appropriate and
-% promising?
 
-% TODO: introduce WMC, relational knowledge bases, (probabilistic) logic
-% programs, abstraction, logical stuff, polyadic/boolean equivalents, unifying
-% name = probabilistic relational models
+The quest to unify logic and probabilities dates back to George Boole
+\cite{boole1957laws} and is a promising contemporary area of research due to the
+pervasiveness of probabilistic approaches in machine learning and the
+expressivity of first-order logic
+\cite{DBLP:series/sci/BrazAR08,DBLP:journals/cacm/Russell15}. An important
+fundamental idea in the field was established by Nilsson
+\cite{DBLP:journals/ai/Nilsson86} who recognised that, after assigning
+probabilities to some logical formulas, the set of probabilities that can be
+assigned to another formula can either have a unique value or an interval.
+Since then, many representations that can support probabilities as well as (some
+aspects of) logic have been suggested, and the field as a whole is most commonly
+known as statistical relational artificial intelligence
+\cite{DBLP:series/synthesis/2016Raedt}. As there is no widely-agreed
+general-purpose name for the assortment of representations that have been
+proposed, we will refer to them as \emph{probabilistic relational models} (PRMs)
+and provide a formal definition shortly. Specific examples of PRMs include the
+independent choice logic \cite{DBLP:journals/ai/Poole97} Markov logic networks
+\cite{DBLP:journals/ml/RichardsonD06}, PRISM \cite{DBLP:conf/ijcai/SatoK97},
+probabilistic databases \cite{DBLP:series/synthesis/2011Suciu}, and ProbLog
+\cite{DBLP:conf/ijcai/RaedtKT07}. ProbLog, in particular, is described in more
+detail below and is relevant for subsequent sections. Another way to encode
+complex probability distributions is with probabilistic programming languages
+\cite{DBLP:conf/icse/GordonHNR14}, however, it falls largely outside the scope of
+this thesis as the support for continuous variables and Turing-complete
+computation brings a separate set of issues.
 
-\section{Work Plan}
+These models have been used in a variety of fields. The most significant area of
+application is knowledge extraction \cite{DBLP:conf/naacl/PoonV10}, information
+extraction \cite{bunescu2007statistical}, and other natural language processing
+tasks. Here, PRMs have been used to annotate articles
+\cite{DBLP:conf/emnlp/VerbekeAMFDR12}, learn facts about the world from reading
+websites \cite{DBLP:conf/aaai/CarlsonBKSHM10} solve simple probability problems
+described in a natural language \cite{DBLP:conf/ijcai/DriesKDBR17}. Similarly,
+they have been applied to stream mining \cite{DBLP:conf/icdm/ChandraSKTA14},
+predicting criminal activity \cite{DBLP:conf/sdm/DelaneyFCWJ10}, and predicting
+how soon a component or a machine will have to be replaced
+\cite{vlasselaer2012statistical}.
+In robotics, PRMs have been used to learn object affordances
+\cite{DBLP:conf/iros/MoldovanR14,DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/ilp/MoldovanORMS11}
+and as an expressive knowledge representation system for robot control
+\cite{DBLP:conf/icra/JainMB09}. Finally, in biology PRMs have been applied to
+the analysis of genetic \cite{DBLP:journals/jcb/SakhanenkoG12} and breast cancer
+\cite{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13} data. The use
+of PRMs in learning is primarily motivated by their ability to learn with
+respect to the entire relevant structure rather than learning separate
+components that then have to be compatible. On the other hand, the main
+disadvantage is often efficiency.
 
-% Your Approach: What new approach / angle / idea are you proposing to pursue?
-% Why does it seem promising?
-
-% Your Plan: What are the sub-goals that need to be achieved? What is your
-% planned order of attack, and how long do you expect each task to take? Does
-% the schedule make it plausible that you will achieve the required work within
-% the prescribed period of the PhD programme? And what are the risks in this
-% plan and how will you address them (contingency plans)?
-% Plan and Resources: Is there an explicit plan, at an appropriate level of
-% detail? Is the plan appropriate, realistic, and achievable? Are risks
-% identified and do contingency plans seem appropriate?
-
-% subgoals, expected duration, risks, contingencies
-
-\subsection{Logic programs as morphisms between relational knowledge bases}
-
-A recent paper \cite{DBLP:conf/ijcai/DumancicGMB19} inspired the question:
-`given two relational knowledge bases, when is there a logic program that can
-transform one into the other?' The first of the two papers in the appendix (`On
-the Equivalence of Constants in Relational Knowledge Bases') answers this
-question in full, although the first submission attempt was unsuccessful.
-
-As it stands, the paper is fairly mature, although, depending on the paper
-length requirements of the next attempted venue, could be extended with one or
-both of:
+Despite numerous proposed representations and many successful applications,
+many fundamental problems and challenges remain. My thesis establishes a
+unified perspective on PRMs and is broadly motivated by the following questions:
 \begin{itemize}
-\item a category-theoretic perspective on the subject, i.e., a construction of a
-  category and a reformulation of the main result as an equivalence of
-  categories;
-\item an extension to the approximate case, where the knowledge base after
-  applying the logic program is only similar but not equal to the desired
-  knowledge base.
+\item How can we optimise the representation for efficient query handling and
+  removal of unnecessary detail?
+\item How can we improve the speed of inference and learning?
+\item How can we identify performance weaknesses in inference algorithms?
 \end{itemize}
-In the latter extension, consider two knowledge bases $\Delta_1$ and $\Delta_2$
-and suppose that Theorem~2 of the paper shows that there is no logic
-program that could transform $\Delta_1$ into $\Delta_2$. The paper could be
-extended by considering a metric between knowledge bases, establishing a theorem
-for the smallest possible distance between $\Delta_2$ and everything reachable
-from $\Delta_1$ via logic programs, and showing how to construct a logic program
-and/or a knowledge base that demonstrates that minimum. {\bf Estimated
-  duration:} two months.
 
-\paragraph{Risks and contingencies.} As the contribution of this paper is purely
-theoretical and not easily applied, the paper is likely to be difficult to
-publish. As a last resort, the work could be extended and refocused to make it
-directly applicable to a problem of interest, although that would distort the
-beauty of the topic. More realistically, a sufficiently long list of potential
-venues, combined with adjustments according to reviewers' comments and a hint
-of luck should eventually yield a publication. This plan is further justified by
-several positive reviewers who were interested in and excited by the idea.
+In the remainder of this section, we introduce the basic ideas of the field from
+an algebraic perspective. Consider an arbitrary finite set of predicates with
+their arities and an arbitrary finite domain of discourse. The set of all atoms
+that can be constructed by combining a predicate of arity $n$ with $n$ elements
+from the domain is known as a \emph{Herbrand base} $\mathcal{HB}$. A subset of
+this base is a \emph{(relational) knowledge base}. If one assigns a non-negative
+real number to each possible knowledge base such that the total is equal to 1,
+one gets a PRM.
 
-\subsection{Random instances of (probabilistic) logic programs and the empirical
-  hardness of inference}
+Furthermore, if each knowledge base $\mathcal{KB}$ is represented by a
+conjunction of $|\mathcal{HB}|$ literals such that all positive literals
+correspond to elements in $\mathcal{KB}$ and all negative literals correspond to
+elements in $\mathcal{HB} \setminus \mathcal{KB}$, then, treating the elements
+of $\mathcal{HB}$ as propositions, we can assign a probability to any
+propositional formula using one simple rule, i.e.,
+\[
+  \Pr(p \lor q) = \Pr(p) + \Pr(q) \quad \text{if} \quad p \land q = \bot
+\]
+for any propositional formulas $p$ and $q$. That is, any propositional formula
+can be seen as a disjunction of disjoint knowledge bases. This defines a
+free Boolean algebra $\mathscr{F}(\mathcal{HB})$ over $\mathcal{HB}$ with a
+probability measure. In a special case where we can assign a positive weight to
+each literal such that the probability of each knowledge base can be expressed
+as the product of the weights of its literals, we refer to the computation of
+the probability of an element in $\mathscr{F}(\mathcal{HB})$ as \emph{weighted
+  model counting} (WMC) \cite{DBLP:journals/ai/ChaviraD08}.
 
-% TODO: I probably need to expand on this to make it clearer, depending on what
-% I mention in the introduction
-The idea to use constraint programming to generate random (probabilistic) logic
-programs was motivated primarily by the research strand into (the empirical
-testing of) abstraction, although, in the paper, it is being motivated by the
-empirical hardness of inference algorithms. Although some reviewers suggested
-that perhaps simpler methods (than CP) might be just as useful, the use of CP is
+A well-known way to compactly represent some of these algebras is with a
+probabilistic logic programming language such as ProbLog. At its core, a ProbLog
+program is a stratified logic program with a probability attached to each
+clause. A program with $m$ clauses defines a probability distribution over $2^m$
+logic programs, and the probability of a formula $f$ is calculated as the sum of
+probabilities of logic programs that entail $f$.
+
+\section{Progress to Date}
+% MUST: Please give details of the work you have undertaken in the last year,
+% focussing on the progress you have made (4k chars).
+
+Most of the progress to date is described in two submitted papers (appended at
+the end). The first one was inspired by a recent paper
+\cite{DBLP:conf/ijcai/DumancicGMB19} that suggested the question `given two
+relational knowledge bases, under what circumstances is there a logic program
+that can transform one into the other?' The paper answers this question in full
+for knowledge bases on the same domain of discourse $\mathcal{D}$. Namely, we
+show that a knowledge base $\Delta_1$ can be transformed into another knowledge
+base $\Delta_2$ if and only if the equivalences classes induced by $\Delta_1$ on
+$\mathcal{D}$ are finer than the ones induced by $\Delta_2$. These results have
+important implications for efficiency, as logic program-based transformations
+can provide a computationally cheap way to significantly reduce the size of the
+knowledge base.
+
+The second paper describes a way to generate random ProbLog programs using
+constraint programming. The idea was originally motivated by the need to test
+and debug predicate abstraction algorithms that perform local syntactic
+transformations on such programs---a project which is currently on hold in
+favour of better/stronger ideas. However, in the paper, the work is primarily
+motivated by the need for rigorous testing of inference algorithms. Indeed, many
+algorithms are only tested on a couple of programs
+\cite{DBLP:conf/ecai/BruynoogheMKGVJR10,DBLP:journals/tplp/KimmigDRCR11,DBLP:conf/ijcai/VlasselaerBKMR15}.
+Although some reviewers suggested that perhaps simpler methods (than constraint
+programming) might be just as useful, the use of constraint programming is
 motivated in two ways:
 \begin{itemize}
-\item The main benefit of a constraint-based approach is the ability to add
+\item With constraint programming, one can easily adjust the model and add
   additional constraints as needed. Specifically, we can regulate what parts of
   the program must be independent, require certain formulas to be included, etc.
 \item A simpler method such as a probabilistic context-free grammar (as
@@ -118,24 +176,144 @@ motivated in two ways:
   which ensures both efficiency and customisability.
 \end{itemize}
 
+Finally, we provide an overview of the results developed so far for a third
+paper. WMC can be interpreted as a measure over a Boolean algebra. This
+algebraic point of view by itself is already novel as WMC is usually studied
+from the perspective of logic, where one only considers the atoms of the
+algebra---more commonly known as models. While there have been many attempts to
+assign probabilities to logical formulas in a way that is consistent with (and
+sometimes inspired by) Boolean algebras with measures, theoretically-sound
+approaches often result in intractable algorithms
+\cite{DBLP:journals/soco/CastineiraCT02,DBLP:journals/eccc/GarrabrantBCST16,DBLP:journals/ndjfl/Hailperin84,krauss1968representation,DBLP:journals/ai/Nilsson86}.
+WMC, on the other hand,---while still solving a \#\P{}-complete problem
+\cite{DBLP:conf/aaai/SangBK05}---can achieve greater efficiency by building on
+the decades of work on efficient \SAT{} algorithms. As WMC was motivated by
+efficiency and tractability more than theoretical rigour, the expressiveness and
+representational efficiency of WMC has never been questioned before. Moreover,
+an algebraic approach has already proven to be successful in establishing the
+main results of this paper.
+
+First, we note that not every measure on a Boolean algebra can be defined using
+WMC, i.e, a measure $m$ is WMC-definable if and only if all literals are
+independent according to $m$. The formal version of the theorem constitutes the
+first contribution of the upcoming paper. Given this requirement for
+independence, a well-known way to represent probability distributions that do
+not consist entirely of independent variables is by adding more literals
+\cite{DBLP:journals/ai/ChaviraD08}. We show that one can always extend a Boolean
+algebra $B$ into a larger Boolean algebra $B'$ such that any measure on $B$ can
+be represented as a WMC measure on $B'$.
+
+Furthermore, we show how the independence requirement of WMC can be seen as a
+consequence of constructing the Boolean algebra using coproducts. Similarly,
+conditional independence constraints on the measure can be constructed using
+pushouts. This suggests a way to relax the definition of WMC so that the
+independence structure of the algebra accurately represents the independence
+structure of the probability distribution. We conjecture that this change to the
+definition of WMC can come at no cost to most modern inference algorithms and
+result in faster inference. To summarise, a good understanding of the inherent
+limitations of WMC can lead to better alternatives and improvements to the
+method.
+
+\section{Future Goals}
+% MUST: What are your goals for the year ahead in relation to your thesis (4k
+% chars)?
+
+Along with preparing the two appended papers for resubmission and extending the
+third one with experimental data, the remaining time will also be spent on
+employing the newly gained perspective on the intersection between statistical
+relational artificial intelligence and algebraic logic to further the recent
+developments in abstraction for PRMs. Abstraction is abundant in artificial
+intelligence and related disciplines \cite{saitta2013abstraction}. However, most
+of the previous work is focused on deterministic systems such as planning and
+verification \cite{DBLP:journals/ai/GiunchigliaW92}. Belle
+\cite{DBLP:journals/corr/abs-1810-02434} proposed a theory of abstraction for
+PRMs based on defining a refinement mapping $m$ from a high-level PRM $\Delta_h$
+to a low-level PRM $\Delta_l$, the definition of which reads:
+\begin{quote}
+  The mapping $m$ is assumed to extend to complex formulas $\phi \in
+  \mathit{Lang}(\Delta_h)$ inductively: for atoms $\phi = p$, $m(\phi)$ is as
+  above; $m(\neg\phi) = \neg m(\phi)$; $m(\phi \land \psi) = m(\phi) \land
+  m(\psi)$.
+\end{quote}
+This clearly describes a homomorphism, but what is the structure that is being
+preserved? The main claim behind this project is that these refinement mappings
+are Boolean homomorphisms.
+
+Treating abstraction as a homomorphism is not a new idea. Abstractions based on
+homomorphisms between Markov decision processes and semi-Markov decision
+processes have been used extensively in the reinforcement learning and planning
+communities
+\cite{DBLP:conf/atal/JiangSL14,DBLP:conf/ijcai/RavindranB03,ravindran2004algebraic}.
+Abstraction homomorphisms have also been used to efficiently model concurrent
+systems \cite{DBLP:journals/jcss/Castellani87,DBLP:journals/topnoc/DeselM10},
+solve semiring-based constraint satisfaction problems
+\cite{DBLP:journals/tcs/LiY08}, and improve the efficiency of heuristic search
+\cite{DBLP:conf/aaai/HoltePZM96}. As the approach has been successful in other
+fields (and since an algebraic approach towards PRMs is novel by itself), it is
+likely to yield valuable insights in the context of PRMs as well. The remaining
+work is as follows.
+
+\subsection{Plan of Action}
+% MUST: Give a rough plan for achieving these goals, identifying any areas that
+% you believe could present challenges (4k chars).
+
+We divide the work into five major WPs: one for each paper as well as one for
+compiling the thesis itself.
+
+\subsubsection{WP 1: Logic programs as morphisms between relational knowledge
+  bases}
+
+Before resubmitting, the paper could be improved in three ways:
+\begin{itemize}
+\item Instead of assuming that all knowledge bases are defined with respect to
+  the same domain of discourse, the results could be extended to consider
+  different domains.
+\item The paper needs to demonstrate implications for questions that the
+  scientific community cares about (instead of just blindly claiming that those
+  implications exist). This can be done by furthering previous work
+  \cite{DBLP:conf/ijcai/DumancicGMB19} on logic programs as compression schemes.
+\item Finally, the results could be extended to the approximate case, where the
+  knowledge base after applying the logic program is only similar but not equal
+  to the desired knowledge base.
+\end{itemize}
+For the last extension, consider two knowledge bases $\Delta_1$ and $\Delta_2$
+and suppose that Theorem~2 of the paper shows that no logic program can
+transform $\Delta_1$ into $\Delta_2$. The paper could be extended by considering
+a metric between knowledge bases, establishing a theorem for the smallest
+possible distance between $\Delta_2$ and everything reachable from $\Delta_1$
+via logic programs, and showing how to construct a logic program and/or a
+knowledge base that achieves that minimum. {\bf Estimated duration:} 2 months.
+
+\paragraph{Risks and contingencies.} As the contribution of this paper is purely
+theoretical and not easily applied, the paper is likely to be difficult to
+publish. As a last resort, the work could be extended and refocused to make it
+directly applicable to a problem of interest, although that would distort the
+beauty of the topic. More realistically, a sufficiently long list of potential
+venues, combined with adjustments according to reviewers' comments and a hint
+of luck should eventually yield a publication. This plan is further justified by
+several reviewers who were interested in and excited by the idea.
+
+\subsubsection{WP 2: Random instances of (probabilistic) logic programs and the
+  empirical hardness of inference}
+
 Before the next submission, the paper could be improved by including an
 experimental comparison of ProbLog inference algorithms using the random
 programs generated by my model, hopefully showing interesting results about how
 properties of the input program affect the runtime of each inference algorithm.
 This involves constructing one or more scripts to generate programs and run the
-experiments, and running them on suitable hardware. {\bf Estimated duration:}
-four months.
+experiments and running them on suitable hardware. {\bf Estimated duration:} 4
+months.
 
 \paragraph{Risks and contingencies.} The main two risks associated with the
 remaining part of this project are that
 \begin{itemize}
 \item the program generation process could be too slow either for sufficiently
-  large programs or in some specific situations (e.g., during thrashing or after
-  making an incorrect decision early on),
+  large programs or in some specific situations (e.g., after making an incorrect
+  decision early in the search process),
 \item or the number of experiments needed to properly cover a wide range of
   values across all relevant variables could be too large.
 \end{itemize}
-The former can be solved in a number of ways:
+The former can be solved in several ways:
 \begin{itemize}
 \item by improving various aspects of the procedure even further, e.g., by
   adding redundant constraints, improving (or inventing new) propagation
@@ -148,133 +326,116 @@ Similarly, the latter risk can also be avoided by adjusting the process to
 efficiently use hardware resources and by adjusting the parameter values under
 investigation.
 
-\subsection{The hidden assumptions behind WMC and how to overcome them for
-  (algebraic) fun and (computational) profit} \label{sec:ba}
+\subsubsection{The hidden assumptions behind WMC and how to overcome them for
+  (algebraic) fun and (computational) profit}
 
-WMC can be interpreted as a measure over a Boolean algebra. However, not every
-measure on a BA can be defined using WMC, i.e, a measure $m$ is WMC-definable if
-and only if all literals are independent according to $m$. The formal version of
-the theorem (reproduced below) constitutes the first contribution of the
-upcoming paper.
+I would estimate that the work for this paper is about 60\% complete. The main
+goal of the remaining work is to demonstrate how the theoretical discoveries can
+make inference algorithms faster.
+\begin{description}
+\item[WP 3.1] Prove that my definition of WMC allows one to encode a Bayesian
+  network as a WMC problem with fewer variables and a shorter theory than the
+  two encodings known in the literature
+  \cite{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}. Modify a
+  state-of-the-art \#\SAT{} solver to work with the new definition of WMC. {\bf
+    Estimated duration:} 2 months.
+\item[WP 3.2] Choose a collection of Bayesian networks, making sure to cover
+  both fully independent and fully dependent probability distributions. Write
+  conversion scripts to encode each Bayesian network into an instance of WMC in
+  three different ways. Run the algorithm on the three encodings, gathering
+  runtime and memory consumption data. {\bf Estimated duration:} 2 months.
+\item[WP 3.3] Describe the results in a paper. {\bf Estimated duration:} 1
+  month.
+\end{description}
 
-\begin{theorem}
-  Let $\mathbf{B}$ be a free BA over $\{ l_i \}_{i=1}^n$ (for some $n \in
-  \mathbb{N}$) with measure $m\colon \mathbf{B} \to \mathbb{R}_{\ge 0}$, and let
-  $L = \{ l_i \}_{i = 1}^n \cup \{ \neg l_i \}_{i = 1}^n$. Then there exists a
-  weight function $w\colon L \to \mathbb{R}_{\ge 0}$ such that $m =
-  \mathrm{WMC}_w$ if and only if
-  \[
-  m(l \land l') = m(l)m(l')
-  \]
-  for all distinct $l, l' \in L$ such that $l \ne \neg l'$.
-\end{theorem}
+\paragraph{Risks and contingencies.} The main risk of this project is that the
+empirical performance may not meet the expectations. Alternatively, even if my
+encoding successfully outperforms the other two, the contribution as a whole may
+be judged as too marginal by reviewers. If the empirical results are positive
+but weak, they should still be publishable with a sufficiently polished
+theoretical section. If my version of WMC yields performance on par with the
+traditional WMC, the theoretical part of this work can still be combined with
+other results.
 
-Given this requirement for independence, a well-known way to represent
-probability distributions that do not consist entirely of independent variables
-is by adding more literals \cite{DBLP:journals/ai/ChaviraD08}. We show that one
-can always extend a BA $\mathbf{B}$ into a larger BA $\mathbf{B'}$ such that any
-measure on $\mathbf{B}$ can be represented as a WMC measure on $\mathbf{B'}$.
+\subsubsection{Abstractions as homomorphisms}
 
-Furthermore, we show how the independence requirement of WMC can be seen as a
-consequence of constructing the BA using coproducts. Similarly, conditional
-independence constraints on the measure can be constructed using pushouts. This
-suggests a way to relax the definition of WMC so that the independence structure
-of the algebra accurately represents the independence structure of the
-probability distribution. We conjecture that this change to the definition
-of WMC can come at no cost to most modern inference algorithms and result in
-faster inference. The plan to complete the (empirical part of the) paper is as
-follows.
-\begin{itemize}
-\item Prove that my definition of WMC allows one to encode a Bayesian network as
-  a WMC problem with fewer variables and a shorter theory than ENC1 and ENC2.
-\item Modify a state-of-the-art \#SAT solver to work with the new definition of
-  WMC.
-\item Choose a collection of Bayesian networks, making sure to cover both fully
-  independent and fully dependent probability distributions.
-\item Consider three different ways to encode a Bayesian network into an
-  instance of WMC (writing conversion scripts as needed): ENC1, ENC2, and my new
-  encoding.
-\item Run the algorithm on the three encodings, gathering runtime and memory
-  consumption data.
-\end{itemize}
-{\bf Estimated duration:} six months.
-
-\paragraph{Risks and contingencies.} The main risk of this project is that (for
-some as-of-yet unknown reason) the empirical performance may not meet the
-expectations. Alternatively, even if my encoding successfully outperforms the
-other two, the contribution as a whole may be judged as too marginal by
-reviewers. If the empirical results are positive but weak, they should still be
-publishable with a sufficiently polished theoretical section. If my version of
-WMC yields performance on par with the traditional WMC, the theoretical part of
-this work can still be combined with the work described in
-\cref{sec:abstractions}.
-
-\subsection{Abstractions as polyadic homomorphisms} \label{sec:abstractions}
-
-Belle \cite{DBLP:journals/corr/abs-1810-02434} proposed a theory of
-abstraction for probabilistic relational models based on defining a refinement
-mapping $m$ from a high-level theory to a low-level theory, the definition of
-which reads:
-\begin{quote}
-  The mapping $m$ is assumed to extend to complex formulas $\phi \in
-  \mathit{Lang}(\Delta_h)$ inductively: for atoms $\phi = p$, $m(\phi)$ is as
-  above; $m(\neg\phi) = \neg m(\phi)$; $m(\phi \land \psi) = m(\phi) \land
-  m(\psi)$.
-\end{quote}
-This clearly describes a homomorphism, but what is the structure that is being
-preserved? The main claim behind this project is that these refinement mappings
-are polyadic homomorphisms. Preliminary investigations have shown that one can
-define a measure on a PA that is consistent with the underlying BA and can
-represent any PRM.
-
-% TODO: need to prove the third one
-The remaining work is as follows.
-\begin{itemize}
-\item Formalise the connection between homomorphisms and refinements,
-  considering both Boolean and polyadic algebras.
-\item Map properties of abstractions such as soundness and completeness into
-  existence/surjectivity of (restrictions of) polyadic homomorphisms.
-\item Many results in the original paper provide \emph{sufficient} conditions to
-  ensure that the abstraction is `well-behaved' with respect to the probability
-  measure or the logical/algebraic structure. These results can be strengthened
-  by identifying conditions that are both \emph{necessary and sufficient}.
-\item Previous work can also be expanded by considering the necessary conditions
-  for constructing an abstraction from the original low-level theory itself by,
-  e.g., clustering constants into classes or replacing multiple predicates with
-  a single predicate. More specifically, we can consider (the already-defined)
-  properties of abstractions and the necessary conditions to preserve them under
-  this more-detailed view of abstraction construction.
-\item Considering the algebraic structure behind each algebra (e.g., coproducts
-  and pushouts, as described in \cref{sec:ba}) will allow us to consider the
+As significant contributions are yet to be made towards this project, the WPs
+are subject to significant adjustments.
+\begin{description}
+\item[WP 4.1] Formalise the connection between homomorphisms and refinements
+and map properties of abstractions such as soundness and completeness into
+  existence/surjectivity of (restrictions of) homomorphisms. {\bf Estimated
+    duration:} 1 month.
+\item[WP 4.2] Many results in the previous work
+  \cite{DBLP:journals/corr/abs-1810-02434} provide \emph{sufficient} conditions
+  to ensure that the abstraction is `well-behaved' with respect to the
+  probability measure or the logical/algebraic structure. Strengthen them by
+  identifying conditions that are both \emph{necessary and sufficient}. {\bf
+    Estimated duration:} 2 months.
+\item[WP 4.3] Develop necessary conditions for constructing an abstraction from
+  the low-level PRM itself by, e.g., clustering constants into classes or
+  replacing multiple predicates with a single predicate
+  \cite{DBLP:journals/ai/GiunchigliaW92}. More specifically, we can consider the
+  conditions needed for refinements to preserve important properties of PRMs
+  under this more-detailed view of abstraction construction. {\bf Estimated
+    duration:} 2 months.
+\item[WP 4.4] Use the algebraic structure behind the Boolean algebra (e.g.,
+  coproducts and pushouts, as described above) to develop theorems about the
   preservation of independence and conditional independence---properties of
-  probabilistic models that were beyond the reach of previous logical
-  frameworks.
-\end{itemize}
-{\bf Estimated duration:} twelve months.
-% TODO: maybe quote Walsh?
+  probabilistic models that were beyond the reach of previous logic-based
+  frameworks. {\bf Estimated duration:} 3 months.
+\item[WP 4.5] Describe the results in a paper. {\bf Estimated duration:} 2
+  months.
+\end{description}
 
-\paragraph{Risks and contingencies.} The main risk associated with the search of
-significant theoretical contributions is that the results may end up
+\paragraph{Risks and contingencies.} The main risk associated with the search
+for significant theoretical contributions is that the results may end up
 underwhelming. Considering the vast array of unanswered questions and the
-novelty of this approach, the risk is minimal.
+novelty of this approach, the risk is minimal although, if necessary, the work
+could be adjusted to focus on other issues such as infinite domains instead.
 
-\section{Progress}
-% A section on the work achieved so far in executing that proposal.
-% For example: production and study of a substantial example; design, running
-% and analysis of a preliminary experiment; design and perhaps partial
-% implementation of a system; main definitions of a theory completed with some
-% of their properties established.
-% This part of the document should include a description of how this work is
-% relevant to the thesis proposal (i.e., to part 1).
-% Progress and Related Work/Approaches: Is the quality and quantity of progress
-% so far adequate (bearing in mind how specific the student’s proposal was
-% before they entered the programme)? Do results so far look encouraging? Is
-% there relevant work and/or alternative approaches that the student should
-% consider?
+\subsubsection{Summary}
 
-% TODO: introduce the two appended papers and describe how they fit into the proposal/plan
-% TODO: briefly mention all the other things I've done so far
-% TODO: maybe a summary of polyadic algebras?
+The last task ({\bf WP 5}) is, of course, compiling all results into a coherent
+thesis. {\bf Estimated duration:} 6 months. A picture of how the WPs could be
+accomplished over the next two years is in \cref{fig:gantt}.
+
+\begin{figure}
+  \centering
+  \begin{ganttchart}[bar/.style={fill=gray!50}]{1}{27}
+    \gantttitle{2020}{7}
+    \gantttitle{2021}{12}
+    \gantttitle{2022}{8} \\
+    \gantttitlelist{6,...,12}{1}
+    \gantttitlelist{1,...,12}{1}
+    \gantttitlelist{1,...,8}{1} \\
+    \ganttbar{WP 1}{1}{2} \\
+    \ganttlinkedmilestone{Paper 1}{2} \\
+    \ganttbar{WP 2}{3}{6} \\
+    \ganttlinkedmilestone{Paper 2}{6} \\
+    \ganttbar{WP 3.1}{7}{8} \\
+    \ganttlinkedbar{WP 3.2}{9}{10} \\
+    \ganttlinkedbar{WP 3.3}{11}{11} \\
+    \ganttlinkedmilestone{Paper 3}{11} \\
+    \ganttbar{WP 4.1}{12}{12} \\
+    \ganttlinkedbar{WP 4.2}{13}{14} \\
+    \ganttbar{WP 4.3}{15}{16} \\
+    \ganttbar{WP 4.4}{17}{19} \\
+    \ganttlinkedbar{WP 4.5}{20}{21} \\
+    \ganttlinkedmilestone{Paper 4}{21} \\
+    \ganttlinkedbar{WP 5}{22}{27} \\
+    \ganttlinkedmilestone{Thesis}{27}
+    \ganttlink{elem8}{elem10}
+    \ganttlink{elem8}{elem11}
+    \ganttlink{elem10}{elem12}
+    \ganttlink{elem9}{elem12}
+    \ganttlink{elem1}{elem14}
+    \ganttlink{elem3}{elem14}
+    \ganttlink{elem7}{elem14}
+  \end{ganttchart}
+  \caption{Gantt chart of the remaining WPs}
+  \label{fig:gantt}
+\end{figure}
 
 \bibliographystyle{acm}
 \bibliography{review}
