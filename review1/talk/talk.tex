@@ -1,0 +1,375 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\usepackage{graphicx}
+\usepackage[style=authoryear]{biblatex}
+\usepackage{tikz}
+\usepackage{empheq}
+\usepackage{dashbox}
+\usepackage{complexity}
+
+\usetheme{Amsterdam}
+\beamertemplatenavigationsymbolsempty
+\addbibresource{../review.bib}
+\newtheorem{conjecture}{Conjecture}
+
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{cd}
+\tikzstyle{na} = [baseline=-0.5ex]
+\tikzstyle{every picture}+=[remember picture]
+
+\DeclareMathOperator{\ifff}{:-}
+\DeclareMathOperator{\prob}{::}
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{e9eff4}
+
+\author{Paulius Dilkas}
+\title{Foundations for Inference in Probabilistic Relational Models}
+
+\begin{document}
+
+\maketitle
+
+%\begin{frame}{Outline}
+%  \tableofcontents
+%\end{frame}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\section{Introduction}
+
+\begin{frame}{Probabilistic Relational Models}
+  \begin{block}{Markov Logic Network (\cite{DBLP:journals/ml/RichardsonD06})}
+    \vspace*{-\baselineskip}\setlength\belowdisplayshortskip{0pt}
+    \begin{align*}
+      0.7 &\quad \forall x \forall y \forall z \; \mathtt{Friends}(x, y) \land \mathtt{Friends}(y, z) \Rightarrow \mathtt{Friends}(x, z) \\
+      2.3 &\quad \forall x \; \lnot\exists y \; \mathtt{Friends}(x, y) \Rightarrow \mathtt{Smokes}(x) \\
+      1.5 &\quad \forall x \; \mathtt{Smokes}(x) \Rightarrow \mathtt{Cancer}(x) \\
+      1.1 &\quad \forall x \forall y \; \mathtt{Friends}(x, y) \Rightarrow (\mathtt{Smokes}(x) \Leftrightarrow \mathtt{Smokes}(y))
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Probabilistic Relational Models}
+  \begin{block}{ProbLog (\cite{DBLP:conf/ijcai/RaedtKT07})}
+    \vspace*{-\baselineskip}\setlength\belowdisplayshortskip{0pt}
+    \begin{align*}
+      1.0 &\prob \mathtt{likes}(X, Y) \ifff \mathtt{friendOf}(X, Y). \\
+      0.8 &\prob \mathtt{likes}(X, Y) \ifff \mathtt{friendOf}(X, Z), \mathtt{likes}(Z, Y). \\
+      0.5 &\prob \mathtt{friendOf}(\mathit{john}, \mathit{mary}). \\
+      0.5 &\prob \mathtt{friendOf}(\mathit{mary}, \mathit{pedro}). \\
+      0.5 &\prob \mathtt{friendOf}(\mathit{mary}, \mathit{tom}). \\
+      0.5 &\prob \mathtt{friendOf}(\mathit{pedro}, \mathit{tom}).
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+  \item What do these models have in common?
+  \item When performing inference...
+    \begin{itemize}
+    \item do we have to consider every detail?
+    \item what makes inference challenging?
+    \item can we do any better?
+    \end{itemize}
+  \item How can we learn PRMs from data?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Applications}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{application_robots.jpg}
+      \\[-7pt]
+      {\tiny \cite{DBLP:conf/iros/MoldovanR14}}
+      \vfill
+      \null
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{application_nell.jpg}
+      \\[-7pt]
+      {\tiny \cite{DBLP:conf/aaai/CarlsonBKSHM10}}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio]{application_criminal.jpg}
+      \\[-7pt]
+      {\tiny \cite{DBLP:conf/sdm/DelaneyFCWJ10}}
+      \vfill
+      \null
+      \includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio]{application_cancer.jpg}
+      \\[-7pt]
+      {\tiny \cite{DBLP:conf/ilp/Corte-RealD017}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Equivalence}
+
+\begin{frame}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{}
+        \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
+        \begin{gather*}
+          \mathtt{Husband}(\mathit{joffrey}, \mathit{margaery}) \\
+          \mathtt{Husband}(\mathit{tommen}, \mathit{margaery}) \\
+          \mathtt{Husband}(\mathit{renly}, \mathit{margaery}) \\
+          \mathtt{Parent}(\mathit{cersei}, \mathit{joffrey}) \\
+          \mathtt{Parent}(\mathit{cersei}, \mathit{myrcella}) \\
+          \mathtt{Parent}(\mathit{cersei}, \mathit{tommen}) \\
+          \mathtt{Parent}(\mathit{tywin}, \mathit{cersei})
+        \end{gather*}
+        \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{exampleblock}{}<2->
+        \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
+        \begin{gather*}
+          \mathtt{Female}(\mathit{cersei}), \\
+          \mathtt{Female}(\mathit{margaery}), \\
+          \mathtt{Female}(\mathit{myrcella})
+        \end{gather*}
+        \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+  \begin{block}{}<3->
+    \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
+    \begin{align*}
+      \mathtt{Female}(X) &\ifff \mathtt{Husband}(\mathit{joffrey}, X). \\
+      \mathtt{Female}(X) &\ifff \mathtt{Parent}(X, \mathit{joffrey}). \\
+      \mathtt{Female}(X) &\ifff \mathtt{Parent}(\mathit{cersei}, X), \neg\mathtt{Husband}(X, \mathit{margaery}).
+    \end{align*}
+    \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Main Results}
+  \begin{definition}[Equivalence]
+    Two $n$-tuples of constants $a$ and $b$ are \alert{equivalent} if
+    \[
+      (\mathtt{P} \circ \rho)(a) = (\mathtt{P} \circ \rho)(b)
+    \]
+    for all atoms $\mathtt{P} \circ \rho$ acting on $n$ variables.
+  \end{definition}
+  \pause
+  \begin{theorem}
+    There is a logic program $\mathcal{L}\colon \mathcal{KB}(P_1, C) \to
+    \mathcal{KB}(P_2, C)$ such that $\mathcal{L}(\Delta_1) = \Delta_2$ if and
+    only if ${\sim_{\Delta_2}}$ is coarser than ${\sim_{\Delta_1}}$.
+  \end{theorem}
+\end{frame}
+
+\section{Random Programs}
+
+\begin{frame}{What Characterises a Program?}
+  \begin{columns}
+    \hspace*{-0.7cm}\begin{column}{0.75\textwidth}
+      \begin{empheq}[left =\onslide<6->{\color{color5}\empheqlbrace}]{equation}
+        \begin{align*}
+          \textcolor<5->{color4}{1.0} &\prob \textcolor<2->{color1}{\mathtt{likes}}(\textcolor<3->{color2}{X}, \textcolor<3->{color2}{Y}) \ifff \textcolor<2->{color1}{\mathtt{friendOf}}(\textcolor<3->{color2}{X}, \textcolor<3->{color2}{Y}). \\
+          \textcolor<5->{color4}{0.8} &\prob \textcolor<2->{color1}{\mathtt{likes}}(\textcolor<3->{color2}{X}, \textcolor<3->{color2}{Y}) \ifff \tikz \coordinate (start);\textcolor<2->{color1}{\mathtt{friendOf}}(\textcolor<3->{color2}{X}, \textcolor<3->{color2}{Z}), \textcolor<2->{color1}{\mathtt{likes}}(\textcolor<3->{color2}{Z}, \textcolor<3->{color2}{Y})\tikz \coordinate (end);. \\
+          \textcolor<5->{color4}{0.5} &\prob \textcolor<2->{color1}{\mathtt{friendOf}}(\textcolor<4->{color3}{\mathit{john}}, \textcolor<4->{color3}{\mathit{mary}}). \\
+          \textcolor<5->{color4}{0.5} &\prob \textcolor<2->{color1}{\mathtt{friendOf}}(\textcolor<4->{color3}{\mathit{mary}}, \textcolor<4->{color3}{\mathit{pedro}}). \\
+          \textcolor<5->{color4}{0.5} &\prob \textcolor<2->{color1}{\mathtt{friendOf}}(\textcolor<4->{color3}{\mathit{mary}}, \textcolor<4->{color3}{\mathit{tom}}). \\
+          \textcolor<5->{color4}{0.5} &\prob \textcolor<2->{color1}{\mathtt{friendOf}}(\textcolor<4->{color3}{\mathit{pedro}}, \textcolor<4->{color3}{\mathit{tom}}).
+        \end{align*}
+      \end{empheq}
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      \begin{itemize}
+      \item[\textcolor{color1}{\textbullet}]<2-> predicates, arities
+      \item[\textcolor{color2}{\textbullet}]<3-> variables
+      \item[\textcolor{color3}{\textbullet}]<4-> constants
+      \item[\textcolor{color4}{\textbullet}]<5-> probabilities
+      \item[\textcolor{color5}{\textbullet}]<6-> length
+      \item[\textcolor{color6}{\textbullet}]<7-> complexity
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \onslide<7->{
+    \begin{tikzpicture}[overlay]
+      \draw [decorate,decoration={brace,amplitude=10pt,mirror},color=color6] (start) -- (end);
+    \end{tikzpicture}
+  }
+  \begin{columns}
+    \begin{column}{0.27\textwidth}
+      \onslide<9->{
+        Also:
+        \begin{itemize}
+        \item cyclicity
+        \item (conditional) independence
+        \item required subformulas
+        \end{itemize}
+      }
+    \end{column}
+    \begin{column}{0.53\textwidth}
+      \onslide<8->{
+        \begin{tikzpicture}
+          \node[draw,circle,gray,text=black] (and) at (0, 0) {$\land$};
+          \node[draw,gray,text=black] (friendOf) at (-1.5, -1) {$\textcolor{color1}{\mathtt{friendOf}}\textcolor{black}{(}\textcolor<3->{color2}{X}\textcolor{black}{,}\,\textcolor<3->{color2}{Z}\textcolor{black}{)}$};
+          \node[draw,gray,text=black] (likes) at (1.5, -1) {$\textcolor{color1}{\mathtt{likes}}\textcolor{black}{(}\textcolor<3->{color2}{Z}\textcolor{black}{,}\,\textcolor<3->{color2}{Y}\textcolor{black}{)}$};
+          \draw[gray] (and) -- (friendOf);
+          \draw[gray] (and) -- (likes);
+        \end{tikzpicture}
+      }
+    \end{column}
+    \begin{column}{0.2\textwidth}
+      \onslide<10->{
+        \begin{tikzpicture}
+          \node[draw] (likes) {\textcolor{color1}{$\mathtt{likes}$}};
+          \node[draw,below of = likes] (friendOf) {\textcolor{color1}{$\mathtt{friendOf}$}};
+          \draw[-{Stealth[scale=1.5]}] (friendOf) -- (likes);
+        \end{tikzpicture}
+      }
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{What Programs Are Hard to Generate?}
+  \begin{figure}
+    \centering
+    \input{impact.tex}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{What Programs Are Hard to Generate?}
+  \begin{figure}
+    \centering
+    \resizebox{\linewidth}{!}{\input{phase_transition.tex}}
+  \end{figure}
+\end{frame}
+
+\section{WMC}
+
+\begin{frame}{Defining WMC}
+  \begin{definition}
+    Let $\mathbf{B}$ be an atomic Boolean algebra. Let $L \subset \mathbf{B}$ be
+    such that every atom $m$ can be uniquely expressed as $m = \bigwedge L'$ for
+    some $L' \subseteq L$, and let $w\colon L \to \mathbb{R}_{\ge 0}$ be
+    arbitrary. The \alert{weighted model count} $\mathsf{WMC}_w\colon \mathbf{B}
+    \to \mathbb{R}_{\ge 0}$ is defined as
+    \[
+      \mathsf{WMC}_w(x) = \begin{cases}
+        0 & \text{if } x = 0 \\
+        \prod_{l \in L'} w(l) & \text{if } x = \bigwedge L' \text{ is an atom}
+        \\
+        \sum_{\text{atoms } a \le x} \mathsf{WMC}_w(a) & \text{otherwise}
+      \end{cases}
+    \]
+    for any $x \in \mathbf{B}$.
+  \end{definition}
+\end{frame}
+
+\begin{frame}{WMC Requires Independent Literals}
+  \begin{theorem}
+    Let $\mathbf{B}$ be a free Boolean algebra over $\{ l_i \}_{i=1}^n$ with
+    measure
+    \[
+      m\colon \mathbf{B} \to \mathbb{R}_{\ge 0},
+    \]
+    and let
+    \[
+      L = \{ l_i \}_{i = 1}^n \cup \{\neg l_i \}_{i = 1}^n.
+    \]
+    Then there exists a weight function $w\colon L \to \mathbb{R}_{\ge 0}$ such
+    that $m = \mathsf{WMC}_w$ if and only if
+    \[
+      m(l \land l') = m(l)m(l')
+    \]
+    for all distinct $l, l' \in L$ such that $l \ne \neg l'$.
+  \end{theorem}
+\end{frame}
+
+\begin{frame}[fragile]{Extending the Algebra}
+  \[
+    \begin{tikzcd}
+      \textcolor{red}{\mathbb{R}_{\ge 0}} & & \\
+      \textcolor{red}{\mathbf{B}} \arrow[red]{u}{m} \ar[r,hookrightarrow,"\iota"]
+      & \mathbf{B'} \arrow{lu}[swap]{m'} & \\
+      \textcolor{red}{L} \ar[u,red,hookrightarrow] \ar[r,hookrightarrow] & L'
+      \ar[u,hookrightarrow] \arrow{r}{w} & \mathbb{R}_{\ge 0}
+    \end{tikzcd}
+  \]
+\end{frame}
+
+\begin{frame}{How Can This Benefit Inference?}
+  \begin{theorem}[\cite{sikorski1969boolean}]
+    If $\mathbf{B} = \mathcal{F}\{a\} + \mathcal{F}\{b\}$, then $\Pr(a \land b) =
+    \Pr(a)\Pr(b)$.
+  \end{theorem}
+  \pause
+  \begin{conjecture}
+    If $\mathbf{B} = \mathcal{F}\{a\} +_{\mathcal{F}\{c\}} \mathcal{F}\{b\}$, then $\Pr(a
+    \land b \land c) = \Pr(a \land c)\Pr(b \land c)$.
+  \end{conjecture}
+  \pause
+  \begin{conjecture}
+    Using coproducts and pushouts, one can encode a Bayesian network into WMC
+    with \alert{fewer literals} and a \alert{shorter theory} than before.
+  \end{conjecture}
+  \pause
+  \begin{conjecture}
+    A \#\SAT{} algorithm can be adapted without sacrificing efficiency.
+  \end{conjecture}
+\end{frame}
+
+\section{Future Work}
+
+\begin{frame}[fragile]{Abstraction: Before}
+  \[
+    \begin{tikzcd}[column sep=tiny]
+      \colorbox{color7}{Theory $\Delta_h$} & \colorbox{color7}{Constants}
+      \arrow{d}[swap]{\colorbox{color7}{Predicates}} & & \colorbox{color7}{Constants}
+      \arrow{d}{\colorbox{color7}{Predicates}} & \colorbox{color7}{Theory $\Delta_l$} \\
+      & \text{Atoms} \ar[d,hookrightarrow]
+      \arrow[rrdd,"\mathrm{Refinement}"{sloped}] & & \text{Atoms}
+      \ar[d,hookrightarrow] & \\
+      \mathbb{R}_{\ge 0} & \text{Literals} \arrow{l}[swap]{\colorbox{color7}{$w_h$}}
+      \ar[d,hookrightarrow] & & \text{Literals} \arrow{r}{\colorbox{color7}{$w_l$}}
+      \ar[d,hookrightarrow] & \mathbb{R}_{\ge 0} \\
+      & \text{Formulas} \arrow{rd}[swap]{\Pr} \arrow[loop left, "\land{,}
+      \lor{,} \neg"] & & \text{Formulas} \arrow{ld}{\Pr} \arrow[loop right,
+      "\land{,} \lor{,} \neg"] & \\
+      & & \left[ 0, 1 \right] & &
+    \end{tikzcd}
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Abstraction: After}
+  \[
+    \begin{tikzcd}
+      S_h \ar[d,hookrightarrow] \ar[rd] & S_l \ar[d,hookrightarrow] \\
+      \mathbf{B}_h \ar[d] \ar[r,dashed] & \mathbf{B}_l \ar[d] \\
+      \mathbf{B}_h/(\neg\Delta_h) \ar[r,dashed] & \mathbf{B}_l/(\neg\Delta_l)
+    \end{tikzcd}
+  \]
+\end{frame}
+
+\begin{frame}{Reflections \& Future Work}
+  \begin{itemize}
+  \item The equivalence paper needs significant rework.
+  \item The program generation paper could be improved by demonstrating the
+    model's usefulness.
+  \item The WMC paper needs successful experimental results.
+  \item Understanding PRMs as algebras is promising---in one way or another.
+  \end{itemize}
+\end{frame}
+
+\end{document}

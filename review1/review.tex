@@ -50,10 +50,10 @@ expressivity of first-order logic
 fundamental idea in the field was established by Nilsson
 \cite{DBLP:journals/ai/Nilsson86} who recognised that, after assigning
 probabilities to some logical formulas, the set of probabilities that can be
-assigned to another formula can either have a unique value or an interval.
-Since then, many representations that can support probabilities as well as (some
-aspects of) logic have been suggested, and the field as a whole is most commonly
-known as statistical relational artificial intelligence
+assigned to another formula is either a single value or an interval. Since then,
+many representations that can support probabilities as well as (some aspects of)
+logic have been suggested, and the field as a whole is most commonly known as
+statistical relational artificial intelligence
 \cite{DBLP:series/synthesis/2016Raedt}. As there is no widely-agreed
 general-purpose name for the assortment of representations that have been
 proposed, we will refer to them as \emph{probabilistic relational models} (PRMs)
@@ -64,8 +64,8 @@ probabilistic databases \cite{DBLP:series/synthesis/2011Suciu}, and ProbLog
 \cite{DBLP:conf/ijcai/RaedtKT07}. ProbLog, in particular, is described in more
 detail below and is relevant for subsequent sections. Another way to encode
 complex probability distributions is with probabilistic programming languages
-\cite{DBLP:conf/icse/GordonHNR14}, however, it falls largely outside the scope of
-this thesis as the support for continuous variables and Turing-complete
+\cite{DBLP:conf/icse/GordonHNR14}, however, it falls largely outside the scope
+of this thesis as the support for continuous variables and Turing-complete
 computation brings a separate set of issues.
 
 These models have been used in a variety of fields. The most significant area of
@@ -73,22 +73,22 @@ application is knowledge extraction \cite{DBLP:conf/naacl/PoonV10}, information
 extraction \cite{bunescu2007statistical}, and other natural language processing
 tasks. Here, PRMs have been used to annotate articles
 \cite{DBLP:conf/emnlp/VerbekeAMFDR12}, learn facts about the world from reading
-websites \cite{DBLP:conf/aaai/CarlsonBKSHM10} solve simple probability problems
-described in a natural language \cite{DBLP:conf/ijcai/DriesKDBR17}. Similarly,
-they have been applied to stream mining \cite{DBLP:conf/icdm/ChandraSKTA14},
-predicting criminal activity \cite{DBLP:conf/sdm/DelaneyFCWJ10}, and predicting
-how soon a component or a machine will have to be replaced
-\cite{vlasselaer2012statistical}.
-In robotics, PRMs have been used to learn object affordances
+websites \cite{DBLP:conf/aaai/CarlsonBKSHM10}, and solve simple probability
+problems described in a natural language \cite{DBLP:conf/ijcai/DriesKDBR17}.
+Similarly, they have been applied to stream mining
+\cite{DBLP:conf/icdm/ChandraSKTA14}, predicting criminal activity
+\cite{DBLP:conf/sdm/DelaneyFCWJ10}, and predicting how soon a component or a
+machine will have to be replaced \cite{vlasselaer2012statistical}. In robotics,
+PRMs have been used to learn object affordances
 \cite{DBLP:conf/iros/MoldovanR14,DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/ilp/MoldovanORMS11}
 and as an expressive knowledge representation system for robot control
-\cite{DBLP:conf/icra/JainMB09}. Finally, in biology PRMs have been applied to
-the analysis of genetic \cite{DBLP:journals/jcb/SakhanenkoG12} and breast cancer
+\cite{DBLP:conf/icra/JainMB09}. Finally, biological applications include the
+analysis of genetic \cite{DBLP:journals/jcb/SakhanenkoG12} and breast cancer
 \cite{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13} data. The use
 of PRMs in learning is primarily motivated by their ability to learn with
 respect to the entire relevant structure rather than learning separate
-components that then have to be compatible. On the other hand, the main
-disadvantage is often efficiency.
+components that then have to be combined. On the other hand, the main
+disadvantage is usually efficiency.
 
 Despite numerous proposed representations and many successful applications,
 many fundamental problems and challenges remain. My thesis establishes a
@@ -132,7 +132,7 @@ probabilistic logic programming language such as ProbLog. At its core, a ProbLog
 program is a stratified logic program with a probability attached to each
 clause. A program with $m$ clauses defines a probability distribution over $2^m$
 logic programs, and the probability of a formula $f$ is calculated as the sum of
-probabilities of logic programs that entail $f$.
+the probabilities of logic programs that entail $f$.
 
 \section{Progress to Date}
 % MUST: Please give details of the work you have undertaken in the last year,
@@ -140,16 +140,18 @@ probabilities of logic programs that entail $f$.
 
 Most of the progress to date is described in two submitted papers (appended at
 the end). The first one was inspired by a recent paper
-\cite{DBLP:conf/ijcai/DumancicGMB19} that suggested the question `given two
-relational knowledge bases, under what circumstances is there a logic program
-that can transform one into the other?' The paper answers this question in full
-for knowledge bases on the same domain of discourse $\mathcal{D}$. Namely, we
-show that a knowledge base $\Delta_1$ can be transformed into another knowledge
-base $\Delta_2$ if and only if the equivalences classes induced by $\Delta_1$ on
-$\mathcal{D}$ are finer than the ones induced by $\Delta_2$. These results have
-important implications for efficiency, as logic program-based transformations
-can provide a computationally cheap way to significantly reduce the size of the
-knowledge base.
+\cite{DBLP:conf/ijcai/DumancicGMB19} that uses logic programs as
+encoders/decoders for relational data. One can then ask `when is that
+possible?' In other words, given two relational knowledge bases, under what
+circumstances is there a logic program that can transform one into the other?
+The paper answers this question in full for knowledge bases on the same domain
+of discourse $\mathcal{D}$. Namely, we show that a knowledge base $\Delta_1$ can
+be transformed into another knowledge base $\Delta_2$ if and only if the
+equivalence classes induced by $\Delta_1$ on $\mathcal{D}$ are finer than the
+ones induced by $\Delta_2$. These results have important implications for
+efficient inference, as logic program-based transformations can provide a
+computationally cheap way to significantly reduce the size of a knowledge
+base.
 
 The second paper describes a way to generate random ProbLog programs using
 constraint programming. The idea was originally motivated by the need to test
@@ -195,7 +197,7 @@ main results of this paper.
 
 First, we note that not every measure on a Boolean algebra can be defined using
 WMC, i.e, a measure $m$ is WMC-definable if and only if all literals are
-independent according to $m$. The formal version of the theorem constitutes the
+independent according to $m$. The formal version of this theorem constitutes the
 first contribution of the upcoming paper. Given this requirement for
 independence, a well-known way to represent probability distributions that do
 not consist entirely of independent variables is by adding more literals
@@ -250,10 +252,10 @@ solve semiring-based constraint satisfaction problems
 \cite{DBLP:journals/tcs/LiY08}, and improve the efficiency of heuristic search
 \cite{DBLP:conf/aaai/HoltePZM96}. As the approach has been successful in other
 fields (and since an algebraic approach towards PRMs is novel by itself), it is
-likely to yield valuable insights in the context of PRMs as well. The remaining
-work is as follows.
+likely to yield valuable insights in the context of PRMs as well.
+\Cref{sec:plan} describes the remaining work in more detail.
 
-\subsection{Plan of Action}
+\subsection{Plan of Action} \label{sec:plan}
 % MUST: Give a rough plan for achieving these goals, identifying any areas that
 % you believe could present challenges (4k chars).
 
@@ -286,12 +288,10 @@ knowledge base that achieves that minimum. {\bf Estimated duration:} 2 months.
 
 \paragraph{Risks and contingencies.} As the contribution of this paper is purely
 theoretical and not easily applied, the paper is likely to be difficult to
-publish. As a last resort, the work could be extended and refocused to make it
-directly applicable to a problem of interest, although that would distort the
-beauty of the topic. More realistically, a sufficiently long list of potential
-venues, combined with adjustments according to reviewers' comments and a hint
-of luck should eventually yield a publication. This plan is further justified by
-several reviewers who were interested in and excited by the idea.
+publish. However, a sufficiently long list of potential venues, combined with
+adjustments according to reviewers' comments and a hint of luck should
+eventually yield a publication. This plan is further justified by several
+reviewers who were interested in and excited by the idea.
 
 \subsubsection{WP 2: Random instances of (probabilistic) logic programs and the
   empirical hardness of inference}
@@ -304,7 +304,7 @@ This involves constructing one or more scripts to generate programs and run the
 experiments and running them on suitable hardware. {\bf Estimated duration:} 4
 months.
 
-\paragraph{Risks and contingencies.} The main two risks associated with the
+\paragraph{Risks and contingencies.} The two main risks associated with the
 remaining part of this project are that
 \begin{itemize}
 \item the program generation process could be too slow either for sufficiently
