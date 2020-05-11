@@ -61,9 +61,8 @@ and provide a formal definition shortly. Specific examples of PRMs include the
 independent choice logic \cite{DBLP:journals/ai/Poole97} Markov logic networks
 \cite{DBLP:journals/ml/RichardsonD06}, PRISM \cite{DBLP:conf/ijcai/SatoK97},
 probabilistic databases \cite{DBLP:series/synthesis/2011Suciu}, and ProbLog
-\cite{DBLP:conf/ijcai/RaedtKT07}. ProbLog, in particular, is described in more
-detail below and is relevant for subsequent sections. Another way to encode
-complex probability distributions is with probabilistic programming languages
+\cite{DBLP:conf/ijcai/RaedtKT07}. Another way to encode complex probability
+distributions is with probabilistic programming languages
 \cite{DBLP:conf/icse/GordonHNR14}, however, it falls largely outside the scope
 of this thesis as the support for continuous variables and Turing-complete
 computation brings a separate set of issues.
@@ -127,21 +126,31 @@ as the product of the weights of its literals, we refer to the computation of
 the probability of an element in $\mathscr{F}(\mathcal{HB})$ as \emph{weighted
   model counting} (WMC) \cite{DBLP:journals/ai/ChaviraD08}.
 
-A well-known way to compactly represent some of these algebras is with a
-probabilistic logic programming language such as ProbLog. At its core, a ProbLog
-program is a stratified logic program with a probability attached to each
-clause. A program with $m$ clauses defines a probability distribution over $2^m$
-logic programs, and the probability of a formula $f$ is calculated as the sum of
-the probabilities of logic programs that entail $f$.
-
 \section{Progress to Date}
 % MUST: Please give details of the work you have undertaken in the last year,
 % focussing on the progress you have made (4k chars).
 
-Most of the progress to date is described in two submitted papers (appended at
-the end). The first one was inspired by a recent paper
+At the beginning of the academic year, discovering a general theory of PRMs
+was my dream goal. This goal was achieved with the help of Boolean (as
+well as polyadic) algebras, and the idea is briefly outlined in the
+introduction. Before this discovery, the research undertaken throughout the
+first year focused on a particular probabilistic logic programming language
+ProbLog. At its core, a ProbLog program is a stratified logic program with a
+probability attached to each clause. A program with $m$ clauses defines a
+probability distribution over $2^m$ logic programs, and the probability of a
+formula $f$ is calculated as the sum of the probabilities of logic programs that
+entail $f$. We now introduce two submitted papers related to ProbLog and logic
+programming more generally: one on interpreting logic programs as maps between
+relational knowledge bases (with applications to, e.g., knowledge base
+compression) and one on generating probabilistic logic programs to facilitate
+large-scale testing of inference algorithms.
+
+The first project was inspired by a recent paper
 \cite{DBLP:conf/ijcai/DumancicGMB19} that uses logic programs as
-encoders/decoders for relational data. One can then ask `when is that
+encoders/decoders for relational data, i.e., given a (large) relational
+knowledge base $\Delta_1$, a constraint solver is used to construct two programs
+(the encoder and the decoder) that can transform $\Delta_1$ into a (smaller)
+knowledge base $\Delta_2$ and vice versa. One can then ask `when is that
 possible?' In other words, given two relational knowledge bases, under what
 circumstances is there a logic program that can transform one into the other?
 The paper answers this question in full for knowledge bases on the same domain
@@ -149,9 +158,10 @@ of discourse $\mathcal{D}$. Namely, we show that a knowledge base $\Delta_1$ can
 be transformed into another knowledge base $\Delta_2$ if and only if the
 equivalence classes induced by $\Delta_1$ on $\mathcal{D}$ are finer than the
 ones induced by $\Delta_2$. These results have important implications for
-efficient inference, as logic program-based transformations can provide a
-computationally cheap way to significantly reduce the size of a knowledge
-base.
+efficient inference and compressibility of PRMs and probabilistic databases
+\cite{DBLP:journals/pvldb/SenDG08}, as logic program-based transformations can
+provide a computationally cheap way to significantly reduce the size of a
+knowledge base.
 
 The second paper describes a way to generate random ProbLog programs using
 constraint programming. The idea was originally motivated by the need to test
@@ -329,9 +339,9 @@ investigation.
 \subsubsection{The hidden assumptions behind WMC and how to overcome them for
   (algebraic) fun and (computational) profit}
 
-I would estimate that the work for this paper is about 60\% complete. The main
-goal of the remaining work is to demonstrate how the theoretical discoveries can
-make inference algorithms faster.
+The work for this paper is approximately 60\% complete. The main goal of the
+remaining work is to demonstrate how the theoretical discoveries can make
+inference algorithms faster.
 \begin{description}
 \item[WP 3.1] Prove that my definition of WMC allows one to encode a Bayesian
   network as a WMC problem with fewer variables and a shorter theory than the
@@ -444,6 +454,6 @@ accomplished over the next two years is in \cref{fig:gantt}.
   \put(70,725){%
     \parbox{\textwidth}{\appendix\section{Submitted Papers}}
   }}]{../../published/equivalence/1/paper.pdf}
-\includepdf[pages=-,pagecommand=\thispagestyle{plain}]{../../published/random-logic-programs/paper/paper.pdf}
+\includepdf[pages=-,pagecommand=\thispagestyle{plain}]{../../published/random-logic-programs/text/paper/paper.pdf}
 
 \end{document}
