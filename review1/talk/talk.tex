@@ -18,6 +18,7 @@
 \usetikzlibrary{decorations.pathreplacing}
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{cd}
+\usetikzlibrary{calc}
 \tikzstyle{na} = [baseline=-0.5ex]
 \tikzstyle{every picture}+=[remember picture]
 
@@ -31,22 +32,29 @@
 \definecolor{color6}{HTML}{e6ab02}
 \definecolor{color7}{HTML}{e9eff4}
 
+\RequirePackage{ifthen}
+\newboolean{future}
+\setboolean{future}{false}
+
 \author{Paulius Dilkas}
 \title{Foundations for Inference in Probabilistic Relational Models}
+\date{27th May 2020}
 
 \begin{document}
 
 \maketitle
-
-%\begin{frame}{Outline}
-%  \tableofcontents
-%\end{frame}
-
 \AtBeginSection[]
 {
   \begin{frame}<beamer>
     \frametitle{Outline}
+    \ifthenelse{\boolean{future}}{
+      \tableofcontents[currentsection]
+      \begin{tikzpicture}[overlay]
+        \node at ($(current page.center)!.3!(current page.east)$) {\includegraphics[width=0.7\textwidth]{fiction.png}};
+      \end{tikzpicture}
+    }{
     \tableofcontents[currentsection]
+    }
   \end{frame}
 }
 
@@ -256,6 +264,20 @@
   \end{figure}
 \end{frame}
 
+\begin{frame}{How Program Features Influence Inference Time}
+  \begin{figure}
+    \centering
+    \resizebox{\linewidth}{!}{\input{line_plots.tex}}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{How Program Features Influence Inference Time}
+  \begin{figure}
+    \centering
+    \input{bars.tex}
+  \end{figure}
+\end{frame}
+
 \section{WMC}
 
 \begin{frame}{Defining WMC}
@@ -330,6 +352,7 @@
   \end{conjecture}
 \end{frame}
 
+\setboolean{future}{true}
 \section{Future Work}
 
 \begin{frame}[fragile]{Abstraction: Before}
@@ -362,14 +385,24 @@
   \]
 \end{frame}
 
-\begin{frame}{Reflections \& Future Work}
-  \begin{itemize}
-  \item The equivalence paper needs significant rework.
-  \item The program generation paper could be improved by demonstrating the
-    model's usefulness.
-  \item The WMC paper needs successful experimental results.
-  \item Understanding PRMs as algebras is promising---in one way or another.
-  \end{itemize}
+\begin{frame}{Plan for the Future}
+  \begin{enumerate}
+  \item Rework the equivalence paper \textcolor{gray}{(2 months)}
+  \item Improve and resubmit the random programs paper \textcolor{gray}{(done)}
+  \item WMC 2.0
+    \begin{itemize}
+    \item Design a new encoding for Bayesian networks \textcolor{gray}{(2 months)}
+    \item Experimentally compare with other encodings \textcolor{gray}{(2 months)}
+    \end{itemize}
+  \item Abstractions as homomorphisms
+    \begin{itemize}
+    \item Find algebraic counterparts for logic-based concepts \textcolor{gray}{(1 month)}
+    \item Establish `iff' results for their preservation \textcolor{gray}{(2 months)}
+    \item Develop algorithms for constructing abstractions \textcolor{gray}{(2 months)}
+    \item Theorems for the preservation of independence \textcolor{gray}{(3 months)}
+    \end{itemize}
+  \item And lost of writing, editing, and rewriting \textcolor{gray}{($[9, \infty)$ months)}
+  \end{enumerate}
 \end{frame}
 
 \end{document}
