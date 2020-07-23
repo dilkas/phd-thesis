@@ -43,6 +43,12 @@
 \begin{document}
 
 \maketitle
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
 \AtBeginSection[]
 {
   \begin{frame}<beamer>
@@ -50,7 +56,7 @@
     \ifthenelse{\boolean{future}}{
       \tableofcontents[currentsection]
       \begin{tikzpicture}[overlay]
-        \node at ($(current page.center)!.3!(current page.east)$) {\includegraphics[width=0.7\textwidth]{fiction.png}};
+        \node at ($(current page.center)!.3!(current page.east)$) {\includegraphics[width=0.7\textwidth]{fiction2.png}};
       \end{tikzpicture}
     }{
     \tableofcontents[currentsection]
@@ -59,18 +65,6 @@
 }
 
 \section{Introduction}
-
-\begin{frame}{Probabilistic Relational Models}
-  \begin{block}{Markov Logic Network (\cite{DBLP:journals/ml/RichardsonD06})}
-    \vspace*{-\baselineskip}\setlength\belowdisplayshortskip{0pt}
-    \begin{align*}
-      0.7 &\quad \forall x \forall y \forall z \; \mathtt{Friends}(x, y) \land \mathtt{Friends}(y, z) \Rightarrow \mathtt{Friends}(x, z) \\
-      2.3 &\quad \forall x \; \lnot\exists y \; \mathtt{Friends}(x, y) \Rightarrow \mathtt{Smokes}(x) \\
-      1.5 &\quad \forall x \; \mathtt{Smokes}(x) \Rightarrow \mathtt{Cancer}(x) \\
-      1.1 &\quad \forall x \forall y \; \mathtt{Friends}(x, y) \Rightarrow (\mathtt{Smokes}(x) \Leftrightarrow \mathtt{Smokes}(y))
-    \end{align*}
-  \end{block}
-\end{frame}
 
 \begin{frame}{Probabilistic Relational Models}
   \begin{block}{ProbLog (\cite{DBLP:conf/ijcai/RaedtKT07})}
@@ -91,8 +85,8 @@
   \item What do these models have in common?
   \item When performing inference...
     \begin{itemize}
-    \item do we have to consider every detail?
     \item what makes inference challenging?
+    \item do we have to consider every detail?
     \item can we do any better?
     \end{itemize}
   \item How can we learn PRMs from data?
@@ -146,7 +140,7 @@
       \end{alertblock}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \begin{exampleblock}{}<2->
+      \begin{exampleblock}{}
         \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
         \begin{gather*}
           \mathtt{Female}(\mathit{cersei}), \\
@@ -157,7 +151,7 @@
       \end{exampleblock}
     \end{column}
   \end{columns}
-  \begin{block}{}<3->
+  \begin{block}{}
     \vspace*{-1.5\baselineskip}\setlength\belowdisplayshortskip{0pt}
     \begin{align*}
       \mathtt{Female}(X) &\ifff \mathtt{Husband}(\mathit{joffrey}, X). \\
@@ -172,7 +166,8 @@
   \begin{definition}[Equivalence]
     Two $n$-tuples of constants $a$ and $b$ are \alert{equivalent} if
     \[
-      (\mathtt{P} \circ \rho)(a) = (\mathtt{P} \circ \rho)(b)
+      \Delta \vDash (\mathtt{P} \circ \rho)(a) \iff \Delta \vDash (\mathtt{P}
+      \circ \rho)(b)
     \]
     for all atoms $\mathtt{P} \circ \rho$ acting on $n$ variables.
   \end{definition}
@@ -186,7 +181,7 @@
 
 \section{Random Programs}
 
-\begin{frame}{What Characterises a Program?}
+\begin{frame}{What Characterises a (Probabilistic) Logic Program?}
   \begin{columns}
     \hspace*{-0.7cm}\begin{column}{0.75\textwidth}
       \begin{empheq}[left =\onslide<6->{\color{color5}\empheqlbrace}]{equation}
@@ -222,8 +217,8 @@
         Also:
         \begin{itemize}
         \item cyclicity
-        \item (conditional) independence
-        \item required subformulas
+        \item independence
+%        \item[\textcolor{gray}{\textbullet}] \textcolor{gray}{required subformulas}
         \end{itemize}
       }
     \end{column}
@@ -239,7 +234,7 @@
       }
     \end{column}
     \begin{column}{0.2\textwidth}
-      \onslide<10->{
+      \onslide<9->{
         \begin{tikzpicture}
           \node[draw] (likes) {\textcolor{color1}{$\mathtt{likes}$}};
           \node[draw,below of = likes] (friendOf) {\textcolor{color1}{$\mathtt{friendOf}$}};
@@ -250,54 +245,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{What Programs Are Hard to Generate?}
-  \begin{figure}
-    \centering
-    \input{impact.tex}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{What Programs Are Hard to Generate?}
-  \begin{figure}
-    \centering
-    \resizebox{\linewidth}{!}{\input{phase_transition.tex}}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{How Program Features Influence Inference Time}
-  \begin{figure}
-    \centering
-    \resizebox{\linewidth}{!}{\input{line_plots.tex}}
-  \end{figure}
-\end{frame}
-
-\begin{frame}{How Program Features Influence Inference Time}
-  \begin{figure}
-    \centering
-    \input{bars.tex}
-  \end{figure}
-\end{frame}
-
 \section{WMC}
-
-\begin{frame}{Defining WMC}
-  \begin{definition}
-    Let $\mathbf{B}$ be an atomic Boolean algebra. Let $L \subset \mathbf{B}$ be
-    such that every atom $m$ can be uniquely expressed as $m = \bigwedge L'$ for
-    some $L' \subseteq L$, and let $w\colon L \to \mathbb{R}_{\ge 0}$ be
-    arbitrary. The \alert{weighted model count} $\mathsf{WMC}_w\colon \mathbf{B}
-    \to \mathbb{R}_{\ge 0}$ is defined as
-    \[
-      \mathsf{WMC}_w(x) = \begin{cases}
-        0 & \text{if } x = 0 \\
-        \prod_{l \in L'} w(l) & \text{if } x = \bigwedge L' \text{ is an atom}
-        \\
-        \sum_{\text{atoms } a \le x} \mathsf{WMC}_w(a) & \text{otherwise}
-      \end{cases}
-    \]
-    for any $x \in \mathbf{B}$.
-  \end{definition}
-\end{frame}
 
 \begin{frame}{WMC Requires Independent Literals}
   \begin{theorem}
@@ -324,7 +272,7 @@
     \begin{tikzcd}
       \textcolor{red}{\mathbb{R}_{\ge 0}} & & \\
       \textcolor{red}{\mathbf{B}} \arrow[red]{u}{m} \ar[r,hookrightarrow,"\iota"]
-      & \mathbf{B'} \arrow{lu}[swap]{m'} & \\
+      & \mathbf{B'} \arrow{lu}[swap]{\mathsf{WMC}_w} & \\
       \textcolor{red}{L} \ar[u,red,hookrightarrow] \ar[r,hookrightarrow] & L'
       \ar[u,hookrightarrow] \arrow{r}{w} & \mathbb{R}_{\ge 0}
     \end{tikzcd}
@@ -355,7 +303,7 @@
 \setboolean{future}{true}
 \section{Future Work}
 
-\begin{frame}[fragile]{Abstraction: Before}
+\begin{frame}[fragile]{Abstraction: Before (\cite{belle2020abstracting})}
   \[
     \begin{tikzcd}[column sep=tiny]
       \colorbox{color7}{Theory $\Delta_h$} & \colorbox{color7}{Constants}
@@ -391,7 +339,7 @@
   \item Improve and resubmit the random programs paper \textcolor{gray}{(done)}
   \item WMC 2.0
     \begin{itemize}
-    \item Design a new encoding for Bayesian networks \textcolor{gray}{(2 months)}
+    \item Formalise a new encoding for Bayesian networks \textcolor{gray}{(2 months)}
     \item Experimentally compare with other encodings \textcolor{gray}{(2 months)}
     \end{itemize}
   \item Abstractions as homomorphisms
@@ -401,8 +349,72 @@
     \item Develop algorithms for constructing abstractions \textcolor{gray}{(2 months)}
     \item Theorems for the preservation of independence \textcolor{gray}{(3 months)}
     \end{itemize}
-  \item And lost of writing, editing, and rewriting \textcolor{gray}{($[9, \infty)$ months)}
+  \item And lots of writing, editing, and rewriting \textcolor{gray}{($[9, \infty)$ months)}
   \end{enumerate}
+\end{frame}
+
+\appendix
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}{Probabilistic Relational Models}
+  \begin{block}{Markov Logic Network (\cite{DBLP:journals/ml/RichardsonD06})}
+    \vspace*{-\baselineskip}\setlength\belowdisplayshortskip{0pt}
+    \begin{align*}
+      0.7 &\quad \forall x \forall y \forall z \; \mathtt{Friends}(x, y) \land \mathtt{Friends}(y, z) \Rightarrow \mathtt{Friends}(x, z) \\
+      2.3 &\quad \forall x \; \lnot\exists y \; \mathtt{Friends}(x, y) \Rightarrow \mathtt{Smokes}(x) \\
+      1.5 &\quad \forall x \; \mathtt{Smokes}(x) \Rightarrow \mathtt{Cancer}(x) \\
+      1.1 &\quad \forall x \forall y \; \mathtt{Friends}(x, y) \Rightarrow (\mathtt{Smokes}(x) \Leftrightarrow \mathtt{Smokes}(y))
+    \end{align*}
+  \end{block}
+\end{frame}
+
+\begin{frame}{What Programs Are Hard to Generate?}
+  \begin{figure}
+    \centering
+    \input{impact.tex}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{What Programs Are Hard to Generate?}
+  \begin{figure}
+    \centering
+    \resizebox{\linewidth}{!}{\input{phase_transition.tex}}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{How Program Features Influence Inference Time}
+  \begin{figure}
+    \centering
+    \resizebox{\linewidth}{!}{\input{line_plots.tex}}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{How Program Features Influence Inference Time}
+  \begin{figure}
+    \centering
+    \input{bars.tex}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Defining WMC}
+  \begin{definition}
+    Let $\mathbf{B}$ be an atomic Boolean algebra. Let $L \subset \mathbf{B}$ be
+    such that every atom $m$ can be uniquely expressed as $m = \bigwedge L'$ for
+    some $L' \subseteq L$, and let $w\colon L \to \mathbb{R}_{\ge 0}$ be
+    arbitrary. The \alert{weighted model count} $\mathsf{WMC}_w\colon \mathbf{B}
+    \to \mathbb{R}_{\ge 0}$ is defined as
+    \[
+      \mathsf{WMC}_w(x) = \begin{cases}
+        0 & \text{if } x = 0 \\
+        \prod_{l \in L'} w(l) & \text{if } x = \bigwedge L' \text{ is an atom}
+        \\
+        \sum_{\text{atoms } a \le x} \mathsf{WMC}_w(a) & \text{otherwise}
+      \end{cases}
+    \]
+    for any $x \in \mathbf{B}$.
+  \end{definition}
 \end{frame}
 
 \end{document}
