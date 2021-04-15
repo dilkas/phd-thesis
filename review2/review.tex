@@ -1,0 +1,98 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\usepackage{fullpage}
+\usepackage[affil-it]{authblk}
+\usepackage{pdfpages}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[capitalise]{cleveref}
+\usepackage{mathrsfs}
+\usepackage{complexity}
+
+\title{Probabilistic Inference in Graphical and Relational Models}
+\author{Paulius Dilkas \\[1ex] {\small Supervisors: Mr Vaishak Belle and Dr Ron
+    Petrick}}
+\affil{School of Informatics, University of Edinburgh}
+% in total, maybe ~5 pages before references and appendices
+
+\begin{document}
+\maketitle
+
+\section{Introduction} % TODO: gather ~50 most relevant references
+
+\section{Background} % 2-3 pages
+
+\subsection{Probabilities}
+\subsection{Representations}
+RDDL, probabilistic programming, ProbLog, MLNs, Markov networks, BNs, relational
+BNs.
+\subsection{Applications}
+Chapter 1 of SRAI: applications of ProbLog, BNs, relational BNs
+\subsection{Learning}
+program induction, probabilistic program induction, structure learning for MLNs.
+\subsection{Inference}
+This is where my contribution lies. WMC, WMI, WFOMC, some kind of conditioning
+algorithms.
+
+\section{Progress To Date}
+
+\begin{description}
+\item[WP 1] (`On the Equivalence of Constants in Relational Knowledge Bases')
+  was abandoned. While trying to take reviewer feedback into consideration as
+  well as update and strengthen the paper, I found an important ambiguity: when
+  defining what constants are `captured' and `transferred' by a clause, I fail
+  to specify whether each relevant `spot' is occupied by a constant or a
+  variable. In the former case, that makes the main theorem of the paper
+  completely trivial. While in the latter case, the theorem becomes incorrect. I
+  spent a couple of weeks looking for ways to transform the paper into something
+  both correct and valuable. The best idea I could find was to use the
+  perspective from this paper in the context of inductive logic programming;
+  however, I did not want to explore this direction further.
+\item[WP 2] (`Generating Random Logic Programs Using Constraint
+  Programming') was revised (see \cref{app:cp}) and published and presented in
+  CP~2020. I also gave three more talks about it: % TODO: how did it change?
+  \begin{itemize}
+  \item at the local AIAI seminar,
+  \item for the Formal Analysis, Theory and Algorithms research section at the
+    University of Glasgow,
+  \item and at the FMAI~2021 workshop.
+  \end{itemize}
+\item[WP 3] morphed into \cref{app:uai} and was submitted to AAAI~2021 and
+  UAI~2021. I was also invited to the program committee for UAI~2021.
+\item[WP 4] was abandoned due to lack of contributions that could be made. % TODO: expand on this.
+\item A new paper was written and submitted to SAT (see \cref{app:sat}). It is
+  based on \textbf{WP 3}, addresses the same issue, and suggests an improved
+  solution.
+  % TODO: and on this.
+\end{description}
+
+% TODO: Emphasise the narrative (why I made the decisions that I have and how
+% everything fits into a single picture)
+
+\section{Future Goals}
+
+\begin{itemize}
+\item Parameterized Complexity of Weighted Model Counting in Theory and
+  Practice 
+\item Weighted Pseudo-Boolean Model Counting (if I can find a good application)
+\end{itemize}
+
+\bibliographystyle{acm}
+\bibliography{review}
+
+\includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
+  \put(70,750){%
+    \parbox{\textwidth}{\appendix\section{Published Paper (CP 2020)}\label{app:cp}}
+  }}]{../../published/random-logic-programs/paper/paper.pdf}
+\includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
+  \put(70,750){%
+    \parbox{\textwidth}{\section{Submitted Paper (AAAI 2021 and UAI 2021)}\label{app:uai}}
+  }}]{../../conditional-wmc/doc/paper2/paper.pdf}
+\includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
+  \put(70,750){%
+    \parbox{\textwidth}{\section{Submitted Paper (SAT 2021)}\label{app:sat}}
+  }}]{../../conditional-wmc/doc/paper3/paper.pdf}
+
+\end{document}
