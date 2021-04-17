@@ -10,6 +10,7 @@
 \usepackage[capitalise]{cleveref}
 \usepackage{mathrsfs}
 \usepackage{complexity}
+\usepackage{epigraph}
 
 \title{Probabilistic Inference in Graphical and Relational Models}
 \author{Paulius Dilkas \\[1ex] {\small Supervisors: Mr Vaishak Belle and Dr Ron
@@ -20,21 +21,52 @@
 \begin{document}
 \maketitle
 
-\section{Introduction} % TODO: gather ~50 most relevant references
+\epigraph{The true logic of this world is in the calculus of
+  probabilities.}{James Clerk Maxwell}
+
+\section{Introduction}
+% TODO: gather ~50 most relevant references (20 left)
 
 \section{Background} % 2-3 pages
 
-\subsection{Probabilities}
 \subsection{Representations}
-RDDL, probabilistic programming, ProbLog, MLNs, Markov networks, BNs, relational
-BNs.
+
+\begin{itemize}
+\item RDDL \cite{sanner2010relational},
+\item ProbLog \cite{DBLP:conf/ijcai/RaedtKT07} (ILP
+  \cite{DBLP:journals/ngc/Muggleton91}, PILP \cite{DBLP:conf/ilp/2008p})
+\item Bayesian networks \cite{pearl1985bayesian}
+\item relational Bayesian networks \cite{DBLP:conf/uai/Jaeger97}
+\item Markov random fields \cite{kindermann1980markov}
+\item Markov logic networks \cite{DBLP:journals/ml/RichardsonD06}
+\end{itemize}
+% maybe probabilistic programming, etc. (2 more?)
+
 \subsection{Applications}
-Chapter 1 of SRAI: applications of ProbLog, BNs, relational BNs
-\subsection{Learning}
-program induction, probabilistic program induction, structure learning for MLNs.
+
+\begin{itemize}
+\item mining electronic health records \cite{DBLP:conf/iaai/NatarajanKIJC13}
+\item extracting value from dark data
+  \cite{DBLP:journals/ijswis/NiuZRS12,DBLP:conf/emnlp/VenugopalCGN14}
+\item language modelling \cite{DBLP:conf/icml/JerniteRS15}
+\item planning under uncertainty \cite{DBLP:journals/jair/BoutilierDH99}
+\item robotics \cite{DBLP:journals/ras/BeetzJMT10}
+\item Chapter 1 of \cite{DBLP:series/synthesis/2016Raedt}
+\end{itemize}
+% TODO: add applications I've mentioned in my ProbLog paper/talk (at least 3 more)
+
 \subsection{Inference}
-This is where my contribution lies. WMC, WMI, WFOMC, some kind of conditioning
-algorithms.
+
+\begin{itemize}
+\item WMC \cite{DBLP:journals/ai/ChaviraD08}
+\item WMI \cite{DBLP:conf/ijcai/BellePB15}
+\item WFOMC \cite{DBLP:journals/cacm/GogateD16,DBLP:conf/ijcai/BroeckTMDR11}
+\item some kind of conditioning algorithms for BNs
+\item knowledge compilation stuff:
+  \begin{itemize}
+  \item 
+  \end{itemize}
+\end{itemize} % 6 left
 
 \section{Progress To Date}
 
