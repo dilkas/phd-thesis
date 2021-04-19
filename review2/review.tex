@@ -25,9 +25,9 @@
   probabilities.}{James Clerk Maxwell}
 
 \section{Introduction}
-% TODO: gather ~50 most relevant references (20 left)
+% TODO: gather ~50 most relevant references (11 left)
 
-\section{Background} % 2-3 pages
+\section{Background} % 2-3 pages, at least 2 of which are on applications
 
 \subsection{Representations}
 
@@ -35,12 +35,16 @@
 \item RDDL \cite{sanner2010relational},
 \item ProbLog \cite{DBLP:conf/ijcai/RaedtKT07} (ILP
   \cite{DBLP:journals/ngc/Muggleton91}, PILP \cite{DBLP:conf/ilp/2008p})
-\item Bayesian networks \cite{pearl1985bayesian}
+\item Bayesian networks \cite{DBLP:books/daglib/0066829}
 \item relational Bayesian networks \cite{DBLP:conf/uai/Jaeger97}
-\item Markov random fields \cite{kindermann1980markov}
+\item Markov random fields \cite{spitzer1971markov}
 \item Markov logic networks \cite{DBLP:journals/ml/RichardsonD06}
+\item ICL \cite{DBLP:journals/ai/Poole97}
+\item PRISM \cite{DBLP:conf/ijcai/SatoK97}
+\item CP-logic \cite{DBLP:journals/tplp/VennekensDB09}
+\item BLOG \cite{DBLP:conf/ijcai/MilchMRSOK05}
+\item Church \cite{DBLP:conf/uai/GoodmanMRBT08}
 \end{itemize}
-% maybe probabilistic programming, etc. (2 more?)
 
 \subsection{Applications}
 
@@ -48,27 +52,43 @@
 \item mining electronic health records \cite{DBLP:conf/iaai/NatarajanKIJC13}
 \item extracting value from dark data
   \cite{DBLP:journals/ijswis/NiuZRS12,DBLP:conf/emnlp/VenugopalCGN14}
-\item language modelling \cite{DBLP:conf/icml/JerniteRS15}
+\item language modelling \cite{DBLP:conf/icml/JerniteRS15}, NLP
+  \cite{DBLP:conf/ijcai/DriesKDBR17}
 \item planning under uncertainty \cite{DBLP:journals/jair/BoutilierDH99}
-\item robotics \cite{DBLP:journals/ras/BeetzJMT10}
-\item Chapter 1 of \cite{DBLP:series/synthesis/2016Raedt}
+\item robotics \cite{DBLP:journals/ras/BeetzJMT10,DBLP:conf/icra/MoldovanMOSR12}
+\item cancer diagnosis \cite{DBLP:conf/ilp/Corte-RealD017}
+\item genetic data analysis \cite{DBLP:journals/nar/MaeyerWRRM15}
+\item many more examples here \cite{DBLP:series/synthesis/2016Raedt}
 \end{itemize}
-% TODO: add applications I've mentioned in my ProbLog paper/talk (at least 3 more)
 
 \subsection{Inference}
+% TODO (maybe): have representations on one row, inference techniques on the
+% other (with WMC in between), and citations both on edges and on nodes (and
+% maybe arrows for reductions?)
 
 \begin{itemize}
 \item WMC \cite{DBLP:journals/ai/ChaviraD08}
 \item WMI \cite{DBLP:conf/ijcai/BellePB15}
-\item WFOMC \cite{DBLP:journals/cacm/GogateD16,DBLP:conf/ijcai/BroeckTMDR11}
-\item some kind of conditioning algorithms for BNs
+\item WFOMC \cite{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}
+\item generalisations
+  \cite{DBLP:journals/ijar/BelleR20,DBLP:journals/jair/BacchusDP09,DBLP:journals/japll/KimmigBR17}
 \item knowledge compilation stuff:
   \begin{itemize}
-  \item 
+  \item d-DNNF \cite{DBLP:journals/jancl/Darwiche01}
+  \item SDDs \cite{DBLP:conf/ijcai/Darwiche11}
+  \item PSDDs \cite{DBLP:conf/kr/KisaBCD14}
+  \item (RO)BDDs \cite{DBLP:journals/tc/Bryant86}
   \end{itemize}
-\end{itemize} % 6 left
+\item variable elimination \cite{DBLP:journals/ai/Dechter99}
+\item recursive conditioning \cite{DBLP:journals/ai/Darwiche01}
+\item join tree \cite{lauritzen1988local}
+\item belief propagation \cite{DBLP:conf/aaai/Pearl82}
+\end{itemize}
 
 \section{Progress To Date}
+
+In this section, the progress made throughout this academic year is described
+with respect to the work plan from last year's annual report.
 
 \begin{description}
 \item[WP 1] (`On the Equivalence of Constants in Relational Knowledge Bases')
@@ -83,25 +103,87 @@
   perspective from this paper in the context of inductive logic programming;
   however, I did not want to explore this direction further.
 \item[WP 2] (`Generating Random Logic Programs Using Constraint
-  Programming') was revised (see \cref{app:cp}) and published and presented in
-  CP~2020. I also gave three more talks about it: % TODO: how did it change?
+  Programming') was revised to include an experimental comparison of ProbLog
+  inference algorithms and published and presented in CP~2020 (see \cref{app:cp}
+  for the camera-ready version). I also gave three more talks about it:
   \begin{itemize}
   \item at the local AIAI seminar,
   \item for the Formal Analysis, Theory and Algorithms research section at the
     University of Glasgow,
   \item and at the FMAI~2021 workshop.
   \end{itemize}
-\item[WP 3] morphed into \cref{app:uai} and was submitted to AAAI~2021 and
-  UAI~2021. I was also invited to the program committee for UAI~2021.
-\item[WP 4] was abandoned due to lack of contributions that could be made. % TODO: expand on this.
-\item A new paper was written and submitted to SAT (see \cref{app:sat}). It is
-  based on \textbf{WP 3}, addresses the same issue, and suggests an improved
-  solution.
-  % TODO: and on this.
-\end{description}
+\item[WP 3] was completed in full, although the emphasis shifted more towards
+  experimental results than theory. It was first (unsuccessfully) submitted to
+  AAAI~2021. Based on reviewer feedback, I updated the experimental section to
+  compare not just various encodings with the same algorithm but also all of the
+  encodings with the algorithms used in the original papers. The updated version
+  can be found in \cref{app:uai} and was submitted to UAI~2021. I was also
+  invited to the program committee for this conference.
+\item[WP 4] was abandoned due to lack of contributions that could be made.
+  Indeed, any contribution would have to be theoretical, empirical, or
+  interpretability-related. Significant theoretical contributions are unlikely
+  because the theory of abstractions has already been explored before without
+  leaving behind any big unanswered questions \cite{DBLP:journals/kbs/Belle20}.
+  While previous work could be rephrased in a simpler way and extended with more
+  detail, the contributions would still be marginal.
 
-% TODO: Emphasise the narrative (why I made the decisions that I have and how
-% everything fits into a single picture)
+  Furthermore, considering abstractions at their full level of generality is
+  unlikely to be a viable method for improving inference speed because any
+  abstraction is likely to be more computationally expensive than inference.
+  Moreover, previous work on preprocessing for WMC left the field in an
+  uncomfortable situation: preprocessing techniques for WMC were identified and
+  described in a paper \cite{DBLP:conf/aaai/LagniezM14} whose main focus is on
+  model counting; and the closed-source implementation of those techniques is
+  unsuitable for WMC.
+
+  Finally, a substantial issue with considering abstraction as a tool for
+  interpretability---especially in the context of probabilistic relational
+  models---is that the low-level building blocks such as predicate and constant
+  names are usually semantically meaningful. Thus, replacing such a model with a
+  simpler alternative that instead uses high-level concepts that are unlikely to
+  correspond to words in any natural language is unlikely to improve
+  interpretability despite the potential simplicity of this type of abstraction.
+\item Furthermore, a new paper (not covered in the previous annual report) was
+  written and submitted to SAT~2021 (see \cref{app:sat}). It originated as an
+  attempt to improve \textbf{WP 3}: while the experimental results were
+  impressive in the initial version of the paper, adding other algorithms
+  revealed that instead of improving the state of the art by two orders of
+  magnitude as originally thought, the suggested encoding was only fixing an
+  underperforming algorithm and making its performance in line with other
+  algorithms. The algorithm used for these experiments (ADDMC) was published
+  only last year \cite{DBLP:conf/aaai/DudekPV20} and its experimental study
+  includes some of the data used in my experiments as well as some new
+  instances---one has to wonder whether the latter were added to improve the
+  algorithm's comparative performance.
+
+  First, my new paper replaces the previously used algorithm with its even newer
+  version DPMC \cite{DBLP:conf/cp/DudekPV20}. The main improvement over ADDMC
+  comes from the use of approximately-minimal-treewidth tree decompositions
+  instead of heuristics for planning the order of multiplication and projection
+  operations. After checking that DPMC performs very similarly with all
+  encodings (including my own) and similarly to other WMC algorithms, the need
+  to shift the contribution of my paper elsewhere became apparent.
+
+  The main advantage of the encoding I proposed earlier was that it avoided
+  parameter variables---something I claimed is completely unnecessary at
+  least in WMC algorithms based on algebraic decision diagrams (ADDs) (i.e., a
+  representation of pseudo-Boolean functions). However, the encoding was
+  particularly rigid in that it always compiled each conditional probability
+  table (CPT) in a Bayesian network into an ADD before doing anything else.
+  Although this resulted in great inference speed improvements on some
+  instances, e.g., when most of the probabilities in a CPT are equal, there is
+  no reason to believe that such an approach is always optimal. Being unable to
+  suggest a new encoding that clearly outperforms others, I decided to
+  investigate how parameter variables could be removed from already-existing
+  encodings. This led to a generalisation of WMC based on pseudo-Boolean
+  functions that I named pseudo-Boolean projection (PBP). I then show how any
+  WMC instance can be transformed into a PBP instance and identify conditions
+  under which such a transformation can remove parameter variables. This
+  transformation is applicable to four out of the five WMC encodings for
+  Bayesian networks. Finally, experiments showed that (at least for some
+  encodings) parameter variable removal can significantly improve inference
+  speed and supersede the previous state of the art.
+\end{description}
 
 \section{Future Goals}
 
