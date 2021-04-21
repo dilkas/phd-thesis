@@ -10,24 +10,94 @@
 \usepackage[capitalise]{cleveref}
 \usepackage{mathrsfs}
 \usepackage{complexity}
-\usepackage{epigraph}
+\usepackage{siunitx}
+\usepackage{tikz}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{arrows.meta}
 
 \title{Probabilistic Inference in Graphical and Relational Models}
 \author{Paulius Dilkas \\[1ex] {\small Supervisors: Mr Vaishak Belle and Dr Ron
     Petrick}}
 \affil{School of Informatics, University of Edinburgh}
-% in total, maybe ~5 pages before references and appendices
+
+\definecolor{first}{HTML}{1b9e77}
+\definecolor{second}{HTML}{d95f02}
+\definecolor{third}{HTML}{7570b3}
+\definecolor{fourth}{HTML}{e7298a}
+\definecolor{fifth}{HTML}{66a61e}
 
 \begin{document}
 \maketitle
 
-\epigraph{The true logic of this world is in the calculus of
-  probabilities.}{James Clerk Maxwell}
-
 \section{Introduction}
 % TODO: gather ~50 most relevant references (11 left)
+% in total, maybe ~5 pages before references and appendices
 
-\section{Background} % 2-3 pages, at least 2 of which are on applications
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm]
+    \node[draw,ultra thick,color=gray,text=black] (bn) {Bayesian networks};
+    \node[draw,ultra thick,right of=bn,color=first,text=black] (problog) {ProbLog};
+    \node[draw,ultra thick,color=gray,text=black,right of=problog] (unknown) {?};
+    \node[draw,ultra thick,below=1cm of bn,color=third,text=black] (pbp) {PBP};
+    \node[draw,ultra thick,below=1cm of problog,color=second,text=black] (wmc) {WMC};
+    \node[draw,ultra thick,below=1cm of unknown,color=fifth,text=black] (wpbmc) {WPBMC};
+    \node[draw,ultra thick,below=1cm of pbp,color=fourth,text=black] (dpmc) {DPMC};
+    \node[draw,ultra thick,color=gray,text=black,left of=dpmc] (addmc) {ADDMC};
+    \node[draw,ultra thick,right of=dpmc,color=fourth,text=black] (c2d) {c2d};
+    \node[draw,ultra thick,right of=c2d,color=fourth,text=black] (cachet) {Cachet};
+    \node[draw,ultra thick,right of=cachet,color=fourth,text=black] (d4) {d4};
+    \node[draw,ultra thick,right of=d4,color=fourth,text=black] (minic2d) {miniC2D};
+    \draw[-{Stealth},ultra thick,color=third] (bn) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=second] (bn) -- (pbp);
+    \draw[-{Stealth},ultra thick,color=gray] (problog) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=third] (wmc) -- (pbp);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (addmc);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (dpmc);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (c2d);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (cachet);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (d4);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (minic2d);
+    \draw[-{Stealth},ultra thick,color=second] (pbp) -- (addmc);
+    \draw[-{Stealth},ultra thick,color=third] (pbp) -- (dpmc);
+    \draw[-{Stealth},ultra thick,color=fifth] (unknown) -- (wpbmc);
+    \draw[-{Stealth},ultra thick,color=fifth] (wpbmc) -- (dpmc);
+    \matrix[draw,below left] at (current bounding box.north east) {
+      \node[draw,color=first,ultra thick,label=right:\cref{app:cp}] {}; \\
+      \node[draw,color=second,ultra thick,label=right:\cref{app:uai}] {}; \\
+      \node[draw,color=third,ultra thick,label=right:\cref{app:sat}] {}; \\
+      \node[draw,color=fourth,ultra thick,label=right:\cref{sec:1}] {}; \\
+      \node[draw,color=fifth,ultra thick,label=right:\cref{sec:2}] {}; \\
+    };
+  \end{tikzpicture}
+  \caption{Outline of concepts relevant to my past and future work. The first
+    row contains representations of probability distributions that are and have
+    been relevant to my work. The second row contains encodings, i.e.,
+    computational problems that encode probabilistic inference. The third row
+    contains WMC algorithms. The question mark denotes a representation that is
+    yet to be identified. Gray arrows and boxes denote connections and concepts
+    that are already known from previous work. A coloured arrow or box indicates
+    that my work relates to that concept or interaction of concepts, and the
+    colour coding describes which past or future paper the concept is related
+    to.}
+\end{figure} % TODO: describe in the introduction
+
+This document has four sections and four appendices:
+\begin{itemize}
+\item \Cref{sec:background} contains background information on various
+  representations of probability distributions, their applications, and
+  inference algorithms.
+\item \Cref{sec:progress} describes the research progress made this academic
+  year.
+\item \Cref{sec:future} provides a plan for the rest of my degree.
+\item \Cref{app:cp,app:uai,app:sat} contain papers either published or submitted
+  since last year's review.
+\item And last year's review itself is included in \cref{app:previous}.
+\end{itemize}
+
+\section{Background} \label{sec:background}
+% 2-3 pages, at least 2 of which are on applications
 
 \subsection{Representations}
 
@@ -85,10 +155,11 @@
 \item belief propagation \cite{DBLP:conf/aaai/Pearl82}
 \end{itemize}
 
-\section{Progress To Date}
+\section{Progress To Date} \label{sec:progress}
 
 In this section, the progress made throughout this academic year is described
-with respect to the work plan from last year's annual report.
+with respect to the work plan from my first year review.\footnote{The first year
+review (with its own appendices) is included as \cref{app:previous}.}
 
 \begin{description}
 \item[WP 1] (`On the Equivalence of Constants in Relational Knowledge Bases')
@@ -185,20 +256,104 @@ with respect to the work plan from last year's annual report.
   speed and supersede the previous state of the art.
 \end{description}
 
-\section{Future Goals}
+\section{Future Goals} \label{sec:future}
 
+% TODO: introduction
+% TODO: estimate duration
+
+\subsection{Parameterized Complexity of WMC in Theory and
+  Practice} \label{sec:1}
+
+The experiments in my papers in \cref{app:uai,app:sat} as well as in previous
+work by others \cite{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}
+demonstrate that the differences amongst WMC algorithms are poorly understood,
+i.e., the algorithms perform very similarly overall, but with significant
+differences on subsets of benchmark data. In other words, which algorithm is the
+best depends entirely on who provides the data, and we have no idea what
+properties of a WMC instance make it more suitable for a search-based,
+a compilation-based, or an ADD-based approach. Therefore, the paper I am working
+on now aims to:
 \begin{itemize}
-\item Parameterized Complexity of Weighted Model Counting in Theory and
-  Practice 
-\item Weighted Pseudo-Boolean Model Counting (if I can find a good application)
+\item Establish the parameterized complexity of DPMC, showing that it scales
+  worse (than other algorithms) with respect to the treewidth of the primal
+  graph of the input propositional formula in conjunctive normal form (CNF) (we
+  call this \emph{primal treewidth}).
+\item Propose a new random model for CNF formulas that allows us to generate
+  instances of varying primal treewidth and use it to experimentally show how
+  the performance of WMC algorithms depends on various properties of the
+  instance such as density, primal treewidth, and the proportion of literal
+  weights that are particularly `simplifying', e.g., zero, one, and perhaps a
+  half.
 \end{itemize}
+\paragraph{Risks and contingencies.} One risk that I have already encountered is
+that having all of the following can lead to an infeasible amount of computation
+time:
+\begin{itemize}
+\item a time limit that is both similar to the time limits used in other
+  experimental studies and provides enough `space' for a growth curve to express
+  itself,
+\item enough different parameter values so that the plots look more like the
+  beautiful and barely-pixelated plots of today (e.g.,
+  \cite{DBLP:conf/cp/McCreeshPP19,DBLP:journals/jair/McCreeshPST18}) and less
+  like my tiny experimental setup in \cref{app:cp},
+\item enough different random instances for each combination of parameter values
+  so that a reliable median can be observed despite high variance.
+\end{itemize}
+This risk has been addressed in two ways:
+\begin{itemize}
+\item The time limit was reduced to \SI{100}{\second} and could be reduced
+  further (e.g., a similar paper uses only a \SI{10}{\second} time limit
+  \cite{DBLP:conf/ijcai/DudekMV17}).
+\item Instead of iterating over the values of all parameters in one big
+  experiment, I split it into two smaller experiments where some variables are
+  held constant and others are allowed to vary.
+\end{itemize}
+Another risk is that the experimental results may be unclear and/or not easily
+explainable. However, as random WMC instance generation is a completely
+unexplored area, even weird or imperfect results still count as valuable and
+interesting. Moreover, any unexpected differences in the way the algorithms
+perform on random and real data can always be likened to the equivalent
+situation with SAT algorithms.
+
+\subsection{Weighted Pseudo-Boolean Model Counting} \label{sec:2}
+
+\Cref{app:uai} and partially \cref{app:sat} address one issue with the
+traditional definition of WMC, i.e., that restricting weights to literals leads
+to most measures being unrepresentable without the addition of more variables
+and clauses. It would be thematic to end the thesis by addressing the other
+issue: at least for solvers such as ADDMC \cite{DBLP:conf/aaai/DudekPV20} and
+DPMC \cite{DBLP:conf/cp/DudekPV20}, there is no reason for a clause to be just a
+clause, i.e., a disjunction of literals. Instead, it can be an arbitrary
+pseudo-Boolean function. In \cref{app:sat}, I suggested that two-valued
+pseudo-Boolean function are particularly convenient because they can be defined
+with a formal equivalent of the statement `if formula $\phi$ is satisfied, then
+the value is $p$, otherwise the value is $q$'. Moreover, there is no reason for
+the formula to be propositional! Instead, we can consider \emph{pseudo-Boolean
+  constraints}, i.e., an intermediary between SAT and constraint satisfaction
+problems that supports linear and multilinear inequality constraints on logical
+variables that are interpreted as ones and zeros. Perhaps one can even use these
+constraints to encode almost arbitrary arithmetic constraints on integers.
+
+Extending DPMC to support such constraints is unlikely to be difficult. The
+challenge is in finding at least one suitable application. The kind of Bayesian
+network encodings that I investigated in \cref{app:uai,app:sat} \emph{can}
+benefit from this (as they have counting constraints) but only marginally since
+each counting constraint is usually only applied to two or three variables.
+There must be some domain where probabilistic (or some other kind of weighted)
+inference is needed in the context of integer arithmetic, counting, or
+knapsack-style constraints, but so far I was not able to find one.
+
+\paragraph{Risks and contingencies.} If I am unable to find a good
+application,...
+% TODO: Footnote: pseudo-Boolean functions and pseudo-Boolean encodings are not
+% related!
 
 \bibliographystyle{acm}
 \bibliography{review}
 
 \includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
   \put(70,750){%
-    \parbox{\textwidth}{\appendix\section{Published Paper (CP 2020)}\label{app:cp}}
+    \parbox{\textwidth}{\pagenumbering{gobble}\appendix\section{Published Paper (CP 2020)}\label{app:cp}}
   }}]{../../published/random-logic-programs/paper/paper.pdf}
 \includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
   \put(70,750){%
@@ -208,5 +363,9 @@ with respect to the work plan from last year's annual report.
   \put(70,750){%
     \parbox{\textwidth}{\section{Submitted Paper (SAT 2021)}\label{app:sat}}
   }}]{../../conditional-wmc/doc/paper3/paper.pdf}
+\includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
+  \put(70,750){%
+    \parbox{\textwidth}{\section{First Year Review}\label{app:previous}}
+  }}]{../review1/review.pdf}
 
 \end{document}
