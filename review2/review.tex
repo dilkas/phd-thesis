@@ -12,9 +12,13 @@
 \usepackage{complexity}
 \usepackage{siunitx}
 \usepackage{tikz}
+\usepackage{subcaption}
 
-\usetikzlibrary{positioning}
+\usetikzlibrary{arrows}
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
 
 \title{Probabilistic Inference in Graphical and Relational Models}
 \author{Paulius Dilkas \\[1ex] {\small Supervisors: Mr Vaishak Belle and Dr Ron
@@ -31,8 +35,6 @@
 \maketitle
 
 \section{Introduction}
-% TODO: gather ~50 most relevant references (11 left)
-% in total, maybe ~5 pages before references and appendices
 
 \begin{figure}
   \centering
@@ -97,44 +99,85 @@ This document has four sections and four appendices:
 \end{itemize}
 
 \section{Background} \label{sec:background}
-% 2-3 pages, at least 2 of which are on applications
+% TODO: 2-3 pages, at least 2 of which are on applications
 
 \subsection{Representations}
+% ILP \cite{DBLP:journals/ngc/Muggleton91}, PILP \cite{DBLP:conf/ilp/2008p}
 
-\begin{itemize}
-\item RDDL \cite{sanner2010relational},
-\item ProbLog \cite{DBLP:conf/ijcai/RaedtKT07} (ILP
-  \cite{DBLP:journals/ngc/Muggleton91}, PILP \cite{DBLP:conf/ilp/2008p})
-\item Bayesian networks \cite{DBLP:books/daglib/0066829}
-\item relational Bayesian networks \cite{DBLP:conf/uai/Jaeger97}
-\item Markov random fields \cite{spitzer1971markov}
-\item Markov logic networks \cite{DBLP:journals/ml/RichardsonD06}
-\item ICL \cite{DBLP:journals/ai/Poole97}
-\item PRISM \cite{DBLP:conf/ijcai/SatoK97}
-\item CP-logic \cite{DBLP:journals/tplp/VennekensDB09}
-\item BLOG \cite{DBLP:conf/ijcai/MilchMRSOK05}
-\item Church \cite{DBLP:conf/uai/GoodmanMRBT08}
-\end{itemize}
+Perhaps the best-known representations of probability distributions are
+probabilistic graphical models (PGMs), i.e., graphs with vertices that
+correspond to random variables. The graph can either be directed (as in Bayesian
+networks \cite{DBLP:books/daglib/0066829}) or undirected (as in Markov random
+fields \cite{spitzer1971markov}). Both PGMs have been extended to support
+additional structure: relational Bayesian networks \cite{DBLP:conf/uai/Jaeger97}
+can compactly describe a probability distribution over a relational structure,
+and Markov logic networks (MLNs) \cite{DBLP:journals/ml/RichardsonD06} extend
+Markov random fields with support for first-order logic. In fact, efforts to
+unify probability and logic have a history going back to mid-1980s
+\cite{DBLP:journals/ndjfl/Hailperin84,DBLP:journals/ai/Nilsson86}.
+
+Augmenting a programming language with probabilities is another common approach
+to conveniently and compactly represent a probability distribution. Logic
+programming languages in particular have been frequently used for this purpose,
+examples of which include earlier languages such as independent choice logic
+\cite{DBLP:journals/ai/Poole97} and PRISM \cite{DBLP:conf/ijcai/SatoK97} as well
+as more recent ones such as ProbLog \cite{DBLP:conf/ijcai/RaedtKT07} and
+CP-logic \cite{DBLP:journals/tplp/VennekensDB09}. Functional and imperative
+programming languages have also seen some use. Probabilistic semantics in these
+languages typically rely on two constructs: the ability to draw random values
+from probability distributions and the ability to condition a program on
+observations \cite{DBLP:conf/icse/GordonHNR14}. Examples of such languages
+include functional languages such as Church \cite{DBLP:conf/uai/GoodmanMRBT08}
+and imperative languages like BLOG \cite{DBLP:conf/ijcai/MilchMRSOK05}.
+
+Probabilities (more specifically, transition probabilities) are also central to
+Markov decision processes \cite{bellman1957markovian} and partially observable
+Markov decision processes \cite{aastrom1965optimal}, and so are heavily used in
+planning languages such as relational dynamic influence diagram language (RDDL)
+\cite{sanner2010relational} and probabilistic model checkers such as PRISM
+\cite{DBLP:conf/cav/KwiatkowskaNP11}. Finally, probabilities are even used in
+databases as a way to represent uncertainty about the correctness or accuracy of
+the data \cite{DBLP:series/synthesis/2011Suciu}.
 
 \subsection{Applications}
 
+\paragraph{Biology and medicine.}
 \begin{itemize}
+\item biology \cite{DBLP:journals/jcb/SakhanenkoG12}
+\item genetic data analysis \cite{DBLP:journals/nar/MaeyerWRRM15}
 \item mining electronic health records \cite{DBLP:conf/iaai/NatarajanKIJC13}
+\item cancer diagnosis
+  \cite{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13}
+\end{itemize}
+
+% TODO: consider how I want to describe papers that overlap bio and nlp
+% categories
+\paragraph{Natural language processing.}
+\begin{itemize}
+\item language modelling \cite{DBLP:conf/icml/JerniteRS15}
+\item solving textbook probability problems \cite{DBLP:conf/ijcai/DriesKDBR17}
+\item biomedical knowledge extraction \cite{DBLP:conf/naacl/PoonV10}
+\item medical NLP \cite{DBLP:conf/emnlp/VerbekeAMFDR12}
+\item never-ending language learning \cite{DBLP:conf/aaai/CarlsonBKSHM10}
+\end{itemize}
+
+% robotics
+Representations such as MLNs and ProbLog have been used in robotics to model object affordances
+\cite{DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14,DBLP:conf/ilp/MoldovanORMS11},
+enable a robot control system to deal with ambiguities in natural language
+instructions \cite{DBLP:journals/ras/BeetzJMT10}, or more generally as the
+robot's probabilistic knowledge representation system
+\cite{DBLP:conf/icra/JainMB09}.
+
+\paragraph{Misc.}
+\begin{itemize}
+\item planning under uncertainty \cite{DBLP:journals/jair/BoutilierDH99}
 \item extracting value from dark data
   \cite{DBLP:journals/ijswis/NiuZRS12,DBLP:conf/emnlp/VenugopalCGN14}
-\item language modelling \cite{DBLP:conf/icml/JerniteRS15}, NLP
-  \cite{DBLP:conf/ijcai/DriesKDBR17}
-\item planning under uncertainty \cite{DBLP:journals/jair/BoutilierDH99}
-\item robotics \cite{DBLP:journals/ras/BeetzJMT10,DBLP:conf/icra/MoldovanMOSR12}
-\item cancer diagnosis \cite{DBLP:conf/ilp/Corte-RealD017}
-\item genetic data analysis \cite{DBLP:journals/nar/MaeyerWRRM15}
 \item many more examples here \cite{DBLP:series/synthesis/2016Raedt}
 \end{itemize}
 
 \subsection{Inference}
-% TODO (maybe): have representations on one row, inference techniques on the
-% other (with WMC in between), and citations both on edges and on nodes (and
-% maybe arrows for reductions?)
 
 \begin{itemize}
 \item WMC \cite{DBLP:journals/ai/ChaviraD08}
@@ -144,16 +187,107 @@ This document has four sections and four appendices:
   \cite{DBLP:journals/ijar/BelleR20,DBLP:journals/jair/BacchusDP09,DBLP:journals/japll/KimmigBR17}
 \item knowledge compilation stuff:
   \begin{itemize}
+  \item (RO)BDDs \cite{DBLP:journals/tc/Bryant86}
   \item d-DNNF \cite{DBLP:journals/jancl/Darwiche01}
   \item SDDs \cite{DBLP:conf/ijcai/Darwiche11}
   \item PSDDs \cite{DBLP:conf/kr/KisaBCD14}
-  \item (RO)BDDs \cite{DBLP:journals/tc/Bryant86}
   \end{itemize}
 \item variable elimination \cite{DBLP:journals/ai/Dechter99}
 \item recursive conditioning \cite{DBLP:journals/ai/Darwiche01}
 \item join tree \cite{lauritzen1988local}
 \item belief propagation \cite{DBLP:conf/aaai/Pearl82}
+\item WMC algorithms
+  \begin{itemize}
+  \item \textsc{c2d} \cite{DBLP:conf/ecai/Darwiche04}
+  \item \textsc{Cachet} \cite{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05,DBLP:conf/aaai/SangBK05}
+  \item \textsc{d4} \cite{DBLP:conf/ijcai/LagniezM17}
+  \item \textsc{ADDMC} \cite{DBLP:conf/aaai/DudekPV20}
+  \item \textsc{DPMC} \cite{DBLP:conf/cp/DudekPV20}
+  \item \textsc{miniC2D} \cite{DBLP:conf/ijcai/OztokD15}
+  \end{itemize}
 \end{itemize}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \node[draw,circle] (A) {$A$}
+      child {edge from parent[draw=none]}
+      child {node[draw,circle] (B) {$B$} edge from parent[dashed]
+        child {node[draw,circle,solid] (C) {$C$} edge from parent[dashed]
+          child {node[draw,rectangle,solid] {$1$} edge from parent[solid]}
+          child {node[draw,rectangle,solid] (0) {$0$}}
+        }
+        child {edge from parent[draw=none]}
+      };
+      \draw (A) -- (C);
+      \draw (B) -- (0);
+    \end{tikzpicture}
+    \caption{(RO)BDD}
+  \end{subfigure}
+  \begin{subfigure}{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \node[draw,circle] {$\land$}
+      child {node[draw,circle] {$\lor$}
+        child {node[draw,circle] (parent) {$\land$}
+          child {node[draw,rectangle] {$B$}}
+          child {edge from parent[draw=none]}
+        }
+        child {node[draw,circle] {$\land$}
+          child {node[draw,circle] {$\lor$}
+            child {node[draw,rectangle] (A) {$A$}}
+            child {node[draw,rectangle] {$\neg A$}}
+          }
+          child {node[draw,rectangle] {$\neg B$}}
+        }
+      }
+      child {node[draw,rectangle] {$C$}};
+      \draw (parent) -- (A);
+    \end{tikzpicture}
+    \caption{d-DNNF}
+  \end{subfigure}
+  \begin{subfigure}{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \tikzset{
+        mysplit/.style={
+          draw,
+          rectangle,
+          rectangle split,
+          rectangle split horizontal,
+          rectangle split parts=2
+        }
+      }
+      \node[draw,circle] {$1$}
+      child {node[mysplit] (bullet) {
+          \nodepart{one} $\neg A$
+          \nodepart{two}
+        }
+        child {node[draw,circle] (3) {$3$} edge from parent[draw=none]
+          child {node[mysplit] {
+              \nodepart{one} $\neg B$
+              \nodepart{two} $C$
+            }
+          }
+          child {node[mysplit] {
+              \nodepart{one} $B$
+              \nodepart{two} $\bot$
+            }
+          }
+        }
+      }
+      child {node[mysplit] {
+          \nodepart{one} $A$
+          \nodepart{two} $C$
+        }};
+      \draw[*-] let \p1 = (bullet.two), \p2 = (bullet.center) in ({\x1 + 2.5},{\y2 + 2}) -- (3);
+    \end{tikzpicture}
+    \caption{SDD}
+  \end{subfigure}
+  \caption{Example diagrams for $C \land (A \lor \neg B)$}
+\end{figure} % TODO: describe in text
 
 \section{Progress To Date} \label{sec:progress}
 
@@ -258,8 +392,9 @@ review (with its own appendices) is included as \cref{app:previous}.}
 
 \section{Future Goals} \label{sec:future}
 
-% TODO: introduction
-% TODO: estimate duration
+In this section, we describe two research projects to be completed before the
+end of year 3. The first one is about \SI{30}{\percent} done at the time of
+writing, while the second one is still just an idea with some notes.
 
 \subsection{Parameterized Complexity of WMC in Theory and
   Practice} \label{sec:1}
@@ -285,6 +420,9 @@ on now aims to:
   weights that are particularly `simplifying', e.g., zero, one, and perhaps a
   half.
 \end{itemize}
+
+\paragraph{Estimated duration:} 3 months.
+
 \paragraph{Risks and contingencies.} One risk that I have already encountered is
 that having all of the following can lead to an infeasible amount of computation
 time:
@@ -329,10 +467,12 @@ pseudo-Boolean function are particularly convenient because they can be defined
 with a formal equivalent of the statement `if formula $\phi$ is satisfied, then
 the value is $p$, otherwise the value is $q$'. Moreover, there is no reason for
 the formula to be propositional! Instead, we can consider \emph{pseudo-Boolean
-  constraints}, i.e., an intermediary between SAT and constraint satisfaction
-problems that supports linear and multilinear inequality constraints on logical
-variables that are interpreted as ones and zeros. Perhaps one can even use these
-constraints to encode almost arbitrary arithmetic constraints on integers.
+  constraints}\footnote{Despite similar names, pseudo-Boolean constraints and
+  pseudo-Boolean functions are not related!}, i.e., an intermediary between SAT
+and constraint satisfaction problems that supports linear and multilinear
+inequality constraints on logical variables that are interpreted as ones and
+zeros. Perhaps one can even use these constraints to encode almost arbitrary
+arithmetic constraints on integers.
 
 Extending DPMC to support such constraints is unlikely to be difficult. The
 challenge is in finding at least one suitable application. The kind of Bayesian
@@ -343,10 +483,12 @@ There must be some domain where probabilistic (or some other kind of weighted)
 inference is needed in the context of integer arithmetic, counting, or
 knapsack-style constraints, but so far I was not able to find one.
 
+\paragraph{Estimated duration:} 6 months.
+
 \paragraph{Risks and contingencies.} If I am unable to find a good
-application,...
-% TODO: Footnote: pseudo-Boolean functions and pseudo-Boolean encodings are not
-% related!
+application, I will instead use the remaining time to work on a different idea,
+e.g., adapting DPMC to first-order logic (i.e., WFOMC) using first-order ADDs
+\cite{DBLP:journals/ai/SannerB09}.
 
 \bibliographystyle{acm}
 \bibliography{review}
