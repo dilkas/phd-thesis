@@ -139,43 +139,35 @@ planning languages such as relational dynamic influence diagram language (RDDL)
 databases as a way to represent uncertainty about the correctness or accuracy of
 the data \cite{DBLP:series/synthesis/2011Suciu}.
 
-\subsection{Applications}
-
-\paragraph{Biology and medicine.}
-\begin{itemize}
-\item biology \cite{DBLP:journals/jcb/SakhanenkoG12}
-\item genetic data analysis \cite{DBLP:journals/nar/MaeyerWRRM15}
-\item mining electronic health records \cite{DBLP:conf/iaai/NatarajanKIJC13}
-\item cancer diagnosis
-  \cite{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13}
-\end{itemize}
-
-% TODO: consider how I want to describe papers that overlap bio and nlp
-% categories
-\paragraph{Natural language processing.}
-\begin{itemize}
-\item language modelling \cite{DBLP:conf/icml/JerniteRS15}
-\item solving textbook probability problems \cite{DBLP:conf/ijcai/DriesKDBR17}
-\item biomedical knowledge extraction \cite{DBLP:conf/naacl/PoonV10}
-\item medical NLP \cite{DBLP:conf/emnlp/VerbekeAMFDR12}
-\item never-ending language learning \cite{DBLP:conf/aaai/CarlsonBKSHM10}
-\end{itemize}
-
-% robotics
-Representations such as MLNs and ProbLog have been used in robotics to model object affordances
+\paragraph{Applications.}
+Probabilistic models have been successfully applied to many domains. Here we
+primarily focus on applications in life sciences, natural language processing,
+and robotics. Statistical relational models have been widely used to analyse
+genetic \cite{DBLP:journals/nar/MaeyerWRRM15,DBLP:journals/jcb/SakhanenkoG12}
+and medical \cite{DBLP:conf/iaai/NatarajanKIJC13} data and in particular have
+been successfully applied to breast cancer diagnosis and decision support
+\cite{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13}. In natural
+language processing, probabilistic models have been used to extract events
+\cite{DBLP:conf/emnlp/VenugopalCGN14} and knowledge
+\cite{DBLP:conf/naacl/PoonV10} from text, classify sentences
+\cite{DBLP:conf/emnlp/VerbekeAMFDR12}, efficiently model a language
+\cite{DBLP:conf/icml/JerniteRS15}, solve textbook probability problems
+\cite{DBLP:conf/ijcai/DriesKDBR17}, and form beliefs from reading various web
+pages \cite{DBLP:conf/aaai/CarlsonBKSHM10}. Representations such as MLNs and
+ProbLog have also been used in robotics to model object affordances
 \cite{DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14,DBLP:conf/ilp/MoldovanORMS11},
 enable a robot control system to deal with ambiguities in natural language
 instructions \cite{DBLP:journals/ras/BeetzJMT10}, or more generally as the
 robot's probabilistic knowledge representation system
-\cite{DBLP:conf/icra/JainMB09}.
-
-\paragraph{Misc.}
-\begin{itemize}
-\item planning under uncertainty \cite{DBLP:journals/jair/BoutilierDH99}
-\item extracting value from dark data
-  \cite{DBLP:journals/ijswis/NiuZRS12,DBLP:conf/emnlp/VenugopalCGN14}
-\item many more examples here \cite{DBLP:series/synthesis/2016Raedt}
-\end{itemize}
+\cite{DBLP:conf/icra/JainMB09}. Finally, probabilistic models have also been
+used for many other tasks such as planning under uncertainty (MDPs)
+\cite{DBLP:journals/jair/BoutilierDH99}, knowledge base construction (MLNs)
+\cite{DBLP:journals/ijswis/NiuZRS12}, stream mining
+\cite{DBLP:conf/icdm/ChandraSKTA14}, predicting the remaining useful life of a
+hardware component \cite{vlasselaer2012statistical}, recommendation systems
+\cite{DBLP:journals/corr/YangKAGN16}, and criminal activity prediction
+\cite{DBLP:conf/sdm/DelaneyFCWJ10}. The reader can mind many more examples in a
+book by De Raedt et al. \cite{DBLP:series/synthesis/2016Raedt}.
 
 \subsection{Inference}
 
