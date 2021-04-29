@@ -36,55 +36,6 @@
 
 \section{Introduction}
 
-\begin{figure}
-  \centering
-  \begin{tikzpicture}[node distance=2.5cm]
-    \node[draw,ultra thick,color=gray,text=black] (bn) {Bayesian networks};
-    \node[draw,ultra thick,right of=bn,color=first,text=black] (problog) {ProbLog};
-    \node[draw,ultra thick,color=gray,text=black,right of=problog] (unknown) {?};
-    \node[draw,ultra thick,below=1cm of bn,color=third,text=black] (pbp) {PBP};
-    \node[draw,ultra thick,below=1cm of problog,color=second,text=black] (wmc) {WMC};
-    \node[draw,ultra thick,below=1cm of unknown,color=fifth,text=black] (wpbmc) {WPBMC};
-    \node[draw,ultra thick,below=1cm of pbp,color=fourth,text=black] (dpmc) {DPMC};
-    \node[draw,ultra thick,color=gray,text=black,left of=dpmc] (addmc) {ADDMC};
-    \node[draw,ultra thick,right of=dpmc,color=fourth,text=black] (c2d) {c2d};
-    \node[draw,ultra thick,right of=c2d,color=fourth,text=black] (cachet) {Cachet};
-    \node[draw,ultra thick,right of=cachet,color=fourth,text=black] (d4) {d4};
-    \node[draw,ultra thick,right of=d4,color=fourth,text=black] (minic2d) {miniC2D};
-    \draw[-{Stealth},ultra thick,color=third] (bn) -- (wmc);
-    \draw[-{Stealth},ultra thick,color=second] (bn) -- (pbp);
-    \draw[-{Stealth},ultra thick,color=gray] (problog) -- (wmc);
-    \draw[-{Stealth},ultra thick,color=third] (wmc) -- (pbp);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (addmc);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (dpmc);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (c2d);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (cachet);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (d4);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (minic2d);
-    \draw[-{Stealth},ultra thick,color=second] (pbp) -- (addmc);
-    \draw[-{Stealth},ultra thick,color=third] (pbp) -- (dpmc);
-    \draw[-{Stealth},ultra thick,color=fifth] (unknown) -- (wpbmc);
-    \draw[-{Stealth},ultra thick,color=fifth] (wpbmc) -- (dpmc);
-    \matrix[draw,below left] at (current bounding box.north east) {
-      \node[draw,color=first,ultra thick,label=right:\cref{app:cp}] {}; \\
-      \node[draw,color=second,ultra thick,label=right:\cref{app:uai}] {}; \\
-      \node[draw,color=third,ultra thick,label=right:\cref{app:sat}] {}; \\
-      \node[draw,color=fourth,ultra thick,label=right:\cref{sec:1}] {}; \\
-      \node[draw,color=fifth,ultra thick,label=right:\cref{sec:2}] {}; \\
-    };
-  \end{tikzpicture}
-  \caption{Outline of concepts relevant to my past and future work. The first
-    row contains representations of probability distributions that are and have
-    been relevant to my work. The second row contains encodings, i.e.,
-    computational problems that encode probabilistic inference. The third row
-    contains WMC algorithms. The question mark denotes a representation that is
-    yet to be identified. Gray arrows and boxes denote connections and concepts
-    that are already known from previous work. A coloured arrow or box indicates
-    that my work relates to that concept or interaction of concepts, and the
-    colour coding describes which past or future paper the concept is related
-    to.}
-\end{figure} % TODO: describe in the introduction
-
 This document has four sections and four appendices:
 \begin{itemize}
 \item \Cref{sec:background} contains background information on various
@@ -99,9 +50,9 @@ This document has four sections and four appendices:
 \end{itemize}
 
 \section{Background} \label{sec:background}
-% TODO: 2-3 pages, at least 2 of which are on applications
+% TODO: 2-3 pages. and introduce Section 2.
 
-\subsection{Representations}
+\subsection{Representations of Probability Distributions}
 % ILP \cite{DBLP:journals/ngc/Muggleton91}, PILP \cite{DBLP:conf/ilp/2008p}
 
 Perhaps the best-known representations of probability distributions are
@@ -115,6 +66,9 @@ and Markov logic networks (MLNs) \cite{DBLP:journals/ml/RichardsonD06} extend
 Markov random fields with support for first-order logic. In fact, efforts to
 unify probability and logic have a history going back to mid-1980s
 \cite{DBLP:journals/ndjfl/Hailperin84,DBLP:journals/ai/Nilsson86}.
+
+TODO: two more references to mention: \cite{DBLP:series/synthesis/2016Raedt} and
+\cite{DBLP:series/sci/BrazAR08}
 
 Augmenting a programming language with probabilities is another common approach
 to conveniently and compactly represent a probability distribution. Logic
@@ -169,33 +123,106 @@ hardware component \cite{vlasselaer2012statistical}, recommendation systems
 \cite{DBLP:conf/sdm/DelaneyFCWJ10}. The reader can mind many more examples in a
 book by De Raedt et al. \cite{DBLP:series/synthesis/2016Raedt}.
 
-\subsection{Inference}
+\subsection{Probabilistic Inference}
+% TODO: emphasise definitions
 
+The problem of computing some probability from a given representation of a
+probability distribution can be seen as a version of a more general problem
+known as SumProd
+\cite{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. It is
+characterised by a set of discrete variables and a set of functions from some
+subsets of the variables to a commutative semiring. SumProd then asks to compute
+the sum over all values of all variables of the product of all functions. Many
+problems such as SAT, constraint satisfaction, model counting, and most probable
+explanation can be describe as variations of SumProd
+\cite{DBLP:journals/jair/BacchusDP09,DBLP:journals/ijar/BelleR20,DBLP:journals/ai/Dechter99,DBLP:journals/japll/KimmigBR17}.
+It is often convenient to consider two graphs associated with each instance of
+SumProd. Its canonical hypergraph has variables as vertices and function domains
+as edges, and its primal graph (also known as the Gaifman graph and by many
+other names) is the simple graph with variables as vertices and an edge
+between two variables if there is a function that depends on both of them.
+
+A number of algorithms for probabilistic inference have been proposed.
 \begin{itemize}
-\item WMC \cite{DBLP:journals/ai/ChaviraD08}
+\item Variable elimination \cite{DBLP:journals/ai/Dechter99} works by
+  nondeterministically choosing an ordering of variables and `summing out' each
+  variable in the chosen order. The well-known
+  Davis-Putnam algorithm \cite{DBLP:journals/jacm/DavisP60} for SAT is an
+  example of variable elimination \cite{DBLP:journals/jair/BacchusDP09}.
+\item Recursive conditioning \cite{DBLP:journals/ai/Darwiche01} is a
+  divide-and-conquer algorithm that relies on a branch decomposition of the
+  hypergraph to initialise variables in such a way so as to split the problem
+  into multiple smaller problems that can be solved independently. AND/OR search
+  \cite{DBLP:journals/ai/DechterM07,nilsson1980principles} is a similar
+  technique that utilises pseudo trees of the primal graph instead of branch
+  decompositions.
+\item Belief propagation (also known as message passing)
+  \cite{DBLP:conf/aaai/Pearl82} is an approximation algorithm that converges to
+  the exact answer when the primal graph is a tree or a polytree (i.e., a
+  directed graph whose undirected version is a tree), and join (or junction)
+  tree algorithm \cite{lauritzen1988local} extends belief propagation to
+  arbitrary primal graphs via tree decompositions.
+\end{itemize}
+
+\subsubsection{Weighted Model Counting}
+
+About fifteen to twenty years ago,
+WMC \cite{DBLP:journals/ai/ChaviraD08}
+
+\paragraph{Extensions.}
+\begin{itemize}
 \item WMI \cite{DBLP:conf/ijcai/BellePB15}
 \item WFOMC \cite{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}
+\item open universe \cite{DBLP:conf/aaai/Belle17}
 \item generalisations
-  \cite{DBLP:journals/ijar/BelleR20,DBLP:journals/jair/BacchusDP09,DBLP:journals/japll/KimmigBR17}
-\item knowledge compilation stuff:
-  \begin{itemize}
-  \item (RO)BDDs \cite{DBLP:journals/tc/Bryant86}
-  \item d-DNNF \cite{DBLP:journals/jancl/Darwiche01}
-  \item SDDs \cite{DBLP:conf/ijcai/Darwiche11}
-  \item PSDDs \cite{DBLP:conf/kr/KisaBCD14}
-  \end{itemize}
-\item variable elimination \cite{DBLP:journals/ai/Dechter99}
-\item recursive conditioning \cite{DBLP:journals/ai/Darwiche01}
-\item join tree \cite{lauritzen1988local}
-\item belief propagation \cite{DBLP:conf/aaai/Pearl82}
-\item WMC algorithms
+  \cite{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}
+\end{itemize}
+
+\paragraph{Encodings/Uses.}
+\begin{itemize}
+\item Bayesian networks
+  \cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
+\item Related: direct compilation to SDDs \cite{DBLP:conf/ecsqaru/ChoiKD13}
+  and PSDDs \cite{shen2020modeling}.
+\item related: context-specific independence \cite{DBLP:conf/uai/BoutilierFGK96}.
+\item Neuro-symbolic
+  \cite{DBLP:conf/icml/XuZFLB18,DBLP:journals/corr/abs-2010-11926}
+\item probabilistic programs
+  \cite{DBLP:journals/corr/abs-2005-09089,DBLP:journals/pacmpl/HoltzenBM20}
+\item ProbLog
+  \cite{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16}
+\end{itemize}
+
+\paragraph{Knowledge Compilation.}
+\begin{itemize}
+\item (RO)BDDs \cite{DBLP:journals/tc/Bryant86}
+\item d-DNNF \cite{DBLP:journals/jancl/Darwiche01}
+\item SDDs \cite{DBLP:conf/ijcai/Darwiche11}
+\item PSDDs \cite{DBLP:conf/kr/KisaBCD14}
+\end{itemize}
+
+\paragraph{Algorithms.}
+\begin{itemize}
+\item main ones
   \begin{itemize}
   \item \textsc{c2d} \cite{DBLP:conf/ecai/Darwiche04}
   \item \textsc{Cachet} \cite{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05,DBLP:conf/aaai/SangBK05}
   \item \textsc{d4} \cite{DBLP:conf/ijcai/LagniezM17}
+  \item related: ADDs \cite{DBLP:journals/fmsd/BaharFGHMPS97}, AADDs
+    \cite{DBLP:conf/ijcai/SannerM05}, FOADDs \cite{DBLP:journals/ai/SannerB09},
+    XADDs \cite{DBLP:conf/uai/SannerDB11}.
+  \item uses of ADDs: Bayesian networks
+    \cite{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, stochastic
+    planning \cite{DBLP:conf/uai/HoeySHB99}.
   \item \textsc{ADDMC} \cite{DBLP:conf/aaai/DudekPV20}
   \item \textsc{DPMC} \cite{DBLP:conf/cp/DudekPV20}
   \item \textsc{miniC2D} \cite{DBLP:conf/ijcai/OztokD15}
+  \end{itemize}
+\item other approaches
+  \begin{itemize}
+  \item approximate \cite{DBLP:conf/aaai/RenkensKBR14}
+  \item parallel \cite{DBLP:conf/pgm/DalLL18}
+  \item reduction to MC \cite{DBLP:conf/ijcai/ChakrabortyFMV15}
   \end{itemize}
 \end{itemize}
 
@@ -282,6 +309,55 @@ book by De Raedt et al. \cite{DBLP:series/synthesis/2016Raedt}.
 \end{figure} % TODO: describe in text
 
 \section{Progress To Date} \label{sec:progress}
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm]
+    \node[draw,ultra thick,color=gray,text=black] (bn) {Bayesian networks};
+    \node[draw,ultra thick,right of=bn,color=first,text=black] (problog) {ProbLog};
+    \node[draw,ultra thick,color=gray,text=black,right of=problog] (unknown) {?};
+    \node[draw,ultra thick,below=1cm of bn,color=third,text=black] (pbp) {PBP};
+    \node[draw,ultra thick,below=1cm of problog,color=second,text=black] (wmc) {WMC};
+    \node[draw,ultra thick,below=1cm of unknown,color=fifth,text=black] (wpbmc) {WPBMC};
+    \node[draw,ultra thick,below=1cm of pbp,color=fourth,text=black] (dpmc) {DPMC};
+    \node[draw,ultra thick,color=gray,text=black,left of=dpmc] (addmc) {ADDMC};
+    \node[draw,ultra thick,right of=dpmc,color=fourth,text=black] (c2d) {c2d};
+    \node[draw,ultra thick,right of=c2d,color=fourth,text=black] (cachet) {Cachet};
+    \node[draw,ultra thick,right of=cachet,color=fourth,text=black] (d4) {d4};
+    \node[draw,ultra thick,right of=d4,color=fourth,text=black] (minic2d) {miniC2D};
+    \draw[-{Stealth},ultra thick,color=third] (bn) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=second] (bn) -- (pbp);
+    \draw[-{Stealth},ultra thick,color=gray] (problog) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=third] (wmc) -- (pbp);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (addmc);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (dpmc);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (c2d);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (cachet);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (d4);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (minic2d);
+    \draw[-{Stealth},ultra thick,color=second] (pbp) -- (addmc);
+    \draw[-{Stealth},ultra thick,color=third] (pbp) -- (dpmc);
+    \draw[-{Stealth},ultra thick,color=fifth] (unknown) -- (wpbmc);
+    \draw[-{Stealth},ultra thick,color=fifth] (wpbmc) -- (dpmc);
+    \matrix[draw,below left] at (current bounding box.north east) {
+      \node[draw,color=first,ultra thick,label=right:\cref{app:cp}] {}; \\
+      \node[draw,color=second,ultra thick,label=right:\cref{app:uai}] {}; \\
+      \node[draw,color=third,ultra thick,label=right:\cref{app:sat}] {}; \\
+      \node[draw,color=fourth,ultra thick,label=right:\cref{sec:1}] {}; \\
+      \node[draw,color=fifth,ultra thick,label=right:\cref{sec:2}] {}; \\
+    };
+  \end{tikzpicture}
+  \caption{Outline of concepts relevant to my past and future work. The first
+    row contains representations of probability distributions that are and have
+    been relevant to my work. The second row contains encodings, i.e.,
+    computational problems that encode probabilistic inference. The third row
+    contains WMC algorithms. The question mark denotes a representation that is
+    yet to be identified. Gray arrows and boxes denote connections and concepts
+    that are already known from previous work. A coloured arrow or box indicates
+    that my work relates to that concept or interaction of concepts, and the
+    colour coding describes which past or future paper the concept is related
+    to.}
+\end{figure} % TODO: describe in text
 
 In this section, the progress made throughout this academic year is described
 with respect to the work plan from my first year review.\footnote{The first year
@@ -386,7 +462,10 @@ review (with its own appendices) is included as \cref{app:previous}.}
 
 In this section, we describe two research projects to be completed before the
 end of year 3. The first one is about \SI{30}{\percent} done at the time of
-writing, while the second one is still just an idea with some notes.
+writing, while the second one is still just an idea with some notes. Note that
+the total estimated duration for these projects leaves sufficient time for
+thesis writing and potential unexpected delays in line with the plan from last
+year.
 
 \subsection{Parameterized Complexity of WMC in Theory and
   Practice} \label{sec:1}
