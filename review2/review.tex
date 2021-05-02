@@ -36,7 +36,7 @@
 
 \section{Introduction}
 
-This document has four sections and four appendices:
+This document has five sections and four appendices:
 \begin{itemize}
 \item \Cref{sec:background} contains background information on various
   representations of probability distributions, their applications, and
@@ -50,32 +50,40 @@ This document has four sections and four appendices:
 \end{itemize}
 
 \section{Background} \label{sec:background}
-% TODO: 2-3 pages. and introduce Section 2.
 
-\subsection{Representations of Probability Distributions}
+This section provides a quick overview of the literature surrounding my work.
+\Cref{sec:representations} describes various ways to represent a probability
+distribution and lists some applications. \Cref{sec:inference} covers
+probabilistic inference algorithms---except for weighted model counting (WMC)
+which is described in more detail in \cref{sec:wmc}, including an overview
+of knowledge compilation techniques and WMC algorithms.
+
+\subsection{Representations of Probability
+  Distributions} \label{sec:representations}
 % ILP \cite{DBLP:journals/ngc/Muggleton91}, PILP \cite{DBLP:conf/ilp/2008p}
+% In fact, efforts to unify probability and logic have a history going back to
+% mid-1980s \cite{DBLP:journals/ndjfl/Hailperin84,DBLP:journals/ai/Nilsson86}.
 
 Perhaps the best-known representations of probability distributions are
 probabilistic graphical models (PGMs), i.e., graphs with vertices that
 correspond to random variables. The graph can either be directed (as in Bayesian
 networks \cite{DBLP:books/daglib/0066829}) or undirected (as in Markov random
-fields \cite{spitzer1971markov}). Both PGMs have been extended to support
-additional structure: relational Bayesian networks \cite{DBLP:conf/uai/Jaeger97}
-can compactly describe a probability distribution over a relational structure,
-and Markov logic networks (MLNs) \cite{DBLP:journals/ml/RichardsonD06} extend
-Markov random fields with support for first-order logic. In fact, efforts to
-unify probability and logic have a history going back to mid-1980s
-\cite{DBLP:journals/ndjfl/Hailperin84,DBLP:journals/ai/Nilsson86}.
-
-TODO: two more references to mention: \cite{DBLP:series/synthesis/2016Raedt} and
-\cite{DBLP:series/sci/BrazAR08}
+fields \cite{spitzer1971markov}). Both Bayesian networks and Markov random
+fields have been extended to support additional structure: relational Bayesian
+networks \cite{DBLP:conf/uai/Jaeger97} can compactly describe a probability
+distribution over a relational structure, and Markov logic networks (MLNs)
+\cite{DBLP:journals/ml/RichardsonD06} extend Markov random fields with support
+for first-order logic. More examples of both relational and first-order
+probabilistic models can be found in the survey paper by de Salvo Braz et al.
+\cite{DBLP:series/sci/BrazAR08} or the book by De Raedt et al.
+\cite{DBLP:series/synthesis/2016Raedt}.
 
 Augmenting a programming language with probabilities is another common approach
 to conveniently and compactly represent a probability distribution. Logic
-programming languages in particular have been frequently used for this purpose,
-examples of which include earlier languages such as independent choice logic
-\cite{DBLP:journals/ai/Poole97} and PRISM \cite{DBLP:conf/ijcai/SatoK97} as well
-as more recent ones such as ProbLog \cite{DBLP:conf/ijcai/RaedtKT07} and
+programming languages, in particular, have been frequently used for this
+purpose, examples of which include earlier languages such as independent choice
+logic \cite{DBLP:journals/ai/Poole97} and PRISM \cite{DBLP:conf/ijcai/SatoK97}
+as well as more recent ones such as ProbLog \cite{DBLP:conf/ijcai/RaedtKT07} and
 CP-logic \cite{DBLP:journals/tplp/VennekensDB09}. Functional and imperative
 programming languages have also seen some use. Probabilistic semantics in these
 languages typically rely on two constructs: the ability to draw random values
@@ -123,8 +131,7 @@ hardware component \cite{vlasselaer2012statistical}, recommendation systems
 \cite{DBLP:conf/sdm/DelaneyFCWJ10}. The reader can mind many more examples in a
 book by De Raedt et al. \cite{DBLP:series/synthesis/2016Raedt}.
 
-\subsection{Probabilistic Inference}
-% TODO: emphasise definitions
+\subsection{Probabilistic Inference} \label{sec:inference}
 
 The problem of computing some probability from a given representation of a
 probability distribution can be seen as a version of a more general problem
@@ -133,16 +140,16 @@ known as SumProd
 characterised by a set of discrete variables and a set of functions from some
 subsets of the variables to a commutative semiring. SumProd then asks to compute
 the sum over all values of all variables of the product of all functions. Many
-problems such as SAT, constraint satisfaction, model counting, and most probable
-explanation can be describe as variations of SumProd
-\cite{DBLP:journals/jair/BacchusDP09,DBLP:journals/ijar/BelleR20,DBLP:journals/ai/Dechter99,DBLP:journals/japll/KimmigBR17}.
-It is often convenient to consider two graphs associated with each instance of
-SumProd. Its canonical hypergraph has variables as vertices and function domains
-as edges, and its primal graph (also known as the Gaifman graph and by many
-other names) is the simple graph with variables as vertices and an edge
-between two variables if there is a function that depends on both of them.
+problems such as SAT, constraint satisfaction and optimisation, model counting,
+and most probable explanation can be described as variations of SumProd
+\cite{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. It is often
+convenient to consider two graphs associated with each instance of SumProd. Its
+canonical hypergraph has variables as vertices and function domains as edges,
+and its primal graph (also known as the Gaifman graph and by many other names)
+is the simple graph with variables as vertices and an edge between two variables
+if there is a function that depends on both of them.
 
-A number of algorithms for probabilistic inference have been proposed.
+Many algorithms for probabilistic inference have been proposed.
 \begin{itemize}
 \item Variable elimination \cite{DBLP:journals/ai/Dechter99} works by
   nondeterministically choosing an ordering of variables and `summing out' each
@@ -151,8 +158,8 @@ A number of algorithms for probabilistic inference have been proposed.
   example of variable elimination \cite{DBLP:journals/jair/BacchusDP09}.
 \item Recursive conditioning \cite{DBLP:journals/ai/Darwiche01} is a
   divide-and-conquer algorithm that relies on a branch decomposition of the
-  hypergraph to initialise variables in such a way so as to split the problem
-  into multiple smaller problems that can be solved independently. AND/OR search
+  hypergraph to initialise variables in such a way to split the problem into
+  multiple smaller problems that can be solved independently. AND/OR search
   \cite{DBLP:journals/ai/DechterM07,nilsson1980principles} is a similar
   technique that utilises pseudo trees of the primal graph instead of branch
   decompositions.
@@ -164,67 +171,37 @@ A number of algorithms for probabilistic inference have been proposed.
   arbitrary primal graphs via tree decompositions.
 \end{itemize}
 
-\subsubsection{Weighted Model Counting}
+\subsection{Weighted Model Counting} \label{sec:wmc}
 
-About fifteen to twenty years ago,
-WMC \cite{DBLP:journals/ai/ChaviraD08}
+Given a propositional formula, SAT asks whether there is a satisfying assignment
+of true or false values to variables such that the formula is satisfied. Model
+counting asks to count the number of such assignments. WMC
+\cite{DBLP:journals/ai/ChaviraD08} is a generalisation of model counting that
+assigns weights to literals and asks for the sum of the weights of all models
+(i.e., satisfying assignments), where the weight of a model is equal to the
+product of the weights of its literals.
 
-\paragraph{Extensions.}
-\begin{itemize}
-\item WMI \cite{DBLP:conf/ijcai/BellePB15}
-\item WFOMC \cite{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}
-\item open universe \cite{DBLP:conf/aaai/Belle17}
-\item generalisations
-  \cite{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}
-\end{itemize}
-
-\paragraph{Encodings/Uses.}
-\begin{itemize}
-\item Bayesian networks
-  \cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
-\item Related: direct compilation to SDDs \cite{DBLP:conf/ecsqaru/ChoiKD13}
-  and PSDDs \cite{shen2020modeling}.
-\item related: context-specific independence \cite{DBLP:conf/uai/BoutilierFGK96}.
-\item Neuro-symbolic
-  \cite{DBLP:conf/icml/XuZFLB18,DBLP:journals/corr/abs-2010-11926}
-\item probabilistic programs
-  \cite{DBLP:journals/corr/abs-2005-09089,DBLP:journals/pacmpl/HoltzenBM20}
-\item ProbLog
-  \cite{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16}
-\end{itemize}
-
-\paragraph{Knowledge Compilation.}
-\begin{itemize}
-\item (RO)BDDs \cite{DBLP:journals/tc/Bryant86}
-\item d-DNNF \cite{DBLP:journals/jancl/Darwiche01}
-\item SDDs \cite{DBLP:conf/ijcai/Darwiche11}
-\item PSDDs \cite{DBLP:conf/kr/KisaBCD14}
-\end{itemize}
-
-\paragraph{Algorithms.}
-\begin{itemize}
-\item main ones
-  \begin{itemize}
-  \item \textsc{c2d} \cite{DBLP:conf/ecai/Darwiche04}
-  \item \textsc{Cachet} \cite{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05,DBLP:conf/aaai/SangBK05}
-  \item \textsc{d4} \cite{DBLP:conf/ijcai/LagniezM17}
-  \item related: ADDs \cite{DBLP:journals/fmsd/BaharFGHMPS97}, AADDs
-    \cite{DBLP:conf/ijcai/SannerM05}, FOADDs \cite{DBLP:journals/ai/SannerB09},
-    XADDs \cite{DBLP:conf/uai/SannerDB11}.
-  \item uses of ADDs: Bayesian networks
-    \cite{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, stochastic
-    planning \cite{DBLP:conf/uai/HoeySHB99}.
-  \item \textsc{ADDMC} \cite{DBLP:conf/aaai/DudekPV20}
-  \item \textsc{DPMC} \cite{DBLP:conf/cp/DudekPV20}
-  \item \textsc{miniC2D} \cite{DBLP:conf/ijcai/OztokD15}
-  \end{itemize}
-\item other approaches
-  \begin{itemize}
-  \item approximate \cite{DBLP:conf/aaai/RenkensKBR14}
-  \item parallel \cite{DBLP:conf/pgm/DalLL18}
-  \item reduction to MC \cite{DBLP:conf/ijcai/ChakrabortyFMV15}
-  \end{itemize}
-\end{itemize}
+The first (and most well-researched) application of WMC is Bayesian network
+probabilistic inference
+\cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
+Initially, this approach was motivated by context-specific independence
+\cite{DBLP:conf/uai/BoutilierFGK96}, i.e., repeating probabilities in a
+conditional probability table, and the difficulty in exploiting this redundancy
+using previous probabilistic inference algorithms
+\cite{DBLP:conf/kr/Darwiche02}. Since then, WMC has been used for a variety of
+other models such as probabilistic logic programming language ProbLog
+\cite{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16},
+probabilistic functional programming language Dice
+\cite{DBLP:journals/pacmpl/HoltzenBM20}, and deep neural networks
+\cite{DBLP:journals/corr/abs-2010-11926,DBLP:conf/icml/XuZFLB18}. WMC has been
+extended to support continuous variables \cite{DBLP:conf/ijcai/BellePB15},
+first-order logical formulas
+\cite{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}, and infinite
+domains \cite{DBLP:conf/aaai/Belle17}. It was also observed that replacing real
+numbers with addition and multiplication with an arbitrary commutative semiring
+allows WMC to subsume a variety of other problems such as most probable
+explanation, shortest path, and calculating gradients
+\cite{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}.
 
 \begin{figure}
   \centering
@@ -306,7 +283,59 @@ WMC \cite{DBLP:journals/ai/ChaviraD08}
     \caption{SDD}
   \end{subfigure}
   \caption{Example diagrams for $C \land (A \lor \neg B)$}
-\end{figure} % TODO: describe in text
+  \label{fig:kc}
+\end{figure}
+
+\paragraph{Knowledge Compilation.}
+Many WMC algorithms rely on knowledge compilation, i.e., compilation of the
+structure of the initial representation into a form that allows one to perform
+various operations and answer queries of interest in time polynomial in the size
+of the compiled representation. Traditionally, the initial representation is a
+propositional formula. Many such representations have been proposed
+\cite{DBLP:journals/jair/DarwicheM02}. Amongst them, the ones that are used in
+probabilistic inference include (reduced ordered) binary decision diagrams
+((RO)BDDs) \cite{DBLP:journals/tc/Bryant86}, deterministic decomposable negation
+normal form (d-DNNF) \cite{DBLP:journals/jancl/Darwiche01}, sentential decision
+diagrams (SDDs) \cite{DBLP:conf/ijcai/Darwiche11}, and probabilistic SDDs
+\cite{DBLP:conf/kr/KisaBCD14}---some of them are pictured in \cref{fig:kc}. A
+BDD is similar to a decision tree that ends with either one or zero but
+generalised to a directed acyclic graph. Both d-DNNF and SDD are normal forms
+for propositional formulae that satisfy certain properties. Probabilistic SDDs
+extend SDDs with probability labels on edges. BDDs are a strict subset of SDDs
+that are a strict subset of d-DNNF \cite{DBLP:conf/ijcai/Darwiche11}.
+
+% Related: direct compilation to SDDs \cite{DBLP:conf/ecsqaru/ChoiKD13}
+% and probabilistic SDDs \cite{shen2020modeling}.
+
+\subsubsection{WMC Algorithms}
+
+WMC algorithms can be classified as those based on search, knowledge
+compilation, or algebraic decision diagrams (ADDs). The only search-based WMC
+algorithm is Cachet
+\cite{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05,DBLP:conf/aaai/SangBK05}
+which extends the SAT solver ZChaff
+\cite{DBLP:conf/dac/MoskewiczMZZM01,DBLP:conf/iccad/ZhangMMM01}. WMC algorithms
+based on knowledge compilation include c2d \cite{DBLP:conf/ecai/Darwiche04} and
+d4 \cite{DBLP:conf/ijcai/LagniezM17} that compile to d-DNNF and miniC2D
+\cite{DBLP:conf/ijcai/OztokD15} that compiles to SDDs. Other approaches to WMC
+include approximate \cite{DBLP:conf/aaai/RenkensKBR14} and parallel algorithms
+\cite{DBLP:conf/pgm/DalLL18} as well as reducing WMC to model counting
+\cite{DBLP:conf/ijcai/ChakrabortyFMV15}.
+
+Similarly to how BDDs represent Boolean functions, ADDs represent pseudo-Boolean
+functions, i.e., while (non-trivial) BDDs always have two sinks marked with one
+and zero, ADDs can have any number of sinks that contain, typically, real
+numbers \cite{DBLP:journals/fmsd/BaharFGHMPS97}. ADDs have been extended to
+represent the additive and multiplicative structure in sink values more
+compactly \cite{DBLP:conf/ijcai/SannerM05} and to support first-order logic
+\cite{DBLP:journals/ai/SannerB09} and continuous variables
+\cite{DBLP:conf/uai/SannerDB11}. ADDs have been used to represent MDP value
+functions \cite{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs
+\cite{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}. The two WMC
+algorithms based on ADDs are ADDMC \cite{DBLP:conf/aaai/DudekPV20} and DPMC
+\cite{DBLP:conf/cp/DudekPV20}. The main difference between them is that ADDMC
+relies on heuristics to plan the order of operations whereas DPMC uses a tree
+decomposition instead.
 
 \section{Progress To Date} \label{sec:progress}
 
@@ -357,24 +386,28 @@ WMC \cite{DBLP:journals/ai/ChaviraD08}
     that my work relates to that concept or interaction of concepts, and the
     colour coding describes which past or future paper the concept is related
     to.}
-\end{figure} % TODO: describe in text
+  \label{fig:overview}
+\end{figure}
 
 In this section, the progress made throughout this academic year is described
-with respect to the work plan from my first year review.\footnote{The first year
-review (with its own appendices) is included as \cref{app:previous}.}
+according to the work plan from my first-year review.\footnote{The first-year
+review (with its appendices) is included as \cref{app:previous}.} The reader
+is advised to refer to \cref{fig:overview} as a guide for how my previous and
+future research projects relate to one another. Acronyms such as PBP and WPBMC
+will be explained in this and the next section.
 
 \begin{description}
 \item[WP 1] (`On the Equivalence of Constants in Relational Knowledge Bases')
-  was abandoned. While trying to take reviewer feedback into consideration as
-  well as update and strengthen the paper, I found an important ambiguity: when
-  defining what constants are `captured' and `transferred' by a clause, I fail
-  to specify whether each relevant `spot' is occupied by a constant or a
-  variable. In the former case, that makes the main theorem of the paper
-  completely trivial. While in the latter case, the theorem becomes incorrect. I
-  spent a couple of weeks looking for ways to transform the paper into something
-  both correct and valuable. The best idea I could find was to use the
-  perspective from this paper in the context of inductive logic programming;
-  however, I did not want to explore this direction further.
+  was abandoned. While trying to consider reviewer feedback as well as update
+  and strengthen the paper, I found an important ambiguity: when defining what
+  constants are `captured' and `transferred' by a clause, I fail to specify
+  whether each relevant `spot' is occupied by a constant or a variable. In the
+  former case, that makes the main theorem of the paper completely trivial.
+  While in the latter case, the theorem becomes incorrect. I spent a couple of
+  weeks looking for ways to transform the paper into something both correct and
+  valuable. The best idea I could find was to use the perspective from this
+  paper in the context of inductive logic programming; however, I did not want
+  to explore this direction further.
 \item[WP 2] (`Generating Random Logic Programs Using Constraint
   Programming') was revised to include an experimental comparison of ProbLog
   inference algorithms and published and presented in CP~2020 (see \cref{app:cp}
@@ -392,12 +425,12 @@ review (with its own appendices) is included as \cref{app:previous}.}
   encodings with the algorithms used in the original papers. The updated version
   can be found in \cref{app:uai} and was submitted to UAI~2021. I was also
   invited to the program committee for this conference.
-\item[WP 4] was abandoned due to lack of contributions that could be made.
+\item[WP 4] was abandoned due to a lack of contributions that could be made.
   Indeed, any contribution would have to be theoretical, empirical, or
   interpretability-related. Significant theoretical contributions are unlikely
   because the theory of abstractions has already been explored before without
   leaving behind any big unanswered questions \cite{DBLP:journals/kbs/Belle20}.
-  While previous work could be rephrased in a simpler way and extended with more
+  While previous work could be rephrased more simply and extended with more
   detail, the contributions would still be marginal.
 
   Furthermore, considering abstractions at their full level of generality is
@@ -406,7 +439,7 @@ review (with its own appendices) is included as \cref{app:previous}.}
   Moreover, previous work on preprocessing for WMC left the field in an
   uncomfortable situation: preprocessing techniques for WMC were identified and
   described in a paper \cite{DBLP:conf/aaai/LagniezM14} whose main focus is on
-  model counting; and the closed-source implementation of those techniques is
+  model counting, and the closed-source implementation of those techniques is
   unsuitable for WMC.
 
   Finally, a substantial issue with considering abstraction as a tool for
@@ -446,16 +479,16 @@ review (with its own appendices) is included as \cref{app:previous}.}
   Although this resulted in great inference speed improvements on some
   instances, e.g., when most of the probabilities in a CPT are equal, there is
   no reason to believe that such an approach is always optimal. Being unable to
-  suggest a new encoding that clearly outperforms others, I decided to
-  investigate how parameter variables could be removed from already-existing
-  encodings. This led to a generalisation of WMC based on pseudo-Boolean
-  functions that I named pseudo-Boolean projection (PBP). I then show how any
-  WMC instance can be transformed into a PBP instance and identify conditions
-  under which such a transformation can remove parameter variables. This
-  transformation is applicable to four out of the five WMC encodings for
-  Bayesian networks. Finally, experiments showed that (at least for some
-  encodings) parameter variable removal can significantly improve inference
-  speed and supersede the previous state of the art.
+  suggest a new encoding that outperforms others, I decided to investigate how
+  parameter variables could be removed from already-existing encodings. This led
+  to a generalisation of WMC based on pseudo-Boolean functions that I named
+  pseudo-Boolean projection (PBP). I then show how any WMC instance can be
+  transformed into a PBP instance and identify conditions under which such a
+  transformation can remove parameter variables. This transformation applies to
+  four out of the five WMC encodings for Bayesian networks. Finally, experiments
+  showed that (at least for some encodings) parameter variable removal can
+  significantly improve inference speed and supersede the previous state of the
+  art.
 \end{description}
 
 \section{Future Goals} \label{sec:future}
@@ -477,8 +510,8 @@ i.e., the algorithms perform very similarly overall, but with significant
 differences on subsets of benchmark data. In other words, which algorithm is the
 best depends entirely on who provides the data, and we have no idea what
 properties of a WMC instance make it more suitable for a search-based,
-a compilation-based, or an ADD-based approach. Therefore, the paper I am working
-on now aims to:
+compilation-based, or ADD-based approach. Therefore, the paper I am working on
+now aims to:
 \begin{itemize}
 \item Establish the parameterized complexity of DPMC, showing that it scales
   worse (than other algorithms) with respect to the treewidth of the primal
@@ -524,7 +557,7 @@ interesting. Moreover, any unexpected differences in the way the algorithms
 perform on random and real data can always be likened to the equivalent
 situation with SAT algorithms.
 
-\subsection{Weighted Pseudo-Boolean Model Counting} \label{sec:2}
+\subsection{Weighted Pseudo-Boolean Model Counting (WPBMC)} \label{sec:2}
 
 \Cref{app:uai} and partially \cref{app:sat} address one issue with the
 traditional definition of WMC, i.e., that restricting weights to literals leads
@@ -536,7 +569,7 @@ clause, i.e., a disjunction of literals. Instead, it can be an arbitrary
 pseudo-Boolean function. In \cref{app:sat}, I suggested that two-valued
 pseudo-Boolean function are particularly convenient because they can be defined
 with a formal equivalent of the statement `if formula $\phi$ is satisfied, then
-the value is $p$, otherwise the value is $q$'. Moreover, there is no reason for
+the value is $p$, otherwise, the value is $q$'. Moreover, there is no reason for
 the formula to be propositional! Instead, we can consider \emph{pseudo-Boolean
   constraints}\footnote{Despite similar names, pseudo-Boolean constraints and
   pseudo-Boolean functions are not related!}, i.e., an intermediary between SAT
@@ -578,7 +611,7 @@ e.g., adapting DPMC to first-order logic (i.e., WFOMC) using first-order ADDs
   }}]{../../conditional-wmc/doc/paper3/paper.pdf}
 \includepdf[pages=-,pagecommand=\thispagestyle{plain},picturecommand*={%
   \put(70,750){%
-    \parbox{\textwidth}{\section{First Year Review}\label{app:previous}}
+    \parbox{\textwidth}{\section{First-Year Review}\label{app:previous}}
   }}]{../review1/review.pdf}
 
 \end{document}
