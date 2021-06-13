@@ -203,7 +203,7 @@ random Boolean MaryCalls (*$\sim$*)
 
 \begin{frame}{Experimental Results}
   \centering
-  \input{../../../published/wmc-without-parameters/doc/long_talk/cumulative2}
+  \input{../../../published/wmc-without-parameters/doc/UAI_long_talk/cumulative2}
 \end{frame}
 
 \section{The SAT Paper: Weighted Model Counting Without Parameter Variables}
@@ -251,7 +251,7 @@ random Boolean MaryCalls (*$\sim$*)
 \end{frame}
 
 \begin{frame}{Experimental Results}
-  \input{../../../published/wmc-without-parameters/doc/SAT_talk/cumulative}
+  \input{../../../published/wmc-without-parameters/doc/SAT_long_talk/cumulative}
 \end{frame}
 
 \section{The Next Paper: Parameterized Complexity of Weighted Model Counting in
@@ -265,8 +265,8 @@ random Boolean MaryCalls (*$\sim$*)
       branch width).
     \item[c2d:] \alert{$\mathcal{O}(mw2^w)$} (\structure{$m$} is the number
       of clauses, and \structure{$w$} is the primal treewidth).
-    \item[DPMC:] \alert{$\mathcal{O}(4^knm)$} (my result, and the
-      \structure{$4^k$} part is tight).
+    \item[DPMC:] \alert{$\mathcal{O}(4^wnm)$} (my result, and the
+      \structure{$4^w$} part is tight).
     \end{description}
   \end{block}
   \begin{block}{Empirical Study on Random Instances}
@@ -278,12 +278,27 @@ random Boolean MaryCalls (*$\sim$*)
   \end{block}
 \end{frame}
 
-\section{Future Plans More Generally}
+\section{Concluding Thoughts}
 
-\begin{frame}{Future Plans}
+\begin{frame}{How Everything Fits Together}
   \begin{itemize}
-  \item TODO: how everything (i.e., all the papers) fit together
-  \item TODO: finish writing this slide later
+  \item My thesis is centered around two ideas:
+    \begin{itemize}
+    \item Manipulating more expressive representations can lead to more
+      efficient algorithms (c.f., cutting planes vs. resolution in SAT).
+    \item Random problem instances can help reveal fundamental differences in
+      how algorithms behave in practice.
+    \end{itemize}
+  \item UAI'21 and SAT'21 papers address the first idea.
+    \begin{itemize}
+    \item There is no reason for weights to only be defined on literals (and
+      there is no reason for a clause to be a just clause).
+    \end{itemize}
+  \item CP'20 and the next paper undertake the second idea.
+    \begin{itemize}
+    \item Random probabilistic logic programs and random formulas in CNF.
+    \end{itemize}
+  \item Future work: perhaps tackle the first-order setting.
   \end{itemize}
 \end{frame}
 
