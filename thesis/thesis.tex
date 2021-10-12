@@ -25,9 +25,95 @@
 %% For a PhD thesis -- you must also specify a research institute:
 \documentclass[phd,aiai,twoside]{infthesis}
 
-%% Put any \usepackage commands you want to use right here; the following is 
-%% an example:
+\usepackage{hyperref}
+\usepackage[table]{xcolor}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage[capitalise]{cleveref}
+\usepackage{tikz}
+\usepackage{mathrsfs}
+\usepackage[nounderscore]{syntax}
+\usepackage{blkarray}
+\usepackage[binary-units]{siunitx}
+\usepackage[inline,shortlabels]{enumitem}
+\usepackage{capt-of}
+%\usepackage[caption=false]{subfig}
+\usepackage{booktabs}
+\usepackage[misc,geometry]{ifsym}
+\usepackage{breakcites}
+\usepackage[british]{babel}
 \usepackage{natbib}
+\usepackage{complexity}
+\usepackage{multirow}
+\usepackage{amsfonts}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{sectsty}
+
+\allsectionsfont{\raggedright}
+
+\usetikzlibrary{arrows.meta}
+\captionsetup[subfigure]{width=\linewidth}
+
+\newtheorem{constraint}{Constraint}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\renewcommand\fbox{\fcolorbox{red}{white}}
+\newcommand{\hilight}[1]{\setlength{\fboxsep}{1pt}\colorbox{lightgray}{#1}}
+\newcommand{\hlitem}{\stepcounter{enumi}\item[\hilight{\theenumi}]}
+
+\newcommand{\logical}[1]{{\normalfont \texttt{#1}}}
+\newcommand{\variable}[1]{\texttt{\textup{#1}}}
+\newcommand{\arrayd}[3]{\variable{{#1}[}{#2}\variable{]} \in {#3}}
+% 1=name, 2=length, 3=type
+\newcommand{\arrayt}[3]{\variable{{#3}} : \variable{{#1}[}{#2}\variable{]}}
+
+\newcommand{\predicates}{\mathcal{P}}
+\newcommand{\variables}{\mathcal{V}}
+\newcommand{\constants}{\mathcal{C}}
+\newcommand{\tokens}{\mathcal{T}}
+\newcommand{\arities}{\mathcal{A}}
+\newcommand{\maxArity}{\mathcal{M}_{\mathcal{A}}}
+\newcommand{\maxNumNodes}{\mathcal{M}_{\mathcal{N}}}
+\newcommand{\maxNumClauses}{\mathcal{M}_{\mathcal{C}}}
+
+\DeclareMathOperator{\Determined}{\Delta}
+\DeclareMathOperator{\Undetermined}{\Upsilon}
+\DeclareMathOperator{\AlmostDetermined}{\Gamma}
+\DeclareMathOperator{\getss}{\mathtt{:-}}
+\DeclareMathOperator{\im}{im}
+
+\Crefname{algocf}{Algorithm}{Algorithms}
+\Crefname{constraint}{Constraint}{Constraints}
+\crefname{section}{Sect.}{Sects.}
+
+\makeatletter
+\newcommand{\nosemic}{\renewcommand{\@endalgocfline}{\relax}}% Drop semi-colon ;
+\newcommand{\dosemic}{\renewcommand{\@endalgocfline}{\algocf@endline}}% Reinstate semi-colon ;
+\newcommand{\pushline}{\Indp}% Indent
+\newcommand{\popline}{\Indm\dosemic}% Undent
+\makeatother
+
+\newtheorem{innercustomthm}{Theorem}
+\newenvironment{customthm}[1]
+               {\renewcommand\theinnercustomthm{#1}\innercustomthm}
+               {\endinnercustomthm}
+               \newtheorem{innercustomlemma}{Lemma}
+               \newenvironment{customlemma}[1]
+                              {\renewcommand\theinnercustomlemma{#1}\innercustomlemma}
+                              {\endinnercustomlemma}
+
+\crefname{enumi}{Condition}{Conditions}
+\crefname{enumii}{Condition}{Conditions}
 
 \title{Probabilistic Inference via Weighted Model Counting: Algorithms, Encodings, and Random Instances}
 \author{Paulius Dilkas}
@@ -45,6 +131,10 @@
 
 \begin{acknowledgements}
   Many thanks to my mummy for the numerous packed lunches; and of course to Igor, my faithful lab assistant.
+
+  The first author was supported by the EPSRC Centre for Doctoral Training in Robotics and Autonomous Systems, funded by the UK Engineering and Physical Sciences Research Council (grant EP/L016834/1). This work has made use of the resources provided by the Edinburgh Compute and Data Facility (ECDF) (\url{http://www.ecdf.ed.ac.uk/}).
+
+  We thank the anonymous reviewers for their helpful comments.
 \end{acknowledgements}
 
 \standarddeclaration
@@ -61,20 +151,29 @@
 
 \end{preliminary}
 
-\include{introduction} % 5-14 pages (9 on average)
-\include{background} % 11-45 pages (27 on average)
-%% \include{cp}
-%% \include{uai}
-%% \include{sat}
-%% \include{parameters}
-%% \include{firstorder}
-\include{conclusion} % 5-28 pages (mean: 8, median: 5)
+% TODO:
+% * Some citations appear as Author [year] in the first chapter.
+% * Alignment issues.
+% * Consider removing all the subfigure/minipage/subfig stuff.
+% * Fix references to not use the 'proceedings' command.
+% * make sure all table captions are above (?) the table
 
-%% \appendix
-%% \include{appendix1}
+\include{chapters/introduction} % 5-14 pages (9 on average)
+\include{chapters/background} % 11-45 pages (27 on average)
+\include{chapters/random_lps/chapter}
+\include{chapters/wmc_for_bns/chapter}
+\include{chapters/wmc_without_parameters/chapter}
+\include{chapters/random_wmc}
+\include{chapters/recursion}
+\include{chapters/conclusion} % 5-28 pages (mean: 8, median: 5)
+
+\appendix
+\include{chapters/appendix.tex}
+\include{chapters/appendix2.tex}
 
 %% Choose your favourite bibliography style here.
-\bibliographystyle{apalike}
+%\bibliographystyle{apalike}
+\bibliographystyle{plainnat}
 
 %% If you want the bibliography single-spaced (which is allowed), uncomment
 %% the next line.
