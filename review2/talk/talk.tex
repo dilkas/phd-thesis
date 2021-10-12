@@ -38,7 +38,7 @@
 
 \maketitle
 
-\begin{frame}[fragile]{The Problem of Computing Probability}
+\begin{frame}[fragile]{The Computational Problem of Probabilistic Inference}
   \vspace{-0.75cm}
   \begin{columns}[t]
     \begin{column}{0.65\textwidth}
@@ -141,12 +141,12 @@ random Boolean MaryCalls (*$\sim$*)
         \item probabilistic programming
         \item neural-symbolic artificial intelligence
         \end{itemize}
-      \item Main types of algorithms:
-        \begin{itemize}
-        \item using knowledge compilation
-        \item using a \SAT{} solver
-        \item manipulating pseudo-Boolean functions
-        \end{itemize}
+      % \item Main types of algorithms:
+      %   \begin{itemize}
+      %   \item using knowledge compilation
+      %   \item using a \SAT{} solver
+      %   \item manipulating pseudo-Boolean functions
+      %   \end{itemize}
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -189,17 +189,17 @@ random Boolean MaryCalls (*$\sim$*)
   \end{block}
 \end{frame}
 
-\begin{frame}{The Limitations and Capabilities of WMC}
-  \begin{alertblock}{Observation}
-    Classical WMC is only able to evaluate \structure{factorable} measures
-    (c.f., a collection of mutually independent random variables).
-  \end{alertblock}
-  \begin{theorem}[Informal Version]
-    It is always possible to add more variables to turn a non-factorable measure
-    into a factorable measure.
-  \end{theorem}
-  However, that is not necessarily a good idea!
-\end{frame}
+% \begin{frame}{The Limitations and Capabilities of WMC}
+%   \begin{alertblock}{Observation}
+%     Classical WMC is only able to evaluate \structure{factorable} measures
+%     (c.f., a collection of mutually independent random variables).
+%   \end{alertblock}
+%   \begin{theorem}[Informal Version]
+%     It is always possible to add more variables to turn a non-factorable measure
+%     into a factorable measure.
+%   \end{theorem}
+%   However, that is not necessarily a good idea!
+% \end{frame}
 
 \begin{frame}{Experimental Results}
   \centering
@@ -231,28 +231,31 @@ random Boolean MaryCalls (*$\sim$*)
 \end{frame}
 
 \begin{frame}{From WMC to PBP}
-  The WMC instance has \structure{$x$} as the only \alert{indicator} variable
-  and \structure{$p$}, \structure{$q$} as \alert{parameter} variables with
-  weights \structure{$w(p) = 0.2$}, \structure{$w(q) = 0.8$}, and
-  \structure{$w(\neg p) = w(\neg q) = 1$}.
-  \begin{center}
-    \begin{tabular}{llll}
-      \toprule
-      WMC Clause & \onslide<2->{In CNF} & \onslide<3->{Pseudo-Boolean Function} & \\
-      \midrule
-      $\neg x \Rightarrow p$ & \onslide<2->{$x \lor p$} & \onslide<3->{$[\neg x]_1^{0.2}$} & \\
-      $p \Rightarrow \neg x$ & \onslide<2->{$\neg x \lor \neg p$} & & \onslide<4->{$[x]^{0.8}_{0.2}$} \\
-      $x \Rightarrow q$ & \onslide<2->{$\neg x \lor q$} & \onslide<3->{$[x]_1^{0.8}$} & \\
-      $q \Rightarrow x$ & \onslide<2->{$x \lor \neg q$} & & \\
-      $\neg x$ & \onslide<2->{$\neg x$} & \onslide<3->{$[\neg x]_0^1$} & \onslide<4->{$[\neg x]_0^1$} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
+  \begin{example}
+    \begin{itemize}
+    \item Indicator variable: \structure{$x$}
+    \item Parameter variables: \structure{$p$}, \structure{$q$}
+    \item Weights: \structure{$w(p) = 0.2$}, \structure{$w(q) = 0.8$}, and \structure{$w(\neg p) = w(\neg q) = 1$}
+    \end{itemize}
+    \begin{center}
+      \begin{tabular}{llll}
+        \toprule
+        WMC Clause & \onslide<2->{In CNF} & \onslide<3->{Pseudo-Boolean Function} & \\
+        \midrule
+        $\neg x \Rightarrow p$ & \onslide<2->{$x \lor p$} & \onslide<3->{$[\neg x]_1^{0.2}$} & \\
+        $p \Rightarrow \neg x$ & \onslide<2->{$\neg x \lor \neg p$} & & \onslide<4->{$[x]^{0.8}_{0.2}$} \\
+        $x \Rightarrow q$ & \onslide<2->{$\neg x \lor q$} & \onslide<3->{$[x]_1^{0.8}$} & \\
+        $q \Rightarrow x$ & \onslide<2->{$x \lor \neg q$} & & \\
+        $\neg x$ & \onslide<2->{$\neg x$} & \onslide<3->{$[\neg x]_0^1$} & \onslide<4->{$[\neg x]_0^1$} \\
+        \bottomrule
+      \end{tabular}
+    \end{center}
+  \end{example}
 \end{frame}
 
-\begin{frame}{Experimental Results}
-  \input{../../../published/wmc-without-parameters/doc/SAT_long_talk/cumulative}
-\end{frame}
+% \begin{frame}{Experimental Results}
+%   \input{../../../published/wmc-without-parameters/doc/SAT_long_talk/cumulative}
+% \end{frame}
 
 \section{The Next Paper: Parameterized Complexity of Weighted Model Counting in
   Theory and Practice}
@@ -296,7 +299,7 @@ random Boolean MaryCalls (*$\sim$*)
     \end{itemize}
   \item CP'20 and the next paper undertake the second idea.
     \begin{itemize}
-    \item Random probabilistic logic programs and random formulas in CNF.
+    \item Random probabilistic logic programs and random 3-CNF formulas.
     \end{itemize}
   \item Future work: perhaps tackle the first-order setting.
   \end{itemize}
