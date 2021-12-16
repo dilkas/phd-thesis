@@ -23,7 +23,7 @@
 %%  draft: produce a single-spaced, double-sided thesis with narrow margins
 %%
 %% For a PhD thesis -- you must also specify a research institute:
-\documentclass[phd,aiai,twoside]{infthesis}
+\documentclass[phd,aiai,twoside,singlespacing]{infthesis}
 
 \usepackage{hyperref}
 \usepackage[table]{xcolor}
@@ -119,8 +119,7 @@
 \author{Paulius Dilkas}
 
 \abstract{%
-  This doctoral thesis will present the results of my work into the
-  reanimation of lifeless human tissues.
+  Given a formula $\phi$ in propositional or first-order logic and some weights in $\mathbb{R}_{\ge 0}$ (usually defined over propositional variables or predicates), weighted model counting (WMC) asks to compute the sum of the weights of the models of $\phi$. One strand of my work shows how WMC is the process of computing the measure of an element of a Boolean algebra. This observation allows us to generalise WMC, significantly reducing the complexity of WMC instances that encode probabilistic inference in Bayesian networks. Another strand of my work is concerned with synthetic data generation. In particular, we show how random instances of probabilistic logic programs (that typically use variations of WMC algorithms for inference) can be generated using constraint programming. We also present a random model for WMC instances and show how the algorithms differ with respect to key properties of the instances, e.g., a version of treewidth. Finally, in the first-order setting, we expand the range of tractable problem instances by developing an algorithm that can define quantities and sub-quantities of interest by constructing recursive functions.
 }
 
 \begin{document}
@@ -130,8 +129,6 @@
 \maketitle
 
 \begin{acknowledgements}
-  Many thanks to my mummy for the numerous packed lunches; and of course to Igor, my faithful lab assistant.
-
   The first author was supported by the EPSRC Centre for Doctoral Training in Robotics and Autonomous Systems, funded by the UK Engineering and Physical Sciences Research Council (grant EP/L016834/1). This work has made use of the resources provided by the Edinburgh Compute and Data Facility (ECDF) (\url{http://www.ecdf.ed.ac.uk/}).
 
   We thank the anonymous reviewers for their helpful comments.
@@ -156,7 +153,9 @@
 % * Alignment issues.
 % * Consider removing all the subfigure/minipage/subfig stuff.
 % * Fix references to not use the 'proceedings' command.
-% * make sure all table captions are above (?) the table
+% * Make sure all table captions are above (?) the table.
+% * Add additional information from phd_notes and previous versions of some of the papers.
+% * I should probably shorten the names of the chapters.
 
 \include{chapters/introduction} % 5-14 pages (9 on average)
 \include{chapters/background} % 11-45 pages (27 on average)

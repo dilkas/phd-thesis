@@ -703,45 +703,44 @@ as intended.
   \textsc{true}.
 \end{example}
 
-  \begin{figure}[t]
-    \begin{minipage}{.49\textwidth}
-      \centering
-      \subfloat[The adjacency matrix of the graph. The boxed value is the
-      decision variable that will be propagated by
-      \cref{alg:independence_propagation}.\label{fig:dependencies_matrix}]{
-        $\begin{blockarray}{lcccc}
-          \begin{block}{l!{\quad}(cccc)}
-            \mathsf{father} & 0 & 0 & 0 & 0 \\
-            \mathsf{mother} & 1 & 0 & 0 & 0 \\
-            \mathsf{parent} & 1 & \fbox{\{ 0, 1 \}} & \{ 0, 1 \} & \{ 0, 1 \} \\
-            \mathsf{sibling} & 0 & 0 & 0 & 0 \\
-          \end{block}
-        \end{blockarray}$
-      }
-    \end{minipage}
-    \hfill
-    \begin{minipage}{.49\textwidth}
-      \centering
-      \subfloat[A drawing of the graph. Dashed edges are undetermined---they may
-      or may not exist.\label{fig:dependencies2}]{
-        \centering
-        \makebox[\linewidth]{
-          \begin{tikzpicture}
-            \node[draw] (parent) at (0, 0.5) {$\mathsf{parent}$};
-            \node[draw] (mother) at (0, -0.5) {$\mathsf{mother}$};
-            \node[draw] (sibling) at (2, 0.5) {$\mathsf{sibling}$};
-            \node[draw] (father) at (2, -0.5) {$\mathsf{father}$};
-            \draw[-{Stealth}] (parent) edge (father);
-            \draw[-{Stealth}] (mother) edge (father);
-            \draw[-{Stealth},dashed,darkgray] (parent) edge (sibling);
-            \draw[-{Stealth},dashed,darkgray] (parent) edge (mother);
-          \end{tikzpicture}
-        }
-      }
-    \end{minipage}
-    \caption{The predicate dependency graph of \protect{\cref{example:independence}}}
-    \label{fig:example}
-  \end{figure}
+\begin{figure}
+  \begin{subfigure}[b]{0.59\textwidth}
+    \centering
+    \[
+    \begin{blockarray}{lcccc}
+      \begin{block}{l!{\quad}(cccc)}
+        \mathsf{father} & 0 & 0 & 0 & 0 \\
+        \mathsf{mother} & 1 & 0 & 0 & 0 \\
+        \mathsf{parent} & 1 & \fbox{\{ 0, 1 \}} & \{ 0, 1 \} & \{ 0, 1 \} \\
+        \mathsf{sibling} & 0 & 0 & 0 & 0 \\
+      \end{block}
+    \end{blockarray}
+    \]
+    \caption{The adjacency matrix of the graph. The boxed value is the decision variable that will be propagated by \cref{alg:independence_propagation}.}
+    \label{fig:dependencies_matrix}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}[b]{.39\textwidth}
+    \centering
+    \makebox[\linewidth]{
+      \begin{tikzpicture}
+        \node[draw] (parent) at (0, 0.5) {$\mathsf{parent}$};
+        \node[draw] (mother) at (0, -0.5) {$\mathsf{mother}$};
+        \node[draw] (sibling) at (2, 0.5) {$\mathsf{sibling}$};
+        \node[draw] (father) at (2, -0.5) {$\mathsf{father}$};
+        \draw[-{Stealth}] (parent) edge (father);
+        \draw[-{Stealth}] (mother) edge (father);
+        \draw[-{Stealth},dashed,darkgray] (parent) edge (sibling);
+        \draw[-{Stealth},dashed,darkgray] (parent) edge (mother);
+      \end{tikzpicture}
+    }
+    \caption{A drawing of the graph. Dashed edges are undetermined---they may or may not exist.}
+    \label{fig:dependencies2}
+  \end{subfigure}
+  \caption{The predicate dependency graph of \protect{\cref{example:independence}}}
+  \label{fig:example}
+\end{figure}
+% TODO: alignment is not good enough
 
 \section{Experimental Results} \label{sec:1experiments}
 
