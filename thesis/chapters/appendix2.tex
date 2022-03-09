@@ -55,11 +55,11 @@
   \dots, Y_n$. Exactly one of these terms is nonzero when applied to $T$, and
   it is equal to $\Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n)$ by definition.
 
-  If $X$ is not binary, then $\left( \sum_{i=1}^m [\lambda_{X = x_i}]
-  \right)(T) = 1$, and $\left( \prod_{i=1}^m \prod_{j=i+1}^m
-    (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]})
-  \right)(T) = 1$, so $\mathrm{CPT}_X(T) = \Pr(X = x \mid Y_1 = y_1,
-  \dots, Y_n = y_n)$ by a similar argument as before.
+  If $X$ is not binary, then $\left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)(T) = 1$, and
+  \[
+  \left( \prod_{i=1}^m \prod_{j=i+1}^m (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]}) \right)(T) = 1,
+  \]
+  so $\mathrm{CPT}_X(T) = \Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n)$ by a similar argument as before.
 \end{proof}
 
 \begin{customlemma}{2} \label{lemma:full_distribution2}
@@ -113,9 +113,10 @@
   by:
   \begin{itemize}
   \item the proof of Theorem~1 by \citet{DBLP:conf/aaai/DudekPV20};
-  \item if $\lambda_{X=x} \not\in T \in 2^U$, then $(\phi \cdot
-    [\lambda_{X=x}])(T) = \phi(T) \cdot [\lambda_{X=x}](T \cap \{
-    \lambda_{X=x} \}) = \phi(T) \cdot 0 = 0$;
+  \item if $\lambda_{X=x} \not\in T \in 2^U$, then
+    \[
+    (\phi \cdot [\lambda_{X=x}])(T) = \phi(T) \cdot [\lambda_{X=x}](T \cap \{\lambda_{X=x} \}) = \phi(T) \cdot 0 = 0;
+    \]
   \item \cref{lemma:full_distribution2};
   \item marginalisation of a probability distribution.
   \end{itemize}

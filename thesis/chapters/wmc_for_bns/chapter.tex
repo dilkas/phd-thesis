@@ -121,11 +121,11 @@ removed from (most) already-existing Bayesian network encodings.
 \section{Boolean Algebras, Power Sets, and Propositional
   Logic} \label{sec:prelims}
 
-\begin{table*}
+\begin{sidewaystable}
+  \centering
   \caption{Notation for a logic with two atoms. The elements in both columns are
     listed in the same order.}
   \label{tbl:notation_example}
-  \centering
   \begin{tabular}{lcc}
     \toprule
     Name in logic & Boolean-algebraic notation & Set-theoretic notation \\
@@ -141,7 +141,7 @@ removed from (most) already-existing Bayesian network encodings.
     \multirow{-7}{*}{Formulas (elements of $2^{2^U}$)} & $\bot$ & $\emptyset$ \\
     \bottomrule
   \end{tabular}
-\end{table*}
+\end{sidewaystable}
 
 In this section, we give a brief introduction to two alternative ways to think
 about logical constructs such as models and formulas. Let us consider a simple
@@ -725,7 +725,7 @@ first and calculate its marginal probability.
 For experimental data, we use the Bayesian networks available with \textsf{Ace}
 and \textsf{Cachet} \citep{DBLP:conf/sat/SangBBKP04}, most of which happen to be
 binary. We classify them into the following seven categories:
-\begin{itemize*}
+\begin{itemize}
 \item DQMR and
 \item Grid networks as described by \citet{DBLP:conf/aaai/SangBK05},
 \item Mastermind, and
@@ -736,7 +736,7 @@ binary. We classify them into the following seven categories:
 \item non-binary classic Bayesian networks (\texttt{alarm}, \texttt{diabetes},
   \texttt{hailfinder}, \texttt{mildew}, \texttt{munin1}--\texttt{4},
   \texttt{pathfinder}, \texttt{pigs}, \texttt{water}).
-\end{itemize*}
+\end{itemize}
 
 \Cref{fig:cumulative} shows that \texttt{cd05}
 \citep{DBLP:conf/ijcai/ChaviraD05} and \texttt{cd06}
@@ -823,4 +823,4 @@ programs
 well as to search-based solvers such as \textsf{Cachet}
 \citep{DBLP:conf/sat/SangBBKP04} and \textsf{DPMC} ---an extension to
 \textsf{ADDMC} that adds support for computations based on tensors (rather than
-ADDs) and planning based on tree decompositions \cite{DBLP:conf/cp/DudekPV20}.
+ADDs) and planning based on tree decompositions \citep{DBLP:conf/cp/DudekPV20}.

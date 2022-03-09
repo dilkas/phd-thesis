@@ -1,4 +1,6 @@
-\chapter{Background}
+\chapter{Background} % 11-45 pages (27 on average)
+
+TODO: outside of specific sections, have a one-paragraph introduction before and a one-paragraph summary at the end.
 
 \paragraph{Notes}
 \begin{itemize}
@@ -6,16 +8,9 @@
 \item Info about inference algorithms (including the ProbLog-specific ones) and where WMC, WFOMC, and ForcLift fit in might be best left scattered across several sections.
 \end{itemize}
 
-\paragraph{Outline}
-\begin{itemize}
+\paragraph{Outline} % aim for 2-5 pages for each major section
+\begin{enumerate}
 \item Logic
-  \begin{itemize}
-  \item Propositional
-    \begin{itemize}
-    \item CNF
-    \end{itemize}
-  \item First-Order
-  \end{itemize}
 \item Relevant Declarative Programming Paradigms
   \begin{itemize}
   \item Logic Programming (with a forward reference to probabilistic logic programming)
@@ -58,23 +53,88 @@
   \item BDDs
   \item ADDs (with a brief mention of AADDs, XDDs, etc.)
   \end{itemize}
-\item Maybe: Parameterised Complexity
-  \begin{itemize}
-  \item Tree Decompositions and Treewidth
-  \item Graphs Associated with Formulas in CNF
-  \end{itemize}
-\item Maybe: Models of Random Instances
-  \begin{itemize}
-  \item Formulas in CNF
-  \item Logic Programs
-  \item Typical Approaches
-  \end{itemize}
 \item Applications
   \begin{itemize}
   \item Statistical Relational Learning
   \item Neuro-Symbolic Artificial Intelligence
   \item Natural Language Processing
   \item Robotics
-  \item Miscellaneous: Medicine, Data Mining, etc.
   \end{itemize}
+\end{enumerate}
+
+\clearpage % TODO: remove
+\section{Logic}
+
+We use $\land$, $\lor$, $\neg$, $\Rightarrow$, and $\Leftrightarrow$ to denote conjunction, disjunction, negation, material implication, and material biconditional, respectively.
+
+Throughout the thesis, we use set-theoretic notation for many concepts in logic.
+
+A \emph{clause} is a set of literals that are part of an implicit disjunction.
+
+Similarly, a \emph{formula} in CNF is a set of clauses that are part of an implicit conjunction.
+
+We identify a \emph{model} with a set of variables that correspond to the positive literals in the model (and all other variables are the negative literals of the model).
+
+We can then define the \emph{cardinality} of a model as the cardinality of this set.
+
+For example, let $\phi = (\neg a \lor b) \land a$ be a propositional formula over variables $a$ and $b$.
+
+Then an equivalent set-theoretic representation of $\phi$ is $\{ \{\neg a, b \}, \{ a \} \}$.
+
+Any subset of $\{ a, b \}$ is an interpretation of $\phi$, e.g., $\{ a, b \}$ is a model of $\phi$ (written $\{ a, b \} \models \phi$) of cardinality two, while $\emptyset$ is an interpretation but not a model.
+
+The basic primitives of logic programs are \emph{constants}, \emph{(logic)
+variables}, and \emph{predicates} with their \emph{arities}. A \emph{term} is
+either a variable or a constant, and an \emph{atom} is a predicate of arity $n$
+applied to $n$ terms. A \emph{formula} is any well-formed expression that
+connects atoms using conjunction $\land$, disjunction $\lor$, and negation
+$\neg$. A \emph{clause} is a pair of a \emph{head} (which is an atom) and a
+\emph{body} (which is a formula\footnote{Our model supports arbitrarily complex
+bodies of clauses (e.g., $\neg\mathsf{P}(X) \lor (\mathsf{Q}(X) \land
+\mathsf{P}(X))$) because \textsc{ProbLog} does too. However, one can easily
+restrict our representation of a body to a single conjunction of literals
+(e.g., $\mathsf{Q}(X) \land \neg\mathsf{P}(X))$) by adding a couple of
+additional constraints.}).
+
+By \emph{variable}, we always mean a Boolean variable. A \emph{literal} is
+either a variable (say, $v$) or its negation (denoted $\neg v$), respectively
+called \emph{positive} and \emph{negative} literal. A \emph{clause} is a
+disjunction of literals. A \emph{formula} is any well-formed expression
+consisting of variables, negation, conjunction, and disjunction. A formula is in
+\emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it
+is in $k$-CNF if every clause has exactly $k$ literals. While we use the
+set-theoretic notation for CNF formulas (e.g., writing $c \in \phi$ to mean that
+clause $c$ is one of the clauses in formula $\phi$), duplicate clauses are still
+allowed.
+
+\begin{itemize}
+\item (Boolean) variable
+\item true/false (including notation)
+\item notation for connectives: conjunction, disjunction, negation, material implication, material biconditional
+\item literal
+\item clause (note that one of the chapters defines it differently)
+\item (well-formed) formula
+\item CNF (forward reference to other forms)
+\item interpretation
+\item model
+\item logic-based problems: SAT, MC (\# SAT), MAX-SAT, (QBF, projected WMC, etc.)
+\item applications of logic in computer science: planning, logical inference, verification, scheduling, etc. (Section 2.1 of Guy's thesis)
+\item more on logic: \citep{DBLP:books/daglib/0029942}
+\end{itemize}
+
+\subsection{First-Order}
+
+\begin{itemize}
+\item function-free throughout
+\item equality
+\item predicate, arity
+\item atom, how atoms replace variables
+\item constant
+\item variables
+\item term: variable or constant
+\item domain (of discourse). always consider finite domains (as in Guy's thesis, Friedman et al. 1999, Richardson and Domingos 2006). This makes, e.g., satisfiability decidable and a FO formula can always be extended to a propositional one.
+\item existential, universal quantification
+\item ground (atom, etc.)
+\item citations from page 41 of Guy's thesis
+\item more on first-order logic: \citep{DBLP:books/daglib/0023546}
 \end{itemize}

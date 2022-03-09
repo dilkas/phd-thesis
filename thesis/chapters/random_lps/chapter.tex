@@ -3,34 +3,34 @@
 \section{Introduction}
 
 Unifying logic and probability is a long-standing challenge in artificial
-intelligence \cite{DBLP:journals/cacm/Russell15}, and, in that regard,
+intelligence \citep{DBLP:journals/cacm/Russell15}, and, in that regard,
 statistical relational learning (SRL) has developed into an exciting area that
 mixes machine learning and symbolic (logical and relational) structures. In
 particular, probabilistic logic programs---including languages such as
-\textsc{PRISM} \cite{DBLP:conf/ijcai/SatoK97}, \textsc{ICL}
-\cite{DBLP:journals/ai/Poole97}, and \textsc{ProbLog}
-\cite{DBLP:conf/ijcai/RaedtKT07}---are promising frameworks for codifying
+\textsc{PRISM} \citep{DBLP:conf/ijcai/SatoK97}, \textsc{ICL}
+\citep{DBLP:journals/ai/Poole97}, and \textsc{ProbLog}
+\citep{DBLP:conf/ijcai/RaedtKT07}---are promising frameworks for codifying
 complex SRL models. With the enhanced structure, however, inference becomes more
 challenging. At the moment, we have no precise way of evaluating and comparing
 inference algorithms. Incidentally, if one were to survey the literature, one
 often finds that an inference algorithm is only tested on a small number (1--4)
 of data sets
-\cite{DBLP:conf/ecai/BruynoogheMKGVJR10,DBLP:journals/tplp/KimmigDRCR11,DBLP:conf/ijcai/VlasselaerBKMR15},
+\citep{DBLP:conf/ecai/BruynoogheMKGVJR10,DBLP:journals/tplp/KimmigDRCR11,DBLP:conf/ijcai/VlasselaerBKMR15},
 originating from areas such as social networks, citation patterns, and
 biological data. But how confident can we be that an algorithm works well if it
 is only tested on a few problems?
 
 About thirty years ago, SAT solving technology was dealing with a similar lack
-of clarity \cite{DBLP:journals/ai/SelmanML96}. This changed with the study of
+of clarity \citep{DBLP:journals/ai/SelmanML96}. This changed with the study of
 generating random SAT instances against different input parameters (e.g.,
 clause length and the total number of variables) to better understand the
 behaviour of algorithms and their ability to solve random synthetic problems.
 Unfortunately, when it comes to generating random logic programs, all approaches
 so far focused exclusively on propositional programs
-\cite{DBLP:conf/ijcai/AmendolaRT17,DBLP:journals/ai/AmendolaRT20,DBLP:journals/tplp/WangWM15,DBLP:conf/iclp/ZhaoL03},
+\citep{DBLP:conf/ijcai/AmendolaRT17,DBLP:journals/ai/AmendolaRT20,DBLP:journals/tplp/WangWM15,DBLP:conf/iclp/ZhaoL03},
 often with severely limiting conditions such as two-literal clauses
-\cite{DBLP:conf/iclp/Namasivayam09,DBLP:conf/lpnmr/NamasivayamT09} or clauses of
-the form $a \gets \neg b$ \cite{DBLP:journals/tocl/WenWSL16}.
+\citep{DBLP:conf/iclp/Namasivayam09,DBLP:conf/lpnmr/NamasivayamT09} or clauses of
+the form $a \gets \neg b$ \citep{DBLP:journals/tocl/WenWSL16}.
 
 In this work (\cref{sec:heads,sec:bodies,sec:variable_symmetry}), we introduce a
 constraint-based representation for logic programs based on simple parameters
@@ -42,16 +42,16 @@ directly translates into a logic program. One can either output all
 (sufficiently small) programs that satisfy the given conditions or use random
 value-ordering heuristics and restarts to generate random programs. For sampling
 from a uniform distribution, the CSP can be transformed into a belief network
-\cite{DBLP:conf/aaai/DechterKBE02}. In fact, the same model can generate both
+\citep{DBLP:conf/aaai/DechterKBE02}. In fact, the same model can generate both
 probabilistic programs in the syntax of \textsc{ProbLog}
-\cite{DBLP:conf/ijcai/RaedtKT07} and non-probabilistic \textsc{Prolog} programs.
+\citep{DBLP:conf/ijcai/RaedtKT07} and non-probabilistic \textsc{Prolog} programs.
 To the best of our knowledge, this is the first work that
-\begin{enumerate*}[(a)]
+\begin{itemize}
 \item addresses the problem of generating random logic programs in its full
   generality (i.e., including first-order clauses with variables), and
 \item compares and evaluates inference algorithms for probabilistic logic
   programs on more than a handful of instances.
-\end{enumerate*}
+\end{itemize}
 
 A major advantage of a constraint-based approach is the ability to add
 additional constraints as needed, and to do that efficiently (compared to
@@ -69,10 +69,10 @@ be used to evaluate and compare probabilistic inference algorithms.
 
 Overall, our main contributions are concerned with logic programming-based
 languages and frameworks, which capture a major fragment of SRL
-\cite{DBLP:series/synthesis/2016Raedt}. However, since probabilistic logic
+\citep{DBLP:series/synthesis/2016Raedt}. However, since probabilistic logic
 programming languages are closely related to other areas of machine learning,
 including (imperative) probabilistic programming
-\cite{DBLP:journals/ml/RaedtK15}, our results can lay the foundations for
+\citep{DBLP:journals/ml/RaedtK15}, our results can lay the foundations for
 exploring broader questions on generating models and testing algorithms in
 machine learning.
 
@@ -91,7 +91,7 @@ $\neg$. A \emph{clause} is a pair of a \emph{head} (which is an atom) and a
   (e.g., $\mathsf{Q}(X) \land \neg\mathsf{P}(X))$) by adding a couple of
   additional constraints.}). A \emph{(logic) program} is a set of clauses, and a
 \emph{\textsc{ProbLog} program} is a set of clause-probability pairs
-\cite{DBLP:journals/tplp/FierensBRSGTJR15}.
+\citep{DBLP:journals/tplp/FierensBRSGTJR15}.
 
 In the world of CSPs, we also have \emph{(constraint) variables}, each with a
 \emph{domain}, whose values are restricted using \emph{constraints}. All
@@ -100,7 +100,7 @@ integer refers to a logical construct (e.g., a logical variable or a constant),
 we will make no distinction between the two. We say that a constraint variable
 is \emph{(fully) determined} if its domain (at the time) has exactly one value.
 We let $\Box$ denote the absent/disabled value of an optional variable
-\cite{DBLP:conf/cpaior/MearsSSTMW14}. We write $\arrayd{a}{b}{c}$ to mean that
+\citep{DBLP:conf/cpaior/MearsSSTMW14}. We write $\arrayd{a}{b}{c}$ to mean that
 $\variable{a}$ is an array of variables of length $b$ such that each element of
 $\variable{a}$ has domain $c$. Similarly, we write $\arrayt{a}{b}{c}$ to denote
 an array $\variable{a}$ of length $b$ such that each element of $\variable{a}$
@@ -147,7 +147,7 @@ arguments to a single already-existing value) will become clear in
 corresponding arity that depends on the $\variable{predicate}$. We can
 define $\variable{arity} \in [0, \maxArity{}]$ as the arity of the
 $\variable{predicate}$ if $\variable{predicate} \in \predicates{}$ and zero
-otherwise using the table constraint \cite{DBLP:conf/cpaior/MairyDL15}. This
+otherwise using the table constraint \citep{DBLP:conf/cpaior/MairyDL15}. This
 constraint uses a set of pairs of the form $(p, a)$, where $p$ ranges over all
 possible values of the $\variable{predicate}$, and $a$ is either the arity of
 predicate $p$ or zero. Having defined arity, we can now fix the superfluous
@@ -197,7 +197,7 @@ $\arrayt{values}{\maxNumNodes{}}{Node}$ such that $\variable{values}[i]$ holds
 the value of the $i$th node, i.e., a representation of the atom or logical
 operator.
 
-We can use the $\variable{tree}$ constraint \cite{DBLP:conf/cp/FagesL11} to
+We can use the $\variable{tree}$ constraint \citep{DBLP:conf/cp/FagesL11} to
 forbid cycles in the $\variable{structure}$ array and simultaneously define
 $\variable{numTrees} \in \{ 1, \dots, \maxNumNodes{} \}$ to count the number of
 trees. We will view the tree rooted at the zeroth node as the main tree and
@@ -293,7 +293,7 @@ that they produce the same answers to all queries. Even more importantly, we
 want to avoid generating multiple internal representations that ultimately
 result in the same program. This is the purpose of \emph{symmetry-breaking
   constraints}, another important benefit of which is that the constraint
-solving task becomes easier \cite{DBLP:conf/cp/Walsh06}. Given any clause, we
+solving task becomes easier \citep{DBLP:conf/cp/Walsh06}. Given any clause, we
 can permute the variables in that clause without changing the meaning of the
 clause or the entire program. Thus, we want to fix the order of variables.
 Informally, we can say that variable $X$ goes before variable $Y$ if the first
@@ -452,13 +452,13 @@ model's behaviour.
 \section{Stratification and Independence} \label{sec:independence}
 
 \emph{Stratification} is a condition necessary for probabilistic logic programs
-\cite{DBLP:conf/padl/MantadelisR17} and often enforced on logic programs
-\cite{DBLP:journals/tcs/Bidoit91} that helps to ensure a unique answer to every
+\citep{DBLP:conf/padl/MantadelisR17} and often enforced on logic programs
+\citep{DBLP:journals/tcs/Bidoit91} that helps to ensure a unique answer to every
 query. This is achieved by restricting the use of negation so that any program
 $\mathscr{P}$ can be partitioned into a sequence of programs $\mathscr{P} =
 \bigsqcup_{i=1}^n \mathscr{P}_i$ such that, for all $i$, the negative literals
 in $\mathscr{P}_i$ can only refer to predicates defined in $\mathscr{P}_j$ for
-$j \le i$ \cite{DBLP:journals/tcs/Bidoit91}.
+$j \le i$ \citep{DBLP:journals/tcs/Bidoit91}.
 
 \emph{Independence}, on the other hand, is defined on a pair of predicates (say,
 $\mathsf{P}, \mathsf{Q} \in \mathcal{P}$) and can be interpreted in two ways.
@@ -483,7 +483,7 @@ $\mathscr{P}$ (or $G_{\mathscr{P}}$) has a \emph{negative cycle} if
 $G_{\mathscr{P}}$ has a cycle with at least one negative edge. A program
 $\mathscr{P}$ is \emph{stratified} if $G_{\mathscr{P}}$ has no negative
 cycles.\footnote{This definition is an extension of a well-known result for
-  logic programs \cite{DBLP:journals/jlp/BalbinPRM91} to probabilistic logic
+  logic programs \citep{DBLP:journals/jlp/BalbinPRM91} to probabilistic logic
   programs with arbitrary complex clause bodies.} Thus a simple entailment
 algorithm for stratification can be constructed by selecting all clauses, all
 predicates of which are fully determined, and looking for negative cycles in the
@@ -750,7 +750,7 @@ and in \cref{sec:1experiment2} we demonstrate how the model can be used to
 compare inference algorithms and describe their behaviour across a wide range of
 programs. The experiments were run on a system with Intel Core i5-8250U
 processor and \SI{8}{\giga\byte} of RAM. The constraint model was implemented in
-Java~8 with Choco~4.10.2 \cite{choco}. All inference algorithms are implemented
+Java~8 with Choco~4.10.2 \citep{choco}. All inference algorithms are implemented
 in \textsc{ProbLog}~2.1.0.39 and were run using Python~3.8.2 with PySDD~0.2.10
 and PyEDA~0.28.0. For both sets of experiments, we generate programs without
 negative cycles and use a \SI{60}{\second} timeout.
@@ -768,13 +768,13 @@ Within each group, we use the `fail first' variable ordering heuristic. The
 first group consists of all head predicates. Afterwards, we handle all remaining
 decision variables from the first clause before proceeding to the next. The
 decision variables within each clause are divided into
-\begin{enumerate*}[(a)]
+\begin{itemize}
 \item the $\variable{structure}$ array,
 \item body predicates,
 \item head arguments,
 \item (if $|\variables{}| > 1$) the $\variable{intros}$ array,
 \item body arguments.
-\end{enumerate*}
+\end{itemize}
 For instance, in the clause from \cref{example:sibling}, all visible parts of
 the clause would be decided in this order:
 \[
@@ -840,7 +840,7 @@ rules according to the following parameter values: $|\predicates{}|,
 \}$, $\maxNumClauses{} = |\predicates{}|$, $\constants{} = \emptyset$. These
 values are (approximately) representative of many standard benchmarking
 instances which often have 2--8 predicates of arity one or two, 0--8 rules, and
-a larger database of facts \cite{DBLP:journals/tplp/FierensBRSGTJR15}. Just like
+a larger database of facts \citep{DBLP:journals/tplp/FierensBRSGTJR15}. Just like
 before, we explore all possible numbers of independent predicate pairs. We also
 add a constraint that forbids empty bodies. For both rules and facts,
 probabilities are uniformly sampled from $\{ 0.1, 0.2, \dots, 0.9 \}$.
@@ -859,13 +859,13 @@ the generation of each program, including choosing different arities and
 independent pairs. Finally, we set the query of each program to a random fact
 not explicitly included in the program and consider six natively supported
 algorithms and knowledge compilation techniques: binary decision diagrams (BDDs)
-\cite{DBLP:journals/tc/Bryant86}, negation normal form (NNF), deterministic
-decomposable NNF (d-DNNF) \cite{DBLP:journals/jair/DarwicheM02}, K-Best
-\cite{DBLP:conf/ijcai/RaedtKT07}, and two encodings based on sentential decision
-diagrams \cite{DBLP:conf/ijcai/Darwiche11}, one of which encodes the entire
+\citep{DBLP:journals/tc/Bryant86}, negation normal form (NNF), deterministic
+decomposable NNF (d-DNNF) \citep{DBLP:journals/jair/DarwicheM02}, K-Best
+\citep{DBLP:conf/ijcai/RaedtKT07}, and two encodings based on sentential decision
+diagrams \citep{DBLP:conf/ijcai/Darwiche11}, one of which encodes the entire
 program (SDDX), while the other one encodes only the part of the program
 relevant to the query (SDD).\footnote{Forward SDDs (FSDDs) and forward BDDs
-  (FBDDs) \cite{DBLP:conf/aaai/TsamouraGK20,DBLP:conf/ijcai/VlasselaerBKMR15}
+  (FBDDs) \citep{DBLP:conf/aaai/TsamouraGK20,DBLP:conf/ijcai/VlasselaerBKMR15}
   are omitted because the former uses too much memory and the implementation of
   the latter seems to be broken at the time of writing.}
 
@@ -881,7 +881,7 @@ predicates as well as when facts are mostly probabilistic (see \cref{fig:bars}).
 Finally, according to \cref{fig:line_plots}, the independence structure of a
 program does not affect inference time, i.e., state-of-the-art inference
 algorithms---although they are supposed to
-\cite{DBLP:conf/uai/FierensBTGR11}---do not exploit situations where separate
+\citep{DBLP:conf/uai/FierensBTGR11}---do not exploit situations where separate
 parts of a program can be handled independently.
 
 \begin{figure}[t]

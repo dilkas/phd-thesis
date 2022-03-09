@@ -44,13 +44,19 @@
 \usepackage[misc,geometry]{ifsym}
 \usepackage{breakcites}
 \usepackage[british]{babel}
-\usepackage{natbib}
 \usepackage{complexity}
 \usepackage{multirow}
 \usepackage{amsfonts}
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{sectsty}
+\usepackage{rotating}
+
+\usepackage{natbib}
+%% \usepackage[backend=biber]{biblatex}
+%% \addbibresource{thesis}
+%\bibliographystyle{apalike}
+\bibliographystyle{abbrvnat}
 
 \allsectionsfont{\raggedright}
 
@@ -149,15 +155,16 @@
 \end{preliminary}
 
 % TODO:
-% * Some citations appear as Author [year] in the first chapter.
 % * Alignment issues.
 % * Consider removing all the subfigure/minipage/subfig stuff.
 % * Fix references to not use the 'proceedings' command.
 % * Make sure all table captions are above (?) the table.
 % * Add additional information from phd_notes and previous versions of some of the papers.
 % * Shorten the names of chapters
+% * Remove the use of the words: theory, axiom
+% * Remove redundant introductory material from each chapter
 
-\include{chapters/introduction} % 5-14 pages (9 on average)
+\include{chapters/introduction} % 5-14 pages (9 on average) (why I chose to focus on what I did)
 \include{chapters/background} % 11-45 pages (27 on average)
 \include{chapters/random_lps/chapter}
 \include{chapters/wmc_for_bns/chapter}
@@ -170,14 +177,11 @@
 \include{chapters/appendix.tex}
 \include{chapters/appendix2.tex}
 
-%% Choose your favourite bibliography style here.
-%\bibliographystyle{apalike}
-\bibliographystyle{plainnat}
-
 %% If you want the bibliography single-spaced (which is allowed), uncomment
 %% the next line.
-% \singlespace
+\singlespace
 
 \bibliography{thesis}
+%\printbibliography
 
 \end{document}

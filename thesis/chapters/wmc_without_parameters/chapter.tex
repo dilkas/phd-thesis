@@ -4,49 +4,49 @@
 
 Weighted model counting (WMC), i.e., a generalisation of propositional model
 counting that assigns weights to literals and computes the total weight of all
-models of a propositional formula \cite{DBLP:journals/ai/ChaviraD08}, has
+models of a propositional formula \citep{DBLP:journals/ai/ChaviraD08}, has
 emerged as a powerful computational framework for problems in many domains,
 e.g., probabilistic graphical models such as Bayesian networks and Markov
 networks
-\cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05},
-neuro-symbolic artificial intelligence \cite{DBLP:conf/icml/XuZFLB18},
-probabilistic programs \cite{DBLP:journals/pacmpl/HoltzenBM20}, and
-probabilistic logic programs \cite{DBLP:journals/tplp/FierensBRSGTJR15}. It has
-been extended to support continuous variables \cite{DBLP:conf/ijcai/BellePB15},
-infinite domains \cite{DBLP:conf/aaai/Belle17}, first-order logic
-\cite{DBLP:journals/cacm/GogateD16,DBLP:conf/ijcai/BroeckTMDR11}, and arbitrary
-semirings \cite{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}.
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05},
+neuro-symbolic artificial intelligence \citep{DBLP:conf/icml/XuZFLB18},
+probabilistic programs \citep{DBLP:journals/pacmpl/HoltzenBM20}, and
+probabilistic logic programs \citep{DBLP:journals/tplp/FierensBRSGTJR15}. It has
+been extended to support continuous variables \citep{DBLP:conf/ijcai/BellePB15},
+infinite domains \citep{DBLP:conf/aaai/Belle17}, first-order logic
+\citep{DBLP:journals/cacm/GogateD16,DBLP:conf/ijcai/BroeckTMDR11}, and arbitrary
+semirings \citep{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}.
 However, as the definition of WMC puts weights on literals, additional variables
 often need to be added for the sole purpose of holding a weight
-\cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
 This can be particularly detrimental to WMC algorithms that rely on variable
 ordering heuristics.
 % As the parameterised complexity of model counting (and, by extension, WMC)
 % depends on the number of variables
-% \cite{DBLP:conf/focs/BacchusDP03,DBLP:journals/jda/SamerS10}, this can make WMC
+% \citep{DBLP:conf/focs/BacchusDP03,DBLP:journals/jda/SamerS10}, this can make WMC
 % unnecessarily slow and could be detrimental to WMC algorithms such as
-% \textsf{ADDMC} \cite{DBLP:conf/aaai/DudekPV20} that depend on variable ordering
+% \textsf{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} that depend on variable ordering
 % heuristics.
 
 One approach to this problem considers weighted clauses and probabilistic
-semantics based on Markov networks \cite{DBLP:conf/uai/GogateD10}. However, with
+semantics based on Markov networks \citep{DBLP:conf/uai/GogateD10}. However, with
 a new representation comes the need to invent new encodings and inference
 algorithms. Our work is similar in spirit in that it introduces a new
 representation for computational problems but can reuse recent WMC algorithms
 based on pseudo-Boolean function manipulation, namely, \textsf{ADDMC}
-\cite{DBLP:conf/aaai/DudekPV20} and \textsf{DPMC} \cite{DBLP:conf/cp/DudekPV20}.
+\citep{DBLP:conf/aaai/DudekPV20} and \textsf{DPMC} \citep{DBLP:conf/cp/DudekPV20}.
 Furthermore, we identify sufficient conditions for transforming a WMC instance
 into our new format. As many WMC inference algorithms
-\cite{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/OztokD15} work by compilation to
+\citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/OztokD15} work by compilation to
 tractable representations such as arithmetic circuits, deterministic,
-decomposable negation normal form \cite{DBLP:journals/jancl/Darwiche01}, and
-sentential decision diagrams (SDDs) \cite{DBLP:conf/ijcai/Darwiche11}, another
+decomposable negation normal form \citep{DBLP:journals/jancl/Darwiche01}, and
+sentential decision diagrams (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}, another
 way to avoid parameter variables could be via direct compilation to a more
 convenient representation. Direct compilation of Bayesian networks to SDDs has
-been investigated \cite{DBLP:conf/ecsqaru/ChoiKD13}. However, SDDs only support
+been investigated \citep{DBLP:conf/ecsqaru/ChoiKD13}. However, SDDs only support
 weights on literals, and so are not expressive enough to avoid the issue. To the
 best of the authors' knowledge, neither approach
-\cite{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10} has a publicly
+\citep{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10} has a publicly
 available implementation.
 
 In this work, we introduce a way to transform WMC problems into a new format
@@ -54,12 +54,12 @@ based on pseudo-Boolean functions---\emph{pseudo-Boolean projection} (PBP). We
 formally show that every WMC problem instance has a corresponding PBP instance
 and identify conditions under which this transformation can remove parameter
 variables. Four out of the five known WMC encodings for Bayesian networks
-\cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}
 can indeed be simplified in this manner. We are able to eliminate
 \SI{43}{\percent} of variables on average and up to \SI{99}{\percent} on some
 instances. This transformation enables two encodings that were previously
 incompatible with most WMC algorithms (due to using a different definition of
-WMC \cite{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}) to be run with
+WMC \citep{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}) to be run with
 \textsf{ADDMC} and \textsf{DPMC} and results in a significant performance boost
 for one other encoding, making it about three times faster than the state of the
 art. Finally, our theoretical contributions result in a convenient algebraic way
@@ -67,9 +67,9 @@ of reasoning about two-valued pseudo-Boolean functions and position WMC
 encodings on common ground, identifying their key properties and assumptions.
 
 % Specifically, direct compilation
-% from Bayesian networks to SDDs \cite{DBLP:conf/ecsqaru/ChoiKD13} and from
+% from Bayesian networks to SDDs \citep{DBLP:conf/ecsqaru/ChoiKD13} and from
 % structured Bayesian networks (i.e., a generalisation of Bayesian networks) to
-% probabilistic SDDs \cite{shen2020modeling} have been considered.
+% probabilistic SDDs \citep{shen2020modeling} have been considered.
 
 % * SDD compilation still has parameter variables
 % 1) However, no conversion algorithms from either WMC or probabilistic models
@@ -116,18 +116,18 @@ model. We can now formally define WMC.
 That is, the answer to a WMC instance is the sum of the weights of all models of
 $\phi$, where the weight of a model is defined as the product of the weights of
 all (positive and negative) literals in it. Our definition of WMC is largely
-based on the standard definition \cite{DBLP:journals/ai/ChaviraD08}, but
+based on the standard definition \citep{DBLP:journals/ai/ChaviraD08}, but
 explicitly partitions variables into indicator and parameter variables. In
 practice, we identify this partition in one of two ways. If an encoding is
 generated by \textsf{Ace}\footnote{\textsf{Ace}
-  \cite{DBLP:journals/ai/ChaviraD08} implements most of the Bayesian network
+  \citep{DBLP:journals/ai/ChaviraD08} implements most of the Bayesian network
   encodings and can also be used for compilation (and thus inference). It is
   available at \url{http://reasoning.cs.ucla.edu/ace/}.}, then variable types
 are explicitly identified in a file generated alongside the encoding. Otherwise,
 we take $X_I$ to be the set of all variables $x$ such that $w(x) = w(\neg x) =
 1$. Next, we formally define a variation of the WMC problem used by some of the
 Bayesian network encodings
-\cite{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}.
+\citep{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}.
 
 \begin{definition}
   Let $\phi$ be a formula over a set of variables $X$. Then $Y \subseteq X$ is a
@@ -158,7 +158,7 @@ Bayesian network encodings
 A \emph{Bayesian network} is a directed acyclic graph with random variables as
 vertices and edges as conditional dependencies. As is common in related
 literature
-\cite{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}, we assume that each
+\citep{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}, we assume that each
 variable has a finite number of values. We call a Bayesian network \emph{binary}
 if every variable has two values. If all variables have finite numbers of
 values, the probability function associated with each variable $v$ can be
@@ -168,28 +168,27 @@ take. Each row then also has a \emph{probability}, i.e., a number in $[0, 1]$.
 
 WMC is a well-established technique for Bayesian network inference, particularly
 effective on networks where most variables have only a few possible values
-\cite{DBLP:conf/kr/Darwiche02}. Many ways of encoding a Bayesian network into a
+\citep{DBLP:conf/kr/Darwiche02}. Many ways of encoding a Bayesian network into a
 WMC instance have been proposed. We will refer to them based on the initials of
-the authors and the year of publication. Darwiche was the first to suggest the
-\texttt{d02} \cite{DBLP:conf/kr/Darwiche02} encoding that, in many ways, remains
+the authors and the year of publication. \Citet{DBLP:conf/kr/Darwiche02} was the first to suggest the
+\texttt{d02} encoding that, in many ways, remains
 the foundation behind most other encodings. He also introduced the distinction
 between \emph{indicator} and \emph{parameter variables}; the former represent
 variable-value pairs in the Bayesian network, while the latter are associated
 with probabilities in the CPTs. The encoding \texttt{sbk05}
-\cite{DBLP:conf/aaai/SangBK05} is the only encoding that deviates from this
+\citep{DBLP:conf/aaai/SangBK05} is the only encoding that deviates from this
 arrangement: for each variable in the Bayesian network, one indicator variable
-acts simultaneously as a parameter variable. Chavira and Darwiche propose
-\texttt{cd05} \cite{DBLP:conf/ijcai/ChaviraD05} where they shift from WMC to
+acts simultaneously as a parameter variable. \Citet{DBLP:conf/ijcai/ChaviraD05} propose
+\texttt{cd05} where they shift from WMC to
 minimum-cardinality WMC because that allows the encoding to have fewer variables
 and clauses. In particular, they propose a way to use the same parameter
 variable to represent all probabilities in a CPT that are equal and keep only
 clauses that `imply' parameter variables (i.e., omit clauses where a parameter
 variable implies indicator variables).\footnote{\Cref{example:2} demonstrates
   what we mean by implication clauses.} In their next encoding, \texttt{cd06}
-\cite{DBLP:conf/sat/ChaviraD06}, the same authors optimise the aforementioned
+\citep{DBLP:conf/sat/ChaviraD06}, the same authors optimise the aforementioned
 implication clauses, choosing the smallest sufficient selection of indicator
-variables. A decade later, Bart et al. present \texttt{bklm16}
-\cite{DBLP:conf/ecai/BartKLM16} that improves upon \texttt{cd06} in two ways.
+variables. A decade later, \citet{DBLP:conf/ecai/BartKLM16} present \texttt{bklm16} that improves upon \texttt{cd06} in two ways.
 First, they optimise the number of indicator variables used per Bayesian network
 variable from a linear to a logarithmic amount. Second, they introduce a scaling
 factor that can `absorb' one probability per Bayesian network variable. However,
@@ -235,25 +234,25 @@ experiments because the authors never looked at numerical answers.
 
 In this work, we propose a more expressive representation for WMC based on
 pseudo-Boolean functions. A \emph{pseudo-Boolean function} is a function of the
-form $\{ 0, 1 \}^n \to \mathbb{R}$ \cite{DBLP:journals/dam/BorosH02}.
+form $\{ 0, 1 \}^n \to \mathbb{R}$ \citep{DBLP:journals/dam/BorosH02}.
 Equivalently, let $X$ denote a set with $n$ elements (we will refer to them as
 \emph{variables}), and $2^X$ denote its powerset. Then a pseudo-Boolean function
 can have $2^X$ as its domain (then it is also known as a \emph{set function}).
 
 Pseudo-Boolean functions, most commonly represented as
-algebraic decision diagrams (ADDs) \cite{DBLP:journals/fmsd/BaharFGHMPS97}
+algebraic decision diagrams (ADDs) \citep{DBLP:journals/fmsd/BaharFGHMPS97}
 (although a tensor-based approach has also been suggested
-\cite{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen
+\citep{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen
 extensive use in value iteration for Markov decision processes
-\cite{DBLP:conf/uai/HoeySHB99}, both exact and approximate Bayesian network
-inference \cite{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, and
-sum-product network \cite{DBLP:conf/uai/PoonD11} to Bayesian network conversion
-\cite{DBLP:conf/icml/ZhaoMP15}. ADDs have been extended to compactly represent
-additive and multiplicative structure \cite{DBLP:conf/ijcai/SannerM05},
-sentences in first-order logic \cite{DBLP:journals/ai/SannerB09}, and continuous
-variables \cite{DBLP:conf/uai/SannerDB11}, the last of which was also applied to
+\citep{DBLP:conf/uai/HoeySHB99}, both exact and approximate Bayesian network
+inference \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, and
+sum-product network \citep{DBLP:conf/uai/PoonD11} to Bayesian network conversion
+\citep{DBLP:conf/icml/ZhaoMP15}. ADDs have been extended to compactly represent
+additive and multiplicative structure \citep{DBLP:conf/ijcai/SannerM05},
+sentences in first-order logic \citep{DBLP:journals/ai/SannerB09}, and continuous
+variables \citep{DBLP:conf/uai/SannerDB11}, the last of which was also applied to
 weighted model integration, i.e., the WMC extension for continuous variables
-\cite{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
+\citep{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
 
 Since two-valued pseudo-Boolean functions will be used extensively henceforth,
 we introduce some new notation. For any propositional formula $\phi$ over $X$
@@ -269,7 +268,7 @@ pseudo-Boolean function defined as
 for any $Y \subseteq X$. Next, we define some useful operations on
 pseudo-Boolean functions. The definitions of multiplication and projection are
 equivalent to those in previous work
-\cite{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
+\citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
 
 \begin{definition}[Operations] \label{def:operations}
   Let $f, g\colon 2^X \to \mathbb{R}$ be pseudo-Boolean functions, $x, y \in X$,
@@ -289,7 +288,7 @@ equivalent to those in previous work
   \mathbb{R}^{2^X} \to \mathbb{R}^{2^X}$ defined as $\exists_xf \coloneqq
   f|_{x=1} + f|_{x=0}$. Since projection is commutative (i.e.,
   $\exists_x\exists_yf = \exists_y\exists_xf$)
-  \cite{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}, we can define
+  \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}, we can define
   $\exists_Y\colon \mathbb{R}^{2^X} \to \mathbb{R}^{2^X}$ as $\exists_Y
   \coloneqq \exists_{y_1}\exists_{y_2}\dots\exists_{y_n}$. Throughout the paper,
   projection is assumed to have the lowest precedence (e.g., $\exists_x fg =
@@ -349,7 +348,7 @@ representation of a clause in the DIMACS CNF format.
     some of the structure of the WMC instance into an external multiplicative factor
     was loosely inspired by the \texttt{bklm16} encoding, where it is used
     to subsume the most commonly occurring probability of each CPT
-    \cite{DBLP:conf/ecai/BartKLM16}.} Its \emph{answer} is $\omega \cdot
+    \citep{DBLP:conf/ecai/BartKLM16}.} Its \emph{answer} is $\omega \cdot
   \left(\exists_X\prod_{f \in F}f\right)(\emptyset)$.
 \end{definition}
 
@@ -389,21 +388,21 @@ PBP format while removing all parameter variables. We chose to transform
 existing encodings instead of creating a new one to reuse already-existing
 techniques for encoding each CPT to its minimal logical representation such as
 prime implicants and limited forms of resolution
-\cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}.
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}.
 The transformation algorithm works on four out of the five Bayesian network
-encodings: \texttt{bklm16} \cite{DBLP:conf/ecai/BartKLM16}, \texttt{cd05}
-\cite{DBLP:conf/ijcai/ChaviraD05}, \texttt{cd06}
-\cite{DBLP:conf/sat/ChaviraD06}, and \texttt{d02}
-\cite{DBLP:conf/kr/Darwiche02}. There is no obvious way to adjust it to work
+encodings: \texttt{bklm16} \citep{DBLP:conf/ecai/BartKLM16}, \texttt{cd05}
+\citep{DBLP:conf/ijcai/ChaviraD05}, \texttt{cd06}
+\citep{DBLP:conf/sat/ChaviraD06}, and \texttt{d02}
+\citep{DBLP:conf/kr/Darwiche02}. There is no obvious way to adjust it to work
 with \texttt{sbk05} because the roles of indicator and parameter variables
-overlap \cite{DBLP:conf/aaai/SangBK05}.
+overlap \citep{DBLP:conf/aaai/SangBK05}.
 
 The algorithm is based on several observations that will be made more precise in
 \cref{sec:proof}. First, all weights except for $\{w(p) \mid p \in X_P\}$ are
 redundant as they either duplicate an already-defined weight or are equal to
 one. Second, each clause has at most one parameter variable. Third, if the
 parameter variable is negated, we can ignore the clause (this idea first appears
-in the \texttt{cd05} paper \cite{DBLP:conf/ijcai/ChaviraD05}). Note that while
+in the \texttt{cd05} paper \citep{DBLP:conf/ijcai/ChaviraD05}). Note that while
 we formulate our algorithm as a sequel to the WMC encoding procedure primarily
 because the implementations of Bayesian network WMC encodings are all
 closed-source, as all transformations in the algorithm are local, it can be
@@ -444,7 +443,7 @@ pseudo-Boolean functions and establishing a canonical transformation from WMC to
 PBP.
 
 \begin{theorem}[Early Projection
-  \cite{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}] \label{thm:early}
+  \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}] \label{thm:early}
   Let $X$ and $Y$ be sets of variables. For all pseudo-Boolean functions
   $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$, if $x \in X
   \setminus Y$, then $\exists_x (f \cdot g) = (\exists_x f) \cdot g$.
@@ -686,9 +685,9 @@ instance using \texttt{e} and transforming it into a PBP instance using
 include WMC algorithms used in the papers that introduce each encoding:
 \textsf{Ace} for \texttt{cd05}, \texttt{cd06}, and \texttt{d02};
 \textsf{Cachet}\footnote{\url{https://cs.rochester.edu/u/kautz/Cachet/}}
-\cite{DBLP:conf/sat/SangBBKP04} for \texttt{sbk05}; and
+\citep{DBLP:conf/sat/SangBBKP04} for \texttt{sbk05}; and
 \textsf{c2d}\footnote{\url{http://reasoning.cs.ucla.edu/c2d/}}
-\cite{DBLP:conf/ecai/Darwiche04} with
+\citep{DBLP:conf/ecai/Darwiche04} with
 \textsf{query-dnnf}\footnote{\url{http://www.cril.univ-artois.fr/kc/d-DNNF-reasoner.html}}
 for \texttt{bklm16}. \textsf{Ace} is also used to encode Bayesian networks into
 WMC instances for all encodings except for \texttt{bklm16} which uses another
@@ -708,37 +707,35 @@ encoder mentioned previously. We focus on the following questions:
 
 \textsf{DPMC} is run with tree decomposition-based planning and ADD-based
 execution---the best-performing combination in the original set of experiments
-\cite{DBLP:conf/cp/DudekPV20}. We use a single iteration of \textsf{htd}
-\cite{DBLP:conf/cpaior/AbseherMW17} to generate approximately optimal tree
+\citep{DBLP:conf/cp/DudekPV20}. We use a single iteration of \textsf{htd}
+\citep{DBLP:conf/cpaior/AbseherMW17} to generate approximately optimal tree
 decompositions---we found that this configuration is efficient enough to handle
 huge instances, and yet the width of the returned decomposition is unlikely to
 differ from optimal by more than one or two. We also enabled \textsf{DPMC}'s
 greedy mode. This mode (which was not part of the original paper
-\cite{DBLP:conf/cp/DudekPV20}) optimises the order in which ADDs are multiplied
+\citep{DBLP:conf/cp/DudekPV20}) optimises the order in which ADDs are multiplied
 by prioritising those with small representations.
 
 For experimental data, we use Bayesian networks available with \textsf{Ace} and
 \textsf{Cachet}. We split them into the following groups:
-\begin{itemize*}
+\begin{itemize}
 \item DQMR (390 instances) and
-\item Grid networks (450 instances) as described by Sang et al.
-  \cite{DBLP:conf/aaai/SangBK05};
+\item Grid networks (450 instances) as described by \citet{DBLP:conf/aaai/SangBK05};
 \item Mastermind (144 instances) and
-\item Random Blocks (256 instances) by Chavira et al.
-  \cite{DBLP:journals/ijar/ChaviraDJ06};
+\item Random Blocks (256 instances) by \citet{DBLP:journals/ijar/ChaviraDJ06};
 \item other binary Bayesian networks (50 instances) including Plan Recognition
-  \cite{DBLP:conf/aaai/SangBK05}, Friends and Smokers, Students and Professors
-  \cite{DBLP:journals/ijar/ChaviraDJ06}, and \texttt{tcc4f};
+  \citep{DBLP:conf/aaai/SangBK05}, Friends and Smokers, Students and Professors
+  \citep{DBLP:journals/ijar/ChaviraDJ06}, and \texttt{tcc4f};
 \item non-binary classic networks (176 instances): \texttt{alarm},
   \texttt{diabetes}, \texttt{hailfinder}, \texttt{mildew},
   \texttt{munin1}--\texttt{4}, \texttt{pathfinder}, \texttt{pigs}, and
   \texttt{water}.
-\end{itemize*}
+\end{itemize}
 
 To perform Bayesian network inference with \textsf{DPMC} (or with any
 other WMC algorithm not based on compilation such as \textsf{Cachet}), one
 needs to select a probability to compute
-\cite{DBLP:conf/cp/DudekPV20,DBLP:conf/sat/SangBBKP04}. If a network comes
+\citep{DBLP:conf/cp/DudekPV20,DBLP:conf/sat/SangBBKP04}. If a network comes
 with an evidence file, we compute the probability of this evidence. Otherwise,
 let $X$ be the variable last mentioned in the Bayesian network file. If
 \textsf{true} is one of the values of $X$, then we compute $\Pr(X =
@@ -838,7 +835,7 @@ faster than \texttt{d02++} when run with \textsf{DPMC}.
 
 It is also worth noting that there was no observable difference in the width of
 the project-join tree used by DPMC (which is equivalent to the treewidth of the
-primal/Gaifman graph of the input formula \cite{DBLP:conf/cp/DudekPV20}) before
+primal graph of the input formula \citep{DBLP:conf/cp/DudekPV20}) before
 and after applying \cref{alg:transformation}---the observed performance
 improvement is more likely related to the variable ordering heuristic used by
 ADDs.\footnote{The data on this (along with the implementation of
@@ -869,13 +866,13 @@ and coherent list of conditions.
 
 Bayesian network inference was chosen as the example application of WMC because
 it is the first and the most studied one
-\cite{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
 While the distinction between indicator and parameter variables is often not
 explicitly described in other WMC encodings
-\cite{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:journals/pacmpl/HoltzenBM20,DBLP:conf/icml/XuZFLB18},
+\citep{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:journals/pacmpl/HoltzenBM20,DBLP:conf/icml/XuZFLB18},
 perhaps in some cases variables could still be partitioned in this way, allowing
 for not just faster inference with \textsf{DPMC} or \textsf{ADDMC} but also for
 well-established WMC encoding and inference techniques (such as in the
 \texttt{cd05} and \texttt{cd06} papers
-\cite{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}) to be transferred to
+\citep{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}) to be transferred to
 other application domains.
