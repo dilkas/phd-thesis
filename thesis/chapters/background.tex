@@ -1,71 +1,23 @@
-\chapter{Background} % 11-45 pages (27 on average)
+% 11-45 pages (27 on average)
+% aim for 2-5 pages for each major section
+\chapter{Background}
 
 TODO: outside of specific sections, have a one-paragraph introduction before and a one-paragraph summary at the end.
 
-\paragraph{Notes}
-\begin{itemize}
-\item Describing WMC in this chapter is probably redundant because the introduction will describe it informally and too many chapters re-explain it.
-\item Info about inference algorithms (including the ProbLog-specific ones) and where WMC, WFOMC, and ForcLift fit in might be best left scattered across several sections.
-\end{itemize}
-
-\paragraph{Outline} % aim for 2-5 pages for each major section
-\begin{enumerate}
-\item Logic
-\item Relevant Declarative Programming Paradigms
-  \begin{itemize}
-  \item Logic Programming (with a forward reference to probabilistic logic programming)
-    \begin{itemize}
-    \item Maybe: Stratification
-    \end{itemize}
-  \item Constraint Programming (and why it's useful to have constraint models)
-    \begin{itemize}
-    \item Maybe: Search and Heuristics
-    \item Maybe: Symmetry Breaking
-    \item Maybe: Propagation and Entailment
-    \end{itemize}
-  \end{itemize}
-\item Representations of Probability Distributions (including the ideas behind inference)
-  \begin{itemize}
-  \item Probabilistic Graphical Models
-    \begin{itemize}
-    \item Bayesian Networks
-    \item Markov Random Fields
-    \item Relational
-      \begin{itemize}
-      \item Markov Logic Networks
-      \end{itemize}
-    \end{itemize}
-  \item Probabilistic Programming
-    \begin{itemize}
-    \item Imperative and (Maybe) Functional, e.g., BLOG
-    \item Probabilistic Logic Programming
-      \begin{itemize}
-      \item ProbLog (including some detail about how inference is defined)
-      \end{itemize}
-    \end{itemize}
-  \end{itemize}
-\item Knowledge Compilation (including lots of detail about all the data structures)
-  \begin{itemize}
-  \item Boolean and Pseudo-Boolean Functions
-  \item NNF
-  \item d-DNNF
-  \item SDDs
-  \item BDDs
-  \item ADDs (with a brief mention of AADDs, XDDs, etc.)
-  \end{itemize}
-\item Applications
-  \begin{itemize}
-  \item Statistical Relational Learning
-  \item Neuro-Symbolic Artificial Intelligence
-  \item Natural Language Processing
-  \item Robotics
-  \end{itemize}
-\end{enumerate}
-
-\clearpage % TODO: remove
 \section{Logic}
 
-We use $\land$, $\lor$, $\neg$, $\Rightarrow$, and $\Leftrightarrow$ to denote conjunction, disjunction, negation, material implication, and material biconditional, respectively.
+(Boolean) operators:
+\begin{description}
+\item[negation] $\neg$
+\item[disjunction] $\lor$
+\item[conjunction] $\land$
+\item[(material) implication] $\Rightarrow$
+\item[equivalence (material biconditional)] $\Leftrightarrow$
+\end{description}
+
+formula - another word for expression
+
+a formula is \emph{satisfiable} if some interpretation is true (i.e., it has at least one model)
 
 Throughout the thesis, we use set-theoretic notation for many concepts in logic.
 
@@ -83,46 +35,47 @@ Then an equivalent set-theoretic representation of $\phi$ is $\{ \{\neg a, b \},
 
 Any subset of $\{ a, b \}$ is an interpretation of $\phi$, e.g., $\{ a, b \}$ is a model of $\phi$ (written $\{ a, b \} \models \phi$) of cardinality two, while $\emptyset$ is an interpretation but not a model.
 
-The basic primitives of logic programs are \emph{constants}, \emph{(logic)
-variables}, and \emph{predicates} with their \emph{arities}. A \emph{term} is
-either a variable or a constant, and an \emph{atom} is a predicate of arity $n$
-applied to $n$ terms. A \emph{formula} is any well-formed expression that
-connects atoms using conjunction $\land$, disjunction $\lor$, and negation
-$\neg$. A \emph{clause} is a pair of a \emph{head} (which is an atom) and a
-\emph{body} (which is a formula\footnote{Our model supports arbitrarily complex
-bodies of clauses (e.g., $\neg\mathsf{P}(X) \lor (\mathsf{Q}(X) \land
-\mathsf{P}(X))$) because \textsc{ProbLog} does too. However, one can easily
-restrict our representation of a body to a single conjunction of literals
-(e.g., $\mathsf{Q}(X) \land \neg\mathsf{P}(X))$) by adding a couple of
-additional constraints.}).
+`atomic proposition (atom for short)'
 
-By \emph{variable}, we always mean a Boolean variable. A \emph{literal} is
+[interpretations] `assign one of the (truth) values to every atomic proposition'
+
+The basic primitives of logic programs are \emph{constants}, \emph{(logic) variables}, and \emph{predicates} with their \emph{arities}.
+
+A \emph{term} is either a variable or a constant, and an \emph{atom} is a predicate of arity $n$ applied to $n$ terms.
+
+A \emph{formula} is any well-formed expression that connects atoms using conjunction $\land$, disjunction $\lor$, and negation $\neg$.
+
+By \emph{variable}, we always mean a Boolean variable.
+
+A \emph{literal} is
 either a variable (say, $v$) or its negation (denoted $\neg v$), respectively
-called \emph{positive} and \emph{negative} literal. A \emph{clause} is a
-disjunction of literals. A \emph{formula} is any well-formed expression
-consisting of variables, negation, conjunction, and disjunction. A formula is in
-\emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it
-is in $k$-CNF if every clause has exactly $k$ literals. While we use the
-set-theoretic notation for CNF formulas (e.g., writing $c \in \phi$ to mean that
-clause $c$ is one of the clauses in formula $\phi$), duplicate clauses are still
-allowed.
+called \emph{positive} and \emph{negative} literal.
+
+`A \emph{literal} is an atom or or the negation of an atom. An atom is a \emph{positive literal}, and the negation of an atom is a \emph{negative literal}.'
+
+A \emph{clause} is a
+disjunction of literals.
+
+A \emph{formula} is any well-formed expression consisting of variables, negation, conjunction, and disjunction.
+
+A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals.
+
+While we use the set-theoretic notation for CNF formulas (e.g., writing $c \in \phi$ to mean that clause $c$ is one of the clauses in formula $\phi$), duplicate clauses are still allowed.
 
 \begin{itemize}
 \item (Boolean) variable
-\item true/false (including notation)
 \item notation for connectives: conjunction, disjunction, negation, material implication, material biconditional
 \item literal
-\item clause (note that one of the chapters defines it differently)
+\item clause (note that \cref{chapter:randomlps} defines it differently)
 \item (well-formed) formula
-\item CNF (forward reference to other forms)
+\item CNF (many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc})
 \item interpretation
 \item model
-\item logic-based problems: SAT, MC (\# SAT), MAX-SAT, (QBF, projected WMC, etc.)
-\item applications of logic in computer science: planning, logical inference, verification, scheduling, etc. (Section 2.1 of Guy's thesis)
+\item TODO (later): applications of logic in computer science: planning, logical inference, verification, scheduling, etc. (Section 2.1 of Guy's thesis)
 \item more on logic: \citep{DBLP:books/daglib/0029942}
 \end{itemize}
 
-\subsection{First-Order}
+\subsection{First-Order Logic}
 
 \begin{itemize}
 \item function-free throughout
@@ -137,4 +90,89 @@ allowed.
 \item ground (atom, etc.)
 \item citations from page 41 of Guy's thesis
 \item more on first-order logic: \citep{DBLP:books/daglib/0023546}
+\end{itemize}
+
+\subsection{Logic-Based Computational Problems}
+
+\begin{itemize}
+\item \SAT{} (book: \citep{DBLP:series/faia/2009-185}, intro and history: \citep{DBLP:series/faia/FrancoM09})
+\item counting
+  \begin{itemize}
+  \item MC (\#\SAT{}) \citep{DBLP:series/faia/GomesSS09}
+  \item WMC \citep{DBLP:journals/ai/ChaviraD08}
+  \item PMC ($\#\exists\SAT{}$) \citep{DBLP:conf/sat/AzizCMS15}
+  \item (SW)FOMC \citep{DBLP:conf/ijcai/BroeckTMDR11}
+  \end{itemize}
+\item Max\SAT{} \citep{bacchus2021maximum,DBLP:series/faia/LiM09}
+\item QBF \citep{DBLP:series/faia/BuningB09}. Applications: \citep{DBLP:conf/ictai/ShuklaBPS19}
+\item Also briefly mention:
+  \begin{itemize}
+  \item PB \citep{DBLP:series/faia/RousselM09}
+  \item SMT \citep{DBLP:series/faia/BarrettSST09}
+  \item CP \citep{DBLP:reference/fai/2} (forward reference to \cref{sec:cp,chapter:randomlps})
+  \item IP \citep{wolsey2020integer}.
+  \end{itemize}
+\end{itemize}
+
+\section{Some Declarative Programming Paradigms}
+
+\begin{itemize}
+\item Logic Programming (with a forward reference to probabilistic logic programming)
+  \begin{itemize}
+  \item Maybe: Stratification
+  \end{itemize}
+\item Constraint Programming (and why it's useful to have constraint models)
+  \begin{itemize}
+  \item Maybe: Search and Heuristics
+  \item Maybe: Symmetry Breaking
+  \item Maybe: Propagation and Entailment
+  \end{itemize}
+\end{itemize}
+
+\subsection{Logic Programming}
+
+\subsection{Constraint Programming} \label{sec:cp}
+
+\section{Representations of Probability Distributions}
+
+(including the ideas behind inference)
+\begin{itemize}
+\item Probabilistic Graphical Models
+  \begin{itemize}
+  \item Bayesian Networks
+  \item Markov Random Fields
+  \item Relational
+    \begin{itemize}
+    \item Markov Logic Networks
+    \end{itemize}
+  \end{itemize}
+\item Probabilistic Programming
+  \begin{itemize}
+  \item Imperative and (Maybe) Functional, e.g., BLOG
+  \item Probabilistic Logic Programming
+    \begin{itemize}
+    \item ProbLog (including some detail about how inference is defined)
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\section{Knowledge Compilation} \label{sec:kc}
+
+(including lots of detail about all the data structures)
+\begin{itemize}
+\item Boolean and Pseudo-Boolean Functions
+\item NNF
+\item d-DNNF
+\item SDDs
+\item BDDs
+\item ADDs (with a brief mention of AADDs, XDDs, etc.)
+\end{itemize}
+
+\section{Applications}
+
+\begin{itemize}
+\item Statistical Relational Learning
+\item Neuro-Symbolic Artificial Intelligence
+\item Natural Language Processing
+\item Robotics
 \end{itemize}
