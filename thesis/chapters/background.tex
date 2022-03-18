@@ -6,76 +6,20 @@ TODO: outside of specific sections, have a one-paragraph introduction before and
 
 \section{Logic}
 
-(Boolean) operators:
-\begin{description}
-\item[negation] $\neg$
-\item[disjunction] $\lor$
-\item[conjunction] $\land$
-\item[(material) implication] $\Rightarrow$
-\item[equivalence (material biconditional)] $\Leftrightarrow$
-\end{description}
+This section describes the terminology of formal logic that is used throughout the thesis. We begin with propositional logic, then cover first-order logic in \cref{sec:fologic} and logic-based computational problems and their applications in \cref{sec:logicproblems}. See the book by \cite{DBLP:books/daglib/0029942} for a more detailed introduction to logic in the context of computer science.
 
-formula - another word for expression
+An \emph{atomic proposition} (\emph{atom} for short) is a Boolean/logical variable with two possible \emph{truth} values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators: negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
 
-a formula is \emph{satisfiable} if some interpretation is true (i.e., it has at least one model)
+An \emph{interpretation} of a formula $\phi$ is a map from the variables of $\phi$ to the set $\{\, \text{true}, \text{false} \,\}$. A \emph{model} is an interpretation under which $\phi$ evaluates to true. A formula is \emph{satisfiable} if it has at least one model.
 
-Throughout the thesis, we use set-theoretic notation for many concepts in logic.
+Throughout the thesis, we use set-theoretic notation for many concepts in logic such as clauses and formulas in CNF (e.g., we write $c \in \phi$ to mean that clause $c$ is one of the clauses of formula $\phi$). However, this does not automatically mean that we assume no duplicates---whether or not that is the case is clarified on a case-by-case basis.
 
-A \emph{clause} is a set of literals that are part of an implicit disjunction.
+% interpretation, model, satisfiable
+\begin{example}
+  Formula $\phi \coloneqq (\neg a \lor b) \land a$ has two variables $a$ and $b$, is in CNF, and contains two clauses. The first clause $\neg a \lor b$ has a negative literal $\neg a$ and a positive literal $b$. Since $\phi$ has two variables, it also has four interpretations. Interpretation $\{\, a \mapsto \text{true}, b \mapsto \text{true} \,\}$ is a model, so $\phi$ is satisfiable. An equivalent set-theoretic representation of $\phi$ is $\{\, \{\, \neg a, b \,\}, \{\, a \,\} \,\}$.
+\end{example}
 
-Similarly, a \emph{formula} in CNF is a set of clauses that are part of an implicit conjunction.
-
-We identify a \emph{model} with a set of variables that correspond to the positive literals in the model (and all other variables are the negative literals of the model).
-
-We can then define the \emph{cardinality} of a model as the cardinality of this set.
-
-For example, let $\phi = (\neg a \lor b) \land a$ be a propositional formula over variables $a$ and $b$.
-
-Then an equivalent set-theoretic representation of $\phi$ is $\{ \{\neg a, b \}, \{ a \} \}$.
-
-Any subset of $\{ a, b \}$ is an interpretation of $\phi$, e.g., $\{ a, b \}$ is a model of $\phi$ (written $\{ a, b \} \models \phi$) of cardinality two, while $\emptyset$ is an interpretation but not a model.
-
-`atomic proposition (atom for short)'
-
-[interpretations] `assign one of the (truth) values to every atomic proposition'
-
-The basic primitives of logic programs are \emph{constants}, \emph{(logic) variables}, and \emph{predicates} with their \emph{arities}.
-
-A \emph{term} is either a variable or a constant, and an \emph{atom} is a predicate of arity $n$ applied to $n$ terms.
-
-A \emph{formula} is any well-formed expression that connects atoms using conjunction $\land$, disjunction $\lor$, and negation $\neg$.
-
-By \emph{variable}, we always mean a Boolean variable.
-
-A \emph{literal} is
-either a variable (say, $v$) or its negation (denoted $\neg v$), respectively
-called \emph{positive} and \emph{negative} literal.
-
-`A \emph{literal} is an atom or or the negation of an atom. An atom is a \emph{positive literal}, and the negation of an atom is a \emph{negative literal}.'
-
-A \emph{clause} is a
-disjunction of literals.
-
-A \emph{formula} is any well-formed expression consisting of variables, negation, conjunction, and disjunction.
-
-A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals.
-
-While we use the set-theoretic notation for CNF formulas (e.g., writing $c \in \phi$ to mean that clause $c$ is one of the clauses in formula $\phi$), duplicate clauses are still allowed.
-
-\begin{itemize}
-\item (Boolean) variable
-\item notation for connectives: conjunction, disjunction, negation, material implication, material biconditional
-\item literal
-\item clause (note that \cref{chapter:randomlps} defines it differently)
-\item (well-formed) formula
-\item CNF (many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc})
-\item interpretation
-\item model
-\item TODO (later): applications of logic in computer science: planning, logical inference, verification, scheduling, etc. (Section 2.1 of Guy's thesis)
-\item more on logic: \citep{DBLP:books/daglib/0029942}
-\end{itemize}
-
-\subsection{First-Order Logic}
+\subsection{First-Order Logic} \label{sec:fologic}
 
 \begin{itemize}
 \item function-free throughout
@@ -84,7 +28,7 @@ While we use the set-theoretic notation for CNF formulas (e.g., writing $c \in \
 \item atom, how atoms replace variables
 \item constant
 \item variables
-\item term: variable or constant
+\item A \emph{term} is either a variable or a constant, and an \emph{atom} is a predicate of arity $n$ applied to $n$ terms.
 \item domain (of discourse). always consider finite domains (as in Guy's thesis, Friedman et al. 1999, Richardson and Domingos 2006). This makes, e.g., satisfiability decidable and a FO formula can always be extended to a propositional one.
 \item existential, universal quantification
 \item ground (atom, etc.)
@@ -92,7 +36,7 @@ While we use the set-theoretic notation for CNF formulas (e.g., writing $c \in \
 \item more on first-order logic: \citep{DBLP:books/daglib/0023546}
 \end{itemize}
 
-\subsection{Logic-Based Computational Problems}
+\subsection{Logic-Based Computational Problems} \label{sec:logicproblems}
 
 \begin{itemize}
 \item \SAT{} (book: \citep{DBLP:series/faia/2009-185}, intro and history: \citep{DBLP:series/faia/FrancoM09})
@@ -112,6 +56,7 @@ While we use the set-theoretic notation for CNF formulas (e.g., writing $c \in \
   \item CP \citep{DBLP:reference/fai/2} (forward reference to \cref{sec:cp,chapter:randomlps})
   \item IP \citep{wolsey2020integer}.
   \end{itemize}
+\item applications of logic in computer science: planning, logical inference, verification, scheduling, etc. (Section 2.1 of Guy's thesis)
 \end{itemize}
 
 \section{Some Declarative Programming Paradigms}
@@ -129,7 +74,7 @@ While we use the set-theoretic notation for CNF formulas (e.g., writing $c \in \
   \end{itemize}
 \end{itemize}
 
-\subsection{Logic Programming}
+\subsection{Logic Programming} \label{sec:lp}
 
 \subsection{Constraint Programming} \label{sec:cp}
 
