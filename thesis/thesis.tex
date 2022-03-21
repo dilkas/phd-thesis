@@ -51,6 +51,7 @@
 \usepackage{graphicx}
 \usepackage{sectsty}
 \usepackage{rotating}
+\usepackage{pifont}
 
 \usepackage{natbib}
 %% \usepackage[backend=biber]{biblatex}
@@ -60,9 +61,17 @@
 
 \allsectionsfont{\raggedright}
 
+\usetikzlibrary{arrows}
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{cd}
+\usetikzlibrary{fit}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
+\usetikzlibrary{trees}
+
 \captionsetup[subfigure]{width=\linewidth}
 
+\newtheorem{assumption}{Assumption}
 \newtheorem{constraint}{Constraint}
 \newtheorem{proposition}{Proposition}
 \newtheorem{theorem}{Theorem}
@@ -97,6 +106,20 @@
 \DeclareMathOperator{\AlmostDetermined}{\Gamma}
 \DeclareMathOperator{\getss}{\mathtt{:-}}
 \DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\CR}{\textsc{CR}}
+\DeclareMathOperator{\DR}{\textsc{DR}}
+\DeclareMathOperator{\IE}{\textsc{IE}}
+\DeclareMathOperator{\Reff}{\textsc{Ref}}
+\DeclareMathOperator{\wwp}{w}
+\DeclareMathOperator{\wwn}{\overline{w}}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Imm}{Im} % TODO: merge with im
+\DeclareMathOperator{\Doms}{Doms}
+\DeclareMathOperator{\size}{\sigma}
+\DeclareMathOperator{\Vars}{Vars}
+\DeclareMathOperator{\WMC}{WMC}
+\DeclareMathOperator{\gr}{gr}
 
 \Crefname{algocf}{Algorithm}{Algorithms}
 \Crefname{constraint}{Constraint}{Constraints}
@@ -117,6 +140,32 @@
                \newenvironment{customlemma}[1]
                               {\renewcommand\theinnercustomlemma{#1}\innercustomlemma}
                               {\endinnercustomlemma}
+
+\makeatletter
+\newcommand\incircbin
+    {%
+      \mathpalette\@incircbin
+    }
+    \newcommand\@incircbin[2]
+                          {%
+                            \mathbin%
+                                {%
+                                  \ooalign{\hidewidth$#1#2$\hidewidth\crcr$#1\bigcirc$}%
+                                }%
+                          }
+                          \newcommand{\oland}{\incircbin{\land}}
+                          \newcommand{\olor}{\incircbin{\lor}}
+                          \newcommand{\Contradiction}{\incircbin{\bot}}
+                          \newcommand{\Tautology}{\incircbin{\top}}
+                          \newcommand{\Smoothing}{\incircbin{}}
+                          \newcommand{\Unit}{\incircbin{1}}
+                          \makeatother
+
+\newcommand\pfun{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
+\newcommand\mdoubleplus{\mathbin{+\mkern-10mu+}}
+\newcommand*{\twoheadrightarrowtail}{\mathrel{\rightarrowtail\kern-1.9ex\twoheadrightarrow}}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
 
 \crefname{enumi}{Condition}{Conditions}
 \crefname{enumii}{Condition}{Conditions}
@@ -168,6 +217,9 @@
 % * double check what symbols I use for implication and equivalence
 % * have theorems, examples, etc. numbering be chapter-specific (or even more densely)
 % * consistent spacing around sets, use of coloneqq
+% * maybe briefly introduce notation for positive and nonnegative integers, non-negative reals, etc.
+% * capitalisation and font for predicates, variables, constants, etc.
+% * empty year in one of the references
 
 \include{chapters/introduction} % 5-14 pages (9 on average) (why I chose to focus on what I did)
 \include{chapters/background} % 11-45 pages (27 on average)
