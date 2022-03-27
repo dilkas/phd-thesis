@@ -4,63 +4,62 @@
 
 TODO: outside of specific sections, have a one-paragraph introduction before and a one-paragraph summary at the end.
 
-\section{Logic}
+\section{Propositional Logic}
 
-TODO: update this description
+In this section, we briefly introduce the fundamentals of propositional logic and describe some logic-based computational problems. We refer the reader to the book by \cite{DBLP:books/daglib/0029942} for a more detailed introduction to logic and its role in computer science.
 
-This section describes the terminology of formal logic that is used throughout the thesis. We begin with propositional logic, then cover first-order logic in \cref{sec:fologic} and logic-based computational problems and their applications in \cref{sec:logicproblems}. See the book by \cite{DBLP:books/daglib/0029942} for a more detailed introduction to logic in the context of computer science.
+An \emph{atomic proposition} (also known as \emph{atom} and Boolean/logical variable) is a variable with two possible (truth) values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
 
-An \emph{atomic proposition} (\emph{atom} for short) is a Boolean/logical variable with two possible \emph{truth} values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
-
-An \emph{interpretation} of a formula $\phi$ is a map from the variables of $\phi$ to the set $\{\, \text{true}, \text{false} \,\}$. A \emph{model} is an interpretation under which $\phi$ evaluates to true. A formula is \emph{satisfiable} if it has at least one model.
+An \emph{interpretation} (also known as a \emph{variable assignment}) of a formula $\phi$ is a map from the variables of $\phi$ to the set $\{\, \text{true}, \text{false} \,\}$. A \emph{model} is an interpretation under which $\phi$ evaluates to true. A formula is \emph{satisfiable} if it has at least one model.
 
 Throughout the thesis, we use set-theoretic notation for many concepts in logic such as clauses and formulas in CNF (e.g., we write $c \in \phi$ to mean that clause $c$ is one of the clauses of formula $\phi$). However, this does not automatically mean that we assume no duplicates---whether or not that is the case is clarified on a case-by-case basis.
 
-\begin{example}
+\begin{example} \label{example:logic}
   Formula $\phi \coloneqq (\neg a \lor b) \land a$ has two variables $a$ and $b$, is in CNF, and contains two clauses. The first clause $\neg a \lor b$ has a negative literal $\neg a$ and a positive literal $b$. Since $\phi$ has two variables, it also has four interpretations. Interpretation $\{\, a \mapsto \text{true}, b \mapsto \text{true} \,\}$ is a model, so $\phi$ is satisfiable. An equivalent set-theoretic representation of $\phi$ is $\{\, \{\, \neg a, b \,\}, \{\, a \,\} \,\}$.
 \end{example}
 
 \subsection{Logic-Based Computational Problems} \label{sec:logicproblems}
 
-\begin{itemize}
-\item \SAT{} (book: \citep{DBLP:series/faia/2009-185}, intro and history: \citep{DBLP:series/faia/FrancoM09})
-\item counting
-  \begin{itemize}
-  \item MC (\#\SAT{}) \citep{DBLP:series/faia/GomesSS09}
-  \item WMC \citep{DBLP:journals/ai/ChaviraD08}
-  \item PMC ($\#\exists\SAT{}$) \citep{DBLP:conf/sat/AzizCMS15}
-  \item (SW)FOMC \citep{DBLP:conf/ijcai/BroeckTMDR11}
-  \end{itemize}
-\item Max\SAT{} \citep{bacchus2021maximum,DBLP:series/faia/LiM09}
-\item QBF \citep{DBLP:series/faia/BuningB09}. Applications: \citep{DBLP:conf/ictai/ShuklaBPS19}
-\item Also briefly mention:
-  \begin{itemize}
-  \item PB \citep{DBLP:series/faia/RousselM09}
-  \item SMT \citep{DBLP:series/faia/BarrettSST09}
-  \item CP \citep{DBLP:reference/fai/2} (forward reference to \cref{sec:cp,chapter:randomlps})
-  \item IP \citep{wolsey2020integer}.
-  \end{itemize}
-\item applications of logic in computer science: planning, logical inference, verification, scheduling, etc. (Section 2.1 of Guy's thesis)
-\end{itemize}
+We begin with a description of \SAT{} and some of its extensions. Given a propositional formula\footnote{Unless stated otherwise, formulas for \SAT{} and other similar problems are assumed to be in CNF.}, \SAT{} asks whether the formula is satisfiable. \SAT{} (also known as \emph{propositional/Boolean satisfiability}) is the first problem shown to be \NP-complete \citep{DBLP:conf/stoc/Cook71,levin1973universal}. Motivated by many real-life problems that were found to be reducible to \SAT{}, research in \SAT{} solving produced algorithms that can efficiently tackle large instances despite the exponential worst-case time complexity \citep{DBLP:series/faia/2009-185}.
+
+Instead of satisfying all clauses, one can attempt to find an interpretation that satisfies the maximum number of clauses---this problem is called Max\SAT{} \citep{bacchus2021maximum,DBLP:series/faia/LiM09}. It is an \NP-hard optimisation problem that (in its most general form) attaches a (potentially infinite) cost for failing to satisfy each clause and seeks to minise total cost.
+
+\#\SAT{}, or \emph{(propositional) model counting}, asks to count the number of models of a formula \citep{DBLP:series/faia/GomesSS09}. \#\SAT{} is the canonical \#\P-complete problem with many applications in areas such as planning and probabilistic reasoning. $\#\exists\SAT{}$, or \emph{projected model counting}, selects a subset of variables called \emph{priority variables} \citep{DBLP:conf/sat/AzizCMS15}. The task is then to count the number of assignments of values to priority variables that can be extended to models. The extension of \#\SAT{} most relevant to our work is called \emph{weighted model counting} (WMC). Given a propositional formula $\phi$ and a \emph{weight function} $w$ from the literals of $\phi$ to non-negative real numbers, WMC asks to compute
+\[
+\mathrm{WMC}(\phi) = \sum_{\omega \models \phi} \prod_{\omega \models l} w(l),
+\]
+where the summation is over all models $\omega$ of $\phi$, and the product is over all literals of $\omega$ \citep{DBLP:journals/ai/ChaviraD08}. Lastly, both \#\SAT{} and WMC have been extended to first-order logic \citep{DBLP:conf/ijcai/BroeckTMDR11}---this is the topic of \cref{chapter:wfomc}.
+
+\begin{example} \label{example:wmc1}
+  The model count of the formula in \cref{example:logic} is equal to one. With a weight function $w \coloneqq \{\, a \mapsto 0.7, \neg a \mapsto 0.2, b \mapsto 0.8, \neg b \mapsto 0.7 \,\}$, the WMC of the same formula is $0.7 \times 0.8 = 0.56$.
+\end{example}
+
+\begin{example}
+  With the same weight function $w$ as in \cref{example:wmc1}, the WMC of formula $a \lor b$ is $w(a)w(b) + w(a)w(\neg b) + w(\neg a)w(b) = 0.7 \times 0.8 + 0.7 \times 0.7 + 0.2 \times 0.8 = 1.21$, and the model count of this formula is 3.
+\end{example}
+
+There are a number of other computational problems that similarly use logical or algebraic constructs to encode problems from various domains. First, a propositional formula with prepended quantifiers for all of its variables is known as a \emph{quantified Boolean formula} \citep{DBLP:series/faia/BuningB09}. One can then ask whether the formula is true or false. \emph{Satisfiability module theories} considers \SAT{} in the context of a background theory \citep{DBLP:series/faia/BarrettSST09}. These theories can describe the properties of integer arithmetic, sets, trees, strings, and many commonly-used abstract data structures. \emph{Pseudo-Boolean} solvers consider decision and optimisation problems that can be expressed as linear inequalities over Boolean variables \citep{DBLP:series/faia/RousselM09}. \emph{Integer (linear) programming} instances encode integer optimisation problems under inequality constraints of a certain linear-algebraic form \citep{wolsey2020integer}. Finally, \emph{constraint programming} is a powerful paradigm for solving combinatorial search and optimisation problems with a much more expressive syntax \citep{DBLP:reference/fai/2}---we discuss constraint programming in more detail in \cref{sec:cp,chapter:randomlps}.
 
 \section{Some Declarative Programming Paradigms}
 
-\begin{itemize}
-\item Logic Programming (with a forward reference to probabilistic logic programming)
-  \begin{itemize}
-  \item Maybe: Stratification
-  \end{itemize}
-\item Constraint Programming (and why it's useful to have constraint models)
-  \begin{itemize}
-  \item Maybe: Search and Heuristics
-  \item Maybe: Symmetry Breaking
-  \item Maybe: Propagation and Entailment
-  \end{itemize}
-\end{itemize}
-
 \subsection{Logic Programming} \label{sec:lp}
 
+See [TODO] for an overview of \emph{probabilistic} logic programming.
+
+\begin{itemize}
+\item Syntax
+\item Semantics
+\item Stratification
+\end{itemize}
+
 \subsection{Constraint Programming} \label{sec:cp}
+
+\begin{itemize}
+\item emphasise why it's useful to have constraint models
+\item search and heuristics
+\item symmetry breaking
+\item propagation and entailment
+\end{itemize}
 
 \section{Representations of Probability Distributions}
 
