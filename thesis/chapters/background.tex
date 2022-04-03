@@ -38,7 +38,7 @@ where the summation is over all models $\omega$ of $\phi$, and the product is ov
   With the same weight function $w$ as in \cref{example:wmc1}, the WMC of formula $a \lor b$ is $w(a)w(b) + w(a)w(\neg b) + w(\neg a)w(b) = 0.7 \times 0.8 + 0.7 \times 0.7 + 0.2 \times 0.8 = 1.21$, and the model count of this formula is 3.
 \end{example}
 
-There are a number of other computational problems that similarly use logical or algebraic constructs to encode problems from various domains. First, a propositional formula with prepended quantifiers for all of its variables is known as a \emph{quantified Boolean formula} \citep{DBLP:series/faia/BuningB09}. One can then ask whether the formula is true or false. \emph{Satisfiability module theories} considers \SAT{} in the context of a background theory \citep{DBLP:series/faia/BarrettSST09}. These theories can describe the properties of integer arithmetic, sets, trees, strings, and many commonly-used abstract data structures. \emph{Pseudo-Boolean} solvers consider decision and optimisation problems that can be expressed as linear inequalities over Boolean variables \citep{DBLP:series/faia/RousselM09}. \emph{Integer (linear) programming} instances encode integer optimisation problems under inequality constraints of a certain linear-algebraic form \citep{wolsey2020integer}. Finally, \emph{constraint programming} is a powerful paradigm for solving combinatorial search and optimisation problems with a much more expressive syntax \citep{DBLP:reference/fai/2}---we discuss constraint programming in more detail in \cref{sec:cp,chapter:randomlps}.
+There are a number of other computational problems that similarly use logical or algebraic constructs to encode problems from various domains. First, a propositional formula with prepended quantifiers for all of its variables is known as a \emph{quantified Boolean formula} \citep{DBLP:series/faia/BuningB09}. One can then ask whether the formula is true or false. \emph{Satisfiability module theories} considers \SAT{} in the context of a background theory \citep{DBLP:series/faia/BarrettSST09}. These theories can describe the properties of integer arithmetic, sets, trees, strings, and many commonly-used abstract data structures. \emph{Pseudo-Boolean} solvers consider decision and optimisation problems that can be expressed as linear inequalities over Boolean variables \citep{DBLP:series/faia/RousselM09}. \emph{Integer (linear) programming} instances encode integer optimisation problems under inequality constraints of a certain linear-algebraic form \citep{wolsey2020integer}. Finally, \emph{constraint programming} is a powerful paradigm for solving combinatorial search and optimisation problems with a much more expressive syntax \citep{DBLP:reference/fai/2}---we discuss constraint programming in more detail in \cref{sec:cp}.
 
 \section{Declarative Programming}
 
@@ -105,11 +105,65 @@ The query \texttt{ancestor(sky, zoe)} returns true since Sky is a parent of a pa
 
 \subsection{Constraint Programming} \label{sec:cp}
 
+Constraint models are successfully used to tackle search problems in many domains such as bioinformatics, configuration, networks, planning, scheduling, and vehicle routing \citep{DBLP:reference/fai/2}. Here we briefly describe what a constraint satisfaction problem (CSP) is, how an algorithm might attempt to solve it, and how one can help the algorithm search efficiently.
+
+\begin{definition}
+  A \emph{CSP} is a triple $(X, D, C)$, where
+  \begin{itemize}
+  \item $X = (x_i)_{i=1}^n$ is an $n$-tuple of variables,
+  \item $D = (D_i)_{i=1}^n$ is an $n$-tuple of (typically, finite) domains such that $x_i \in D_i$,
+  \item and $C$ is a set of constraints.
+  \end{itemize}
+  A \emph{constraint} is a pair $(S, R)$, where $S \subseteq X$ is the \emph{scope} of the constraint, and $R \subseteq \prod_{x_i \in S} D_i$ is a relation specifying allowed combinations of values. Constraints can be specified either \emph{intensionally} (i.e., by describing a formula that must be satisfied) or \emph{extensionally} (i.e., by listing all tuples). A \emph{solution} to the CSP is an $n$-tuple $(a_i)_{i=1}^n$ such that $a_i \in D_i$ and the relevant $a_i$'s are in the relations of all the constraints in $C$.
+\end{definition}
+
+\begin{example}[$n$ queens]
+  Imagine an $n \times n$ chess board. How can one place $n$ queens on the board so that no two queens threaten each other (i.e., are not on the same column, row, or diagonal)? This is the famous \emph{$n$ queens problem}---a common example in the constraint programming literature. The solution we describe here is adapted from a constraint modelling tutorial \citep{minizinc}.
+
+  First, note each column (i.e, \emph{file}) must have exactly one queen. Let $(q_i)_{i=1}^n$ be variables with domains $q_i \in \{\, 1, \dots, n \,\}$, where we use $q_i = j$ to denote that the $i$th column queen is on row (i.e., \emph{rank}) $j$. Then the entire problem can be described by the following three constraints.
+
+  \begin{constraint} \label{exampleconstraint:1}
+    $\alldifferent(\{\,q_i\,\}_{i=1}^n)$
+  \end{constraint}
+
+  \begin{constraint} \label{exampleconstraint:2}
+    $\alldifferent(\{\, q_i + i \mid i = 1, \dots, n \,\})$
+  \end{constraint}
+
+  \begin{constraint} \label{exampleconstraint:3}
+    $\alldifferent(\{\, q_i - i \mid i = 1, \dots, n \,\})$
+  \end{constraint}
+
+  Here, $\alldifferent$ is a constraint on a set of variables (or `derivatives' of variables) that constrains them to be all different. \Cref{exampleconstraint:1} requires all queens to occupy different rows, and \cref{exampleconstraint:2,exampleconstraint:3} do the same for both diagonals.
+
+  Note that, given one solution to the $n$-queens problem, we can easily find seven others just by rotating and flipping the board in every possible way (i.e., the symmetry group of a square has order 8). Thus, there is no reason for the constraint solver to find all eight symmetrical solutions independently. Avoiding this kind of excessive effort is the goal of \emph{symmetry breaking} constraints.
+
+  While some symmetry breaking constraints can be expressed using variables $(q_i)_{i=1}^n$, others could benefit from a different representation. Specifically, let $\mathbf{B} = (b_{ij})$ be an $n \times n$ matrix, where each $b_{ij} \in \{\, \textrm{true}, \textrm{false} \,\}$ indicates whether the $(i,j)$-th square contains a queen. Constraints that connect different representations of the same problem are called \emph{channelling} constraints. In this case, the following constraint is sufficient.
+
+  \begin{constraint}[Channelling]
+    For all $i, j = 1, \dots, n$, we have that $b_{ij} \Leftrightarrow (q_i = j)$.
+  \end{constraint}
+
+  Finally, the following is an example of a symmetry breaking constraint.
+
+  \begin{constraint}[Symmetry breaking]
+    $\mathbf{B}$ is lexicographically smaller than or equal to $\mathbf{B}^\top$ (i.e., the transpose of $\mathbf{B}$).
+  \end{constraint}
+\end{example}
+
+TODO: describe the solving process
+
 \begin{itemize}
-\item emphasise why it's useful to have constraint models
-\item search and heuristics
-\item symmetry breaking
-\item propagation and entailment
+\item (chronological backtracking) search
+  \begin{itemize}
+  \item constraint propagation (also known as inference) (refer to the example)
+    \begin{itemize}
+    \item entailment (\coNP-complete)
+    \end{itemize}
+  \item heuristics: variable ordering heuristics, value ordering heuristics
+  \item randomization and restarts
+  \end{itemize}
+\item thrashing (somewhere: maybe when describing search, maybe with the example)
 \end{itemize}
 
 \section{Representations of Probability Distributions}
