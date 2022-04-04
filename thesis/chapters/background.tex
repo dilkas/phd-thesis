@@ -172,33 +172,241 @@ Backtracking search has important choices to make: which variable should be give
 
 \section{Representations of Probability Distributions}
 
-(including the ideas behind inference)
+TODO: including the ideas behind inference
+
+TODO: define what a distribution is
+
+TODO: I could use the example from my slides, but it doesn't include MLNs and is fairly primitive with its use of ProbLog
+
+\subsection{Representations Based on Graphical Models}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm]
+    \node[draw,ellipse] (alarm) {Alarm};
+    \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
+    \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
+    \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
+    \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
+    \draw[-{Stealth[scale=1.5]}] (burglary) -- (alarm);
+    \draw[-{Stealth[scale=1.5]}] (earthquake) -- (alarm);
+    \draw[-{Stealth[scale=1.5]}] (alarm) -- (johnCalls);
+    \draw[-{Stealth[scale=1.5]}] (alarm) -- (maryCalls);
+  \end{tikzpicture}
+  \caption{Bayesian network}
+  \label{fig:bn}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm]
+    \node[draw,ellipse] (alarm) {Alarm};
+    \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
+    \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
+    \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
+    \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
+    \draw (burglary) -- (earthquake);
+    \draw (burglary) -- (alarm);
+    \draw (earthquake) -- (alarm);
+    \draw (alarm) -- (johnCalls);
+    \draw (alarm) -- (maryCalls);
+  \end{tikzpicture}
+  \caption{Markov random field}
+  \label{fig:mrf}
+\end{figure}
+
+\citep{DBLP:series/synthesis/2019Dechter}
+
+Perhaps the best-known representations of probability distributions are
+probabilistic graphical models (PGMs), i.e., graphs with vertices that
+correspond to random variables. The graph can either be directed (as in Bayesian
+networks \citep{DBLP:books/daglib/0066829}, see \cref{fig:bn}) or undirected (as
+in Markov random fields \citep{spitzer1971markov}, see \cref{fig:mrf}). Both
+Bayesian networks and Markov random fields have been extended to support
+additional structure: relational Bayesian networks \citep{DBLP:conf/uai/Jaeger97}
+can compactly describe a probability distribution over a relational structure,
+and Markov logic networks (MLNs) \citep{DBLP:journals/ml/RichardsonD06} extend
+Markov random fields with support for first-order logic. More examples of both
+relational and first-order probabilistic models can be found in the survey paper
+by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/2016Raedt}.
+
 \begin{itemize}
-\item define what a distribution is
-\item Probabilistic Graphical Models
-  \begin{itemize}
-  \item Bayesian Networks
-  \item Markov Random Fields
-  \item cite the PGM books
-  \item maybe explain context-specific independence. Cite [Boutilier et al., 1996]
-  \item Relational
-    \begin{itemize}
-    \item Markov Logic Networks
-    \end{itemize}
-  \end{itemize}
-\item Probabilistic Programming
-  \begin{itemize}
-  \item Imperative and (Maybe) Functional, e.g., BLOG
-  \item Probabilistic Logic Programming
-    \begin{itemize}
-    \item ProbLog (including some detail about how inference is defined)
-    \end{itemize}
-  \end{itemize}
+\item Bayesian Networks \citep{DBLP:books/daglib/0066829}
+\item Markov Random Fields (a.k.a. Markov Networks)
+\item maybe explain context-specific independence [Boutilier et al., 1996]
+\item Markov Logic Networks (or just Markov Logic) \citep{DBLP:journals/ml/RichardsonD06}
+\end{itemize}
+
+\subsection{Probabilistic Programming}
+
+\begin{lstlisting}[escapeinside={(*}{*)}]
+  random Boolean Burglary (*$\sim$*) BooleanDistrib(0.001);
+  random Boolean Earthquake (*$\sim$*) BooleanDistrib(0.002);
+  random Boolean Alarm (*$\sim$*)
+  if Burglary then
+  if Earthquake then BooleanDistrib(0.95)
+  else BooleanDistrib(0.94)
+  else
+  if Earthquake then BooleanDistrib(0.29)
+  else BooleanDistrib(0.001);
+  random Boolean JohnCalls (*$\sim$*)
+  if Alarm then BooleanDistrib(0.9)
+  else BooleanDistrib(0.05);
+  random Boolean MaryCalls (*$\sim$*)
+  if Alarm then BooleanDistrib(0.7)
+  else BooleanDistrib(0.01);
+\end{lstlisting}
+
+\begin{lstlisting}
+  0.001 :: burglary.
+  0.002 :: earthquake.
+  0.95 :: alarm :- burglary, earthquake.
+  0.94 :: alarm :- burglary, \+ earthquake.
+  0.29 :: alarm :- \+ burglary, earthquake.
+  0.001 :: alarm :- \+ burglary, \+ earthquake.
+  0.9 :: johnCalls :- alarm.
+  0.05 :: johnCalls :- \+ alarm.
+  0.7 :: maryCalls :- alarm.
+  0.01 :: maryCalls :- \+ alarm.
+\end{lstlisting}
+
+\citep{DBLP:series/synthesis/2016Raedt} (or find something better)
+
+Augmenting a programming language with probabilities is another common approach
+to conveniently and compactly represent a probability distribution. Logic
+programming languages, in particular, have been frequently used for this
+purpose, examples of which include earlier languages such as independent choice
+logic \citep{DBLP:journals/ai/Poole97} and PRISM \citep{DBLP:conf/ijcai/SatoK97}
+as well as more recent ones such as ProbLog \citep{DBLP:conf/ijcai/RaedtKT07}
+(see \cref{fig:problog}) and CP-logic \citep{DBLP:journals/tplp/VennekensDB09}.
+Functional and imperative programming languages have also seen some use.
+Probabilistic semantics in these languages typically rely on two constructs: the
+ability to draw random values from probability distributions and the ability to
+condition a program on observations \citep{DBLP:conf/icse/GordonHNR14}. Examples
+of such languages include functional languages such as Church
+\citep{DBLP:conf/uai/GoodmanMRBT08} and imperative languages like BLOG
+\citep{DBLP:conf/ijcai/MilchMRSOK05} (see \cref{fig:blog}).
+
+\begin{itemize}
+\item Imperative and (Maybe) Functional, e.g., BLOG
+\item Probabilistic Logic Programming, e.g., ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} (including some detail about how inference is defined)
 \end{itemize}
 
 \section{Knowledge Compilation} \label{sec:kc}
 
 (including lots of detail about all the data structures)
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \node[draw,circle] (A) {$A$}
+      child {edge from parent[draw=none]}
+      child {node[draw,circle] (B) {$B$} edge from parent[dashed]
+        child {node[draw,circle,solid] (C) {$C$} edge from parent[dashed]
+          child {node[draw,rectangle,solid] {$1$} edge from parent[solid]}
+          child {node[draw,rectangle,solid] (0) {$0$}}
+        }
+        child {edge from parent[draw=none]}
+      };
+      \draw (A) -- (C);
+      \draw (B) -- (0);
+    \end{tikzpicture}
+    \caption{(RO)BDD}
+  \end{subfigure}
+  \begin{subfigure}{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \node[draw,circle] {$\land$}
+      child {node[draw,circle] {$\lor$}
+        child {node[draw,circle] (parent) {$\land$}
+          child {node[draw,rectangle] {$B$}}
+          child {edge from parent[draw=none]}
+        }
+        child {node[draw,circle] {$\land$}
+          child {node[draw,circle] {$\lor$}
+            child {node[draw,rectangle] (A) {$A$}}
+            child {node[draw,rectangle] {$\neg A$}}
+          }
+          child {node[draw,rectangle] {$\neg B$}}
+        }
+      }
+      child {node[draw,rectangle] {$C$}};
+      \draw (parent) -- (A);
+    \end{tikzpicture}
+    \caption{d-DNNF}
+  \end{subfigure}
+  \begin{subfigure}{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \tikzset{
+        mysplit/.style={
+          draw,
+          rectangle,
+          rectangle split,
+          rectangle split horizontal,
+          rectangle split parts=2
+        }
+      }
+      \node[draw,circle] {$1$}
+      child {node[mysplit] (bullet) {
+          \nodepart{one} $\neg A$
+          \nodepart{two}
+        }
+        child {node[draw,circle] (3) {$3$} edge from parent[draw=none]
+          child {node[mysplit] {
+              \nodepart{one} $\neg B$
+              \nodepart{two} $C$
+            }
+          }
+          child {node[mysplit] {
+              \nodepart{one} $B$
+              \nodepart{two} $\bot$
+            }
+          }
+        }
+      }
+      child {node[mysplit] {
+          \nodepart{one} $A$
+          \nodepart{two} $C$
+        }};
+      \draw[*-] let \p1 = (bullet.two), \p2 = (bullet.center) in ({\x1 + 2.5},{\y2 + 2}) -- (3);
+    \end{tikzpicture}
+    \caption{SDD}
+  \end{subfigure}
+  \caption{Example diagrams for $C \land (A \lor \neg B)$}
+  \label{fig:kc}
+\end{figure}
+
+Many WMC algorithms rely on knowledge compilation, i.e., compilation of the
+structure of the initial representation into a form that allows one to perform
+various operations and answer queries of interest in time polynomial in the size
+of the compiled representation. Traditionally, the initial representation is a
+propositional formula. Many such representations have been proposed
+\citep{DBLP:journals/jair/DarwicheM02}. Amongst them, the ones that are used in
+probabilistic inference include (reduced ordered) binary decision diagrams
+((RO)BDDs) \citep{DBLP:journals/tc/Bryant86}, deterministic decomposable negation
+normal form (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}, sentential decision
+diagrams (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}, and probabilistic SDDs
+\citep{DBLP:conf/kr/KisaBCD14}---some of them are pictured in \cref{fig:kc}. A
+BDD is similar to a decision tree that ends with either one or zero but
+generalised to a directed acyclic graph. Both d-DNNF and SDD are normal forms
+for propositional formulae that satisfy certain properties. Probabilistic SDDs
+extend SDDs with probability labels on edges. BDDs are a strict subset of SDDs
+that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
+
+Similarly to how BDDs represent Boolean functions, ADDs represent pseudo-Boolean
+functions, i.e., while (non-trivial) BDDs always have two sinks marked with one
+and zero, ADDs can have any number of sinks that contain, typically, real
+numbers \citep{DBLP:journals/fmsd/BaharFGHMPS97}. ADDs have been extended to
+represent the additive and multiplicative structure in sink values more
+compactly \citep{DBLP:conf/ijcai/SannerM05} and to support first-order logic
+\citep{DBLP:journals/ai/SannerB09} and continuous variables
+\citep{DBLP:conf/uai/SannerDB11}. ADDs have been used to represent MDP value
+functions \citep{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs
+\citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}.
+
 \begin{itemize}
 \item Boolean and Pseudo-Boolean Functions
 \item NNF
@@ -211,6 +419,8 @@ Backtracking search has important choices to make: which variable should be give
 \section{Applications}
 
 of WMC?
+
+copy info from my year 2 report
 
 \begin{itemize}
 \item Statistical Relational Learning

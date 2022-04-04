@@ -52,6 +52,7 @@
 \usepackage{sectsty}
 \usepackage{rotating}
 \usepackage{pifont}
+\usepackage{listings}
 
 \usepackage{natbib}
 %% \usepackage[backend=biber]{biblatex}
@@ -63,6 +64,7 @@
 
 \usetikzlibrary{arrows}
 \usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
 \usetikzlibrary{cd}
 \usetikzlibrary{fit}
 \usetikzlibrary{positioning}
@@ -221,7 +223,7 @@
 % * empty year in one of the references
 % * where's the best place to introduce the idea of a pseudo-Boolean function? Make a connection with pseudo-Boolean constraints.
 % * explain DPLL
-% * remove backslashes from DOIs
+% * remove backslashes from DOIs and URLs
 % * don't number paragraphs?
 % * generating random logic programs:
 % ** are the definitions of fact/rule the same as in the background section?
@@ -229,6 +231,8 @@
 % ** there's no need for hyphens in 'variable-ordering' and 'value-ordering'
 % ** it's first fail (equivalent to dom) rather than fail-first
 % * predicates and constants lowercase, variables uppercase
+% * incorporate other paragraphs from my year 2 review (on the use of probabilities, WMC, applications of WMC, motivation for my work, probabilistic inference algorithms, knowledge compilation, WMC algorithms)
+% * consider using listings for all Prolog and maybe ProbLog code (but then everything becomes sf instead of tt)
 
 \include{chapters/introduction} % 5-14 pages (9 on average) (why I chose to focus on what I did)
 \include{chapters/background} % 11-45 pages (27 on average)
