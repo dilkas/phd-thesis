@@ -151,20 +151,24 @@ Constraint models are successfully used to tackle search problems in many domain
   \end{constraint}
 \end{example}
 
-TODO: describe the solving process
+Perhaps the most canonical way of solving a CSP is by \emph{backtracking search}. At each step, the algorithm selects a variable $x_i$, a value $v \in D_i$, sets
+\begin{equation} \label{eq:decision}
+  x_i \coloneqq v,
+\end{equation}
+and continues this process until either all constraints are satisfied or some constraint can no longer be satisfied.
 
-\begin{itemize}
-\item (chronological backtracking) search
-  \begin{itemize}
-  \item constraint propagation (also known as inference) (refer to the example)
-    \begin{itemize}
-    \item entailment (\coNP-complete)
-    \end{itemize}
-  \item heuristics: variable ordering heuristics, value ordering heuristics
-  \item randomization and restarts
-  \end{itemize}
-\item thrashing (somewhere: maybe when describing search, maybe with the example)
-\end{itemize}
+Sometimes making a \emph{decision} (i.e., setting a variable to be equal to a value as in \cref{eq:decision}) leads to other variable-value combinations becoming evidently impossible. For example, after placing a queen on a1 (i.e., setting $q_1 \coloneqq 1$), \cref{exampleconstraint:1} tells us that no other queen can be placed on the first row (i.e., $q_i \ne 1$ for all $i = 2, \dots, n$). Purging such impossible values from domains is the job of \emph{(constraint) propagation} (or \emph{inference}) algorithms. These algorithms are designed separately for each type of constraint and vary in their complexity and efficacy (i.e., how many values they are able to remove).
+
+Another issue that needs to be addressed on a per-constraint basis is: how do we know when a constraint is satisfied? Indeed, if all constraints are already satisfied, then it must be the case that setting all remaining variables to \emph{any} values produces a valid solution. This problem is known as \emph{entailment}. Entailment algorithms take a CSP with a (potentially partial) variable-value assignment and return one out of three possible values:
+\begin{description}
+\item[true] if the constraint is already satisfied,
+\item[false] if it is impossible to satisfy the constraint,
+\item[maybe/undefined] if neither of the above is seemingly the case.
+\end{description}
+
+Backtracking search has important choices to make: which variable should be given a value first? Which value from a domain is most likely to lead to a solution? These questions are answered by \emph{variable} and \emph{value ordering heuristics}, respectively. For example, we can choose a variable with the smallest number of values remaining in its domain---this is known as the \emph{dom}, \emph{smallest domain first}, or \emph{first fail} heuristic. Value ordering heuristics typically consider what the sizes of all domains would be given each instantiation of the selected variable and choose the value that minimises either their sum or their product \citep{DBLP:reference/fai/Beek06}. Both kinds of heuristics can also be random, e.g., a variable or a value can be sampled from a uniform distribution. Random heuristics are typically combined with a \emph{restart strategy} that decides how long the search should continue before assuming that a mistake must have been made and restarting the search.
+
+% TODO: describe thrashing?
 
 \section{Representations of Probability Distributions}
 
