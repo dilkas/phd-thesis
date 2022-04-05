@@ -172,47 +172,60 @@ Backtracking search has important choices to make: which variable should be give
 
 \section{Representations of Probability Distributions}
 
-TODO: including the ideas behind inference
+Unless specified otherwise, by \emph{probability distribution} we mean a \emph{discrete} probability distribution. Moreover, we are typically only interested in probability distributions with \emph{finite support}. Thus, in lieu of the standard measure-theoretic definitions of probability spaces, random variables, and probability distributions, a simpler definition will suffice for our needs.
 
-TODO: define what a distribution is
+\begin{definition}
+  A \emph{(discrete) probability distribution} is a pair $(S, p)$, where $S$ is a countable (usually finite) subset of the real numbers, and $p\colon S \to [0, 1]$ is any function (known as the \emph{probability mass function}) such that $\sum_{x \in S} p(x) = 1$.
 
-TODO: I could use the example from my slides, but it doesn't include MLNs and is fairly primitive with its use of ProbLog
+  The set $S$ may be related to an arbitrary countable set $\Omega$ (called the \emph{sample space}) via a \emph{random variable} function $X\colon \Omega \to S$. In this case, we write $\Pr(X = o) \coloneqq p(X(o))$.
+\end{definition}
+
+\begin{example}
+  Let $X\colon \{\, \mathrm{false}, \mathrm{true} \,\} \to \{\, 0, 1 \,\} \subset \mathbb{R}$ be a random Boolean variable defined as $X(\mathrm{false}) = 0$, and $X(\mathrm{true}) = 1$. Let $p\colon \{\, 0, 1 \,\} \to [0, 1]$ be the probability distribution of $X$ defined as $p(0) = 0.1$, and $p(1) = 0.9$. Then $\Pr(X = \mathrm{false}) = 0.1$, and $\Pr(X = \mathrm{true}) = 0.9$. The former probability could also be denoted as $\Pr(\mathrm{false})$ or $\Pr(\neg X)$.
+\end{example}
+
+\begin{example}
+  Let $(X, Y)\colon \{\, \mathrm{false}, \mathrm{true} \,\}^2 \to \{\, 0, 1, 2, 3 \,\}$ be a \emph{joint} random variable defined as $(X, Y)((\mathrm{false}, \mathrm{false})) = 0$, $(X, Y)((\mathrm{false}, \mathrm{true})) = 1$, $(X, Y)((\mathrm{true}, \mathrm{false})) = 2$, and $(X, Y)((\mathrm{true}, \mathrm{true})) = 3$. Let $p\colon \{\, 0, 1, 2, 3 \,\} \to [0, 1]$ be the probability distribution of $(X, Y)$ defined as $p(0) = 0.1$, $p(1) = 0.2$, $p(2) = 0.3$, and $p(3) = 0.4$. Then, e.g., $\Pr((X, Y) = (\mathrm{false}, \mathrm{true})) = 0.2$. The same probability could also be denoted as $\Pr(X = \mathrm{false}, Y = \mathrm{true})$, or $\Pr(\neg X \land Y)$.
+\end{example}
 
 \subsection{Representations Based on Graphical Models}
 
 \begin{figure}
   \centering
-  \begin{tikzpicture}[node distance=2.5cm]
-    \node[draw,ellipse] (alarm) {Alarm};
-    \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
-    \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
-    \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
-    \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
-    \draw[-{Stealth[scale=1.5]}] (burglary) -- (alarm);
-    \draw[-{Stealth[scale=1.5]}] (earthquake) -- (alarm);
-    \draw[-{Stealth[scale=1.5]}] (alarm) -- (johnCalls);
-    \draw[-{Stealth[scale=1.5]}] (alarm) -- (maryCalls);
-  \end{tikzpicture}
-  \caption{Bayesian network}
-  \label{fig:bn}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \begin{tikzpicture}[node distance=2.5cm]
-    \node[draw,ellipse] (alarm) {Alarm};
-    \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
-    \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
-    \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
-    \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
-    \draw (burglary) -- (earthquake);
-    \draw (burglary) -- (alarm);
-    \draw (earthquake) -- (alarm);
-    \draw (alarm) -- (johnCalls);
-    \draw (alarm) -- (maryCalls);
-  \end{tikzpicture}
-  \caption{Markov random field}
-  \label{fig:mrf}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[node distance=2.5cm]
+      \node[draw,ellipse] (alarm) {Alarm};
+      \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
+      \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
+      \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
+      \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
+      \draw[-{Stealth[scale=1.5]}] (burglary) -- (alarm);
+      \draw[-{Stealth[scale=1.5]}] (earthquake) -- (alarm);
+      \draw[-{Stealth[scale=1.5]}] (alarm) -- (johnCalls);
+      \draw[-{Stealth[scale=1.5]}] (alarm) -- (maryCalls);
+    \end{tikzpicture}
+    \caption{a Bayesian network}
+    \label{fig:bn}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[node distance=2.5cm]
+      \node[draw,ellipse] (alarm) {Alarm};
+      \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
+      \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
+      \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
+      \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
+      \draw (burglary) -- (earthquake);
+      \draw (burglary) -- (alarm);
+      \draw (earthquake) -- (alarm);
+      \draw (alarm) -- (johnCalls);
+      \draw (alarm) -- (maryCalls);
+    \end{tikzpicture}
+    \caption{a Markov random field}
+    \label{fig:mrf}
+  \end{subfigure}
+  \caption{Equivalent PGMs that describe the same probability distribution}
 \end{figure}
 
 \citep{DBLP:series/synthesis/2019Dechter}
@@ -231,6 +244,7 @@ relational and first-order probabilistic models can be found in the survey paper
 by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/2016Raedt}.
 
 \begin{itemize}
+\item (and how probabilities are computed)
 \item Bayesian Networks \citep{DBLP:books/daglib/0066829}
 \item Markov Random Fields (a.k.a. Markov Networks)
 \item maybe explain context-specific independence [Boutilier et al., 1996]
@@ -239,35 +253,47 @@ by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/
 
 \subsection{Probabilistic Programming}
 
-\begin{lstlisting}[escapeinside={(*}{*)}]
-  random Boolean Burglary (*$\sim$*) BooleanDistrib(0.001);
+\begin{lstlisting}[escapeinside={(*}{*)},caption=An example BLOG program]
+  type Neighbour;
+  distinct Neighbour John, Mary;
+
+  random Boolean Burglary   (*$\sim$*) BooleanDistrib(0.001);
   random Boolean Earthquake (*$\sim$*) BooleanDistrib(0.002);
-  random Boolean Alarm (*$\sim$*)
-  if Burglary then
-  if Earthquake then BooleanDistrib(0.95)
-  else BooleanDistrib(0.94)
-  else
-  if Earthquake then BooleanDistrib(0.29)
-  else BooleanDistrib(0.001);
-  random Boolean JohnCalls (*$\sim$*)
-  if Alarm then BooleanDistrib(0.9)
-  else BooleanDistrib(0.05);
-  random Boolean MaryCalls (*$\sim$*)
-  if Alarm then BooleanDistrib(0.7)
-  else BooleanDistrib(0.01);
+
+  random Boolean Alarm (*$\sim$*) case[Burglary, Earthquake] in {
+    [false, false] -> BooleanDistrib(0.001),
+    [false, true]  -> BooleanDistrib(0.29),
+    [true, false]  -> BooleanDistrib(0.94),
+    [true, true]   -> BooleanDistrib(0.95)
+  };
+
+  random Boolean Calls(Neighbour n) (*$\sim$*)
+    if Alarm then BooleanDistrib(0.8)
+    else BooleanDistrib(0.1);
+
+  obs Calls(John) = true;
+  obs Calls(Mary) = true;
+  query Burglary;
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=An example ProbLog program]
+  neighbour(john).
+  neighbour(marry).
+
   0.001 :: burglary.
   0.002 :: earthquake.
-  0.95 :: alarm :- burglary, earthquake.
-  0.94 :: alarm :- burglary, \+ earthquake.
-  0.29 :: alarm :- \+ burglary, earthquake.
+
+  0.95  :: alarm :- burglary, earthquake.
+  0.94  :: alarm :- burglary, \+ earthquake.
+  0.29  :: alarm :- \+ burglary, earthquake.
   0.001 :: alarm :- \+ burglary, \+ earthquake.
-  0.9 :: johnCalls :- alarm.
-  0.05 :: johnCalls :- \+ alarm.
-  0.7 :: maryCalls :- alarm.
-  0.01 :: maryCalls :- \+ alarm.
+
+  0.8   :: calls(X) :- alarm, neighbour(X).
+  0.1   :: calls(X) :- \+ alarm, neighbour(X).
+
+  evidence(calls(john)).
+  evidence(calls(mary)).
+  query(burglary).
 \end{lstlisting}
 
 \citep{DBLP:series/synthesis/2016Raedt} (or find something better)
@@ -287,10 +313,7 @@ of such languages include functional languages such as Church
 \citep{DBLP:conf/uai/GoodmanMRBT08} and imperative languages like BLOG
 \citep{DBLP:conf/ijcai/MilchMRSOK05} (see \cref{fig:blog}).
 
-\begin{itemize}
-\item Imperative and (Maybe) Functional, e.g., BLOG
-\item Probabilistic Logic Programming, e.g., ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} (including some detail about how inference is defined)
-\end{itemize}
+(and how probabilities are computed, including some details specifically about ProbLog)
 
 \section{Knowledge Compilation} \label{sec:kc}
 

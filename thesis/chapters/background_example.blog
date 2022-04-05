@@ -1,0 +1,17 @@
+type Neighbour;
+distinct Neighbour John, Mary;
+random Boolean Burglary ~ BooleanDistrib(0.001);
+random Boolean Earthquake ~ BooleanDistrib(0.002);
+random Boolean Alarm ~ case[Burglary, Earthquake] in {
+  [false, false] -> BooleanDistrib(0.001),
+  [false, true]  -> BooleanDistrib(0.29),
+  [true, false]  -> BooleanDistrib(0.94),
+  [true, true]   -> BooleanDistrib(0.95)
+};
+random Boolean Calls(Neighbour n) ~
+  if Alarm then BooleanDistrib(0.8)
+  else BooleanDistrib(0.1);
+
+obs Calls(John) = true;
+obs Calls(Mary) = true;
+query Burglary;
