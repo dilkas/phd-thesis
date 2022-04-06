@@ -172,21 +172,23 @@ Backtracking search has important choices to make: which variable should be give
 
 \section{Representations of Probability Distributions}
 
-Unless specified otherwise, by \emph{probability distribution} we mean a \emph{discrete} probability distribution. Moreover, we are typically only interested in probability distributions with \emph{finite support}. Thus, in lieu of the standard measure-theoretic definitions of probability spaces, random variables, and probability distributions, a simpler definition will suffice for our needs.
+Unless specified otherwise, by \emph{probability distribution} we mean a \emph{discrete} probability distribution. Moreover, we are typically only interested in probability distributions with \emph{finite support}.
 
-\begin{definition}
-  A \emph{(discrete) probability distribution} is a pair $(S, p)$, where $S$ is a countable (usually finite) subset of the real numbers, and $p\colon S \to [0, 1]$ is any function (known as the \emph{probability mass function}) such that $\sum_{x \in S} p(x) = 1$.
+% Thus, in lieu of the standard measure-theoretic definitions of probability spaces, random variables, and probability distributions, a simpler definition will suffice for our needs.
 
-  The set $S$ may be related to an arbitrary countable set $\Omega$ (called the \emph{sample space}) via a \emph{random variable} function $X\colon \Omega \to S$. In this case, we write $\Pr(X = o) \coloneqq p(X(o))$.
-\end{definition}
+%% \begin{definition}
+%%   A \emph{(discrete) probability distribution} is a pair $(S, p)$, where $S$ is a countable (usually finite) subset of the real numbers, and $p\colon S \to [0, 1]$ is any function (known as the \emph{probability mass function}) such that $\sum_{x \in S} p(x) = 1$.
 
-\begin{example}
-  Let $X\colon \{\, \mathrm{false}, \mathrm{true} \,\} \to \{\, 0, 1 \,\} \subset \mathbb{R}$ be a random Boolean variable defined as $X(\mathrm{false}) = 0$, and $X(\mathrm{true}) = 1$. Let $p\colon \{\, 0, 1 \,\} \to [0, 1]$ be the probability distribution of $X$ defined as $p(0) = 0.1$, and $p(1) = 0.9$. Then $\Pr(X = \mathrm{false}) = 0.1$, and $\Pr(X = \mathrm{true}) = 0.9$. The former probability could also be denoted as $\Pr(\mathrm{false})$ or $\Pr(\neg X)$.
-\end{example}
+%%   The set $S$ may be related to an arbitrary countable set $\Omega$ (called the \emph{sample space}) via a \emph{random variable} function $X\colon \Omega \to S$. In this case, we write $\Pr(X = o) \coloneqq p(X(o))$.
+%% \end{definition}
 
-\begin{example}
-  Let $(X, Y)\colon \{\, \mathrm{false}, \mathrm{true} \,\}^2 \to \{\, 0, 1, 2, 3 \,\}$ be a \emph{joint} random variable defined as $(X, Y)((\mathrm{false}, \mathrm{false})) = 0$, $(X, Y)((\mathrm{false}, \mathrm{true})) = 1$, $(X, Y)((\mathrm{true}, \mathrm{false})) = 2$, and $(X, Y)((\mathrm{true}, \mathrm{true})) = 3$. Let $p\colon \{\, 0, 1, 2, 3 \,\} \to [0, 1]$ be the probability distribution of $(X, Y)$ defined as $p(0) = 0.1$, $p(1) = 0.2$, $p(2) = 0.3$, and $p(3) = 0.4$. Then, e.g., $\Pr((X, Y) = (\mathrm{false}, \mathrm{true})) = 0.2$. The same probability could also be denoted as $\Pr(X = \mathrm{false}, Y = \mathrm{true})$, or $\Pr(\neg X \land Y)$.
-\end{example}
+%% \begin{example}
+%%   Let $X\colon \{\, \mathrm{false}, \mathrm{true} \,\} \to \{\, 0, 1 \,\} \subset \mathbb{R}$ be a random Boolean variable defined as $X(\mathrm{false}) = 0$, and $X(\mathrm{true}) = 1$. Let $p\colon \{\, 0, 1 \,\} \to [0, 1]$ be the probability distribution of $X$ defined as $p(0) = 0.1$, and $p(1) = 0.9$. Then $\Pr(X = \mathrm{false}) = 0.1$, and $\Pr(X = \mathrm{true}) = 0.9$. The former probability could also be denoted as $\Pr(\mathrm{false})$ or $\Pr(\neg X)$.
+%% \end{example}
+
+%% \begin{example}
+%%   Let $(X, Y)\colon \{\, \mathrm{false}, \mathrm{true} \,\}^2 \to \{\, 0, 1, 2, 3 \,\}$ be a \emph{joint} random variable defined as $(X, Y)((\mathrm{false}, \mathrm{false})) = 0$, $(X, Y)((\mathrm{false}, \mathrm{true})) = 1$, $(X, Y)((\mathrm{true}, \mathrm{false})) = 2$, and $(X, Y)((\mathrm{true}, \mathrm{true})) = 3$. Let $p\colon \{\, 0, 1, 2, 3 \,\} \to [0, 1]$ be the probability distribution of $(X, Y)$ defined as $p(0) = 0.1$, $p(1) = 0.2$, $p(2) = 0.3$, and $p(3) = 0.4$. Then, e.g., $\Pr((X, Y) = (\mathrm{false}, \mathrm{true})) = 0.2$. The same probability could also be denoted as $\Pr(X = \mathrm{false}, Y = \mathrm{true})$, or $\Pr(\neg X \land Y)$.
+%% \end{example}
 
 \subsection{Representations Based on Graphical Models}
 
@@ -226,9 +228,81 @@ Unless specified otherwise, by \emph{probability distribution} we mean a \emph{d
     \label{fig:mrf}
   \end{subfigure}
   \caption{Equivalent PGMs that describe the same probability distribution}
+  \label{fig:example_pgms}
+\end{figure}
+
+\begin{figure}
+  \begin{minipage}{0.57\textwidth}
+    \centering
+    \begin{tabular}[t]{lr}
+      \toprule
+      $b$ & $\Pr(B = b)$ \\
+      \midrule
+      false & 0.999 \\
+      true & 0.001 \\
+      \bottomrule
+    \end{tabular}
+    \begin{tabular}[t]{lr}
+      \toprule
+      $e$ & $\Pr(E = e)$ \\
+      \midrule
+      false & 0.998 \\
+      true & 0.002 \\
+      \bottomrule
+    \end{tabular}
+    \newline
+    \newline
+    \begin{tabular}[t]{lllr}
+      \toprule
+      $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
+      \midrule
+      false & false & false & 0.999 \\
+      false & false & true & 0.001 \\
+      false & true & false & 0.71 \\
+      false & true & true & 0.29 \\
+      true & false & false & 0.06 \\
+      true & false & true & 0.94 \\
+      true & true & false & 0.05 \\
+      true & true & true & 0.95 \\
+      \bottomrule
+    \end{tabular}
+  \end{minipage}%
+  \begin{minipage}{0.43\textwidth}
+    \centering
+    \begin{tabular}[t]{llr}
+      \toprule
+      $a$ & $j$ & $\Pr(J = j \mid A = a)$ \\
+      \midrule
+      false & false & 0.9 \\
+      false & true & 0.1 \\
+      true & false & 0.2 \\
+      true & true & 0.8 \\
+      \bottomrule
+    \end{tabular}
+    \newline
+    \newline
+    \begin{tabular}[t]{llr}
+      \toprule
+      $a$ & $m$ & $\Pr(M = m \mid A = a)$ \\
+      \midrule
+      false & false & 0.9 \\
+      false & true & 0.1 \\
+      true & false & 0.2 \\
+      true & true & 0.8 \\
+      \bottomrule
+    \end{tabular}
+  \end{minipage}
+  \caption{The CPTs associated with the Bayesian network in \cref{example:bn} and \cref{fig:bn}}
+  \label{fig:examplecpts}
 \end{figure}
 
 \citep{DBLP:series/synthesis/2019Dechter}
+
+TODO: introduce CPTs
+
+\begin{example} \label{example:bn}
+  TODO: an example BN
+\end{example}
 
 Perhaps the best-known representations of probability distributions are
 probabilistic graphical models (PGMs), i.e., graphs with vertices that
@@ -244,6 +318,9 @@ relational and first-order probabilistic models can be found in the survey paper
 by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/2016Raedt}.
 
 \begin{itemize}
+\item introduce joint probability distribution, conditional distribution
+\item the graph represents independencies, conditional independencies (define both)
+\item mention that the structure of the graphical model indicates how the joint probability distribution splits into a product of conditional probabilities
 \item (and how probabilities are computed)
 \item Bayesian Networks \citep{DBLP:books/daglib/0066829}
 \item Markov Random Fields (a.k.a. Markov Networks)
