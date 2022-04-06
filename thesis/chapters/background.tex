@@ -174,6 +174,14 @@ Backtracking search has important choices to make: which variable should be give
 
 Unless specified otherwise, by \emph{probability distribution} we mean a \emph{discrete} probability distribution. Moreover, we are typically only interested in probability distributions with \emph{finite support}.
 
+With these restrictions, one could define a probability distribution by listing all combinations of values and assigning a probability to each. However, in most realistic scenarios, the same information could be described more succinctly by taking advantage of concepts such as random variable \emph{independence}, \emph{conditional independence}, and \emph{exchangeability}.
+
+In this section, we describe some of the ways to represent a probability distribution. \Cref{sec:pgms} is about representations based on graphs whereas \cref{sec:probprogramming} covers probabilistic programming languages.
+
+These representations also differ in their ability to reason about groups of random variables. \emph{Propositional} models treat each random variable as a unique individual. In contrast, \emph{relational} models work over sets of individuals and relations among them. See the book by \citet{DBLP:series/synthesis/2016Raedt} for more detail.
+
+% TODO: I could actually explain these concepts, including exchangeability
+
 % Thus, in lieu of the standard measure-theoretic definitions of probability spaces, random variables, and probability distributions, a simpler definition will suffice for our needs.
 
 %% \begin{definition}
@@ -190,18 +198,18 @@ Unless specified otherwise, by \emph{probability distribution} we mean a \emph{d
 %%   Let $(X, Y)\colon \{\, \mathrm{false}, \mathrm{true} \,\}^2 \to \{\, 0, 1, 2, 3 \,\}$ be a \emph{joint} random variable defined as $(X, Y)((\mathrm{false}, \mathrm{false})) = 0$, $(X, Y)((\mathrm{false}, \mathrm{true})) = 1$, $(X, Y)((\mathrm{true}, \mathrm{false})) = 2$, and $(X, Y)((\mathrm{true}, \mathrm{true})) = 3$. Let $p\colon \{\, 0, 1, 2, 3 \,\} \to [0, 1]$ be the probability distribution of $(X, Y)$ defined as $p(0) = 0.1$, $p(1) = 0.2$, $p(2) = 0.3$, and $p(3) = 0.4$. Then, e.g., $\Pr((X, Y) = (\mathrm{false}, \mathrm{true})) = 0.2$. The same probability could also be denoted as $\Pr(X = \mathrm{false}, Y = \mathrm{true})$, or $\Pr(\neg X \land Y)$.
 %% \end{example}
 
-\subsection{Representations Based on Graphical Models}
+\subsection{Representations Based on Graphical Models} \label{sec:pgms}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
   \begin{subfigure}{0.49\textwidth}
     \centering
-    \begin{tikzpicture}[node distance=2.5cm]
-      \node[draw,ellipse] (alarm) {Alarm};
-      \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
-      \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
-      \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
-      \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
+    \begin{tikzpicture}[node distance=1.5cm]
+      \node[draw,ellipse] (alarm) {A};
+      \node[draw,ellipse,above left of=alarm] (burglary) {B};
+      \node[draw,ellipse,above right of=alarm] (earthquake) {E};
+      \node[draw,ellipse,below left of=alarm] (johnCalls) {J};
+      \node[draw,ellipse,below right of=alarm] (maryCalls) {M};
       \draw[-{Stealth[scale=1.5]}] (burglary) -- (alarm);
       \draw[-{Stealth[scale=1.5]}] (earthquake) -- (alarm);
       \draw[-{Stealth[scale=1.5]}] (alarm) -- (johnCalls);
@@ -212,12 +220,12 @@ Unless specified otherwise, by \emph{probability distribution} we mean a \emph{d
   \end{subfigure}
   \begin{subfigure}{0.49\textwidth}
     \centering
-    \begin{tikzpicture}[node distance=2.5cm]
-      \node[draw,ellipse] (alarm) {Alarm};
-      \node[draw,ellipse,above left of=alarm] (burglary) {Burglary};
-      \node[draw,ellipse,above right of=alarm] (earthquake) {Earthquake};
-      \node[draw,ellipse,below left of=alarm] (johnCalls) {JohnCalls};
-      \node[draw,ellipse,below right of=alarm] (maryCalls) {MaryCalls};
+    \begin{tikzpicture}[node distance=1.5cm]
+      \node[draw,ellipse] (alarm) {A};
+      \node[draw,ellipse,above left of=alarm] (burglary) {B};
+      \node[draw,ellipse,above right of=alarm] (earthquake) {E};
+      \node[draw,ellipse,below left of=alarm] (johnCalls) {J};
+      \node[draw,ellipse,below right of=alarm] (maryCalls) {M};
       \draw (burglary) -- (earthquake);
       \draw (burglary) -- (alarm);
       \draw (earthquake) -- (alarm);
@@ -227,82 +235,74 @@ Unless specified otherwise, by \emph{probability distribution} we mean a \emph{d
     \caption{a Markov random field}
     \label{fig:mrf}
   \end{subfigure}
-  \caption{Equivalent PGMs that describe the same probability distribution}
-  \label{fig:example_pgms}
+  \newline
+  \newline
+  \begin{subfigure}{\textwidth}
+    \begin{minipage}{0.57\textwidth}
+      \centering
+      \begin{tabular}[t]{lr}
+        \toprule
+        $b$ & $\Pr(B = b)$ \\
+        \midrule
+        false & 0.999 \\
+        true & 0.001 \\
+        \bottomrule
+      \end{tabular}
+      \begin{tabular}[t]{lr}
+        \toprule
+        $e$ & $\Pr(E = e)$ \\
+        \midrule
+        false & 0.998 \\
+        true & 0.002 \\
+        \bottomrule
+      \end{tabular}
+      \newline
+      \newline
+      \begin{tabular}[t]{lllr}
+        \toprule
+        $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
+        \midrule
+        false & false & false & 0.999 \\
+        false & false & true & 0.001 \\
+        false & true & false & 0.71 \\
+        false & true & true & 0.29 \\
+        true & false & false & 0.06 \\
+        true & false & true & 0.94 \\
+        true & true & false & 0.05 \\
+        true & true & true & 0.95 \\
+        \bottomrule
+      \end{tabular}
+    \end{minipage}%
+    \begin{minipage}{0.43\textwidth}
+      \centering
+      \begin{tabular}[t]{llr}
+        \toprule
+        $a$ & $j$ & $\Pr(J = j \mid A = a)$ \\
+        \midrule
+        false & false & 0.9 \\
+        false & true & 0.1 \\
+        true & false & 0.2 \\
+        true & true & 0.8 \\
+        \bottomrule
+      \end{tabular}
+      \newline
+      \newline
+      \begin{tabular}[t]{llr}
+        \toprule
+        $a$ & $m$ & $\Pr(M = m \mid A = a)$ \\
+        \midrule
+        false & false & 0.9 \\
+        false & true & 0.1 \\
+        true & false & 0.2 \\
+        true & true & 0.8 \\
+        \bottomrule
+      \end{tabular}
+    \end{minipage}
+    \caption{the CPTs associated with the Bayesian network in \cref{example:bn} and \cref{fig:bn}}
+    \label{fig:examplecpts}
+  \end{subfigure}
+  \caption{Two equivalent PGMs}
 \end{figure}
-
-\begin{figure}
-  \begin{minipage}{0.57\textwidth}
-    \centering
-    \begin{tabular}[t]{lr}
-      \toprule
-      $b$ & $\Pr(B = b)$ \\
-      \midrule
-      false & 0.999 \\
-      true & 0.001 \\
-      \bottomrule
-    \end{tabular}
-    \begin{tabular}[t]{lr}
-      \toprule
-      $e$ & $\Pr(E = e)$ \\
-      \midrule
-      false & 0.998 \\
-      true & 0.002 \\
-      \bottomrule
-    \end{tabular}
-    \newline
-    \newline
-    \begin{tabular}[t]{lllr}
-      \toprule
-      $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
-      \midrule
-      false & false & false & 0.999 \\
-      false & false & true & 0.001 \\
-      false & true & false & 0.71 \\
-      false & true & true & 0.29 \\
-      true & false & false & 0.06 \\
-      true & false & true & 0.94 \\
-      true & true & false & 0.05 \\
-      true & true & true & 0.95 \\
-      \bottomrule
-    \end{tabular}
-  \end{minipage}%
-  \begin{minipage}{0.43\textwidth}
-    \centering
-    \begin{tabular}[t]{llr}
-      \toprule
-      $a$ & $j$ & $\Pr(J = j \mid A = a)$ \\
-      \midrule
-      false & false & 0.9 \\
-      false & true & 0.1 \\
-      true & false & 0.2 \\
-      true & true & 0.8 \\
-      \bottomrule
-    \end{tabular}
-    \newline
-    \newline
-    \begin{tabular}[t]{llr}
-      \toprule
-      $a$ & $m$ & $\Pr(M = m \mid A = a)$ \\
-      \midrule
-      false & false & 0.9 \\
-      false & true & 0.1 \\
-      true & false & 0.2 \\
-      true & true & 0.8 \\
-      \bottomrule
-    \end{tabular}
-  \end{minipage}
-  \caption{The CPTs associated with the Bayesian network in \cref{example:bn} and \cref{fig:bn}}
-  \label{fig:examplecpts}
-\end{figure}
-
-\citep{DBLP:series/synthesis/2019Dechter}
-
-TODO: introduce CPTs
-
-\begin{example} \label{example:bn}
-  TODO: an example BN
-\end{example}
 
 Perhaps the best-known representations of probability distributions are
 probabilistic graphical models (PGMs), i.e., graphs with vertices that
@@ -317,18 +317,38 @@ Markov random fields with support for first-order logic. More examples of both
 relational and first-order probabilistic models can be found in the survey paper
 by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/2016Raedt}.
 
+A \emph{Bayesian network} is a directed acyclic graph with random variables as
+vertices and edges as conditional dependencies. As is common in related
+literature
+\citep{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}, we assume that each
+variable has a finite number of values. We call a Bayesian network \emph{binary}
+if every variable has two values. If all variables have finite numbers of
+values, the probability function associated with each variable $v$ can be
+represented as a \emph{conditional probability table} (CPT), i.e., a table
+with a row for each combination of values that $v$ and its parent vertices can
+take. Each row then also has a \emph{probability}, i.e., a number in $[0, 1]$.
+
+\begin{example} \label{example:bn}
+  Consider the Bayesian network with its DAG in \cref{fig:bn} and its CPTs in \cref{fig:examplecpts}. Based on the structure of the graph, we know that the probability distribution defined by this network can be factored as
+  \[
+  \Pr(B, E, A, J, M) = \Pr(B)\Pr(E)\Pr(A \mid B, E)\Pr(J \mid A)\Pr(M \mid A).
+  \]
+\end{example}
+
 \begin{itemize}
-\item introduce joint probability distribution, conditional distribution
-\item the graph represents independencies, conditional independencies (define both)
-\item mention that the structure of the graphical model indicates how the joint probability distribution splits into a product of conditional probabilities
+\item \citep{DBLP:series/synthesis/2019Dechter}
+\item introduce PGMs, BNs, CPTs
+\item the graph represents independencies, conditional independencies
+\item mention that the structure of the graphical model indicates how the joint probability distribution splits into a product of conditional probabilities (the general formula)
 \item (and how probabilities are computed)
 \item Bayesian Networks \citep{DBLP:books/daglib/0066829}
 \item Markov Random Fields (a.k.a. Markov Networks)
+\item the Markov network is just the moralisation (i.e., the primal graph) of the Bayesian network
 \item maybe explain context-specific independence [Boutilier et al., 1996]
 \item Markov Logic Networks (or just Markov Logic) \citep{DBLP:journals/ml/RichardsonD06}
 \end{itemize}
 
-\subsection{Probabilistic Programming}
+\subsection{Probabilistic Programming} \label{sec:probprogramming}
 
 \begin{lstlisting}[escapeinside={(*}{*)},caption=An example BLOG program]
   type Neighbour;
@@ -372,8 +392,6 @@ by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/
   evidence(calls(mary)).
   query(burglary).
 \end{lstlisting}
-
-\citep{DBLP:series/synthesis/2016Raedt} (or find something better)
 
 Augmenting a programming language with probabilities is another common approach
 to conveniently and compactly represent a probability distribution. Logic
