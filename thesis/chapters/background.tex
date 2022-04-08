@@ -200,16 +200,29 @@ These representations also differ in their ability to reason about groups of ran
 
 \subsection{Representations Based on Graphical Models} \label{sec:pgms}
 
+Perhaps the best-known representations of probability distributions are \emph{probabilistic graphical models} (PGMs), i.e., probabilistic models that use a graph-based representation to compactly encode a probability distribution. These graphs can be either directed (as in the case of Bayesian networks) or undirected (as in the case of Markov networks). This section provides a brief overview of these two networks, although there are also other PGMs such as factor graphs \citep{DBLP:journals/spm/Loeliger04,DBLP:series/synthesis/2016Raedt} as well as graphical models that capture concepts other than probabilities, e.g., constraint networks, cost networks, and influence diagrams \citep{DBLP:series/synthesis/2019Dechter}. For more information on PGMs, see some of the many books on the subject \citep{DBLP:series/synthesis/2019Dechter,DBLP:books/daglib/0023091,DBLP:books/daglib/0066829}.
+
+\begin{example}[A classic example] \label{example:bn}
+  Suppose you have a burglar alarm in your home. The alarm is likely (but not guaranteed) to be activated when a burglar enters, but it might also be activated by a larger earthquake or even for no apparent reason. (There might even be an earthquake at the time of a burglary!) Furthermore, suppose you have two neighbours: John and Mary. Independently, either of them might call you if they hear your alarm ringing or for some other reason. Let the following (binary) random variables denote the relevant events:
+  \begin{description}
+  \item[$B$]--- a burglar entering your home,
+  \item[$E$]--- an earthquake happening near your home,
+  \item[$A$]--- your burglar alarm activating,
+  \item[$J$]--- John calling you,
+  \item[$M$]--- Mary calling you.
+  \end{description}
+\end{example}
+
 \begin{figure}[t]
   \centering
   \begin{subfigure}{0.49\textwidth}
     \centering
     \begin{tikzpicture}[node distance=1.5cm]
-      \node[draw,ellipse] (alarm) {A};
-      \node[draw,ellipse,above left of=alarm] (burglary) {B};
-      \node[draw,ellipse,above right of=alarm] (earthquake) {E};
-      \node[draw,ellipse,below left of=alarm] (johnCalls) {J};
-      \node[draw,ellipse,below right of=alarm] (maryCalls) {M};
+      \node[draw,circle] (alarm) {A};
+      \node[draw,circle,above left of=alarm] (burglary) {$B$};
+      \node[draw,circle,above right of=alarm] (earthquake) {$E$};
+      \node[draw,circle,below left of=alarm] (johnCalls) {$J$};
+      \node[draw,circle,below right of=alarm] (maryCalls) {$M$};
       \draw[-{Stealth[scale=1.5]}] (burglary) -- (alarm);
       \draw[-{Stealth[scale=1.5]}] (earthquake) -- (alarm);
       \draw[-{Stealth[scale=1.5]}] (alarm) -- (johnCalls);
@@ -221,132 +234,122 @@ These representations also differ in their ability to reason about groups of ran
   \begin{subfigure}{0.49\textwidth}
     \centering
     \begin{tikzpicture}[node distance=1.5cm]
-      \node[draw,ellipse] (alarm) {A};
-      \node[draw,ellipse,above left of=alarm] (burglary) {B};
-      \node[draw,ellipse,above right of=alarm] (earthquake) {E};
-      \node[draw,ellipse,below left of=alarm] (johnCalls) {J};
-      \node[draw,ellipse,below right of=alarm] (maryCalls) {M};
-      \draw (burglary) -- (earthquake);
-      \draw (burglary) -- (alarm);
-      \draw (earthquake) -- (alarm);
-      \draw (alarm) -- (johnCalls);
-      \draw (alarm) -- (maryCalls);
+      \node[draw,circle] (alarm) {A};
+      \node[draw,circle,above left of=alarm] (burglary) {$B$};
+      \node[draw,circle,above right of=alarm] (earthquake) {$E$};
+      \node[draw,circle,below left of=alarm] (johnCalls) {$J$};
+      \node[draw,circle,below right of=alarm] (maryCalls) {$M$};
+      \draw[color=color1,ultra thick] (burglary) -- (earthquake);
+      \draw[color=color1,ultra thick] (burglary) -- (alarm);
+      \draw[color=color1,ultra thick] (earthquake) -- (alarm);
+      \draw[color=color2,ultra thick] (alarm) -- (johnCalls);
+      \draw[color=color3,ultra thick] (alarm) -- (maryCalls);
     \end{tikzpicture}
-    \caption{a Markov random field}
-    \label{fig:mrf}
+    \caption{a Markov network}
+    \label{fig:mn}
   \end{subfigure}
-  \newline
-  \newline
-  \begin{subfigure}{\textwidth}
-    \begin{minipage}{0.57\textwidth}
-      \centering
-      \begin{tabular}[t]{lr}
-        \toprule
-        $b$ & $\Pr(B = b)$ \\
-        \midrule
-        false & 0.999 \\
-        true & 0.001 \\
-        \bottomrule
-      \end{tabular}
-      \begin{tabular}[t]{lr}
-        \toprule
-        $e$ & $\Pr(E = e)$ \\
-        \midrule
-        false & 0.998 \\
-        true & 0.002 \\
-        \bottomrule
-      \end{tabular}
-      \newline
-      \newline
-      \begin{tabular}[t]{lllr}
-        \toprule
-        $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
-        \midrule
-        false & false & false & 0.999 \\
-        false & false & true & 0.001 \\
-        false & true & false & 0.71 \\
-        false & true & true & 0.29 \\
-        true & false & false & 0.06 \\
-        true & false & true & 0.94 \\
-        true & true & false & 0.05 \\
-        true & true & true & 0.95 \\
-        \bottomrule
-      \end{tabular}
-    \end{minipage}%
-    \begin{minipage}{0.43\textwidth}
-      \centering
-      \begin{tabular}[t]{llr}
-        \toprule
-        $a$ & $j$ & $\Pr(J = j \mid A = a)$ \\
-        \midrule
-        false & false & 0.9 \\
-        false & true & 0.1 \\
-        true & false & 0.2 \\
-        true & true & 0.8 \\
-        \bottomrule
-      \end{tabular}
-      \newline
-      \newline
-      \begin{tabular}[t]{llr}
-        \toprule
-        $a$ & $m$ & $\Pr(M = m \mid A = a)$ \\
-        \midrule
-        false & false & 0.9 \\
-        false & true & 0.1 \\
-        true & false & 0.2 \\
-        true & true & 0.8 \\
-        \bottomrule
-      \end{tabular}
-    \end{minipage}
-    \caption{the CPTs associated with the Bayesian network in \cref{example:bn} and \cref{fig:bn}}
-    \label{fig:examplecpts}
-  \end{subfigure}
-  \caption{Two equivalent PGMs}
+%%   \newline
+%%   \newline
+%%   \begin{subfigure}{\textwidth}
+%%     \begin{minipage}{0.57\textwidth}
+%%       \centering
+%%       \begin{tabular}[t]{lr}
+%%         \toprule
+%%         $b$ & $\Pr(B = b)$ \\
+%%         \midrule
+%%         false & 0.999 \\
+%%         true & 0.001 \\
+%%         \bottomrule
+%%       \end{tabular}
+%%       \begin{tabular}[t]{lr}
+%%         \toprule
+%%         $e$ & $\Pr(E = e)$ \\
+%%         \midrule
+%%         false & 0.998 \\
+%%         true & 0.002 \\
+%%         \bottomrule
+%%       \end{tabular}
+%%       \newline
+%%       \newline
+%%       \begin{tabular}[t]{lllr}
+%%         \toprule
+%%         $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
+%%         \midrule
+%%         false & false & false & 0.999 \\
+%%         false & false & true & 0.001 \\
+%%         false & true & false & 0.71 \\
+%%         false & true & true & 0.29 \\
+%%         true & false & false & 0.06 \\
+%%         true & false & true & 0.94 \\
+%%         true & true & false & 0.05 \\
+%%         true & true & true & 0.95 \\
+%%         \bottomrule
+%%       \end{tabular}
+%%     \end{minipage}%
+%%     \begin{minipage}{0.43\textwidth}
+%%       \centering
+%%       \begin{tabular}[t]{llr}
+%%         \toprule
+%%         $a$ & $j$ & $\Pr(J = j \mid A = a)$ \\
+%%         \midrule
+%%         false & false & 0.9 \\
+%%         false & true & 0.1 \\
+%%         true & false & 0.2 \\
+%%         true & true & 0.8 \\
+%%         \bottomrule
+%%       \end{tabular}
+%%       \newline
+%%       \newline
+%%       \begin{tabular}[t]{llr}
+%%         \toprule
+%%         $a$ & $m$ & $\Pr(M = m \mid A = a)$ \\
+%%         \midrule
+%%         false & false & 0.9 \\
+%%         false & true & 0.1 \\
+%%         true & false & 0.2 \\
+%%         true & true & 0.8 \\
+%%         \bottomrule
+%%       \end{tabular}
+%%     \end{minipage}
+%%     \caption{the CPTs associated with the Bayesian network in \cref{example:bn} and \cref{fig:bn}}
+%%     \label{fig:examplecpts}
+%%   \end{subfigure}
+  \caption{Two PGMs that describe the independence structure of \cref{example:bn}}
 \end{figure}
 
-Perhaps the best-known representations of probability distributions are
-probabilistic graphical models (PGMs), i.e., graphs with vertices that
-correspond to random variables. The graph can either be directed (as in Bayesian
-networks \citep{DBLP:books/daglib/0066829}, see \cref{fig:bn}) or undirected (as
-in Markov random fields \citep{spitzer1971markov}, see \cref{fig:mrf}). Both
-Bayesian networks and Markov random fields have been extended to support
-additional structure: relational Bayesian networks \citep{DBLP:conf/uai/Jaeger97}
-can compactly describe a probability distribution over a relational structure,
-and Markov logic networks (MLNs) \citep{DBLP:journals/ml/RichardsonD06} extend
-Markov random fields with support for first-order logic. More examples of both
-relational and first-order probabilistic models can be found in the survey paper
-by \citet{DBLP:series/sci/BrazAR08} or the book by \citet{DBLP:series/synthesis/2016Raedt}.
+\begin{table}
+  \caption{An example CPT for $\Pr(A \mid B, E)$ from \cref{example:bn}}
+  \label{table:examplecpt}
+  \centering
+  \begin{tabular}[t]{lllr}
+    \toprule
+    $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
+    \midrule
+    false & false & false & 0.999 \\
+    false & false & true & 0.001 \\
+    false & true & false & 0.71 \\
+    false & true & true & 0.29 \\
+    true & false & false & 0.06 \\
+    true & false & true & 0.94 \\
+    true & true & false & 0.05 \\
+    true & true & true & 0.95 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
-A \emph{Bayesian network} is a directed acyclic graph with random variables as
-vertices and edges as conditional dependencies. As is common in related
-literature
-\citep{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}, we assume that each
-variable has a finite number of values. We call a Bayesian network \emph{binary}
-if every variable has two values. If all variables have finite numbers of
-values, the probability function associated with each variable $v$ can be
-represented as a \emph{conditional probability table} (CPT), i.e., a table
-with a row for each combination of values that $v$ and its parent vertices can
-take. Each row then also has a \emph{probability}, i.e., a number in $[0, 1]$.
+The graph of a \emph{Bayesian network} for this example scenario is in \cref{fig:bn}. This (directed acyclic) graph tells us that the joint probability distribution can be factored as
+\begin{equation} \label{eq:factorisation}
+  \Pr(B, E, A, J, M) = \Pr(B) \times \Pr(E) \times \Pr(A \mid B, E) \times \Pr(J \mid A) \times \Pr(M \mid A),
+\end{equation}
+i.e., the probability of each random variable is conditioned on its parents in the graph. The factors in \cref{eq:factorisation} can be described using \emph{conditional probability tables} (CPTs). CPTs assign a probability to each combination of values that the random variable and its parents can take---see \cref{table:examplecpt} for an example.
 
-\begin{example} \label{example:bn}
-  Consider the Bayesian network with its DAG in \cref{fig:bn} and its CPTs in \cref{fig:examplecpts}. Based on the structure of the graph, we know that the probability distribution defined by this network can be factored as
-  \[
-  \Pr(B, E, A, J, M) = \Pr(B)\Pr(E)\Pr(A \mid B, E)\Pr(J \mid A)\Pr(M \mid A).
-  \]
-\end{example}
+Alternatively, the same probability distribution can be represented as an undirected PGM known as a \emph{Markov network} (or \emph{Markov random field}). The graph of such a network for \cref{example:bn} is in \cref{fig:mn}. Here, instead of CPTs, \emph{potentials} are the building blocks out of which a probability distribution is constructed. A potential is a function from (some subset of) random variables to non-negative real numbers. Potentials are typically defined on the maximal cliques of the network. The edge sets of the three maximal cliques in \cref{fig:mn} are highlighted in different colours. Thus, the full probability distribution can be factorised as
+\[
+\Pr(B, E, A, J, M) = \frac{1}{Z} \times \psi_1(B, E, A) \times \psi_2(A, J) \times \psi_3(A, M),
+\]
+where $\psi_1$, $\psi_2$, and $\psi_3$ are potentials, and $Z$ is a normalisation constant known as the \emph{partition function}.
 
-\begin{itemize}
-\item \citep{DBLP:series/synthesis/2019Dechter}
-\item introduce PGMs, BNs, CPTs
-\item the graph represents independencies, conditional independencies
-\item mention that the structure of the graphical model indicates how the joint probability distribution splits into a product of conditional probabilities (the general formula)
-\item (and how probabilities are computed)
-\item Bayesian Networks \citep{DBLP:books/daglib/0066829}
-\item Markov Random Fields (a.k.a. Markov Networks)
-\item the Markov network is just the moralisation (i.e., the primal graph) of the Bayesian network
-\item maybe explain context-specific independence [Boutilier et al., 1996]
-\item Markov Logic Networks (or just Markov Logic) \citep{DBLP:journals/ml/RichardsonD06}
-\end{itemize}
+What if we wanted to generalise \cref{example:bn} to support any number of neighbours, all of whom behave identically (i.e., have the same probabilities of calling in all circumstances)? Both Bayesian and Markov networks have been extended for such scenarios: \emph{relational Bayesian networks} \citep{DBLP:conf/uai/Jaeger97} can compactly describe a probability distribution over a relational structure, and \emph{Markov logic networks} (also known as \emph{Markov logic}) \citep{DBLP:journals/ml/RichardsonD06} extend Markov networks with support for first-order logic. The field of learning such representations from data is known as \emph{statistical relational learning} \citep{DBLP:series/synthesis/2016Raedt}. The next section describes relational representations that are based on programming languages instead of graphical models.
 
 \subsection{Probabilistic Programming} \label{sec:probprogramming}
 
