@@ -8,7 +8,7 @@ TODO: outside of specific sections, have a one-paragraph introduction before and
 
 In this section, we briefly introduce the fundamentals of propositional logic and describe some logic-based computational problems. We refer the reader to the book by \cite{DBLP:books/daglib/0029942} for a more detailed introduction to logic and its role in computer science.
 
-An \emph{atomic proposition} (also known as \emph{atom} and Boolean/logical variable) is a variable with two possible (truth) values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
+An \emph{atomic proposition} (also known as \emph{atom} and \emph{Boolean/logical/propositional variable}) is a variable with two possible (truth) values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
 
 An \emph{interpretation} (also known as a \emph{variable assignment}) of a formula $\phi$ is a map from the variables of $\phi$ to the set $\{\, \text{true}, \text{false} \,\}$. A \emph{model} is an interpretation under which $\phi$ evaluates to true. A formula is \emph{satisfiable} if it has at least one model.
 
@@ -50,7 +50,7 @@ In this subsection, we give a brief introduction to logic programming. Specifica
 
 A \emph{logic program} is a finite sequence\footnote{Although it is common to define logic programs as sets, the order is important for efficiency and can be the difference between finite and infinite running time.} of clauses. A \emph{clause} consists of a head and a body. If a clause has an empty body, it is a \emph{fact}, otherwise it is a \emph{rule}. The Prolog syntax for a fact and a rule is \verb+h.+ and \verb+h :- b.+, respectively, where \texttt{h} is the head and \texttt{b} is the body, although we often write $\texttt{h} \gets \texttt{b}$ instead.
 
-The \emph{head} of a clause is an atom. An \emph{atom} (i.e., atomic formula) has the form $p(t_1, \dots, t_n)$, where $p$ is a \emph{predicate (symbol)}, and $(t_i)_{i=1}^n$ are terms. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. Some built-in predicates such as equality can be written in infix notation and without parentheses, i.e., as $a = b$ instead of $=(a, b)$. A \emph{term} is either a \emph{(logical) variable} (i.e., a string that begins with a capital letter) or a \emph{constant} (i.e., any other string).
+The \emph{head} of a clause is an atom. An \emph{atom} (i.e., atomic formula) has the form $p(t_1, \dots, t_n)$, where $p$ is a \emph{predicate (symbol)}, and $(t_i)_{i=1}^n$ are terms. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. When the arity is equal to zero, the atom is also known as a \emph{propositional variable}. Some built-in predicates such as equality can be written in infix notation and without parentheses, i.e., as $a = b$ instead of $=(a, b)$. A \emph{term} is either a \emph{(logical) variable} (i.e., a string that begins with a capital letter) or a \emph{constant} (i.e., any other string). If an atom contains only constants, it is a \emph{ground} atom.
 
 The \emph{body} of a clause is a formula.\footnote{In the literature, it is common to define clause bodies as conjunctions, but here we present a more general definition, given that such a generalisation is widely supported by the relevant software.} A \emph{formula} is any well-formed expression that connects atoms using conjunction, disjunction, and negation (as well as parentheses). Prolog syntax for these operators is different from the standard notation used in logic: we write `\verb+,+' instead of $\land$, `\verb+;+' instead of $\lor$, and `\verb#\+#' instead of $\neg$. Just like with the syntax for clauses, in most cases we continue to use logic-based syntax for convenience.
 
@@ -353,7 +353,29 @@ What if we wanted to generalise \cref{example:bn} to support any number of neigh
 
 \subsection{Probabilistic Programming} \label{sec:probprogramming}
 
-\begin{lstlisting}[escapeinside={(*}{*)},caption=An example BLOG program]
+Augmenting a programming language with probabilities is another common way to compactly represent probability distributions. Logic programming languages, in particular, have been frequently used for this purpose. Examples of probabilistic logic programming languages include the independent choice logic \citep{DBLP:journals/ai/Poole97,DBLP:conf/ilp/Poole08}, PRISM \citep{DBLP:conf/ijcai/SatoK97,DBLP:conf/ilp/SatoK08}, BLOG \citep{DBLP:conf/ijcai/MilchMRSOK05}, NP-BLOG \citep{DBLP:conf/uai/CarbonettoKFP05}, ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} and CP-logic \citep{DBLP:journals/tplp/VennekensDB09}. Functional and imperative programming languages have also seen some use, examples of which include BUGS \citep{gilks1994language}, IBAL \citep{DBLP:conf/ijcai/Pfeffer01}, Church \citep{DBLP:conf/uai/GoodmanMRBT08}, and Stan \citep{stan}. More information on probabilistic logic programming, probabilistic programming more generally, and statistical relational artificial intelligence can be found in the work of \citet{DBLP:conf/ilp/2008p}, \citet{DBLP:conf/icse/GordonHNR14}, and \citet{DBLP:series/synthesis/2016Raedt}, respectively.
+
+\begin{lstlisting}[caption=A ProbLog program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}, label={lst:problog}]
+  neighbour(john).
+  neighbour(marry).
+
+  0.001 :: burglary.
+  0.002 :: earthquake.
+
+  0.95  :: alarm :- burglary, earthquake.
+  0.94  :: alarm :- burglary, \+ earthquake.
+  0.29  :: alarm :- \+ burglary, earthquake.
+  0.001 :: alarm :- \+ burglary, \+ earthquake.
+
+  0.8   :: calls(X) :- alarm, neighbour(X).
+  0.1   :: calls(X) :- \+ alarm, neighbour(X).
+
+  evidence(calls(john)).
+  evidence(calls(mary)).
+  query(burglary).
+\end{lstlisting}
+
+\begin{lstlisting}[escapeinside={(*}{*)},caption=A BLOG program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}, label={lst:blog}]
   type Neighbour;
   distinct Neighbour John, Mary;
 
@@ -376,42 +398,16 @@ What if we wanted to generalise \cref{example:bn} to support any number of neigh
   query Burglary;
 \end{lstlisting}
 
-\begin{lstlisting}[caption=An example ProbLog program]
-  neighbour(john).
-  neighbour(marry).
-
-  0.001 :: burglary.
-  0.002 :: earthquake.
-
-  0.95  :: alarm :- burglary, earthquake.
-  0.94  :: alarm :- burglary, \+ earthquake.
-  0.29  :: alarm :- \+ burglary, earthquake.
-  0.001 :: alarm :- \+ burglary, \+ earthquake.
-
-  0.8   :: calls(X) :- alarm, neighbour(X).
-  0.1   :: calls(X) :- \+ alarm, neighbour(X).
-
-  evidence(calls(john)).
-  evidence(calls(mary)).
-  query(burglary).
-\end{lstlisting}
-
-Augmenting a programming language with probabilities is another common approach
-to conveniently and compactly represent a probability distribution. Logic
-programming languages, in particular, have been frequently used for this
-purpose, examples of which include earlier languages such as independent choice
-logic \citep{DBLP:journals/ai/Poole97} and PRISM \citep{DBLP:conf/ijcai/SatoK97}
-as well as more recent ones such as ProbLog \citep{DBLP:conf/ijcai/RaedtKT07}
-(see \cref{fig:problog}) and CP-logic \citep{DBLP:journals/tplp/VennekensDB09}.
-Functional and imperative programming languages have also seen some use.
-Probabilistic semantics in these languages typically rely on two constructs: the
-ability to draw random values from probability distributions and the ability to
-condition a program on observations \citep{DBLP:conf/icse/GordonHNR14}. Examples
-of such languages include functional languages such as Church
-\citep{DBLP:conf/uai/GoodmanMRBT08} and imperative languages like BLOG
-\citep{DBLP:conf/ijcai/MilchMRSOK05} (see \cref{fig:blog}).
-
-(and how probabilities are computed, including some details specifically about ProbLog)
+\Cref{lst:problog,lst:blog} contain two probabilistic programs that encode the information in \cref{example:bn}. In preparation for \cref{chapter:randomlps}, let us examine the syntax and semantics of ProbLog a bit more closely. ProbLog clauses are exactly like Prolog clauses (see \cref{sec:lp}) but with \verb+p ::+ prepended, for some probability \texttt{p}. Without \verb+::+, the probability associated with the clause is implicitly equal to 1. ProbLog also has keywords \texttt{evidence} and \texttt{query} that are used to define one or more (potentially conditional) probabilities of interest. Reading off the probabilities from \cref{lst:problog}, we can, e.g., compute the probability that John calls as
+\begin{align*}
+  \Pr(j) &= \Pr(b)\Pr(e)\Pr(a \mid b, e)\Pr(j \mid a) \\
+  &+ \Pr(b)\Pr(e)\Pr(\neg a \mid b, e)\Pr(j \mid \neg a) \\
+  &+ \cdots \\
+  &+ \Pr(\neg b)\Pr(\neg e)\Pr(\neg a \mid \neg b, \neg e)\Pr(j \mid \neg a) \\
+  &= 0.001 \times 0.002 \times 0.95 \times 0.8 + \cdots \\
+  &\approx 0.102.
+\end{align*}
+More formally, the probability of a query is the sum of the probabilities of the models of the query (c.f. WMC).
 
 \section{Knowledge Compilation} \label{sec:kc}
 
