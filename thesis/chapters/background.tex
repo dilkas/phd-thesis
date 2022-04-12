@@ -6,6 +6,8 @@ TODO: outside of specific sections, have a one-paragraph introduction before and
 
 \section{Propositional Logic} \label{sec:proplogic}
 
+TODO: explain $\bot$, $\top$, and $\equiv$ (also the term `equivalence').
+
 In this section, we briefly introduce the fundamentals of propositional logic and describe some logic-based computational problems. We refer the reader to the book by \cite{DBLP:books/daglib/0029942} for a more detailed introduction to logic and its role in computer science.
 
 An \emph{atomic proposition} (also known as \emph{atom} and \emph{Boolean/logical/propositional variable}) is a variable with two possible (truth) values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
@@ -409,52 +411,72 @@ Augmenting a programming language with probabilities is another common way to co
 \end{align*}
 More formally, the probability of a query is the sum of the probabilities of the models of the query (c.f. WMC).
 
-\section{Knowledge Compilation} \label{sec:kc}
+\section{Knowledge Compilation and Representation} \label{sec:kc}
+% Probabilistic SDDs \citep{DBLP:conf/kr/KisaBCD14} extend SDDs with probability labels on edges.
 
-(including lots of detail about all the data structures)
+Many WMC algorithms rely on knowledge compilation, i.e., compilation of the structure of the initial representation into a form that allows one to perform various operations and answer queries of interest in time polynomial in the size of the compiled representation.
+
+Traditionally, the initial representation is a propositional formula.
+
+Many such representations have been proposed \citep{DBLP:journals/jair/DarwicheM02}.
+
+Amongst them, the ones that are used in probabilistic inference include (reduced ordered) \emph{binary decision diagrams} (BDDs) \citep{DBLP:journals/tc/Bryant86}, \emph{deterministic decomposable negation normal form} (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}, and \emph{sentential decision diagrams} (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}---some of them are pictured in \cref{fig:kc}.
+
+\begin{definition}
+  A propositional formula $\phi$ is in \emph{negation normal form} (NNF) if
+  \begin{itemize}
+  \item the only operators in $\phi$ are $\neg$, $\lor$, and $\land$,
+  \item and $\neg$ is only applied to directly to variables.
+  \end{itemize}
+\end{definition}
+
+\begin{example}
+  Formula $\neg(C \Rightarrow (\neg A \land B))$ can be transformed into NNF as follows:
+  \[
+  \neg(C \Rightarrow (\neg A \land B)) \equiv \neg(\neg C \lor (\neg A \land B)) \equiv C \land (A \lor \neg B)
+  \]
+  using the definition of $\Rightarrow$ and De Morgan's laws.
+\end{example}
+
+\begin{definition}
+  The d-DNNF adds decomposability and determinism to the NNF. \emph{Decomposability} requires that, for every conjunction $\bigwedge_{i=1}^n \phi_i$, conjuncts $\phi_i$ and $\phi_j$ have no variables in common for all $i \ne j$ \citep{DBLP:conf/ijcai/Darwiche99,DBLP:journals/jacm/Darwiche01}. \emph{Determinism} requires that, for every disjunction $\bigvee_{i=1}^n \phi_i$, disjuncts $\phi_i$ and $\phi_j$ contradict each other (i.e., $\phi_i \land \phi_j \equiv \bot$) for all $i \ne j$ \citep{DBLP:journals/jancl/Darwiche01}.
+\end{definition}
+
+\begin{example}
+  Formula $(A \lor \neg B) \land (A \lor C)$ is neither decomposable nor deterministic. It is not decomposable because $\{\, A, B \,\} \cap \{\, A, C \,\} = \{\, A \,\} \ne \emptyset$. It is not deterministic because, e.g., $A \land \neg B \not\equiv \bot$.
+\end{example}
+
+\begin{example} \label{example:ddnnf1}
+  Formula $C \land (A \lor \neg B)$ is decomposable but not deterministic. It is decomposable because $\{\, C \,\} \cap \{\, A, B \,\} = \emptyset$. It is not deterministic because $A \land \neg B \not\equiv \bot$.
+\end{example}
+
+\begin{example}
+  Formula $B \land C \land [\neg B \lor (A \land B)]$ is deterministic but not decomposable. It is deterministic because $\neg B \land A \land B \equiv \bot$. It is not decomposable because $\{\, B \,\} \cap \{\, A, B \,\} = \{\, B \,\} \ne \emptyset$.
+\end{example}
+
+\begin{example} \label{example:ddnnf2}
+  Formula $C \land [\neg B \lor (A \land B)]$ is decomposable and deterministic. It is decomposable because $\{\, C \,\} \cap \{\, A, B \,\} = \emptyset$, and $\{\, A \,\} \cap \{\, B \,\} = \emptyset$. It is deterministic because $\neg B \land A \land B \equiv \bot$.
+\end{example}
 
 \begin{figure}
   \centering
-  \begin{subfigure}{0.30\textwidth}
+  \begin{subfigure}{0.32\textwidth}
     \centering
-    \begin{tikzpicture}[level distance=0.8cm]
-      \node[draw,circle] (A) {$A$}
-      child {edge from parent[draw=none]}
-      child {node[draw,circle] (B) {$B$} edge from parent[dashed]
-        child {node[draw,circle,solid] (C) {$C$} edge from parent[dashed]
-          child {node[draw,rectangle,solid] {$1$} edge from parent[solid]}
-          child {node[draw,rectangle,solid] (0) {$0$}}
-        }
-        child {edge from parent[draw=none]}
-      };
-      \draw (A) -- (C);
-      \draw (B) -- (0);
-    \end{tikzpicture}
-    \caption{(RO)BDD}
-  \end{subfigure}
-  \begin{subfigure}{0.30\textwidth}
-    \centering
-    \begin{tikzpicture}[level distance=0.8cm]
+    \begin{tikzpicture}[level distance=0.8cm] % C \land [\neg B \lor (A \land B)]
       \node[draw,circle] {$\land$}
+      child {node[draw,circle] {$C$}}
       child {node[draw,circle] {$\lor$}
-        child {node[draw,circle] (parent) {$\land$}
+        child {node[draw,rectangle] {$\neg B$}}
+        child {node[draw,rectangle] {$\land$}
+          child {node[draw,rectangle] {$A$}}
           child {node[draw,rectangle] {$B$}}
-          child {edge from parent[draw=none]}
         }
-        child {node[draw,circle] {$\land$}
-          child {node[draw,circle] {$\lor$}
-            child {node[draw,rectangle] (A) {$A$}}
-            child {node[draw,rectangle] {$\neg A$}}
-          }
-          child {node[draw,rectangle] {$\neg B$}}
-        }
-      }
-      child {node[draw,rectangle] {$C$}};
-      \draw (parent) -- (A);
+      };
     \end{tikzpicture}
     \caption{d-DNNF}
+    \label{fig:ddnnf}
   \end{subfigure}
-  \begin{subfigure}{0.30\textwidth}
+  \begin{subfigure}{0.32\textwidth}
     \centering
     \begin{tikzpicture}[level distance=0.8cm]
       \tikzset{
@@ -491,46 +513,128 @@ More formally, the probability of a query is the sum of the probabilities of the
       \draw[*-] let \p1 = (bullet.two), \p2 = (bullet.center) in ({\x1 + 2.5},{\y2 + 2}) -- (3);
     \end{tikzpicture}
     \caption{SDD}
+    \label{fig:sdd}
   \end{subfigure}
-  \caption{Example diagrams for $C \land (A \lor \neg B)$}
+  \begin{subfigure}{0.32\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \node[draw,circle] {$1$}
+      child {node[draw,rectangle] {$A$}}
+      child {node[draw,circle] {$3$}
+        child {node[draw,rectangle] {$B$}}
+        child {node[draw,rectangle] {$C$}}
+      };
+    \end{tikzpicture}
+    \caption{vtree}
+    \label{fig:vtree}
+  \end{subfigure}
+  \caption{A d-DNNF and an SDD representation of $C \land (A \lor \neg B)$, together with the corresponding vtree. The numbers 1 and 3 come from the in-order traversal of the vtree and visually connect subtrees of both the SDD and the vtree.}
   \label{fig:kc}
 \end{figure}
 
-Many WMC algorithms rely on knowledge compilation, i.e., compilation of the
-structure of the initial representation into a form that allows one to perform
-various operations and answer queries of interest in time polynomial in the size
-of the compiled representation. Traditionally, the initial representation is a
-propositional formula. Many such representations have been proposed
-\citep{DBLP:journals/jair/DarwicheM02}. Amongst them, the ones that are used in
-probabilistic inference include (reduced ordered) binary decision diagrams
-((RO)BDDs) \citep{DBLP:journals/tc/Bryant86}, deterministic decomposable negation
-normal form (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}, sentential decision
-diagrams (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}, and probabilistic SDDs
-\citep{DBLP:conf/kr/KisaBCD14}---some of them are pictured in \cref{fig:kc}. A
-BDD is similar to a decision tree that ends with either one or zero but
-generalised to a directed acyclic graph. Both d-DNNF and SDD are normal forms
-for propositional formulae that satisfy certain properties. Probabilistic SDDs
-extend SDDs with probability labels on edges. BDDs are a strict subset of SDDs
-that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
+Note that the formulas in \cref{example:ddnnf1,example:ddnnf2} are equivalent, and the latter is also pictured in \cref{fig:ddnnf}.
 
-Similarly to how BDDs represent Boolean functions, ADDs represent pseudo-Boolean
-functions, i.e., while (non-trivial) BDDs always have two sinks marked with one
-and zero, ADDs can have any number of sinks that contain, typically, real
-numbers \citep{DBLP:journals/fmsd/BaharFGHMPS97}. ADDs have been extended to
-represent the additive and multiplicative structure in sink values more
-compactly \citep{DBLP:conf/ijcai/SannerM05} and to support first-order logic
-\citep{DBLP:journals/ai/SannerB09} and continuous variables
-\citep{DBLP:conf/uai/SannerDB11}. ADDs have been used to represent MDP value
-functions \citep{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs
-\citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}.
+Next, to define SDDs, we first need to define vtrees.
+
+\begin{definition}[\citep{DBLP:conf/aaai/PipatsrisawatD08}]
+  A \emph{vtree} for a set of variables $X$ is a full binary tree $T$ with a bijection between $X$ and the leaves of $T$.
+\end{definition}
+
+Let $\langle\cdot\rangle$ denote the function that maps an SDD to the propositional formula that it represents.
+
+\begin{definition}[\citep{DBLP:conf/ijcai/Darwiche11}]
+  Let $V$ be a vtree for a set of variables $X$. Then $S$ is an \emph{SDD} that respects $V$ if one of the following is true:
+  \begin{itemize}
+  \item $S = \bot$ ($\langle \bot \rangle \coloneqq \bot$);
+  \item $S = \top$ ($\langle \top \rangle \coloneqq \top$);
+  \item $S = x$, or $S = \neg x$, where $x \in X$ is the variable bijectively associated with the \emph{only} node of $V$ ($\langle x \rangle \coloneqq x$, and $\langle \neg x \rangle \coloneqq \neg x$);
+  \item $S = \{\, (p_i, s_i) \mid i = 1, \dots, n \,\}$ for some $n \ge 1$, where \emph{primes} $\{\,p_i\,\}_{i=1}^n$ and \emph{subs} $\{\,s_i\,\}_{i=1}^n$ are SDDs such that:
+    \begin{itemize}
+    \item $V$ has more than one node,
+    \item each $p_i$ respects the left subtree of $V$,
+    \item each $s_i$ respects the right subtree fo $V$.
+    \item the primes form a \emph{partition}, i.e.:
+      \begin{itemize}
+      \item $\langle p_i \rangle \not\equiv \bot$ for all $i = 1, \dots, n$ (i.e., the primes are \emph{consistent}),
+      \item $\langle p_i \rangle \land \langle p_j \rangle \equiv \bot$ for all $i \ne j$ (i.e., the primes are \emph{mutually exclusive}),
+      \item and $\bigvee_{i=1}^n \langle p_i \rangle \equiv \top$
+      \end{itemize}
+    \end{itemize}
+    (then $\langle S \rangle \coloneqq \bigvee_{i=1}^n \langle p_i \rangle \land \langle s_i \rangle$).
+  \end{itemize}
+\end{definition}
+
+\begin{example}
+  Let $S = \{\, (A, C), (\neg A, \{\, (\neg B, C), (B, \bot) \,\}) \,\}$. Then $S$ (as pictured in \cref{fig:sdd}) is an SDD representation of $C \land (A \lor \neg B)$ that respects the vtree in \cref{fig:vtree}. Indeed,
+  \begin{align*}
+    \langle S \rangle &= (A \land C) \lor (\neg A \land [(\neg B \land C) \lor (B \land \bot)]) \\
+    &\equiv (A \land C) \lor (\neg A \land \neg B \land C) \\
+    &\equiv C \land (A \lor [\neg A \land \neg B]) \\
+    &\equiv C \land ([A \lor \neg A] \land [A \lor \neg B]) \\
+    &\equiv C \land (\top \land [A \lor \neg B]) \\
+    &\equiv C \land (A \lor \neg B).
+  \end{align*}
+\end{example}
+
+A BDD is similar to a decision tree that ends with either one or zero but generalised to a directed acyclic graph.
+
+Both d-DNNF and SDD are normal forms for propositional formulae that satisfy certain properties.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.18\textwidth}
+    \centering
+    \begin{tikzpicture}[level distance=0.8cm]
+      \node[draw,circle] (A) {$A$}
+      child {edge from parent[draw=none]}
+      child {node[draw,circle] (B) {$B$} edge from parent[dashed]
+        child {node[draw,circle,solid] (C) {$C$} edge from parent[dashed]
+          child {node[draw,rectangle,solid] {$1$} edge from parent[solid]}
+          child {node[draw,rectangle,solid] (0) {$0$}}
+        }
+        child {edge from parent[draw=none]}
+      };
+      \draw (A) -- (C);
+      \draw (B) -- (0);
+    \end{tikzpicture}
+    \caption{BDD}
+    \label{fig:bdd}
+  \end{subfigure}
+  \begin{subfigure}{0.20\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \node[circle,draw] (x) at (0, 0) {$A$};
+      \node[circle,draw] (y) at (1, -1) {$B$};
+      \node[draw] (a) at (-1, -2) {0.1};
+      \node[draw] (b) at (1, -2) {0.3};
+      \draw[dashed] (x) -- (y);
+      \draw (x) -- (a);
+      \draw[dashed] (y) -- (a);
+      \draw (y) -- (b);
+    \end{tikzpicture}
+    \caption{ADD}
+    \label{fig:add}
+  \end{subfigure} % TODO: could redraw the third diagram to be more like the others
+\end{figure}
+
+BDDs are a strict subset of SDDs that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
+
+Similarly to how BDDs represent Boolean functions, ADDs represent pseudo-Boolean functions, i.e., while (non-trivial) BDDs always have two sinks marked with one and zero, ADDs can have any number of sinks that contain, typically, real numbers \citep{DBLP:journals/fmsd/BaharFGHMPS97}.
+
+ADDs have been extended to represent the additive and multiplicative structure in sink values more compactly \citep{DBLP:conf/ijcai/SannerM05} and to support first-order logic \citep{DBLP:journals/ai/SannerB09} and continuous variables \citep{DBLP:conf/uai/SannerDB11}.
+
+ADDs have been used to represent the value functions of Markov decision processes \citep{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}.
 
 \begin{itemize}
+\item maybe add a vtree for the SDD from the slides? I think the vtree is wrong...
+\item have an example of an SDD in its set-of-sets-of...of literals and top/bot.
+\item say: These formulas are often interpreted as trees or DAGs.
+\item TODO: add info from the random slides, Chapter 5, and the full KR paper. But how much?
+\item explain why the focus is on representations of propositional formulas and pseudo-Boolean functions
 \item Boolean and Pseudo-Boolean Functions
-\item NNF
-\item d-DNNF
-\item SDDs
-\item BDDs
-\item ADDs (with a brief mention of AADDs, XDDs, etc.)
+\item NNF and how d-DNNF restricts that
+\item A graphical representation of the ADD from ??. Sinks are represented as rectangles and other nodes as circles. The labels of nodes are written directly on them. An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise.
+\item advertise \citep{DBLP:journals/jair/DarwicheM02} as a description of many normal forms and representations
 \end{itemize}
 
 \section{Applications}
