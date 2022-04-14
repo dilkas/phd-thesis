@@ -225,10 +225,10 @@ Perhaps the best-known representations of probability distributions are \emph{pr
       \node[draw,circle,above right of=alarm] (earthquake) {$E$};
       \node[draw,circle,below left of=alarm] (johnCalls) {$J$};
       \node[draw,circle,below right of=alarm] (maryCalls) {$M$};
-      \draw[-{Stealth[scale=1.5]}] (burglary) -- (alarm);
-      \draw[-{Stealth[scale=1.5]}] (earthquake) -- (alarm);
-      \draw[-{Stealth[scale=1.5]}] (alarm) -- (johnCalls);
-      \draw[-{Stealth[scale=1.5]}] (alarm) -- (maryCalls);
+      \draw[-Latex] (burglary) -- (alarm);
+      \draw[-Latex] (earthquake) -- (alarm);
+      \draw[-Latex] (alarm) -- (johnCalls);
+      \draw[-Latex] (alarm) -- (maryCalls);
     \end{tikzpicture}
     \caption{a Bayesian network}
     \label{fig:bn}
@@ -414,13 +414,19 @@ More formally, the probability of a query is the sum of the probabilities of the
 \section{Knowledge Compilation and Representation} \label{sec:kc}
 % Probabilistic SDDs \citep{DBLP:conf/kr/KisaBCD14} extend SDDs with probability labels on edges.
 
-Many WMC algorithms rely on knowledge compilation, i.e., compilation of the structure of the initial representation into a form that allows one to perform various operations and answer queries of interest in time polynomial in the size of the compiled representation.
+Many WMC algorithms rely on \emph{knowledge compilation}, i.e., compilation of the structure of the initial representation into a form that allows one to perform various operations and answer queries of interest in time polynomial in the size of the compiled representation.
 
 Traditionally, the initial representation is a propositional formula.
 
 Many such representations have been proposed \citep{DBLP:journals/jair/DarwicheM02}.
 
-Amongst them, the ones that are used in probabilistic inference include (reduced ordered) \emph{binary decision diagrams} (BDDs) \citep{DBLP:journals/tc/Bryant86}, \emph{deterministic decomposable negation normal form} (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}, and \emph{sentential decision diagrams} (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}---some of them are pictured in \cref{fig:kc}.
+Among st them, the ones that are used in probabilistic inference include (reduced ordered) \emph{binary decision diagrams} (BDDs) \citep{DBLP:journals/tc/Bryant86}, \emph{deterministic decomposable negation normal form} (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}, and \emph{sentential decision diagrams} (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}.
+
+TODO: explain why the focus is on representations of propositional formulas and pseudo-Boolean functions
+
+TODO: advertise \citep{DBLP:journals/jair/DarwicheM02} as a description of many normal forms and representations
+
+\subsection{NNF and d-DNNF}
 
 \begin{definition}
   A propositional formula $\phi$ is in \emph{negation normal form} (NNF) if
@@ -462,7 +468,7 @@ Amongst them, the ones that are used in probabilistic inference include (reduced
   \centering
   \begin{subfigure}{0.32\textwidth}
     \centering
-    \begin{tikzpicture}[level distance=0.8cm] % C \land [\neg B \lor (A \land B)]
+    \begin{tikzpicture}[level distance=1cm,edge from parent/.style={draw,-Latex}] % C \land [\neg B \lor (A \land B)]
       \node[draw,circle] {$\land$}
       child {node[draw,circle] {$C$}}
       child {node[draw,circle] {$\lor$}
@@ -478,7 +484,7 @@ Amongst them, the ones that are used in probabilistic inference include (reduced
   \end{subfigure}
   \begin{subfigure}{0.32\textwidth}
     \centering
-    \begin{tikzpicture}[level distance=0.8cm]
+    \begin{tikzpicture}[level distance=1cm,edge from parent/.style={draw,-Latex}]
       \tikzset{
         mysplit/.style={
           draw,
@@ -510,14 +516,14 @@ Amongst them, the ones that are used in probabilistic inference include (reduced
           \nodepart{one} $A$
           \nodepart{two} $C$
         }};
-      \draw[*-] let \p1 = (bullet.two), \p2 = (bullet.center) in ({\x1 + 2.5},{\y2 + 2}) -- (3);
+      \draw[*-Latex] let \p1 = (bullet.two), \p2 = (bullet.center) in ({\x1 + 2.5},{\y2 + 2}) -- (3);
     \end{tikzpicture}
     \caption{SDD}
     \label{fig:sdd}
   \end{subfigure}
   \begin{subfigure}{0.32\textwidth}
     \centering
-    \begin{tikzpicture}[level distance=0.8cm]
+    \begin{tikzpicture}[level distance=1cm,edge from parent/.style={draw,-Latex}]
       \node[draw,circle] {$1$}
       child {node[draw,rectangle] {$A$}}
       child {node[draw,circle] {$3$}
@@ -534,7 +540,11 @@ Amongst them, the ones that are used in probabilistic inference include (reduced
 
 Note that the formulas in \cref{example:ddnnf1,example:ddnnf2} are equivalent, and the latter is also pictured in \cref{fig:ddnnf}.
 
-Next, to define SDDs, we first need to define vtrees.
+TODO: Throughout this section, leaves/sinks are represented as rectangles and other nodes as circles. 
+
+\subsection{SDDs}
+
+To define SDDs, we first need to define vtrees.
 
 \begin{definition}[\citep{DBLP:conf/aaai/PipatsrisawatD08}]
   A \emph{vtree} for a set of variables $X$ is a full binary tree $T$ with a bijection between $X$ and the leaves of $T$.
@@ -576,15 +586,17 @@ Let $\langle\cdot\rangle$ denote the function that maps an SDD to the propositio
   \end{align*}
 \end{example}
 
-A BDD is similar to a decision tree that ends with either one or zero but generalised to a directed acyclic graph.
+TODO: Somewhere: Both d-DNNF and SDD are normal forms for propositional formulae that satisfy certain properties.
 
-Both d-DNNF and SDD are normal forms for propositional formulae that satisfy certain properties.
+\subsection{Other Decision Diagrams}
+
+A BDD is similar to a decision tree that ends with either one or zero but generalised to a directed acyclic graph.
 
 \begin{figure}
   \centering
-  \begin{subfigure}{0.18\textwidth}
+  \begin{subfigure}{0.49\textwidth}
     \centering
-    \begin{tikzpicture}[level distance=0.8cm]
+    \begin{tikzpicture}[level distance=1cm,edge from parent/.style={draw,-Latex}]
       \node[draw,circle] (A) {$A$}
       child {edge from parent[draw=none]}
       child {node[draw,circle] (B) {$B$} edge from parent[dashed]
@@ -594,27 +606,28 @@ Both d-DNNF and SDD are normal forms for propositional formulae that satisfy cer
         }
         child {edge from parent[draw=none]}
       };
-      \draw (A) -- (C);
-      \draw (B) -- (0);
+      \draw[-Latex] (A) -- (C);
+      \draw[-Latex] (B) -- (0);
     \end{tikzpicture}
     \caption{BDD}
     \label{fig:bdd}
   \end{subfigure}
-  \begin{subfigure}{0.20\textwidth}
+  \begin{subfigure}{0.49\textwidth}
     \centering
     \begin{tikzpicture}
       \node[circle,draw] (x) at (0, 0) {$A$};
       \node[circle,draw] (y) at (1, -1) {$B$};
       \node[draw] (a) at (-1, -2) {0.1};
       \node[draw] (b) at (1, -2) {0.3};
-      \draw[dashed] (x) -- (y);
-      \draw (x) -- (a);
-      \draw[dashed] (y) -- (a);
-      \draw (y) -- (b);
+      \draw[dashed,-Latex] (x) -- (y);
+      \draw[-Latex] (x) -- (a);
+      \draw[dashed,-Latex] (y) -- (a);
+      \draw[-Latex] (y) -- (b);
     \end{tikzpicture}
     \caption{ADD}
     \label{fig:add}
   \end{subfigure} % TODO: could redraw the third diagram to be more like the others
+  \caption{Example BDD and ADD}
 \end{figure}
 
 BDDs are a strict subset of SDDs that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
@@ -625,27 +638,222 @@ ADDs have been extended to represent the additive and multiplicative structure i
 
 ADDs have been used to represent the value functions of Markov decision processes \citep{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}.
 
-\begin{itemize}
-\item maybe add a vtree for the SDD from the slides? I think the vtree is wrong...
-\item have an example of an SDD in its set-of-sets-of...of literals and top/bot.
-\item say: These formulas are often interpreted as trees or DAGs.
-\item TODO: add info from the random slides, Chapter 5, and the full KR paper. But how much?
-\item explain why the focus is on representations of propositional formulas and pseudo-Boolean functions
-\item Boolean and Pseudo-Boolean Functions
-\item NNF and how d-DNNF restricts that
-\item A graphical representation of the ADD from ??. Sinks are represented as rectangles and other nodes as circles. The labels of nodes are written directly on them. An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise.
-\item advertise \citep{DBLP:journals/jair/DarwicheM02} as a description of many normal forms and representations
-\end{itemize}
+In this work, we propose a more expressive representation for WMC based on
+pseudo-Boolean functions. A \emph{pseudo-Boolean function} is a function of the
+form $\{ 0, 1 \}^n \to \mathbb{R}$ \citep{DBLP:journals/dam/BorosH02}.
+Equivalently, let $X$ denote a set with $n$ elements (we will refer to them as
+\emph{variables}), and $2^X$ denote its powerset. Then a pseudo-Boolean function
+can have $2^X$ as its domain (then it is also known as a \emph{set function}).
 
-\section{Applications}
+Pseudo-Boolean functions, most commonly represented as
+algebraic decision diagrams (ADDs) \citep{DBLP:journals/fmsd/BaharFGHMPS97}
+(although a tensor-based approach has also been suggested
+\citep{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen
+extensive use in value iteration for Markov decision processes
+\citep{DBLP:conf/uai/HoeySHB99}, both exact and approximate Bayesian network
+inference \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, and
+sum-product network \citep{DBLP:conf/uai/PoonD11} to Bayesian network conversion
+\citep{DBLP:conf/icml/ZhaoMP15}. ADDs have been extended to compactly represent
+additive and multiplicative structure \citep{DBLP:conf/ijcai/SannerM05},
+sentences in first-order logic \citep{DBLP:journals/ai/SannerB09}, and continuous
+variables \citep{DBLP:conf/uai/SannerDB11}, the last of which was also applied to
+weighted model integration, i.e., the WMC extension for continuous variables
+\citep{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
 
-of WMC?
+Our definition of an ADD is partially based on the original definition
+\cite{DBLP:journals/fmsd/BaharFGHMPS97} as well as more recent work
+\cite{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The
+definition can also be stated more generally to use any set instead of
+$\mathbb{R}$ and include the possibility of a single ADD representing multiple
+functions.
 
-copy info from my year 2 report
+\begin{definition}
+  Given a set of variables $X$ and a variable ordering represented as an injection
+  $\sigma\colon X \to \mathbb{N}^+$, an \emph{ADD} is a tuple $(G, r, \rho,
+  \chi, \epsilon)$ where:
+  \begin{itemize}
+  \item $G$ is a rooted directed acyclic graph with root $r \in \mathcal{V}(G)$
+    (i.e., there is a directed path from $r$ to any other node),
+  \item $\rho\colon \mathcal{L}(G) \to \mathbb{R}$ labels sinks with real
+    numbers,
+  \item $\chi\colon \mathcal{V}(G) \setminus \mathcal{L}(G) \to X$ labels other
+    nodes with variable names,
+  \item and $\epsilon\colon \mathcal{E}(G) \to \{\,0, 1\,\}$ labels edges.
+  \end{itemize}
+  Moreover, the following properties must be satisfied.
+  \begin{itemize}
+  \item Every node has outdegree either zero or two. In the latter case, the two
+    outgoing edges $e, f \in \mathcal{E}(G)$ are such that $\epsilon(e) = 1$,
+    and $\epsilon(f) = 0$. If $e = (v, u)$, and $f = (v, w)$ for some $u, v, w
+    \in \mathcal{V}(G)$, then $u$ is the \emph{positive successor} of $v$, and
+    $w$ is the \emph{negative successor}.
+  \item For every directed path with node sequence $v_1, v_2, \dots, v_n$ such
+    that $v_i \not\in \mathcal{L}(G)$ for all $i$, we have that
+    $\sigma(\chi(v_i)) < \sigma(\chi(v_{i+1}))$ for all $i = 1, 2, \dots, n -
+    1$.
+  \end{itemize}
+  We say that an ADD \emph{has} variable $x \in X$ if there is a node $v \in
+  \mathcal{V}(G) \setminus \mathcal{L}(G)$ such that $\chi(v) = x$.
+
+  It remains to define how an ADD can be interpreted as a pseudo-Boolean
+  function. Let $\llbracket \cdot \rrbracket\colon \mathcal{V}(G) \to
+  \mathbb{R}^{2^X}$ be defined as
+  \[
+    \llbracket v \rrbracket \coloneqq
+    \begin{cases}
+      \rho(v) & \text{if } v \in \mathcal{L}(G) \\
+      [\chi(v)]^{\llbracket u \rrbracket}_{\llbracket w \rrbracket} &
+      \text{if } v \not\in \mathcal{L}(G)
+    \end{cases}
+  \]
+  for all $v \in \mathcal{V}(G)$, where $u \in \mathcal{V}(G)$ and $w \in
+  \mathcal{V}(G)$ are the positive and negative successors of $v$, respectively.
+  Here, $\llbracket \cdot \rrbracket$ returns a pseudo-Boolean function $2^X \to
+  \mathbb{R}$ for each node of $G$, and the interpretation of the ADD itself is
+  defined to be $\llbracket r \rrbracket$. As before, $\rho(v)$ should be
+  interpreted as a constant function.
+\end{definition}
+
+\begin{fact}[\cite{DBLP:journals/fmsd/BaharFGHMPS97}]
+  For any fixed set of variables $X$ and ordering function $\sigma\colon X \to
+  \mathbb{N}^+$, there is a unique (up to isomorphism) \emph{canonical} ADD for
+  every pseudo-Boolean function $2^Y \to S$ for all $Y \subseteq X$. Any ADD can
+  be \emph{reduced} to its canonical form in time linear in the number of nodes.
+\end{fact}
+
+\begin{example} \label{example:add}
+  Let $f\colon 2^{\{\,x, y\,\}} \to \mathbb{R}$ be a pseudo-Boolean function
+  defined as $f(\emptyset) = f(\{\,x\,\}) = f(\{\,x, y\,\}) = 0.1$, and
+  $f(\{\,y\,\}) = 0.3$ and $\sigma\colon \{\,x, y\,\} \to \mathbb{N}^+$ be
+  the variable ordering function defined as $\sigma(x) = 1$, and $\sigma(y) =
+  2$. Then the canonical ADD for $f$ under $\sigma$ is pictured in
+  \cref{fig:add} and can be formally defined as $(G, a, \rho, \chi, \epsilon)$,
+  where:
+  \begin{itemize}
+  \item $\mathcal{V}(G) = \{\,a, b, c, d\,\}$,
+  \item $\mathcal{E}(G) = \{\,(a, b), (a, c), (b, c), (b, d)\,\}$,
+  \item $\rho(c) = 0.1$, $\rho(d) = 0.3$,
+  \item $\chi(a) = x$, $\chi(b) = y$,
+  \item $\epsilon((a, c)) = \epsilon((b, d)) = 1$, $\epsilon((a, b)) =
+    \epsilon((b, c)) = 0$.
+  \end{itemize}
+\end{example}
+
+\begin{table}
+  \centering
+  \caption{Operations on ADDs, their definitions, the time complexity of the
+    best-known algorithm for performing each operation, and references to the
+    papers that introduced these algorithms. Let $f\colon 2^X \to \mathbb{R}$
+    and $g\colon 2^Y \to \mathbb{R}$ be pseudo-Boolean functions represented by
+    ADDs with $n$ and $m$ nodes respectively, and let $r \in \mathbb{R}$, and $x
+    \in X$.}
+  \label{tbl:complexity}
+  \begin{tabular}{llll}
+    \toprule
+    Operation & Definition & Complexity & Source \\
+    \midrule
+    reduce $f$ & & $\mathcal{O}(n)$ & \cite{somenzi1998cudd} \\
+    $r+f$, $rf$ & $r+f\colon 2^X \to \mathbb{R}$, $(r+f)(Z) \coloneqq r+f(Z)$ & $\mathcal{O}(n)$ & \cite{DBLP:journals/tc/Bryant86} \\
+    $f+g$, $fg$ & $f+g\colon 2^{X \cup Y} \to \mathbb{R}$, $(f+g)(Z) \coloneqq f(Z)+g(Z)$ & $\mathcal{O}(mn)$ & \cite{DBLP:journals/tc/Bryant86} \\
+    $f|_{x=0}$ & $f|_{x=0}\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $f|_{x=0}(Z) \coloneqq f(Z)$ & $\mathcal{O}(n)$ & \cite{DBLP:journals/tc/Bryant86} \\
+    $f|_{x=1}$ & $f|_{x=1}\colon 2^X \to \mathbb{R}$, $f|_{x=1}(Z) \coloneqq f(Z \cup \{\,x\,\})$ & $\mathcal{O}(n)$ & \cite{DBLP:journals/tc/Bryant86} \\
+    $\exists_xf$ & $\exists_xf\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_xf(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ & a corollary of other results \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Various operations can be defined on ADDs. We list the ones pertinent to our
+needs in \cref{tbl:complexity}: reduction of an ADD to its canonical form,
+addition/multiplication as well as scalar addition/multiplication, two types of
+\emph{restrictions}, and \emph{projection}. For a more detailed description, we
+refer the reader to previous work
+\cite{DBLP:journals/fmsd/BaharFGHMPS97,DBLP:conf/aaai/DudekPV20}.
+Throughout the paper, we assume that projection has the lowest precedence and
+extend the definition to allow for sets of variables. For any $W = \{\,w_1, w_2,
+\dots, w_k\,\} \subseteq X$, let $\exists_W f\colon 2^{X \setminus W} \to
+\mathbb{R}$ be defined as $\exists_Wf(Z) \coloneqq
+\exists_{w_1}\exists_{w_2}\cdots\exists_{w_k}f(Z)$ for all $Z \subseteq X
+\setminus W$, where the order of $w_i$'s is immaterial. We assume that after
+every operation on ADDs, the resulting ADD is reduced to its canonical form and
+write `the ADD for some function' to mean `the \emph{canonical} ADD'. In line
+with \textsc{DPMC} \cite{DBLP:conf/cp/DudekPV20}, we consider $X$ and $\sigma$
+to be fixed throughout the execution of the algorithm, with $X$ containing all
+relevant variables.
+
+\begin{fact} \label{lemma:add_size}
+  The ADD for a pseudo-Boolean function $2^X \to \mathbb{R}$ has at most
+  $2^{|X|+1}$ nodes. This upper bound is achieved when the function is
+  injective.
+\end{fact}
+
+\begin{lemma} \label{lemma:clause_time}
+  Let $\phi$ be a conjunction/disjunction of $n$ literals. Then the ADD for
+  $[\phi]^p_q$ (for any $p, q \in \mathbb{R}$ such that $p \ne q$) can be
+  constructed in $\mathcal{O}(2^n)$ time.
+\end{lemma}
+\begin{proof}
+  The ADD for $[\phi]_0^1$ can be constructed with a sequence of $n-1$ binary
+  operations, with one of the two operands always the ADD representation of a
+  literal. The number of variables in the other operand then follows the
+  sequence $1, 2, 3, \dots, n-1$. By \cref{lemma:add_size}, the numbers of nodes
+  in the ADDs for these operands is then $2^2, 2^3,
+  \dots, 2^n$. Since one of the operands is of constant size,
+  the overall time complexity of all binary operations is then
+  $\sum_{i=2}^n \mathcal{O}(2^i) = \mathcal{O}(2^n)$. Finally, note that
+  $[\phi]_q^p = (p-q)[\phi]_0^1 + q$. As scalar operations can be performed in
+  linear time, the overall complexity remains $\mathcal{O}(2^n)$.
+\end{proof}
+
+TODO: NOTE: An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise.
+
+\section{Extensions and Applications of WMC}
 
 \begin{itemize}
 \item Statistical Relational Learning
 \item Neuro-Symbolic Artificial Intelligence
-\item Natural Language Processing
-\item Robotics
+\item Natural Language Processing \citep{DBLP:conf/aaai/CarlsonBKSHM10,DBLP:conf/ijcai/DriesKDBR17}
+\item Robotics \citep{DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14}
+\item misc: medicine/bioinformatics \citep{DBLP:conf/ilp/Corte-RealD017,de2013phenetic}, explainability of machine learning models \citep{DBLP:conf/aaai/BroeckLSS21}
 \end{itemize}
+
+has a wide range of applications including automatically synthesizing search algorithms \citep{DBLP:journals/corr/abs-2009-10877}, assessing the quality of an explanation of a machine learning model \citep{DBLP:conf/sat/NarodytskaSMIM19}, and analysing software for vulnerabilities \citep{DBLP:conf/sp/ZhouQRZ18}.\footnote{Moreover, an annual model counting competition and workshop started running just last year (\url{https://mccompetition.org/}).}
+
+The first (and most well-researched)
+application of WMC is Bayesian network probabilistic inference
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
+Initially, this approach was motivated by context-specific independence
+\citep{DBLP:conf/uai/BoutilierFGK96}, i.e., repeating probabilities in a
+conditional probability table, and the difficulty in exploiting this redundancy
+using previous probabilistic inference algorithms
+\citep{DBLP:conf/kr/Darwiche02}. Other applications of WMC include probabilistic
+logic programming language ProbLog
+\citep{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16},
+probabilistic functional programming language Dice
+\citep{DBLP:journals/pacmpl/HoltzenBM20}, and deep neural networks
+\citep{DBLP:conf/aaai/TsamouraHM21,DBLP:conf/icml/XuZFLB18}. WMC has been
+extended to support continuous variables \citep{DBLP:conf/ijcai/BellePB15},
+first-order logical formulas
+\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}, both at the same time \citep{DBLP:conf/uai/FeldsteinB21}, infinite
+domains \citep{DBLP:conf/aaai/Belle17}, and function symbols \citep{DBLP:conf/uai/Belle17}. It was also observed that replacing real
+numbers with addition and multiplication with an arbitrary commutative semiring
+allows WMC to subsume a variety of other problems such as most probable
+explanation, shortest path, and calculating gradients
+\citep{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}.
+
+These models have been used in a variety of fields. The most significant area of
+application is knowledge extraction \citep{DBLP:conf/naacl/PoonV10}, information
+extraction \citep{bunescu2007statistical}, and other natural language processing
+tasks. Here, PRMs have been used to annotate articles
+\citep{DBLP:conf/emnlp/VerbekeAMFDR12}, learn facts about the world from reading
+websites \citep{DBLP:conf/aaai/CarlsonBKSHM10}, and solve simple probability
+problems described in a natural language \citep{DBLP:conf/ijcai/DriesKDBR17}.
+Similarly, they have been applied to stream mining
+\citep{DBLP:conf/icdm/ChandraSKTA14}, predicting criminal activity
+\citep{DBLP:conf/sdm/DelaneyFCWJ10}, and predicting how soon a component or a
+machine will have to be replaced \citep{vlasselaer2012statistical}. In robotics,
+PRMs have been used to learn object affordances
+\citep{DBLP:conf/ilp/MoldovanORMS11,DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14}
+and as an expressive knowledge representation system for robot control
+\citep{DBLP:conf/icra/JainMB09}. Finally, biological applications include the
+analysis of genetic \citep{DBLP:journals/jcb/SakhanenkoG12} and breast cancer
+\citep{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13} data.

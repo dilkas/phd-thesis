@@ -49,6 +49,7 @@
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{sectsty}
+\usepackage{stmaryrd}
 \usepackage{rotating}
 \usepackage{pifont}
 \usepackage{listings}
@@ -75,6 +76,7 @@
 
 \newtheorem{assumption}{Assumption}
 \newtheorem{constraint}{Constraint}
+\newtheorem{fact}{Fact}
 \newtheorem{proposition}{Proposition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -248,6 +250,9 @@
 % * don't cite anything for Markov networks
 % * references appear even if they're not cited: remove the unused ones
 % * what should I do with the unpublished part of the KR paper?
+% * citations for definitions, theorems, etc. should be citet rather than citep
+% * make the arrows (and tree sibling distances) all the same
+% * check if some arXiv citations can be replaced by their published versions
 
 \include{chapters/introduction} % 5-14 pages (9 on average) (why I chose to focus on what I did)
 \include{chapters/background} % 11-45 pages (27 on average)
