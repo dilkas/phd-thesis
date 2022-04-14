@@ -8,7 +8,7 @@ TODO: outside of specific sections, have a one-paragraph introduction before and
 
 TODO: explain $\bot$, $\top$, and $\equiv$ (also the term `equivalence').
 
-In this section, we briefly introduce the fundamentals of propositional logic and describe some logic-based computational problems. We refer the reader to the book by \cite{DBLP:books/daglib/0029942} for a more detailed introduction to logic and its role in computer science.
+In this section, we briefly introduce the fundamentals of propositional logic and describe some logic-based computational problems. We refer the reader to the book by \citet{DBLP:books/daglib/0029942} for a more detailed introduction to logic and its role in computer science.
 
 An \emph{atomic proposition} (also known as \emph{atom} and \emph{Boolean/logical/propositional variable}) is a variable with two possible (truth) values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
 
@@ -339,7 +339,7 @@ Perhaps the best-known representations of probability distributions are \emph{pr
   \end{tabular}
 \end{table}
 
-The graph of a \emph{Bayesian network} for this example scenario is in \cref{fig:bn}. This (directed acyclic) graph tells us that the joint probability distribution can be factored as
+The graph of a \emph{Bayesian network} for this example scenario is in \cref{fig:bn}. This directed acyclic graph (DAG) tells us that the joint probability distribution can be factored as
 \begin{equation} \label{eq:factorisation}
   \Pr(B, E, A, J, M) = \Pr(B) \times \Pr(E) \times \Pr(A \mid B, E) \times \Pr(J \mid A) \times \Pr(M \mid A),
 \end{equation}
@@ -414,19 +414,16 @@ More formally, the probability of a query is the sum of the probabilities of the
 \section{Knowledge Compilation and Representation} \label{sec:kc}
 % Probabilistic SDDs \citep{DBLP:conf/kr/KisaBCD14} extend SDDs with probability labels on edges.
 
-Many WMC algorithms rely on \emph{knowledge compilation}, i.e., compilation of the structure of the initial representation into a form that allows one to perform various operations and answer queries of interest in time polynomial in the size of the compiled representation.
+\emph{Knowledge compilation} is the process of transforming the initial representation of some data (usually based on propositional logic) to a representation that allows one to perform various operations and answer queries of interest in time polynomial in the size of this new representation. Many such representations have been proposed \citep{DBLP:journals/jair/DarwicheM02}. Amongst them, those particularly relevant to WMC and probabilistic inference are:
+\begin{itemize}
+\item deterministic decomposable negation normal form (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01},
+\item sentential decision diagrams (SDDs) \citep{DBLP:conf/ijcai/Darwiche11},
+\item (ordered) binary decision diagrams (BDDs) \citep{DBLP:journals/tc/Bryant86},
+\item and algebraic decision diagrams (ADDs) \citep{DBLP:journals/fmsd/BaharFGHMPS97}.
+\end{itemize}
+The first two items on this list are described in \cref{sec:nnf,sec:sdds}, respectively, and the last two are covered in a bit more detail in \cref{sec:dds}. While knowledge compilation is a process (which is performed by algorithms), here our focus is on the representations themselves.
 
-Traditionally, the initial representation is a propositional formula.
-
-Many such representations have been proposed \citep{DBLP:journals/jair/DarwicheM02}.
-
-Among st them, the ones that are used in probabilistic inference include (reduced ordered) \emph{binary decision diagrams} (BDDs) \citep{DBLP:journals/tc/Bryant86}, \emph{deterministic decomposable negation normal form} (d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}, and \emph{sentential decision diagrams} (SDDs) \citep{DBLP:conf/ijcai/Darwiche11}.
-
-TODO: explain why the focus is on representations of propositional formulas and pseudo-Boolean functions
-
-TODO: advertise \citep{DBLP:journals/jair/DarwicheM02} as a description of many normal forms and representations
-
-\subsection{NNF and d-DNNF}
+\subsection{NNF and d-DNNF} \label{sec:nnf}
 
 \begin{definition}
   A propositional formula $\phi$ is in \emph{negation normal form} (NNF) if
@@ -470,10 +467,10 @@ TODO: advertise \citep{DBLP:journals/jair/DarwicheM02} as a description of many 
     \centering
     \begin{tikzpicture}[level distance=1cm,edge from parent/.style={draw,-Latex}] % C \land [\neg B \lor (A \land B)]
       \node[draw,circle] {$\land$}
-      child {node[draw,circle] {$C$}}
+      child {node[draw,rectangle] {$C$}}
       child {node[draw,circle] {$\lor$}
         child {node[draw,rectangle] {$\neg B$}}
-        child {node[draw,rectangle] {$\land$}
+        child {node[draw,circle] {$\land$}
           child {node[draw,rectangle] {$A$}}
           child {node[draw,rectangle] {$B$}}
         }
@@ -540,9 +537,7 @@ TODO: advertise \citep{DBLP:journals/jair/DarwicheM02} as a description of many 
 
 Note that the formulas in \cref{example:ddnnf1,example:ddnnf2} are equivalent, and the latter is also pictured in \cref{fig:ddnnf}.
 
-TODO: Throughout this section, leaves/sinks are represented as rectangles and other nodes as circles. 
-
-\subsection{SDDs}
+\subsection{SDDs} \label{sec:sdds}
 
 To define SDDs, we first need to define vtrees.
 
@@ -586,13 +581,16 @@ Let $\langle\cdot\rangle$ denote the function that maps an SDD to the propositio
   \end{align*}
 \end{example}
 
-TODO: Somewhere: Both d-DNNF and SDD are normal forms for propositional formulae that satisfy certain properties.
+\subsection{Other Decision Diagrams} \label{sec:dds}
 
-\subsection{Other Decision Diagrams}
+\begin{itemize}
+\item Both d-DNNF and SDD are normal forms for propositional formulae that satisfy certain properties.
+\item These ones are actually graphs rather than normal forms (even SDDs (or their interpretations/evaluations) can be interpreted as formulas).
+\item A BDD is similar to a decision tree that ends with either one or zero but generalised to a DAG.
+\item BDDs are a strict subset of SDDs that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
+\end{itemize}
 
-A BDD is similar to a decision tree that ends with either one or zero but generalised to a directed acyclic graph.
-
-\begin{figure}
+\begin{figure} % TODO: move this somewhere better
   \centering
   \begin{subfigure}{0.49\textwidth}
     \centering
@@ -626,11 +624,9 @@ A BDD is similar to a decision tree that ends with either one or zero but genera
     \end{tikzpicture}
     \caption{ADD}
     \label{fig:add}
-  \end{subfigure} % TODO: could redraw the third diagram to be more like the others
+  \end{subfigure} % TODO: could redraw the second diagram to be more like the others
   \caption{Example BDD and ADD}
 \end{figure}
-
-BDDs are a strict subset of SDDs that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
 
 Similarly to how BDDs represent Boolean functions, ADDs represent pseudo-Boolean functions, i.e., while (non-trivial) BDDs always have two sinks marked with one and zero, ADDs can have any number of sinks that contain, typically, real numbers \citep{DBLP:journals/fmsd/BaharFGHMPS97}.
 
@@ -638,15 +634,14 @@ ADDs have been extended to represent the additive and multiplicative structure i
 
 ADDs have been used to represent the value functions of Markov decision processes \citep{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}.
 
-In this work, we propose a more expressive representation for WMC based on
-pseudo-Boolean functions. A \emph{pseudo-Boolean function} is a function of the
+A \emph{pseudo-Boolean function} is a function of the
 form $\{ 0, 1 \}^n \to \mathbb{R}$ \citep{DBLP:journals/dam/BorosH02}.
 Equivalently, let $X$ denote a set with $n$ elements (we will refer to them as
 \emph{variables}), and $2^X$ denote its powerset. Then a pseudo-Boolean function
 can have $2^X$ as its domain (then it is also known as a \emph{set function}).
 
 Pseudo-Boolean functions, most commonly represented as
-algebraic decision diagrams (ADDs) \citep{DBLP:journals/fmsd/BaharFGHMPS97}
+ADDs \citep{DBLP:journals/fmsd/BaharFGHMPS97}
 (although a tensor-based approach has also been suggested
 \citep{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen
 extensive use in value iteration for Markov decision processes
@@ -660,9 +655,9 @@ variables \citep{DBLP:conf/uai/SannerDB11}, the last of which was also applied t
 weighted model integration, i.e., the WMC extension for continuous variables
 \citep{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
 
-Our definition of an ADD is partially based on the original definition
-\cite{DBLP:journals/fmsd/BaharFGHMPS97} as well as more recent work
-\cite{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The
+Our definition of an ADD is partially based on the original definition by
+\citet{DBLP:journals/fmsd/BaharFGHMPS97} as well as more recent work by
+\citet{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The
 definition can also be stated more generally to use any set instead of
 $\mathbb{R}$ and include the possibility of a single ADD representing multiple
 functions.
@@ -672,7 +667,7 @@ functions.
   $\sigma\colon X \to \mathbb{N}^+$, an \emph{ADD} is a tuple $(G, r, \rho,
   \chi, \epsilon)$ where:
   \begin{itemize}
-  \item $G$ is a rooted directed acyclic graph with root $r \in \mathcal{V}(G)$
+  \item $G$ is a rooted DAG with root $r \in \mathcal{V}(G)$
     (i.e., there is a directed path from $r$ to any other node),
   \item $\rho\colon \mathcal{L}(G) \to \mathbb{R}$ labels sinks with real
     numbers,
@@ -714,7 +709,9 @@ functions.
   interpreted as a constant function.
 \end{definition}
 
-\begin{fact}[\cite{DBLP:journals/fmsd/BaharFGHMPS97}]
+TODO: NOTE: An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise.
+
+\begin{fact}[\citet{DBLP:journals/fmsd/BaharFGHMPS97}]
   For any fixed set of variables $X$ and ordering function $\sigma\colon X \to
   \mathbb{N}^+$, there is a unique (up to isomorphism) \emph{canonical} ADD for
   every pseudo-Boolean function $2^Y \to S$ for all $Y \subseteq X$. Any ADD can
@@ -752,11 +749,11 @@ functions.
     \toprule
     Operation & Definition & Complexity & Source \\
     \midrule
-    reduce $f$ & & $\mathcal{O}(n)$ & \cite{somenzi1998cudd} \\
-    $r+f$, $rf$ & $r+f\colon 2^X \to \mathbb{R}$, $(r+f)(Z) \coloneqq r+f(Z)$ & $\mathcal{O}(n)$ & \cite{DBLP:journals/tc/Bryant86} \\
-    $f+g$, $fg$ & $f+g\colon 2^{X \cup Y} \to \mathbb{R}$, $(f+g)(Z) \coloneqq f(Z)+g(Z)$ & $\mathcal{O}(mn)$ & \cite{DBLP:journals/tc/Bryant86} \\
-    $f|_{x=0}$ & $f|_{x=0}\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $f|_{x=0}(Z) \coloneqq f(Z)$ & $\mathcal{O}(n)$ & \cite{DBLP:journals/tc/Bryant86} \\
-    $f|_{x=1}$ & $f|_{x=1}\colon 2^X \to \mathbb{R}$, $f|_{x=1}(Z) \coloneqq f(Z \cup \{\,x\,\})$ & $\mathcal{O}(n)$ & \cite{DBLP:journals/tc/Bryant86} \\
+    reduce $f$ & & $\mathcal{O}(n)$ & \citet{somenzi1998cudd} \\
+    $r+f$, $rf$ & $r+f\colon 2^X \to \mathbb{R}$, $(r+f)(Z) \coloneqq r+f(Z)$ & $\mathcal{O}(n)$ & \citet{DBLP:journals/tc/Bryant86} \\
+    $f+g$, $fg$ & $f+g\colon 2^{X \cup Y} \to \mathbb{R}$, $(f+g)(Z) \coloneqq f(Z)+g(Z)$ & $\mathcal{O}(mn)$ & \citet{DBLP:journals/tc/Bryant86} \\
+    $f|_{x=0}$ & $f|_{x=0}\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $f|_{x=0}(Z) \coloneqq f(Z)$ & $\mathcal{O}(n)$ & \citet{DBLP:journals/tc/Bryant86} \\
+    $f|_{x=1}$ & $f|_{x=1}\colon 2^X \to \mathbb{R}$, $f|_{x=1}(Z) \coloneqq f(Z \cup \{\,x\,\})$ & $\mathcal{O}(n)$ & \citet{DBLP:journals/tc/Bryant86} \\
     $\exists_xf$ & $\exists_xf\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_xf(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ & a corollary of other results \\
     \bottomrule
   \end{tabular}
@@ -767,7 +764,7 @@ needs in \cref{tbl:complexity}: reduction of an ADD to its canonical form,
 addition/multiplication as well as scalar addition/multiplication, two types of
 \emph{restrictions}, and \emph{projection}. For a more detailed description, we
 refer the reader to previous work
-\cite{DBLP:journals/fmsd/BaharFGHMPS97,DBLP:conf/aaai/DudekPV20}.
+\citep{DBLP:journals/fmsd/BaharFGHMPS97,DBLP:conf/aaai/DudekPV20}.
 Throughout the paper, we assume that projection has the lowest precedence and
 extend the definition to allow for sets of variables. For any $W = \{\,w_1, w_2,
 \dots, w_k\,\} \subseteq X$, let $\exists_W f\colon 2^{X \setminus W} \to
@@ -776,7 +773,7 @@ extend the definition to allow for sets of variables. For any $W = \{\,w_1, w_2,
 \setminus W$, where the order of $w_i$'s is immaterial. We assume that after
 every operation on ADDs, the resulting ADD is reduced to its canonical form and
 write `the ADD for some function' to mean `the \emph{canonical} ADD'. In line
-with \textsc{DPMC} \cite{DBLP:conf/cp/DudekPV20}, we consider $X$ and $\sigma$
+with \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20}, we consider $X$ and $\sigma$
 to be fixed throughout the execution of the algorithm, with $X$ containing all
 relevant variables.
 
@@ -786,25 +783,23 @@ relevant variables.
   injective.
 \end{fact}
 
-\begin{lemma} \label{lemma:clause_time}
-  Let $\phi$ be a conjunction/disjunction of $n$ literals. Then the ADD for
-  $[\phi]^p_q$ (for any $p, q \in \mathbb{R}$ such that $p \ne q$) can be
-  constructed in $\mathcal{O}(2^n)$ time.
-\end{lemma}
-\begin{proof}
-  The ADD for $[\phi]_0^1$ can be constructed with a sequence of $n-1$ binary
-  operations, with one of the two operands always the ADD representation of a
-  literal. The number of variables in the other operand then follows the
-  sequence $1, 2, 3, \dots, n-1$. By \cref{lemma:add_size}, the numbers of nodes
-  in the ADDs for these operands is then $2^2, 2^3,
-  \dots, 2^n$. Since one of the operands is of constant size,
-  the overall time complexity of all binary operations is then
-  $\sum_{i=2}^n \mathcal{O}(2^i) = \mathcal{O}(2^n)$. Finally, note that
-  $[\phi]_q^p = (p-q)[\phi]_0^1 + q$. As scalar operations can be performed in
-  linear time, the overall complexity remains $\mathcal{O}(2^n)$.
-\end{proof}
-
-TODO: NOTE: An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise.
+%% \begin{lemma} \label{lemma:clause_time}
+%%   Let $\phi$ be a conjunction/disjunction of $n$ literals. Then the ADD for
+%%   $[\phi]^p_q$ (for any $p, q \in \mathbb{R}$ such that $p \ne q$) can be
+%%   constructed in $\mathcal{O}(2^n)$ time.
+%% \end{lemma}
+%% \begin{proof}
+%%   The ADD for $[\phi]_0^1$ can be constructed with a sequence of $n-1$ binary
+%%   operations, with one of the two operands always the ADD representation of a
+%%   literal. The number of variables in the other operand then follows the
+%%   sequence $1, 2, 3, \dots, n-1$. By \cref{lemma:add_size}, the numbers of nodes
+%%   in the ADDs for these operands is then $2^2, 2^3,
+%%   \dots, 2^n$. Since one of the operands is of constant size,
+%%   the overall time complexity of all binary operations is then
+%%   $\sum_{i=2}^n \mathcal{O}(2^i) = \mathcal{O}(2^n)$. Finally, note that
+%%   $[\phi]_q^p = (p-q)[\phi]_0^1 + q$. As scalar operations can be performed in
+%%   linear time, the overall complexity remains $\mathcal{O}(2^n)$.
+%% \end{proof}
 
 \section{Extensions and Applications of WMC}
 
