@@ -82,7 +82,8 @@ Clause-by-clause, this program can be interpreted as:
 The query \texttt{ancestor(sky, zoe)} returns true since Sky is a parent of a parent of Zoe, and thus an ancestor. The query \texttt{ancestor(X, sky)} returns false because we know nothing about the ancestors of Sky. Lastly, the query \texttt{ancestor(sky, X)} could return either $\{\, \texttt{X} \mapsto \texttt{will} \,\}$ or $\{\, \texttt{X} \mapsto \texttt{zoe} \,\}$ as both Will and Zoe have Sky as an ancestor.
 \end{example}
 
-% TODO: could also describe stratification in more detail (either here or in Chapter 3)
+% could also describe stratification in more detail (either here or in Chapter 3)
+
 %% \paragraph{Things to mention.}
 %% \begin{itemize}
 %% \item we're not defining literals here
@@ -170,7 +171,7 @@ Another issue that needs to be addressed on a per-constraint basis is: how do we
 
 Backtracking search has important choices to make: which variable should be given a value first? Which value from a domain is most likely to lead to a solution? These questions are answered by \emph{variable} and \emph{value ordering heuristics}, respectively. For example, we can choose a variable with the smallest number of values remaining in its domain---this is known as the \emph{dom}, \emph{smallest domain first}, or \emph{first fail} heuristic. Value ordering heuristics typically consider what the sizes of all domains would be given each instantiation of the selected variable and choose the value that minimises either their sum or their product \citep{DBLP:reference/fai/Beek06}. Both kinds of heuristics can also be random, e.g., a variable or a value can be sampled from a uniform distribution. Random heuristics are typically combined with a \emph{restart strategy} that decides how long the search should continue before assuming that a mistake must have been made and restarting the search.
 
-% TODO: describe thrashing?
+% describe thrashing?
 
 \section{Representations of Probability Distributions}
 
@@ -182,7 +183,7 @@ In this section, we describe some of the ways to represent a probability distrib
 
 These representations also differ in their ability to reason about groups of random variables. \emph{Propositional} models treat each random variable as a unique individual. In contrast, \emph{relational} models work over sets of individuals and relations among them. See the book by \citet{DBLP:series/synthesis/2016Raedt} for more detail.
 
-% TODO: I could actually explain these concepts, including exchangeability
+% I could actually explain these concepts, including exchangeability
 
 % Thus, in lieu of the standard measure-theoretic definitions of probability spaces, random variables, and probability distributions, a simpler definition will suffice for our needs.
 
@@ -583,14 +584,44 @@ Let $\langle\cdot\rangle$ denote the function that maps an SDD to the propositio
 
 \subsection{Other Decision Diagrams} \label{sec:dds}
 
-\begin{itemize}
-\item Both d-DNNF and SDD are normal forms for propositional formulae that satisfy certain properties.
-\item These ones are actually graphs rather than normal forms (even SDDs (or their interpretations/evaluations) can be interpreted as formulas).
-\item A BDD is similar to a decision tree that ends with either one or zero but generalised to a DAG.
-\item BDDs are a strict subset of SDDs that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
-\end{itemize}
+NNF and d-DNNF are \emph{normal forms} of propositional formulas. This means that---even though they can be represented diagrammatically as trees or circuits---a formula in (d-D)NNF (just like in CNF) is still a formula. The same applies to SDDs: while we defined them as nested sets and tuples, $\langle S \rangle$ of an SDD $S$ is just a propositional formula with a certain structure. In contrast, the two representations we describe here---BDDs and ADDs---are defined as DAGs rather than normal forms.
 
-\begin{figure} % TODO: move this somewhere better
+Both BDDs and ADDs represent functions. BDDs represent \emph{Boolean functions}, i.e., maps of the form $\{\, 0, 1 \,\}^n \to \{\, 0, 1 \,\}$ for some $n \ge 0$, where $\{\, 0, 1 \,\}$ can be replaced by any other two-element set. A propositional formula is simply a particular representation of a Boolean function. ADDs, on the other hand, represent \emph{pseudo-Boolean functions}, i.e., maps of the form $\{ 0, 1 \}^n \to \mathbb{R}$. Equivalently, we can write $2^X$ for $\{\, 0, 1 \,\}^n$, where $X$ is any $n$-element set, and $2^X$ denotes its powerset. The elements of $X$ are then called \emph{variables}. With this characterisation, pseudo-Boolean functions are also known as \emph{set functions}.
+
+Pseudo-Boolean functions, most commonly represented as ADDs (although a tensor-based approach has also been suggested \citep{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen extensive use in value iteration for Markov decision processes \citep{DBLP:conf/uai/HoeySHB99}, both exact and approximate Bayesian network inference \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, and sum-product network to Bayesian network conversion \citep{DBLP:conf/icml/ZhaoMP15}. ADDs have been extended to compactly represent additive and multiplicative patterns in the image of the function \citep{DBLP:conf/ijcai/SannerM05} and to support first-order logic \citep{DBLP:journals/ai/SannerB09} and continuous variables \citep{DBLP:conf/uai/SannerDB11}. This last extension was also applied to weighted model integration, i.e., the WMC extension for continuous variables \citep{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
+
+Informally, both BDDs and ADDs are like decision trees (whose leaves correspond to elements of the image of the function that is being represented) but compressed into a DAG. Below we define ADDs---the definition of BDDs simply requires replacing $\mathbb{R}$ with $\{\, 0, 1 \,\}$. Our definition is partially based on the original definition by \citet{DBLP:journals/fmsd/BaharFGHMPS97} as well as recent work by \citet{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The definition can also be generalised to use any set instead of $\mathbb{R}$ and to represent several functions instead of just one.
+
+\paragraph{Notation.} Let $G$ be a directed graph. Then $\mathcal{V}(G)$ denotes the set of nodes of $G$, $\mathcal{E}(G)$ denotes the set of edges of $G$, and $\mathcal{L}(G)$ denotes the set of sinks of $G$.
+
+\begin{definition} \label{def:add}
+  Given a set of variables $X$ and a variable ordering represented as an injection
+  $\sigma\colon X \to \mathbb{N}^+$, an \emph{ADD} is a tuple $(G, r, \rho, \chi, \epsilon)$ where:
+  \begin{itemize}
+  \item $G$ is a rooted DAG with root $r \in \mathcal{V}(G)$
+    (i.e., there is a directed path from $r$ to any other node),
+  \item $\rho\colon \mathcal{L}(G) \to \mathbb{R}$ labels sinks with real
+    numbers,
+  \item $\chi\colon \mathcal{V}(G) \setminus \mathcal{L}(G) \to X$ labels other
+    nodes with variable names,
+  \item and $\epsilon\colon \mathcal{E}(G) \to \{\,0, 1\,\}$ labels edges.
+  \end{itemize}
+  Moreover, the following properties must be satisfied.
+  \begin{itemize}
+  \item Every node has outdegree either zero or two. In the latter case, the two
+    outgoing edges $e, f \in \mathcal{E}(G)$ are such that $\epsilon(e) \ne \epsilon(f)$. If $e = (v, u)$, and $f = (v, w)$ for some $u, v, w \in \mathcal{V}(G)$ are such that $\epsilon(e) = 1$, and $\epsilon(f) = 0$, then $u$ is the \emph{positive successor} of $v$, and $w$ is the \emph{negative successor} of $v$.
+  \item For every directed path with node sequence $v_1, v_2, \dots, v_n$ such
+    that $v_i \not\in \mathcal{L}(G)$ for all $i$, we have that
+    $\sigma(\chi(v_i)) < \sigma(\chi(v_{i+1}))$ for all $i = 1, 2, \dots, n -
+    1$.
+  \end{itemize}
+  We say that an ADD \emph{has} variable $x \in X$ if there is a node $v \in
+  \mathcal{V}(G) \setminus \mathcal{L}(G)$ such that $\chi(v) = x$.
+\end{definition}
+
+To view an ADD as a pseudo-Boolean function, given an interpretation $\iota\colon X \to \{\, \mathrm{true}, \mathrm{false} \,\}$, start at the root and follow the outgoing edges until you reach a sink. If at node $v \in \mathcal{V}(G) \setminus \mathcal{L}(G)$ we have that $\iota(\chi(v)) = \mathrm{true}$, then follow the outgoing edge $e$ with $\epsilon(e) = 1$, otherwise follow the outgoing edge $f$ with $\epsilon(f) = 0$. Once you reach a sink $l \in \mathcal{L}(G)$, then $\rho(l)$ is the value of the represented function at $\iota$ (where $\iota$ is interpreted as a subset of $X$).
+
+\begin{figure}
   \centering
   \begin{subfigure}{0.49\textwidth}
     \centering
@@ -624,164 +655,56 @@ Let $\langle\cdot\rangle$ denote the function that maps an SDD to the propositio
     \end{tikzpicture}
     \caption{ADD}
     \label{fig:add}
-  \end{subfigure} % TODO: could redraw the second diagram to be more like the others
-  \caption{Example BDD and ADD}
+  \end{subfigure} % could redraw the second diagram to be more like the others
+  \caption{Example BDD (for the formula $C \land (A \lor \neg B)$) and ADD (for the function $f$ in \cref{example:add}). An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise, where $\epsilon$ is as in \cref{def:add}.}
 \end{figure}
 
-Similarly to how BDDs represent Boolean functions, ADDs represent pseudo-Boolean functions, i.e., while (non-trivial) BDDs always have two sinks marked with one and zero, ADDs can have any number of sinks that contain, typically, real numbers \citep{DBLP:journals/fmsd/BaharFGHMPS97}.
-
-ADDs have been extended to represent the additive and multiplicative structure in sink values more compactly \citep{DBLP:conf/ijcai/SannerM05} and to support first-order logic \citep{DBLP:journals/ai/SannerB09} and continuous variables \citep{DBLP:conf/uai/SannerDB11}.
-
-ADDs have been used to represent the value functions of Markov decision processes \citep{DBLP:conf/uai/HoeySHB99} and probabilities in PGMs \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}.
-
-A \emph{pseudo-Boolean function} is a function of the
-form $\{ 0, 1 \}^n \to \mathbb{R}$ \citep{DBLP:journals/dam/BorosH02}.
-Equivalently, let $X$ denote a set with $n$ elements (we will refer to them as
-\emph{variables}), and $2^X$ denote its powerset. Then a pseudo-Boolean function
-can have $2^X$ as its domain (then it is also known as a \emph{set function}).
-
-Pseudo-Boolean functions, most commonly represented as
-ADDs \citep{DBLP:journals/fmsd/BaharFGHMPS97}
-(although a tensor-based approach has also been suggested
-\citep{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen
-extensive use in value iteration for Markov decision processes
-\citep{DBLP:conf/uai/HoeySHB99}, both exact and approximate Bayesian network
-inference \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, and
-sum-product network \citep{DBLP:conf/uai/PoonD11} to Bayesian network conversion
-\citep{DBLP:conf/icml/ZhaoMP15}. ADDs have been extended to compactly represent
-additive and multiplicative structure \citep{DBLP:conf/ijcai/SannerM05},
-sentences in first-order logic \citep{DBLP:journals/ai/SannerB09}, and continuous
-variables \citep{DBLP:conf/uai/SannerDB11}, the last of which was also applied to
-weighted model integration, i.e., the WMC extension for continuous variables
-\citep{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
-
-Our definition of an ADD is partially based on the original definition by
-\citet{DBLP:journals/fmsd/BaharFGHMPS97} as well as more recent work by
-\citet{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The
-definition can also be stated more generally to use any set instead of
-$\mathbb{R}$ and include the possibility of a single ADD representing multiple
-functions.
-
-\begin{definition}
-  Given a set of variables $X$ and a variable ordering represented as an injection
-  $\sigma\colon X \to \mathbb{N}^+$, an \emph{ADD} is a tuple $(G, r, \rho,
-  \chi, \epsilon)$ where:
-  \begin{itemize}
-  \item $G$ is a rooted DAG with root $r \in \mathcal{V}(G)$
-    (i.e., there is a directed path from $r$ to any other node),
-  \item $\rho\colon \mathcal{L}(G) \to \mathbb{R}$ labels sinks with real
-    numbers,
-  \item $\chi\colon \mathcal{V}(G) \setminus \mathcal{L}(G) \to X$ labels other
-    nodes with variable names,
-  \item and $\epsilon\colon \mathcal{E}(G) \to \{\,0, 1\,\}$ labels edges.
-  \end{itemize}
-  Moreover, the following properties must be satisfied.
-  \begin{itemize}
-  \item Every node has outdegree either zero or two. In the latter case, the two
-    outgoing edges $e, f \in \mathcal{E}(G)$ are such that $\epsilon(e) = 1$,
-    and $\epsilon(f) = 0$. If $e = (v, u)$, and $f = (v, w)$ for some $u, v, w
-    \in \mathcal{V}(G)$, then $u$ is the \emph{positive successor} of $v$, and
-    $w$ is the \emph{negative successor}.
-  \item For every directed path with node sequence $v_1, v_2, \dots, v_n$ such
-    that $v_i \not\in \mathcal{L}(G)$ for all $i$, we have that
-    $\sigma(\chi(v_i)) < \sigma(\chi(v_{i+1}))$ for all $i = 1, 2, \dots, n -
-    1$.
-  \end{itemize}
-  We say that an ADD \emph{has} variable $x \in X$ if there is a node $v \in
-  \mathcal{V}(G) \setminus \mathcal{L}(G)$ such that $\chi(v) = x$.
-
-  It remains to define how an ADD can be interpreted as a pseudo-Boolean
-  function. Let $\llbracket \cdot \rrbracket\colon \mathcal{V}(G) \to
-  \mathbb{R}^{2^X}$ be defined as
-  \[
-    \llbracket v \rrbracket \coloneqq
-    \begin{cases}
-      \rho(v) & \text{if } v \in \mathcal{L}(G) \\
-      [\chi(v)]^{\llbracket u \rrbracket}_{\llbracket w \rrbracket} &
-      \text{if } v \not\in \mathcal{L}(G)
-    \end{cases}
-  \]
-  for all $v \in \mathcal{V}(G)$, where $u \in \mathcal{V}(G)$ and $w \in
-  \mathcal{V}(G)$ are the positive and negative successors of $v$, respectively.
-  Here, $\llbracket \cdot \rrbracket$ returns a pseudo-Boolean function $2^X \to
-  \mathbb{R}$ for each node of $G$, and the interpretation of the ADD itself is
-  defined to be $\llbracket r \rrbracket$. As before, $\rho(v)$ should be
-  interpreted as a constant function.
-\end{definition}
-
-TODO: NOTE: An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise.
-
-\begin{fact}[\citet{DBLP:journals/fmsd/BaharFGHMPS97}]
-  For any fixed set of variables $X$ and ordering function $\sigma\colon X \to
-  \mathbb{N}^+$, there is a unique (up to isomorphism) \emph{canonical} ADD for
-  every pseudo-Boolean function $2^Y \to S$ for all $Y \subseteq X$. Any ADD can
-  be \emph{reduced} to its canonical form in time linear in the number of nodes.
-\end{fact}
-
 \begin{example} \label{example:add}
-  Let $f\colon 2^{\{\,x, y\,\}} \to \mathbb{R}$ be a pseudo-Boolean function
-  defined as $f(\emptyset) = f(\{\,x\,\}) = f(\{\,x, y\,\}) = 0.1$, and
-  $f(\{\,y\,\}) = 0.3$ and $\sigma\colon \{\,x, y\,\} \to \mathbb{N}^+$ be
-  the variable ordering function defined as $\sigma(x) = 1$, and $\sigma(y) =
-  2$. Then the canonical ADD for $f$ under $\sigma$ is pictured in
-  \cref{fig:add} and can be formally defined as $(G, a, \rho, \chi, \epsilon)$,
-  where:
+  Let $f\colon 2^{\{\,x, y\,\}} \to \mathbb{R}$ be a pseudo-Boolean function defined as $f(\emptyset) = f(\{\,x\,\}) = f(\{\,x, y\,\}) = 0.1$, and $f(\{\,y\,\}) = 0.3$ and $\sigma\colon \{\,x, y\,\} \to \mathbb{N}^+$ be the variable ordering function defined as $\sigma(x) = 1$, and $\sigma(y) = 2$. Then the \emph{canonical} ADD for $f$ under $\sigma$ is pictured in \cref{fig:add}\footnote{Also see \cref{fig:bdd} for a BDD equivalent to the d-DNNF and the SDD in \cref{fig:kc}.} and can be formally defined as $(G, a, \rho, \chi, \epsilon)$, where:
   \begin{itemize}
   \item $\mathcal{V}(G) = \{\,a, b, c, d\,\}$,
   \item $\mathcal{E}(G) = \{\,(a, b), (a, c), (b, c), (b, d)\,\}$,
   \item $\rho(c) = 0.1$, $\rho(d) = 0.3$,
-  \item $\chi(a) = x$, $\chi(b) = y$,
-  \item $\epsilon((a, c)) = \epsilon((b, d)) = 1$, $\epsilon((a, b)) =
-    \epsilon((b, c)) = 0$.
+  \item $\chi(a) = A$, $\chi(b) = B$,
+  \item $\epsilon((a, c)) = \epsilon((b, d)) = 1$, and $\epsilon((a, b)) = \epsilon((b, c)) = 0$.
   \end{itemize}
 \end{example}
 
-\begin{table}
+We end our discussion of BDDs and ADDs by describing some of their properties as well as operations on them.
+
+\begin{fact}[\citet{DBLP:journals/fmsd/BaharFGHMPS97}]
+  Let $X$ be a set of variables and $\sigma\colon X \to \mathbb{N}^+$ be an ordering function. For any subset of variables $Y \subseteq X$ and pseudo-Boolean function $f\colon 2^Y \to \mathbb{R}$, there is a unique (up to isomorphism) \emph{canonical} ADD for $f$. Any ADD for $f$ can be \emph{reduced} to its canonical form in time linear in the number of nodes.
+\end{fact}
+
+\begin{fact} \label{lemma:add_size}
+  The canonical ADD for a pseudo-Boolean function $2^X \to \mathbb{R}$ has at most $2^{|X|+1}$ nodes. This upper bound is achieved when the function is injective.
+\end{fact}
+
+\begin{table} % TODO: merge cells with the same entries
   \centering
-  \caption{Operations on ADDs, their definitions, the time complexity of the
-    best-known algorithm for performing each operation, and references to the
-    papers that introduced these algorithms. Let $f\colon 2^X \to \mathbb{R}$
-    and $g\colon 2^Y \to \mathbb{R}$ be pseudo-Boolean functions represented by
-    ADDs with $n$ and $m$ nodes respectively, and let $r \in \mathbb{R}$, and $x
-    \in X$.}
+  \caption{Operations on ADDs, their definitions, and the time complexity of the best-known algorithm for performing each operation. Let $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$ be pseudo-Boolean functions represented by ADDs with $n$ and $m$ nodes respectively, and let $r \in \mathbb{R}$, and $x \in X$.}
   \label{tbl:complexity}
-  \begin{tabular}{llll}
+  \begin{tabular}{lll}
     \toprule
-    Operation & Definition & Complexity & Source \\
+    Operation & Definition & Complexity \\
     \midrule
-    reduce $f$ & & $\mathcal{O}(n)$ & \citet{somenzi1998cudd} \\
-    $r+f$, $rf$ & $r+f\colon 2^X \to \mathbb{R}$, $(r+f)(Z) \coloneqq r+f(Z)$ & $\mathcal{O}(n)$ & \citet{DBLP:journals/tc/Bryant86} \\
-    $f+g$, $fg$ & $f+g\colon 2^{X \cup Y} \to \mathbb{R}$, $(f+g)(Z) \coloneqq f(Z)+g(Z)$ & $\mathcal{O}(mn)$ & \citet{DBLP:journals/tc/Bryant86} \\
-    $f|_{x=0}$ & $f|_{x=0}\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $f|_{x=0}(Z) \coloneqq f(Z)$ & $\mathcal{O}(n)$ & \citet{DBLP:journals/tc/Bryant86} \\
-    $f|_{x=1}$ & $f|_{x=1}\colon 2^X \to \mathbb{R}$, $f|_{x=1}(Z) \coloneqq f(Z \cup \{\,x\,\})$ & $\mathcal{O}(n)$ & \citet{DBLP:journals/tc/Bryant86} \\
-    $\exists_xf$ & $\exists_xf\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_xf(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ & a corollary of other results \\
+    reduce $f$ & & $\mathcal{O}(n)$ \\
+    $r+f$, $rf$ & $r+f\colon 2^X \to \mathbb{R}$, $(r+f)(Z) \coloneqq r+f(Z)$ & $\mathcal{O}(n)$ \\
+    $f+g$, $fg$ & $f+g\colon 2^{X \cup Y} \to \mathbb{R}$, $(f+g)(Z) \coloneqq f(Z)+g(Z)$ & $\mathcal{O}(mn)$ \\
+    $f|_{x=0}$ & $f|_{x=0}\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $f|_{x=0}(Z) \coloneqq f(Z)$ & $\mathcal{O}(n)$ \\
+    $f|_{x=1}$ & $f|_{x=1}\colon 2^X \to \mathbb{R}$, $f|_{x=1}(Z) \coloneqq f(Z \cup \{\,x\,\})$ & $\mathcal{O}(n)$ \\
+    $\exists_xf$ & $\exists_xf\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_xf(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-Various operations can be defined on ADDs. We list the ones pertinent to our
-needs in \cref{tbl:complexity}: reduction of an ADD to its canonical form,
-addition/multiplication as well as scalar addition/multiplication, two types of
-\emph{restrictions}, and \emph{projection}. For a more detailed description, we
-refer the reader to previous work
-\citep{DBLP:journals/fmsd/BaharFGHMPS97,DBLP:conf/aaai/DudekPV20}.
-Throughout the paper, we assume that projection has the lowest precedence and
-extend the definition to allow for sets of variables. For any $W = \{\,w_1, w_2,
-\dots, w_k\,\} \subseteq X$, let $\exists_W f\colon 2^{X \setminus W} \to
-\mathbb{R}$ be defined as $\exists_Wf(Z) \coloneqq
-\exists_{w_1}\exists_{w_2}\cdots\exists_{w_k}f(Z)$ for all $Z \subseteq X
-\setminus W$, where the order of $w_i$'s is immaterial. We assume that after
-every operation on ADDs, the resulting ADD is reduced to its canonical form and
-write `the ADD for some function' to mean `the \emph{canonical} ADD'. In line
-with \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20}, we consider $X$ and $\sigma$
-to be fixed throughout the execution of the algorithm, with $X$ containing all
-relevant variables.
+The operations pertinent to our needs are listed in \cref{tbl:complexity}: reduction of an ADD to its canonical form, addition/multiplication as well as scalar addition/multiplication, two types of \emph{restrictions}, and \emph{projection}. For a more detailed description, we refer the reader to previous work \citep{DBLP:journals/fmsd/BaharFGHMPS97,DBLP:conf/aaai/DudekPV20}. The linear reduction algorithm is by \citet{somenzi1998cudd}, the algorithms for most other operations are by \citet{DBLP:journals/tc/Bryant86}, and the complexity of projection comes as a corollary of the complexities of all other operations.
 
-\begin{fact} \label{lemma:add_size}
-  The ADD for a pseudo-Boolean function $2^X \to \mathbb{R}$ has at most
-  $2^{|X|+1}$ nodes. This upper bound is achieved when the function is
-  injective.
-\end{fact}
+When referring to ADDs and their use in algorithms, we make a few simplifying assumptions. First, we assume that projection has the lowest precedence and extend the definition to allow for sets of variables. For any $W = \{\,w_i\,\}_{i=1}^k \subseteq X$, let $\exists_W f\colon 2^{X \setminus W} \to \mathbb{R}$ be defined as $\exists_Wf(Z) \coloneqq \exists_{w_1}\exists_{w_2}\cdots\exists_{w_k}f(Z)$ for all $Z \subseteq X \setminus W$, where the order of $w_i$'s is immaterial. Second, we assume that after every operation on ADDs, the resulting ADD is reduced to its canonical form and write `the ADD for function $f$' to mean `the \emph{canonical} ADD for $f$'. Third, while ADDs and the functions they represent could change throughout the execution of an algorithm, we consider the set of all relevant variables $X$ and the ordering function $\sigma\colon X \to \mathbb{N}^+$ to be fixed.
+
+% could add an example of operations
+
+% BDDs are a strict subset of SDDs that are a strict subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
 
 %% \begin{lemma} \label{lemma:clause_time}
 %%   Let $\phi$ be a conjunction/disjunction of $n$ literals. Then the ADD for
