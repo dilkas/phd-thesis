@@ -2,25 +2,37 @@
 % aim for 2-5 pages for each major section
 \chapter{Background}
 
-TODO: outside of specific sections, have a one-paragraph introduction before and a one-paragraph summary at the end.
+% ---both are used mainly in \cref{chapter:randomlps}
+
+This chapter provides a brief overview of the concepts and topics pertinent to the rest of the thesis. We start in \cref{sec:proplogic} with a description of propositional logic and the kinds of computational problems that use a logic-based input format or are closely tied to logic in some other way. Then, \cref{sec:declarative} introduces two declarative programming paradigms that can be used to describe various computational problems: logic programming and constraint programming. Next, \cref{sec:representations} covers various ways to represent probability distributions. We divide these representations into those based on graphs (i.e., probabilistic graphical models) and those based on text (i.e., probabilistic programming languages). Likewise, \cref{sec:kc} covers various representations of Boolean and pseudo-Boolean functions. These representations (and algorithms that compile into them) are crucial in many WMC and probabilistic inference algorithms. We end the chapter with \cref{sec:applications} which provides an overview of the applications of WMC and its impact on areas such as bioinformatics, natural language processing, and robotics.
 
 \section{Propositional Logic} \label{sec:proplogic}
 
-TODO: explain $\bot$, $\top$, and $\equiv$ (also the term `equivalence').
-
 In this section, we briefly introduce the fundamentals of propositional logic and describe some logic-based computational problems. We refer the reader to the book by \citet{DBLP:books/daglib/0029942} for a more detailed introduction to logic and its role in computer science.
 
-An \emph{atomic proposition} (also known as \emph{atom} and \emph{Boolean/logical/propositional variable}) is a variable with two possible (truth) values: true and false. Unless specified otherwise, we will refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{In the context of logic programs, the word \emph{clause} is used differently (see \cref{sec:lp,chapter:randomlps}).} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
+An \emph{atomic proposition} (also known as \emph{atom} and \emph{Boolean/logical/propositional variable}) is a variable with two possible (truth) values: true and false. We usually refer to atoms as \emph{variables}. A \emph{formula} is any well-formed expression that connects variables using the following Boolean/logical operators (and parentheses): negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material) implication ($\Rightarrow$), and equivalence (i.e., material biconditional) ($\Leftrightarrow$). A \emph{literal} is either a variable or its negation, respectively called \emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of literals.\footnote{The word \emph{clause} has a different meaning in \cref{sec:lp,chapter:randomlps,chapter:wfomc}.} A formula is in \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms and ways to represent propositional formulas are covered in \cref{sec:kc}.
 
-An \emph{interpretation} (also known as a \emph{variable assignment}) of a formula $\phi$ is a map from the variables of $\phi$ to the set $\{\, \text{true}, \text{false} \,\}$. A \emph{model} is an interpretation under which $\phi$ evaluates to true. A formula is \emph{satisfiable} if it has at least one model.
+An \emph{interpretation} (also known as a \emph{variable assignment}) of a formula $\phi$ is a map from the variables of $\phi$ to the set $\{\, \text{true}, \text{false} \,\}$. A \emph{model} is an interpretation under which $\phi$ evaluates to true. A formula is
+\begin{description}
+\item[satisfiable] if it has at least one model,
+\item[unsatisfiable] (i.e., a \emph{contradiction}) if it has no models, and a
+\item[tautology] (i.e., \emph{valid}) if all interpretations are models.
+\end{description}
+We denote tautologies and contradictions as $\top$ and $\bot$, respectively, and often use them interchangeably with the truth values `true' and `false'. Two formulas $\phi$ and $\psi$ over the same set of variables are \emph{equivalent} (denoted $\phi \equiv \psi$) if they have equal sets of models.
 
-Throughout the thesis, we use set-theoretic notation for many concepts in logic such as clauses and formulas in CNF (e.g., we write $c \in \phi$ to mean that clause $c$ is one of the clauses of formula $\phi$). However, this does not automatically mean that we assume no duplicates---whether or not that is the case is clarified on a case-by-case basis.
+Throughout the thesis, we use set-theoretic notation for many concepts in logic such as clauses and formulas in CNF (e.g., we write $c \in \phi$ to mean that clause $c$ is one of the clauses of formula $\phi$). However, this does not automatically mean that no duplicates are allowed---whether or not that is the case is clarified on a case-by-case basis.
 
 \begin{example} \label{example:logic}
   Formula $\phi \coloneqq (\neg a \lor b) \land a$ has two variables $a$ and $b$, is in CNF, and contains two clauses. The first clause $\neg a \lor b$ has a negative literal $\neg a$ and a positive literal $b$. Since $\phi$ has two variables, it also has four interpretations. Interpretation $\{\, a \mapsto \text{true}, b \mapsto \text{true} \,\}$ is a model, so $\phi$ is satisfiable. An equivalent set-theoretic representation of $\phi$ is $\{\, \{\, \neg a, b \,\}, \{\, a \,\} \,\}$.
 \end{example}
 
+
 \subsection{Logic-Based Computational Problems} \label{sec:logicproblems}
+
+% applications of MC:
+% * automatically synthesizing search algorithms \citep{DBLP:journals/corr/abs-2009-10877}
+% * model counting: assessing the quality of an explanation of a machine learning model \citep{DBLP:conf/sat/NarodytskaSMIM19}
+% * model counting: analysing software for vulnerabilities \citep{DBLP:conf/sp/ZhouQRZ18}
 
 We begin with a description of \SAT{} and some of its extensions. Given a propositional formula\footnote{Unless stated otherwise, formulas for \SAT{} and other similar problems are assumed to be in CNF.}, \SAT{} asks whether the formula is satisfiable. \SAT{} (also known as \emph{propositional/Boolean satisfiability}) is the first problem shown to be \NP-complete \citep{DBLP:conf/stoc/Cook71,levin1973universal}. Motivated by many real-life problems that were found to be reducible to \SAT{}, research in \SAT{} solving produced algorithms that can efficiently tackle large instances despite the exponential worst-case time complexity \citep{DBLP:series/faia/2009-185}.
 
@@ -40,9 +52,11 @@ where the summation is over all models $\omega$ of $\phi$, and the product is ov
   With the same weight function $w$ as in \cref{example:wmc1}, the WMC of formula $a \lor b$ is $w(a)w(b) + w(a)w(\neg b) + w(\neg a)w(b) = 0.7 \times 0.8 + 0.7 \times 0.7 + 0.2 \times 0.8 = 1.21$, and the model count of this formula is 3.
 \end{example}
 
+WMC has been extended in many ways to support, e.g., continuous variables \citep{DBLP:conf/ijcai/BellePB15}, infinite domains \citep{DBLP:conf/aaai/Belle17}, and function symbols \citep{DBLP:conf/uai/Belle17}. In particular, the extension to first-order logic, known as \emph{(symmetric) weighted first-order model counting} (WFOMC) \citep{DBLP:journals/cacm/GogateD16,DBLP:conf/ijcai/BroeckTMDR11} is the focus of \cref{chapter:wfomc}. There is also recent work providing support for both continuous variables and first-order logic \citep{DBLP:conf/uai/FeldsteinB21}. Finally, replacing real numbers with addition and multiplication with an arbitrary commutative semiring allows WMC to subsume a variety of other problems such as most probable explanation, shortest path, and gradient computation \citep{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}.
+
 There are a number of other computational problems that similarly use logical or algebraic constructs to encode problems from various domains. First, a propositional formula with prepended quantifiers for all of its variables is known as a \emph{quantified Boolean formula} \citep{DBLP:series/faia/BuningB09}. One can then ask whether the formula is true or false. \emph{Satisfiability module theories} considers \SAT{} in the context of a background theory \citep{DBLP:series/faia/BarrettSST09}. These theories can describe the properties of integer arithmetic, sets, trees, strings, and many commonly-used abstract data structures. \emph{Pseudo-Boolean} solvers consider decision and optimisation problems that can be expressed as linear inequalities over Boolean variables \citep{DBLP:series/faia/RousselM09}. \emph{Integer (linear) programming} instances encode integer optimisation problems under inequality constraints of a certain linear-algebraic form \citep{wolsey2020integer}. Finally, \emph{constraint programming} is a powerful paradigm for solving combinatorial search and optimisation problems with a much more expressive syntax \citep{DBLP:reference/fai/2}---we discuss constraint programming in more detail in \cref{sec:cp}.
 
-\section{Declarative Programming}
+\section{Declarative Programming} \label{sec:declarative}
 
 In a declarative programming language, one describes \emph{what} is to be computed but not \emph{how}. Here we describe two declarative programming paradigms pertinent to our work: logic programming and constraint programming.
 
@@ -173,7 +187,7 @@ Backtracking search has important choices to make: which variable should be give
 
 % describe thrashing?
 
-\section{Representations of Probability Distributions}
+\section{Representations of Probability Distributions} \label{sec:representations}
 
 Unless specified otherwise, by \emph{probability distribution} we mean a \emph{discrete} probability distribution. Moreover, we are typically only interested in probability distributions with \emph{finite support}.
 
@@ -680,7 +694,7 @@ We end our discussion of BDDs and ADDs by describing some of their properties as
   The canonical ADD for a pseudo-Boolean function $2^X \to \mathbb{R}$ has at most $2^{|X|+1}$ nodes. This upper bound is achieved when the function is injective.
 \end{fact}
 
-\begin{table} % TODO: merge cells with the same entries
+\begin{table}
   \centering
   \caption{Operations on ADDs, their definitions, and the time complexity of the best-known algorithm for performing each operation. Let $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$ be pseudo-Boolean functions represented by ADDs with $n$ and $m$ nodes respectively, and let $r \in \mathbb{R}$, and $x \in X$.}
   \label{tbl:complexity}
@@ -724,54 +738,14 @@ When referring to ADDs and their use in algorithms, we make a few simplifying as
 %%   linear time, the overall complexity remains $\mathcal{O}(2^n)$.
 %% \end{proof}
 
-\section{Extensions and Applications of WMC}
+\section{Applications of WMC} \label{sec:applications}
 
-\begin{itemize}
-\item Statistical Relational Learning
-\item Neuro-Symbolic Artificial Intelligence
-\item Natural Language Processing \citep{DBLP:conf/aaai/CarlsonBKSHM10,DBLP:conf/ijcai/DriesKDBR17}
-\item Robotics \citep{DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14}
-\item misc: medicine/bioinformatics \citep{DBLP:conf/ilp/Corte-RealD017,de2013phenetic}, explainability of machine learning models \citep{DBLP:conf/aaai/BroeckLSS21}
-\end{itemize}
+% could also add a section on WMC algorithms
 
-has a wide range of applications including automatically synthesizing search algorithms \citep{DBLP:journals/corr/abs-2009-10877}, assessing the quality of an explanation of a machine learning model \citep{DBLP:conf/sat/NarodytskaSMIM19}, and analysing software for vulnerabilities \citep{DBLP:conf/sp/ZhouQRZ18}.\footnote{Moreover, an annual model counting competition and workshop started running just last year (\url{https://mccompetition.org/}).}
+% could mention the StarAI book
 
-The first (and most well-researched)
-application of WMC is Bayesian network probabilistic inference
-\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
-Initially, this approach was motivated by context-specific independence
-\citep{DBLP:conf/uai/BoutilierFGK96}, i.e., repeating probabilities in a
-conditional probability table, and the difficulty in exploiting this redundancy
-using previous probabilistic inference algorithms
-\citep{DBLP:conf/kr/Darwiche02}. Other applications of WMC include probabilistic
-logic programming language ProbLog
-\citep{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16},
-probabilistic functional programming language Dice
-\citep{DBLP:journals/pacmpl/HoltzenBM20}, and deep neural networks
-\citep{DBLP:conf/aaai/TsamouraHM21,DBLP:conf/icml/XuZFLB18}. WMC has been
-extended to support continuous variables \citep{DBLP:conf/ijcai/BellePB15},
-first-order logical formulas
-\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}, both at the same time \citep{DBLP:conf/uai/FeldsteinB21}, infinite
-domains \citep{DBLP:conf/aaai/Belle17}, and function symbols \citep{DBLP:conf/uai/Belle17}. It was also observed that replacing real
-numbers with addition and multiplication with an arbitrary commutative semiring
-allows WMC to subsume a variety of other problems such as most probable
-explanation, shortest path, and calculating gradients
-\citep{DBLP:journals/ijar/BelleR20,DBLP:journals/japll/KimmigBR17}.
+% Moreover, an annual model counting competition and workshop started running just last year (\url{https://mccompetition.org/}) \citep{DBLP:journals/corr/abs-2012-01323}.
 
-These models have been used in a variety of fields. The most significant area of
-application is knowledge extraction \citep{DBLP:conf/naacl/PoonV10}, information
-extraction \citep{bunescu2007statistical}, and other natural language processing
-tasks. Here, PRMs have been used to annotate articles
-\citep{DBLP:conf/emnlp/VerbekeAMFDR12}, learn facts about the world from reading
-websites \citep{DBLP:conf/aaai/CarlsonBKSHM10}, and solve simple probability
-problems described in a natural language \citep{DBLP:conf/ijcai/DriesKDBR17}.
-Similarly, they have been applied to stream mining
-\citep{DBLP:conf/icdm/ChandraSKTA14}, predicting criminal activity
-\citep{DBLP:conf/sdm/DelaneyFCWJ10}, and predicting how soon a component or a
-machine will have to be replaced \citep{vlasselaer2012statistical}. In robotics,
-PRMs have been used to learn object affordances
-\citep{DBLP:conf/ilp/MoldovanORMS11,DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14}
-and as an expressive knowledge representation system for robot control
-\citep{DBLP:conf/icra/JainMB09}. Finally, biological applications include the
-analysis of genetic \citep{DBLP:journals/jcb/SakhanenkoG12} and breast cancer
-\citep{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13} data.
+WMC is heavily used in machine learning, where recent applications of WMC include explainability \citep{DBLP:conf/aaai/BroeckLSS21} and computing the loss function of a neural-symbolic system \citep{DBLP:conf/aaai/TsamouraHM21,DBLP:conf/icml/XuZFLB18}. The most well-researched application of WMC, however, is inference for PGMs such as Bayesian networks \citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}. Originally, this approach was motivated by \emph{context-specific independence}, i.e., the independence of random variables that is created by conditioning the probability distribution \citep{DBLP:conf/uai/BoutilierFGK96}. Deconstructing a graphical model to a propositional formula makes such independencies easier to exploit \citep{DBLP:conf/kr/Darwiche02}. Moreover, WMC is used for inference in probabilistic programming languages such as ProbLog \citep{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16} and Dice \citep{DBLP:journals/pacmpl/HoltzenBM20}.
+
+Indeed, WMC and WFOMC play an important role in inference for statistical relational models such as ProbLog and Markov logic \citep{DBLP:series/synthesis/2016Raedt,DBLP:conf/nips/Broeck11}. Such models are often used in natural language processing for tasks such as knowledge/information extraction \citep{bunescu2007statistical,DBLP:conf/naacl/PoonV10}. In natural language processing, statistical relational models have been used to annotate articles \citep{DBLP:conf/emnlp/VerbekeAMFDR12}, learn facts about the world from reading websites \citep{DBLP:conf/aaai/CarlsonBKSHM10}, and solve simple probability problems described in a natural language \citep{DBLP:conf/ijcai/DriesKDBR17}. Similarly, they have been applied to stream mining \citep{DBLP:conf/icdm/ChandraSKTA14}, predicting criminal activity \citep{DBLP:conf/sdm/DelaneyFCWJ10}, and predicting how soon a component or a machine will have to be replaced \citep{vlasselaer2012statistical}. In robotics, statistical relational models have been used to learn object affordances \citep{DBLP:conf/ilp/MoldovanORMS11,DBLP:conf/icra/MoldovanMOSR12,DBLP:conf/iros/MoldovanR14} and as an expressive knowledge representation system for robot control \citep{DBLP:conf/icra/JainMB09}. Finally, applications in bioinformatics include the analysis of breast cancer \citep{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13}, genetic \citep{DBLP:journals/jcb/SakhanenkoG12}, and molecular profiling \citep{de2013phenetic} data.
