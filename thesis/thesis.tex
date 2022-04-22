@@ -23,7 +23,7 @@
 %%  draft: produce a single-spaced, double-sided thesis with narrow margins
 %%
 %% For a PhD thesis -- you must also specify a research institute:
-\documentclass[phd,aiai,twoside,singlespacing]{infthesis}
+\documentclass[phd,aiai,twoside,singlespacing,logo]{infthesis}
 
 \usepackage{hyperref}
 \usepackage[table]{xcolor}
@@ -184,6 +184,12 @@
 \definecolor{color2}{HTML}{d95f02}
 \definecolor{color3}{HTML}{7570b3}
 
+\definecolor{wmc1}{HTML}{1b9e77}
+\definecolor{wmc2}{HTML}{d95f02}
+\definecolor{wfomc}{HTML}{7570b3}
+\definecolor{randomlps}{HTML}{e7298a}
+\definecolor{comparison}{HTML}{66a61e}
+
 \title{Generalising Weighted Model Counting}
 \author{Paulius Dilkas}
 
@@ -252,18 +258,22 @@
 % * references appear even if they're not cited: remove the unused ones
 % * what should I do with the unpublished part of the KR paper?
 % * citations for definitions, theorems, etc. should be citet rather than citep
-% * make the arrows (and tree sibling distances) all the same
+% * make the arrows (and tree sibling and node distances) all the same
 % * check if some arXiv citations can be replaced by their published versions
 % * notation for graphs: \mathcal{V}, \mathcal{E}, \mathcal{L}
 % * background: merge table cells with the same info
+% * replace all references to 'this paper' with 'this chapter' or 'this thesis'
+% * preserve the section of paper1 in wmc-without-parameters that got deleted in paper2
+% * could cite James Clerk Maxwell (1850) about the importance of probabilities
+% * merge the two sets of colours
 
-\include{chapters/introduction} % 5-14 pages (9 on average) (why I chose to focus on what I did)
+\include{chapters/introduction} % 5-14 pages (9 on average)
 \include{chapters/background} % 11-45 pages (27 on average)
 \include{chapters/wmc_for_bns/chapter}
 \include{chapters/wmc_without_parameters/chapter}
+\include{chapters/recursion}
 \include{chapters/random_lps/chapter}
 \include{chapters/random_wmc}
-\include{chapters/recursion}
 \include{chapters/conclusion} % 5-28 pages (mean: 8, median: 5)
 
 \appendix

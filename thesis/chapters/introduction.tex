@@ -1,13 +1,136 @@
-\chapter{Introduction}
+\chapter{Introduction} % 5-14 pages (9 on average)
+
+\begin{itemize}
+\item explain where my work fits in
+\item guiding question: how would I explain my work to a layman?
+\item timeliness is important
+\item why I chose to work on what I did
+\item why these gaps are the ones to be filled (at this time)
+\item emphasise methodological contributions
+\item mindset
+  \begin{itemize}
+  \item generalise everything
+  \item implement a solution that works well in practice
+  \item use both theoretical and experimental methods to understand why it works
+  \end{itemize}
+\item why the reader should find this work interesting AND how the current state of research led me to work on my RQ
+\item why, what, and how
+\end{itemize}
 
 \begin{itemize}
 \item What is probabilistic inference?
-\item How algebraic perspectives work elsewhere in TCS
+\item How generalisation works elsewhere in TCS
 \item Why is WMC defined the way it is?
 \item I assume that pseudo-Boolean functions have already been mentioned
 \end{itemize}
 
-\section{Thesis Structure}
+% good examples to read: kimmig, CP, gheorgiu, meel, guyvdb
+
+%% artificial intelligence
+%% machine learning and automated reasoning
+%% logic and probability
+%% motivation and problem statement
+%% thesis contributions
+%% structure of the thesis
+
+%% motivation (context)
+%% (related efforts)
+%% problem formulation
+%% research objectives
+%% research questions
+%% contributions
+
+Despite the variety of representations, probabilistic inference (via WMC and
+otherwise, more on this in the next section) can be seen as a single
+computational problem. Thus, it is all the more important to develop WMC
+algorithms with good empirical performance, understand the comparative strengths
+and weaknesses of different approaches, and optimise the encoding process that
+transforms the initial representation of a probability distribution to a
+representation accepted by the algorithm. In my work, I address this problem by
+assessing the empirical performance of these algorithms on random instances of
+different kinds, revealing the weaknesses of the standard definition of WMC, and
+suggesting more expressive alternatives.
+
+\begin{itemize}
+\item My thesis is centered around two ideas:
+  \begin{itemize}
+  \item Manipulating more expressive representations can lead to more
+    efficient algorithms (c.f., cutting planes vs. resolution in SAT).
+  \item Random problem instances can help reveal fundamental differences in
+    how algorithms behave in practice.
+  \end{itemize}
+\item UAI'21 and SAT'21 papers address the first idea.
+  \begin{itemize}
+  \item There is no reason for weights to only be defined on literals (and
+    there is no reason for a clause to be a just clause).
+  \end{itemize}
+\item CP'20 and the next paper undertake the second idea.
+  \begin{itemize}
+  \item Random probabilistic logic programs and random 3-CNF formulas.
+  \end{itemize}
+\item Future work: perhaps tackle the first-order setting.
+\end{itemize}
+
+\section{Thesis Structure} % 2 pages, with contributions
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm]
+    \node[draw,ultra thick,color=gray,text=black] (cp) {Constraint programming};
+    \node[draw,ultra thick,right=0.5cm of cp,color=gray,text=black] (random) {Random algorithms};
+
+    \node[draw,ultra thick,color=gray,below=1cm of cp,text=black] (bn) {Bayesian networks};
+    \node[draw,ultra thick,right=0.5cm of bn,color=gray,text=black] (problog) {ProbLog};
+    \node[draw,ultra thick,right=0.5cm of problog,color=gray,text=black] (mln) {Markov logic};
+
+    \node[draw,ultra thick,below=1cm of bn,color=wmc2,text=black] (pbp) {PBP};
+    \node[draw,ultra thick,below=1cm of problog,color=wmc1,text=black] (wmc) {WMC};
+    \node[draw,ultra thick,below=1cm of mln,color=gray,text=black] (wfomc) {WFOMC};
+
+    \node[draw,ultra thick,below=1cm of pbp,color=comparison,text=black] (dpmc) {DPMC};
+    \node[draw,ultra thick,color=comparison,text=black,left of=dpmc] (addmc) {ADDMC};
+    \node[draw,ultra thick,below=1cm of wmc,color=comparison,text=black,text width=1.85cm,align=center] (otherwmc) {Other WMC algorithms};
+    \node[draw,ultra thick,below=1cm of wfomc,color=wfomc,text=black] (forclift) {ForcLift};
+    \node[draw,ultra thick,right=2.5cm of forclift.north,anchor=north,color=gray,text=black,text width=1.85cm,align=center] (otherwfomc) {Other WFOMC algorithms};
+
+    \draw[-{Stealth},ultra thick,color=randomlps] (cp) -- (problog);
+    \draw[-{Stealth},ultra thick,color=comparison] (random) to [bend left=20] (wmc);
+
+    \draw[-{Stealth},ultra thick,color=wmc2] (bn) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=wmc1] (bn) -- (pbp);
+    \draw[-{Stealth},ultra thick,color=gray] (problog) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=gray] (mln) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=gray] (mln) -- (wfomc);
+
+    \draw[-{Stealth},ultra thick,color=gray] (wfomc) -- (forclift);
+    \draw[-{Stealth},ultra thick,color=gray] (wfomc) -- (otherwfomc);
+    \draw[-{Stealth},ultra thick,color=gray] (wfomc) -- (wmc);
+    \draw[-{Stealth},ultra thick,color=wmc2] (wmc) -- (pbp);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (addmc);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (dpmc);
+    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (otherwmc);
+    \draw[-{Stealth},ultra thick,color=wmc1] (pbp) -- (addmc);
+    \draw[-{Stealth},ultra thick,color=wmc2] (pbp) -- (dpmc);
+
+    \matrix[draw,below left,xshift=1cm] at (current bounding box.north east) {
+      \node[fill=wmc1,ultra thick,label=right:\cref{chapter:wmc1}] {}; \\
+      \node[fill=wmc2,ultra thick,label=right:\cref{chapter:wmc2}] {}; \\
+      \node[fill=wfomc,ultra thick,label=right:\cref{chapter:wfomc}] {}; \\
+      \node[fill=randomlps,ultra thick,label=right:\cref{chapter:randomlps}] {}; \\
+      \node[fill=comparison,ultra thick,label=right:\cref{chapter:comparison}] {}; \\
+    };
+  \end{tikzpicture}
+  \caption{Outline of concepts relevant to my past and future work. The first
+    row contains representations of probability distributions that are and have
+    been relevant to my work. The second row contains encodings, i.e.,
+    computational problems that encode probabilistic inference. The third row
+    contains WMC algorithms. Gray arrows and boxes denote connections and
+    concepts that are already known from previous work, and I have not worked
+    on. A coloured arrow or box indicates that my work relates to that concept
+    or interaction of concepts, and the colour coding describes which past or
+    future paper the concept is related to. TODO: update this}
+  \label{fig:overview}
+\end{figure}
 
 \begin{enumerate}
 \item Weighted model counting (WMC) has emerged as the unifying inference mechanism across many (probabilistic) domains. Encoding an inference problem as an instance of WMC typically necessitates adding extra literals and clauses. This is partly so because the predominant definition of WMC assigns weights to models based on weights on literals, and this severely restricts what probability distributions can be represented. We develop a measure-theoretic perspective on WMC and propose a way to encode conditional weights on literals analogously to conditional probabilities. This representation can be as succinct as standard WMC with weights on literals but can also expand as needed to represent probability distributions with less structure. To demonstrate the performance benefits of conditional weights over the addition of extra literals, we develop a new WMC encoding for Bayesian networks and adapt a state-of-the-art WMC algorithm \textsf{ADDMC} to the new format. Our experiments show that the new encoding significantly improves the performance of the algorithm on most benchmark instances.
