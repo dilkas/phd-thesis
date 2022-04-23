@@ -4,7 +4,14 @@
 
 TODO: incorporate Vaishak's feedback (from a PDF file)
 
-\paragraph{Abstract.} First-order model counting (FOMC) is a \#\P-complete computational problem that asks to count the models of a sentence in first-order logic. Despite being around for more than a decade, practical FOMC algorithms are still unable to compute functions as simple as a factorial. We argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To enable arbitrary recursion, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established (weighted) FOMC algorithm ForcLift with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to find efficient solutions to counting fundamental structures such as injections and bijections.
+TODO: injectivity is similar to the all-different constraint
+
+\begin{itemize}
+\item Propositional instances are larger, and propositional algorithms perform a large number of simple steps.
+\item Heuristics, data structures, etc. matter a lot more.
+\item In the FO setting, there is little data and very few steps, so it's not that important to execute each step as efficiently as possible.
+\item The emphasis is more on creating new types of steps, polynomial vs exponential runtime, and maybe the degree of the polynomial.
+\end{itemize}
 
 \begin{figure}[t]
   \centering

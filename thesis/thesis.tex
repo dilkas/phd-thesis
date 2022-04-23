@@ -54,9 +54,11 @@
 \usepackage{pifont}
 \usepackage{listings}
 \usepackage{microtype}
+\usepackage{csquotes}
 \usepackage[capitalise]{cleveref}
 
 \usepackage{natbib}
+\usepackage{bibentry}
 %% \usepackage[backend=biber]{biblatex}
 %% \addbibresource{thesis}
 %\bibliographystyle{apalike}
@@ -119,7 +121,7 @@
 \DeclareMathOperator{\wwn}{\overline{w}}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\id}{id}
-\DeclareMathOperator{\Imm}{Im} % TODO: merge with im
+\DeclareMathOperator{\Imm}{Im}
 \DeclareMathOperator{\Doms}{Doms}
 \DeclareMathOperator{\size}{\sigma}
 \DeclareMathOperator{\Vars}{Vars}
@@ -128,7 +130,6 @@
 
 \Crefname{algocf}{Algorithm}{Algorithms}
 \Crefname{constraint}{Constraint}{Constraints}
-\crefname{section}{Sect.}{Sects.}
 
 \makeatletter
 \newcommand{\nosemic}{\renewcommand{\@endalgocfline}{\relax}}% Drop semi-colon ;
@@ -198,6 +199,7 @@
 }
 
 \begin{document}
+\nobibliography*
 
 \begin{preliminary}
 
@@ -261,11 +263,15 @@
 % * make the arrows (and tree sibling and node distances) all the same
 % * check if some arXiv citations can be replaced by their published versions
 % * notation for graphs: \mathcal{V}, \mathcal{E}, \mathcal{L}
-% * background: merge table cells with the same info
+% * introduction, background: merge table cells with the same info
 % * replace all references to 'this paper' with 'this chapter' or 'this thesis'
 % * preserve the section of paper1 in wmc-without-parameters that got deleted in paper2
 % * could cite James Clerk Maxwell (1850) about the importance of probabilities
+% * merge Im and im commands
 % * merge the two sets of colours
+% * eliminate warnings (e.g., overflow, single-spacing)
+% * rewrite the last paragraph of section 3.2 (how the UAI paper refers to the SAT paper)
+% * background: wmc should be defined at the very beginning
 
 \include{chapters/introduction} % 5-14 pages (9 on average)
 \include{chapters/background} % 11-45 pages (27 on average)
