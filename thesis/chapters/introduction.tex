@@ -1,6 +1,5 @@
 %% where does my work fit in?
 %% how would I explain my work to a layman?
-%% emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
 %% why I chose to work on what I did
 %% why these gaps are the ones to be filled (at this time)
 %% emphasise methodological contributions
@@ -24,15 +23,41 @@
 
 % ==================== WMC====================
 
-% * probabilistic inference
-% * TODO: specific examples of the kind of problems that are being solved by WMC/WFOMC?
-% * WMC algorithms (TODO: copy some info from my review)
-% * More generally...
-% ** WMC and WFOMC
-% ** sum-of-product problems
+% * description and example(s)
+
+\begin{example} \label{example:veryfirst}
+  Suppose we have a biased coin that has a probability $0 \le p \le 1$ of landing heads. What is the probability that it lands heads \emph{at least once} if we toss it \emph{three times}? More formally, we have three independent Bernoulli random variables $X_1$, $X_2$, and $X_3$ such that $X_i \sim \Bernoulli(p)$ for all $i$, and we want to compute
+  \[
+  P \coloneqq \Pr(X_1 = 1 \cup X_2 = 1 \cup X_3 = 1).
+  \]
+
+  The conceptually simplest way of calculating the value of $P$ is by adding seven terms, each of which is a product of three factors, i.e., either $p$ or $1-p$. This way, we get
+  \begin{equation} \label{eq:naive}
+  P = ppp + pp(1-p) + \cdots + (1-p)(1-p)p.
+  \end{equation}
+  One can compute the probability of any event in such a way, although the number of arithmetic operations in \cref{eq:naive} scales exponentially with the number of variables.
+
+  It is more computationally efficient to reason as follows. If $X_1 = 1$, then all combinations of values of $X_2$ and $X_3$ are in the event whose probability we are trying to compute. If $X_1 = 0$, then we can similarly reason about the value of  $X_3$ being immaterial if $X_2 = 1$. This line of reasoning gives us the following way to calculate the probability of interest:
+  \begin{equation} \label{eq:wmcexample}
+  P = p \times 1 \times 1 + (1-p)(p \times 1 + (1-p)p).
+  \end{equation}
+
+  Even more efficiently, one can recognize that the only sequence of coin toss results \emph{not} in the event $X_1 = 1 \cup X_2 = 1 \cup X_3 = 1$ is $X_1 = 0$, $X_2 = 0$, and $X_3 = 0$. Thus, the value of $P$ can be computed as
+  \begin{equation} \label{eq:wfomcexample}
+  P = 1 - (1-p)^3.
+  \end{equation}
+\end{example}
+
+The first of these three approaches hints at the central problem of this thesis. Our goal is to efficiently compute a sum-of-products expression such as the one in \cref{eq:naive}. Of course, the difficulty of this problem partially depends on how each problem instance is formulated, i.e., the input format. The main input format that we concern ourselves with is based on propositional logic---this variation of the problem is known as \emph{weighted model counting} (WMC) \citep{DBLP:journals/ai/ChaviraD08}. \Cref{eq:wmcexample} is an example of the kind of efficiency improvements that can be achieved by WMC.
+
+% * More generally: WMC, WFOMC, and other sum-of-products problems
+
+WMC has been extended in many ways, e.g., to support first-order logic and continuous variables. The former extension is known as \emph{(symmetric) weighted first-order model counting} (WFOMC) \citep{DBLP:conf/ijcai/BroeckTMDR11}. WFOMC algorithms capitalise on mathematical operations besides multiplication and addition and thus can compute $P$ from \cref{example:veryfirst} as in \cref{eq:wfomcexample}. The latter extension is called \emph{weighted model integration} (WMI) \citep{DBLP:conf/ijcai/BellePB15}. In WMI, constraints on continuous variables are described using a fragment of first-order logic known as \emph{linear arithmetic over the rationals} (LRA), i.e., inequalities with addition. The two extensions combined into one are known as \emph{(symmetric) weighted first-order model integration} (WFOMI) \citep{DBLP:conf/uai/FeldsteinB21}.
+
+Instead of performing addition and multiplication on numbers, one can do so on elements of an arbitrary (commutative) semiring. This extension of WMC is known as \emph{semiring programming} (SP) \citep{DBLP:journals/ijar/BelleR20}. Another important generalisation offered by SP is flexibility in how the numbers that are to be multiplied and added (i.e., the \emph{weights}) can be defined. In this thesis, we do something similar within the constraints of a modern WMC algorithm and call our generalisation \emph{pseudo-Boolean projection} (PBP).
 
 \begin{table}
-  \caption{An assortment of problems that require one to compute a quantity defined as a sum of products.}
+  \caption{An assortment of problems that require one to compute a quantity defined as a sum of products}
   \label{table:comparison}
   \centering
   \begin{tabular}{lll}
@@ -52,17 +77,14 @@
   \end{tabular}
 \end{table}
 
-\begin{itemize}
-\item weighted model counting (WMC) \citep{DBLP:journals/ai/ChaviraD08}
-\item pseudo-Boolean projection (PBP) (\cref{chapter:wmc2})
-\item semiring programming (SP) \citep{DBLP:journals/ijar/BelleR20}
-\item weighted model integration (WMI) \citep{DBLP:conf/ijcai/BellePB15}
-\item weighted (symmetric) first-order model counting (WFOMC) \citep{DBLP:conf/ijcai/BroeckTMDR11}
-\item weighted (symmetric) first-order model integration \citep{DBLP:conf/uai/FeldsteinB21}
-\item SumProd \citep{DBLP:journals/ai/Dechter99,DBLP:journals/jair/BacchusDP09}
-\item the algebraic path problem \citep{DBLP:series/synthesis/2010Baras}
-\item computing the permanent \citep{DBLP:journals/tcs/Valiant79}
-\end{itemize}
+While WMC and its extensions use logic-based input formats, other sum-of-products problems have been studied before. For instance, the \emph{SumProd} problem, which generalises problems such as probabilistic inference in Bayesian networks and propositional model counting, is defined in terms of discrete variables and functions \citep{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. In this case, the sum is over all possible instantiations of the variables, and the product is over the values of the functions. Another similar problem is the \emph{algebraic path problem} where the sum is over all paths in a graph from one node to another, and the product is over the weights of the edges in the path \citep{DBLP:series/synthesis/2010Baras}. This problem generalises many graph problems such as shortest and longest path and has many uses in routing and network reliability analysis. Lastly, even famous problems in algebraic complexity theory such as computing the determinant or the permanent of a matrix are examples of this sum-of-products computational paradigm \citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See \cref{table:comparison} for a summary of all of the discussed problems.
+
+% TODO: start here. Turn this into a concluding paragraph.
+% reasoning about logic, graphs, and functions.
+% * importance in probabilistic inference
+% * Algorithms (maybe?)
+
+% Moreover, an annual model counting competition and workshop started running just last year (\url{https://mccompetition.org/}) \citep{DBLP:journals/corr/abs-2012-01323}.
 
 Despite the variety of representations, probabilistic inference (via WMC and
 otherwise, more on this in the next section) can be seen as a single
@@ -75,14 +97,31 @@ assessing the empirical performance of these algorithms on random instances of
 different kinds, revealing the weaknesses of the standard definition of WMC, and
 suggesting more expressive alternatives.
 
+Many algorithms for probabilistic inference have been proposed. Variable
+elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
+choosing an ordering of variables and `summing out' each variable in the chosen
+order. The well-known Davis-Putnam algorithm \citep{DBLP:journals/jacm/DavisP60}
+for SAT is an example of variable elimination
+\citep{DBLP:journals/jair/BacchusDP09}. Recursive conditioning
+\citep{DBLP:journals/ai/Darwiche01} is a divide-and-conquer algorithm that relies
+on a branch decomposition of the hypergraph to initialise variables in such a
+way to split the problem into multiple smaller problems that can be solved
+independently. AND/OR search
+\citep{DBLP:journals/ai/DechterM07,DBLP:books/sp/Nilsson82} is a similar technique
+that utilises pseudo trees of the primal graph instead of branch decompositions.
+Belief propagation (also known as message passing) \citep{DBLP:conf/aaai/Pearl82}
+is an approximation algorithm that converges to the exact answer when the primal
+graph is a tree, and join (or junction) tree algorithm \citep{lauritzen1988local}
+extends belief propagation to arbitrary primal graphs via tree decompositions.
+
 % ==================== My approach: generalisation ====================
 
 Examples of generalisation
 \begin{itemize}
-\item resolution vs cutting planes in SAT (i.e., CNF vs PB)
 \item SAT/CSP/LP/IP vs algorithms to specific combinatorial problems
 \item Einstein (general relativity) vs Newton (gravity)
 \item category theory vs algebra/topology/algebraic topology
+\item topology vs geometry
 \end{itemize}
 
 Two ideas:
@@ -147,7 +186,7 @@ Two ideas:
 \end{figure}
 
 % a short paragraph for each chapter, using the \paragraph{} environment to emphasise the contribution
-% for each chapter: how the current state of research led me to work on my RQ
+% for each chapter: how the current state of research led me to work on my RQ. In other words, emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
 
 % TODO: describe the figure
 
