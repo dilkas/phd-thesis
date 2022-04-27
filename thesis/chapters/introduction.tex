@@ -79,42 +79,34 @@ Instead of performing addition and multiplication on numbers, one can do so on e
 
 While WMC and its extensions use logic-based input formats, other sum-of-products problems have been studied before. For instance, the \emph{SumProd} problem, which generalises problems such as probabilistic inference in Bayesian networks and propositional model counting, is defined in terms of discrete variables and functions \citep{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. In this case, the sum is over all possible instantiations of the variables, and the product is over the values of the functions. Another similar problem is the \emph{algebraic path problem} where the sum is over all paths in a graph from one node to another, and the product is over the weights of the edges in the path \citep{DBLP:series/synthesis/2010Baras}. This problem generalises many graph problems such as shortest and longest path and has many uses in routing and network reliability analysis. Lastly, even famous problems in algebraic complexity theory such as computing the determinant or the permanent of a matrix are examples of this sum-of-products computational paradigm \citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See \cref{table:comparison} for a summary of all of the discussed problems.
 
-% TODO: start here. Turn this into a concluding paragraph.
-% reasoning about logic, graphs, and functions.
-% * importance in probabilistic inference
-% * Algorithms (maybe?)
+Many reductions are possible among instances of these problems, e.g., both WFOMC and SumProd can be reduced to WMC. Empirically, WMC is also a state-of-the-art approach to inference in probabilistic graphical models \citep{DBLP:conf/ijcai/AgrawalPM21}. Publications describing novel WMC algorithms continue to appear each year \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}. Furthermore, a competition\footnote{\url{https://mccompetition.org/}} (as well as a workshop) for model counting and extensions thereof started running annually in 2020 \citep{DBLP:journals/corr/abs-2012-01323}. Given all of this, it is all the more important to
+\begin{itemize}
+\item develop WMC algorithms with good empirical performance,
+\item understand the comparative strengths and weaknesses of different approaches,
+\item and optimise the encoding process that transforms problems from the application (e.g., probabilistic inference) domain to a representation accepted by the algorithm.
+\end{itemize}
 
-% Moreover, an annual model counting competition and workshop started running just last year (\url{https://mccompetition.org/}) \citep{DBLP:journals/corr/abs-2012-01323}.
+%% Many algorithms for probabilistic inference have been proposed. Variable
+%% elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
+%% choosing an ordering of variables and `summing out' each variable in the chosen
+%% order. The well-known Davis-Putnam algorithm \citep{DBLP:journals/jacm/DavisP60}
+%% for SAT is an example of variable elimination
+%% \citep{DBLP:journals/jair/BacchusDP09}. Recursive conditioning
+%% \citep{DBLP:journals/ai/Darwiche01} is a divide-and-conquer algorithm that relies
+%% on a branch decomposition of the hypergraph to initialise variables in such a
+%% way to split the problem into multiple smaller problems that can be solved
+%% independently. AND/OR search
+%% \citep{DBLP:journals/ai/DechterM07,DBLP:books/sp/Nilsson82} is a similar technique
+%% that utilises pseudo trees of the primal graph instead of branch decompositions.
+%% Belief propagation (also known as message passing) \citep{DBLP:conf/aaai/Pearl82}
+%% is an approximation algorithm that converges to the exact answer when the primal
+%% graph is a tree, and join (or junction) tree algorithm \citep{lauritzen1988local}
+%% extends belief propagation to arbitrary primal graphs via tree decompositions.
 
-Despite the variety of representations, probabilistic inference (via WMC and
-otherwise, more on this in the next section) can be seen as a single
-computational problem. Thus, it is all the more important to develop WMC
-algorithms with good empirical performance, understand the comparative strengths
-and weaknesses of different approaches, and optimise the encoding process that
-transforms the initial representation of a probability distribution to a
-representation accepted by the algorithm. In my work, I address this problem by
-assessing the empirical performance of these algorithms on random instances of
-different kinds, revealing the weaknesses of the standard definition of WMC, and
-suggesting more expressive alternatives.
+\section{Approach, Contributions, and Outline} % 2 pages?
 
-Many algorithms for probabilistic inference have been proposed. Variable
-elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
-choosing an ordering of variables and `summing out' each variable in the chosen
-order. The well-known Davis-Putnam algorithm \citep{DBLP:journals/jacm/DavisP60}
-for SAT is an example of variable elimination
-\citep{DBLP:journals/jair/BacchusDP09}. Recursive conditioning
-\citep{DBLP:journals/ai/Darwiche01} is a divide-and-conquer algorithm that relies
-on a branch decomposition of the hypergraph to initialise variables in such a
-way to split the problem into multiple smaller problems that can be solved
-independently. AND/OR search
-\citep{DBLP:journals/ai/DechterM07,DBLP:books/sp/Nilsson82} is a similar technique
-that utilises pseudo trees of the primal graph instead of branch decompositions.
-Belief propagation (also known as message passing) \citep{DBLP:conf/aaai/Pearl82}
-is an approximation algorithm that converges to the exact answer when the primal
-graph is a tree, and join (or junction) tree algorithm \citep{lauritzen1988local}
-extends belief propagation to arbitrary primal graphs via tree decompositions.
-
-% ==================== My approach: generalisation ====================
+% * A paragraph on the approach: generalisation, main ideas
+% TODO: start here
 
 Examples of generalisation
 \begin{itemize}
@@ -124,7 +116,7 @@ Examples of generalisation
 \item topology vs geometry
 \end{itemize}
 
-Two ideas:
+main ideas:
 \begin{itemize}
 \item Manipulating more expressive representations can lead to more
   efficient algorithms (c.f., cutting planes vs. resolution in SAT).
@@ -132,7 +124,11 @@ Two ideas:
   how algorithms behave in practice.
 \end{itemize}
 
-\section{Contributions and Outline} % 2 pages
+Things to mention:
+\begin{itemize}
+\item reasoning about logic, graphs, and functions
+\item In my work, I address this problem by assessing the empirical performance of these algorithms on random instances of different kinds, revealing the weaknesses of the standard definition of WMC, and suggesting more expressive alternatives.
+\end{itemize}
 
 \begin{figure}[t]
   \centering
@@ -185,14 +181,19 @@ Two ideas:
   \label{fig:overview}
 \end{figure}
 
-% a short paragraph for each chapter, using the \paragraph{} environment to emphasise the contribution
-% for each chapter: how the current state of research led me to work on my RQ. In other words, emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
-
-% TODO: describe the figure
+% * A paragraph that partitions the chapters and points to the figure.
 
 \Cref{chapter:wmc1,chapter:wmc2,chapter:wfomc} papers address the first idea. There is no reason for weights to only be defined on literals (and there is no reason for a clause to be a just clause).
 
 \Cref{chapter:randomlps,chapter:comparison} undertake the second idea. Random probabilistic logic programs and random 3-CNF formulas.
+
+% * Paragraphs for describing individual contributions.
+
+For each chapter:
+\begin{itemize}
+\item a short paragraph for each chapter, using the `paragraph' environment to emphasise the contribution
+\item Explain how the current state of research led me to work on my RQ. In other words, emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
+\end{itemize}
 
 \begin{displayquote}
   \bibentry{DBLP:conf/uai/DilkasB21}

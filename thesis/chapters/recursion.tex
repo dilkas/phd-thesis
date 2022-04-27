@@ -1,17 +1,10 @@
 \chapter{Recursive Solutions to First-Order Model Counting} \label{chapter:wfomc}
 
-\section{Introduction}
+\paragraph{Abstract.}
+First-order model counting (FOMC) is a \#\P-complete computational problem that asks to count the models of a sentence in first-order logic. Despite being around for more than a decade, practical FOMC algorithms are still unable to compute functions as simple as a factorial. We argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To enable arbitrary recursion, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established (weighted) FOMC algorithm ForcLift with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to find efficient solutions to counting fundamental structures such as injections and bijections.
 
-TODO: incorporate Vaishak's feedback (from a PDF file)
-
-TODO: injectivity is similar to the all-different constraint
-
-\begin{itemize}
-\item Propositional instances are larger, and propositional algorithms perform a large number of simple steps.
-\item Heuristics, data structures, etc. matter a lot more.
-\item In the FO setting, there is little data and very few steps, so it's not that important to execute each step as efficiently as possible.
-\item The emphasis is more on creating new types of steps, polynomial vs exponential runtime, and maybe the degree of the polynomial.
-\end{itemize}
+\clearpage
+\section{Introduction/Summary}
 
 \begin{figure}[t]
   \centering
@@ -28,6 +21,101 @@ TODO: injectivity is similar to the all-different constraint
   \caption{An illustration of the main idea.}
   \label{fig:idea}
 \end{figure}
+
+% Definition and scope of the topic: FOMC
+
+Need to define (W)FOMC and the logic that I'm going to use.
+
+\begin{itemize}
+\item ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11}
+\item domain recursion \citep{DBLP:conf/nips/Broeck11}
+\item alchemy \citep{DBLP:journals/cacm/GogateD16}
+\item L2C \citep{DBLP:conf/kr/KazemiP16}
+\item theory: new liftable classes \citep{DBLP:conf/nips/KazemiKBP16}
+\item counting quantifiers \citep{DBLP:journals/jair/Kuzelka21}
+\item tree axioms \citep{DBLP:conf/kr/BremenK21}
+\item theoretical algorithm (2 variables) \citep{DBLP:conf/uai/BremenK21}
+\item formula (2 variables) \citep{DBLP:journals/corr/abs-2110-05992}
+\item another theoretical extension \citep{DBLP:conf/lics/KuusistoL18}
+\end{itemize}
+
+% The problem you are to focus on the topic: recursion
+% If the problem was faced before, describe the state of the art.
+
+has a similar goal \citep{DBLP:conf/ilp/BarvinekB0ZK21} BUT:
+
+But their code only conjectures stuff. My conjectures are guaranteed always true.
+
+They give bijection/permutation counting as an example. Are they able to find it?
+
+But they are limited to one domain (I think...)
+
+Another limitation: everything has to be expressible in $\mathbf{C}^2$, i.e., the two-variable fragment of first-order logic with counting quantifiers.
+
+Data? Do they use data? Yeah, they do...
+
+They only consider P-recursive functions, which means that, e.g., $f(n) = f(n-1)f(n-2)$ would not be allowed.
+
+% Discuss the methods and novel techniques to be employed
+
+\begin{itemize}
+\item ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} (first-order knowledge compilation)
+\item (recursion)
+\item generalising circuits to directed graphs (i.e., allowing for cycles)
+\item one can then extract the (potentially recursive) definitions of functions from the graph
+\item simplify the algebraic expressions, e.g.:
+  \begin{itemize}
+  \item adding and subtracting the same thing
+  \item $\sum_{i=0}^n[i < 2]f(i) = f(0) + f(1)$
+  \end{itemize}
+\item evaluate the functions
+\item TODO: definition of an FCG
+\item maybe example of an FCG for injections
+\item new compilation rules
+  \begin{itemize}
+  \item (generalised) domain recursion (via example)
+  \item constraint removal (via example)
+  \item recursion checking algorithm (sketch it)
+  \end{itemize}
+\item combining BFS and greedy search
+\item smoothing needs to be adapted so as to not get stuck in an infinite loop
+\item dynamic programming may be necessary to compute in polynomial time
+\end{itemize}
+
+% Highlights of the results obtained
+
+able to lift most kinds of injections and bijections (same domain vs different domains AND partial vs full), e.g.:
+\begin{itemize}
+\item $\Theta(mn)$ for $[m] \to [n]$ injections (optimal: $\Theta(\log m)$)
+\item $\Theta(m)$ for $[m] \to [n]$ bijections (optimal: $\Theta(\log m)$)
+\item TODO: add/explain the formulas as well
+\end{itemize}
+
+% Possible future enhancements and further work in progress
+
+\begin{itemize}
+\item automate extracting and simplifying the definitions of functions
+\item algorithm for finding all base cases
+\item open questions:
+  \begin{itemize}
+    \item what kind of sequences are computable in this way?
+    \item would using a different logic extend the capabilities of FOMC even further?
+  \end{itemize}
+\end{itemize}
+
+\section{Introduction}
+
+TODO: incorporate Vaishak's feedback (from a PDF file)
+
+TODO: injectivity is similar to the all-different constraint
+
+\paragraph{Differences from the propositional setting.}
+\begin{itemize}
+\item Propositional instances are larger, and propositional algorithms perform a large number of simple steps.
+\item Heuristics, data structures, etc. matter a lot more.
+\item In the FO setting, there is little data and very few steps, so it's not that important to execute each step as efficiently as possible.
+\item The emphasis is more on creating new types of steps, polynomial vs exponential runtime, and maybe the degree of the polynomial.
+\end{itemize}
 
 In a way, we're dividing the idea of domain recursion between the IDR and the Ref nodes, thus also generalising it. [TODO: mention \cref{fig:idea}.]
 
@@ -678,6 +766,7 @@ TODO: explain that $x, y, z$ refer to vertices, $c$ refers to a clause, and desc
 \item Can't explain how formulas are translated into (my definition of) clauses without explaining Skolemization, which is out of scope.
 \item Note that in some cases different descriptions of the same problem lead to different solutions (with different complexities).
 \item Maybe we are actually guaranteed that the solution is always polynomial-time. Except... running time could be infinite?
+\item Could also try involutions and other examples from the recent paper on recursion.
 \end{itemize}
 
 Let $p$ be a predicate of arity two s.t. the first argument is associated with domain $a$, and the second argument is associated with domain $b$ (i.e., $p$ represents a relation between sets $a$ and $b$). Then, to restrict all relations representable by $p$ to just functions from $a$ to $b$, in first-order logic one might write
