@@ -103,32 +103,63 @@ Many reductions are possible among instances of these problems, e.g., both WFOMC
 %% graph is a tree, and join (or junction) tree algorithm \citep{lauritzen1988local}
 %% extends belief propagation to arbitrary primal graphs via tree decompositions.
 
+% reasoning about logic, graphs, and functions
+
+% In my work, I address this problem by assessing the empirical performance of these algorithms on random instances of different kinds, revealing the weaknesses of the standard definition of WMC, and suggesting more expressive alternatives.
+
 \section{Approach, Contributions, and Outline} % 2 pages?
 
-% * A paragraph on the approach: generalisation, main ideas
-% TODO: start here
+% ==================================== A paragraph on the approach: generalisation, main ideas ====================
 
-Examples of generalisation
-\begin{itemize}
-\item SAT/CSP/LP/IP vs algorithms to specific combinatorial problems
-\item Einstein (general relativity) vs Newton (gravity)
-\item category theory vs algebra/topology/algebraic topology
-\item topology vs geometry
-\end{itemize}
+Our main conceptual tool on this quest is generalisation. While the term \emph{generalisation} can be defined in many ways, we use it to mean that $x$ is a generalisation of $y$ if $x$ can do/express/capture everything that $y$ can, and more. Many important results in science and mathematics are generalisations, e.g., the Lebesgue integral generalises the Riemann integral, and Einstein's general theory of relativity generalises Newton's law of universal gravitation. An example of generalisation closer to home is the emergence of solvers for, e.g., Boolean satisfiability (SAT), constraint programming, integer programming, and linear programming, that can be used to solve many decision and optimisation problems. While designing algorithms for specific problems remains a valuable enterprise, there is indisputable value in having a range of tools with broader applicability.
 
-main ideas:
-\begin{itemize}
-\item Manipulating more expressive representations can lead to more
-  efficient algorithms (c.f., cutting planes vs. resolution in SAT).
-\item Random problem instances can help reveal fundamental differences in
-  how algorithms behave in practice.
-\end{itemize}
+% =========================== A paragraph that partitions the chapters and describes them in broad terms =========
 
-Things to mention:
-\begin{itemize}
-\item reasoning about logic, graphs, and functions
-\item In my work, I address this problem by assessing the empirical performance of these algorithms on random instances of different kinds, revealing the weaknesses of the standard definition of WMC, and suggesting more expressive alternatives.
-\end{itemize}
+We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2} we generalise the definition of WMC (to PBP) to take full advantage of the capabilities of recent developments in WMC algorithms. In \cref{chapter:wfomc}, we generalise some of the procedures and data structures used by a WFOMC algorithm to make it applicable to a wider range of problem instances. The main idea behind this work is that, in many cases, efficiency improvements can be achieved by developing algorithms that can handle richer data structures. Another important idea in this work, particularly \cref{chapter:randomlps,chapter:comparison}, is that empirical testing of algorithms on a wide range of random instances can help reveal fundamental differences in the behaviour of said algorithms. In what follows, we review the contributions and the structure of this thesis in more detail.
+
+% ==================================== Paragraphs for individual chapters/contributions ===========================
+
+%% For each chapter:
+%% * a short paragraph for each chapter, using the `paragraph' environment to emphasise the contribution
+%% * Explain how the current state of research led me to work on my RQ. In other words, emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
+
+% 1. WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions
+% \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra.
+
+Encoding a probabilistic inference problem as an instance of WMC typically necessitates adding extra literals and clauses. This is partly so because the predominant definition of WMC assigns weights to models based on weights on literals, and this severely restricts what probability distributions can be represented. In \cref{chapter:wmc1}, we develop a \emph{measure-theoretic perspective on WMC} and propose a way to encode conditional weights on literals analogously to conditional probabilities. This representation can be as succinct as standard WMC with weights on literals but can also expand as needed to represent probability distributions with less structure. To demonstrate the performance benefits of conditional weights over the addition of extra literals, we develop a \emph{new WMC encoding} for Bayesian networks and adapt a recent WMC algorithm \textsf{ADDMC}~\citep{DBLP:conf/aaai/DudekPV20} to the new format. Our experiments show that the new encoding significantly improves the performance of the algorithm on most benchmark instances. \Cref{chapter:wmc1} is published as:
+\begin{displayquote}
+  \bibentry{DBLP:conf/uai/DilkasB21}
+\end{displayquote}
+
+% 2. WMC -> PBP transformation
+% 3. several sets of sufficient conditions for its correctness
+% 4. evidence that it is experimentally useful
+% and using recent state-of-the-art WMC techniques based on pseudo-Boolean function manipulation, competitive with the more traditional WMC algorithms based on knowledge compilation and backtracking search. 
+
+\Cref{chapter:wmc2} builds on \cref{chapter:wmc1} and further considers WMC in its full generality, leading to the definition of PBP. Here we present an \emph{algorithm that transforms WMC instances into PBP instances} while eliminating around \SI{43}{\percent} of variables on average across various Bayesian network encodings. Moreover, we identify \emph{sufficient conditions} for such a variable removal to be possible. Our experiments show significant improvement in WMC-based Bayesian network inference. \Cref{chapter:wmc2} is published as:
+\begin{displayquote}
+  \bibentry{DBLP:conf/sat/DilkasB21}
+\end{displayquote}
+
+% 5. expanded what's liftable using (available) WFOMC algorithms
+% 6. showed how a WFOMC algorithm can discover recursive solutions
+
+In \cref{chapter:wfomc}, our attention shifts to another version of WMC, namely, WFOMC as well as its unweighted variant FOMC. Despite being around for more than a decade, practical (W)FOMC algorithms are still unable to compute functions as simple as a factorial. In this chapter, we argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To \emph{enable arbitrary recursion}, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established WFOMC algorithm ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to \emph{automatically find efficient solutions} to counting fundamental structures such as injections and bijections.
+
+% 7. developed a way of generating (P)LPs that's much more general than anything from before
+% 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
+
+In \cref{chapter:randomlps,chapter:comparison}, we transition to the other strand of this work, i.e., random instance generation. Testing algorithms across a wide range of problem instances is crucial to ensure the validity of any claim about one algorithm's superiority over another. However, when it comes to inference algorithms for probabilistic logic programs, experimental evaluations are limited to only a few programs. Existing methods to generate random logic programs are limited to propositional programs and often impose stringent syntactic restrictions. In \cref{chapter:randomlps}, we present a \emph{novel approach to generating random logic programs and random probabilistic logic programs} using constraint programming, introducing a \emph{new constraint to control the independence structure of the underlying probability distribution}. We also provide a combinatorial argument for the correctness of the model, show how the model scales with parameter values, and use the model to compare probabilistic inference algorithms across a range of synthetic problems. Our model allows inference algorithm developers to evaluate and compare the algorithms across a wide range of instances, providing a detailed picture of their comparative strengths and weaknesses. \Cref{chapter:randomlps} is published as:
+\begin{displayquote}
+  \bibentry{DBLP:conf/cp/DilkasB20}
+\end{displayquote}
+
+% 9. developed a way to generate propositional formulas in CNF with varying primal treewidth
+% 10. showed that ADD-based WMC algorithms scale worse w.r.t. it than all other algorithms
+
+In recent experiments, \textsf{WMC} algorithms are shown to perform similarly overall but with significant differences on specific subsets of benchmarks. A good understanding of the differences in the performance of algorithms requires identifying key characteristics that favour some algorithms over others. In \cref{chapter:comparison}, we introduce a \emph{random model} for \textsf{WMC} instances with a parameter that influences primal treewidth---the parameter most commonly used to characterise the difficulty of an instance. We then use this model to experimentally compare the performance of \textsf{WMC} algorithms \textsc{c2d} \citep{DBLP:conf/ecai/Darwiche04}, \textsc{Cachet} \citep{DBLP:conf/sat/SangBBKP04}, \textsc{d4} \citep{DBLP:conf/ijcai/LagniezM17}, \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20}, and \textsc{miniC2D} \citep{DBLP:conf/ijcai/OztokD15} on random instances. We show that the \emph{easy-hard-easy pattern is different} for algorithms based on dynamic programming and algebraic decision diagrams (ADDs) than for all other solvers. We also show how all \textsf{WMC} algorithms scale exponentially with respect to primal treewidth and how this scalability varies across algorithms and densities. Finally, we demonstrate how the performance of ADD-based algorithms changes depending on how much determinism or redundancy there is in the numerical values of weights.
+
+% ============================== Describe the figure ==============================
 
 \begin{figure}[t]
   \centering
@@ -181,42 +212,4 @@ Things to mention:
   \label{fig:overview}
 \end{figure}
 
-% * A paragraph that partitions the chapters and points to the figure.
-
-\Cref{chapter:wmc1,chapter:wmc2,chapter:wfomc} papers address the first idea. There is no reason for weights to only be defined on literals (and there is no reason for a clause to be a just clause).
-
-\Cref{chapter:randomlps,chapter:comparison} undertake the second idea. Random probabilistic logic programs and random 3-CNF formulas.
-
-% * Paragraphs for describing individual contributions.
-
-For each chapter:
-\begin{itemize}
-\item a short paragraph for each chapter, using the `paragraph' environment to emphasise the contribution
-\item Explain how the current state of research led me to work on my RQ. In other words, emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
-\end{itemize}
-
-\begin{displayquote}
-  \bibentry{DBLP:conf/uai/DilkasB21}
-\end{displayquote}
-
-% definition of WMC is a mistake: convenience rather than reason
-
-% TODO (or with the next paragraph): define / write a bit about pseudo-Boolean functions (necessary for the next chapter)
-
-Weighted model counting (WMC) has emerged as the unifying inference mechanism across many (probabilistic) domains. Encoding an inference problem as an instance of WMC typically necessitates adding extra literals and clauses. This is partly so because the predominant definition of WMC assigns weights to models based on weights on literals, and this severely restricts what probability distributions can be represented. We develop a measure-theoretic perspective on WMC and propose a way to encode conditional weights on literals analogously to conditional probabilities. This representation can be as succinct as standard WMC with weights on literals but can also expand as needed to represent probability distributions with less structure. To demonstrate the performance benefits of conditional weights over the addition of extra literals, we develop a new WMC encoding for Bayesian networks and adapt a state-of-the-art WMC algorithm \textsf{ADDMC} to the new format. Our experiments show that the new encoding significantly improves the performance of the algorithm on most benchmark instances.
-
-\begin{displayquote}
-  \bibentry{DBLP:conf/sat/DilkasB21}
-\end{displayquote}
-
-Weighted model counting (WMC) is a powerful computational technique for a variety of problems, especially commonly used for probabilistic inference. However, the standard definition of WMC that puts weights on literals often necessitates WMC encodings to include additional variables and clauses just so each weight can be attached to a literal. This paper complements previous work by considering WMC instances in their full generality and using recent state-of-the-art WMC techniques based on pseudo-Boolean function manipulation, competitive with the more traditional WMC algorithms based on knowledge compilation and backtracking search. We present an algorithm that transforms WMC instances into a format based on pseudo-Boolean functions while eliminating around \SI{43}{\percent} of variables on average across various Bayesian network encodings. Moreover, we identify sufficient conditions for such a variable removal to be possible. Our experiments show significant improvement in WMC-based Bayesian network inference, outperforming the current state of the art.
-
-First-order model counting (FOMC) is a \#\P-complete computational problem that asks to count the models of a sentence in first-order logic. Despite being around for more than a decade, practical FOMC algorithms are still unable to compute functions as simple as a factorial. We argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To enable arbitrary recursion, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established (weighted) FOMC algorithm ForcLift with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to find efficient solutions to counting fundamental structures such as injections and bijections.
-
-\begin{displayquote}
-  \bibentry{DBLP:conf/cp/DilkasB20}
-\end{displayquote}
-
-Testing algorithms across a wide range of problem instances is crucial to ensure the validity of any claim about one algorithm's superiority over another. However, when it comes to inference algorithms for probabilistic logic programs, experimental evaluations are limited to only a few programs. Existing methods to generate random logic programs are limited to propositional programs and often impose stringent syntactic restrictions. We present a novel approach to generating random logic programs and random probabilistic logic programs using constraint programming, introducing a new constraint to control the independence structure of the underlying probability distribution. We also provide a combinatorial argument for the correctness of the model, show how the model scales with parameter values, and use the model to compare probabilistic inference algorithms across a range of synthetic problems. Our model allows inference algorithm developers to evaluate and compare the algorithms across a wide range of instances, providing a detailed picture of their (comparative) strengths and weaknesses.
-
-Weighted model counting (\textsf{WMC}) is an extension of propositional model counting with applications to probabilistic inference and other areas of artificial intelligence. In recent experiments, \textsf{WMC} algorithms are shown to perform similarly overall but with significant differences on specific subsets of benchmarks. A good understanding of the differences in the performance of algorithms requires identifying key characteristics that favour some algorithms over others. In this paper, we introduce a random model for \textsf{WMC} instances with a parameter that influences primal treewidth---the parameter most commonly used to characterise the difficulty of an instance. We then use this model to experimentally compare the performance of \textsf{WMC} algorithms \textsc{c2d}, \textsc{Cachet}, \textsc{d4}, \textsc{DPMC}, and \textsc{miniC2D} on random instances. We show that the easy-hard-easy pattern is different for algorithms based on dynamic programming and algebraic decision diagrams (ADDs) than for all other solvers. We also show how all \textsf{WMC} algorithms scale exponentially with respect to primal treewidth and how this scalability varies across algorithms and densities. Finally, we demonstrate how the performance of ADD-based algorithms changes depending on how much determinism or redundancy there is in the numerical values of weights.
+We end the introduction with a visual description of how the topics covered in this thesis combine into a coherent picture. \Cref{fig:overview} lists some of the key concepts of this work and shows how each chapter of the thesis relates to these concepts and interactions between them. \Cref{chapter:background} covers a selection of topics related to this work and refers the reader to suitable literature for further information. \Cref{chapter:wmc1} examines the definition of WMC more closely and suggests a way to bypass it, leading to a more succinct encoding of Bayesian network probabilistic inference compatible with the ADDMC algorithm. Then \cref{chapter:wmc2} describes WMC encodings for Bayesian networks, defines PBP, shows how to transform WMC instances to PBP instances, and how the DPMC algorithm benefits from this new format. In \cref{chapter:wfomc}, we expand the capabilities of the WFOMC algorithm ForcLift to new (previously unsolvable) instances. \Cref{chapter:randomlps} describes a constraint model that can generate random (probabilistic) logic programs in the ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} language---a well known use-case of WMC. \Cref{chapter:comparison} develops an algorithm for generating random WMC instances and uses it showcase some important differences in the behaviour of WMC algorithms. Finally, \cref{chapter:conclusion} summarises our results and provides a perspective for potential future work.
