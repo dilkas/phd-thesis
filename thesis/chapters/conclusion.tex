@@ -1,11 +1,133 @@
-\chapter{Conclusion} \label{chapter:conclusion}
+\chapter{Conclusion} \label{chapter:conclusion} % >= 5 pages
+
+% ================================= CONTRIBUTIONS (reiterating their importance) =================================
+% how have I improved the state of the art?
+% what do we understand better as a consequence of my work?
+% recurring themes?
+% claims?
+% what broad areas of research are affected by my work? how might that effect propagate in the future?
+
+TODO: a short introduction?
 
 \section{Summary}
 
-\section{Future Directions}
-
-Big picture ideas:
+The main contributions of this thesis can be divided into two parts:
 \begin{itemize}
-\item future work on random instance generation
-\item a better understanding of WFOMC (copy some paragraphs from my CV)
+\item empirically-motivated contributions that make something new possible or something that already exists more efficient
+\item and (conceptual, theoretical, or experimental) contributions that help us understand something more fully or in a new way.
 \end{itemize}
+
+% ================================= EMPIRICAL STATE OF THE ART =================================
+
+On the empirical front, most of our contributions focus on the efficiency and tractability of the propositional and first-order variants of WMC. In \cref{chapter:wmc1,chapter:wmc2}, we show how the efficiency of WMC can be improved by generalising weights from their standard definition based on literals to one capable of representing a richer subset of all possible pseudo-Boolean functions. In \cref{chapter:wfomc}, we extend the capabilities of ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} so that it is able to solve more instances in a lifted manner, e.g., instances with injective mappings. The empirical contributions of \cref{chapter:randomlps,chapter:comparison} are about making new things possible, i.e., introducing novel tools and methods. In \cref{chapter:randomlps}, we developed developed a constraint model for (probabilistic) logic programs that can be used to generate random programs or enumerate all small programs under some given constraints. The constraints include various notions of size, the structure/complexity of a clause, and the independence of random variables. Finally, in \cref{chapter:comparison}, we present a way to generate propositional formulas in CNF with varying primal treewidth. As treewidth is a well-known parameter commonly used to describe parameterised complexity results \citep{DBLP:series/txcs/DowneyF13}, the same model (or a variation thereof) can be used in experimental studies of many other logic-based problems as well.
+
+% ================================= UNDERSTANDING =================================
+
+The experimental work in these last two chapters, i.e., \cref{chapter:randomlps,chapter:comparison}, also contain important observations about WMC and probabilistic inference algorithms.
+
+% TODO: start here
+\paragraph{What do we understand better as a consequence of my work?}
+\begin{itemize}
+\item A better understanding of what determines efficiency (from both theoretical and experimental perspectives)
+  \begin{itemize}
+  \item the puzzling LP result: showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
+  \item interactions with density and primal treewidth: showed that ADD-based WMC algorithms scale worse w.r.t. it than all other algorithms
+  \end{itemize}
+\item both: WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions. \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra. \Cref{chapter:wmc1} shows how WMC can be understood as the process of computing the measure of an element of a free Boolean algebra. This observation allows us to generalise the domain of the weight function from literals to arbitrary formulas. With this generalisation, many variables and clauses added to a WMC instance while encoding, e.g., a Bayesian network become redundant.
+\item how generalising weight functions leads to a more `natural' version of WMC (and the new format (PBP) that comes from that), the transformation, several sets of sufficient conditions for its correctness. In \cref{chapter:wmc2}, we then show how most WMC encodings for Bayesian networks can be automatically preprocessed to take advantage of this new weight format, outlining the properties of encodings that allow the transformation to preserve the weighted model count.
+\item WFOMC (and first-order knowledge compilation in particular) as (potentially recursive) function generators
+\end{itemize}
+
+\paragraph{Impact: What broad areas of research are affected by my work?}
+\begin{itemize}
+\item AI: PGMs, statistical relational learning
+\item theory and algorithms: arithmetic complexity, counting algorithms
+\end{itemize}
+
+% ================================= REFLECTIONS ABOUT WMC and WFOMC =================================
+
+\begin{itemize}
+\item Algorithmically, WMC is interesting because it relates to both classic decision problems such as SAT and function problems like polynomial evaluation.
+\item some of the algorithmic techniques employed are:
+  \begin{itemize}
+  \item knowledge compilation \citep{DBLP:journals/jair/DarwicheM02}
+  \item dynamic programming based on tree decompositions \citep{DBLP:conf/cp/DudekPV20}
+  \item SAT-based/inspired (Cachet \citep{DBLP:conf/sat/SangBBKP04})
+  \item search (greedy in \citep{DBLP:conf/ijcai/BroeckTMDR11} and greedy/breadth-first hybrid in \cref{chapter:wfomc})
+  \end{itemize}
+\item the fuzzy boundary between tractability and intractability
+\end{itemize}
+
+\paragraph{Differences between WMC and WFOMC}
+\begin{itemize}
+\item size of instance
+\item number of operations performed (small well-implemented operations are more important for WMC)
+\item tractability considerations: heuristics (WMC) vs provable complexity (WFOMC)
+\end{itemize}
+
+\section{Future Directions}
+% ============================== EMPHASISE THE BIG PICTURE ==============================
+% challenges that we weren't successful in addressing: ???
+
+\paragraph{Empirical algorithmics.}
+\begin{itemize}
+\item Random instance generation
+  \begin{itemize}
+  \item prove (e.g., for LPs or first-order logic more generally) that most random instances are easy
+  \item theoretical ties with parameterized complexity
+  \item portfolio development
+  \end{itemize}
+\end{itemize}
+
+\paragraph{Dynamic programming algorithms.}
+\begin{itemize}
+\item (briefly mentioned) DPMC-inspired dynamic programming algorithms for other semiring-based problems
+\item approximate DPMC: cite the APRICODD paper. Also, if two sinks have very similar values, an approximation could merge them.
+\end{itemize}
+
+\paragraph{Computational complexity.}
+\begin{itemize}
+\item How much of the complexity comes from arithmetic circuit complexity and how much from looking for that circuit? Same for WMC.
+\item Arithmetic hardness for various sumprod/counting problems.
+\item The central goal guiding my future work is to better understand what kind of function problems can be (efficiently) solved by WMC for various logics and extensions thereof.
+\item prove that transitivity cannot be computed in polynomial time
+\end{itemize}
+
+\paragraph{Improvements to WFOMC.}
+\begin{itemize}
+\item new compilation rules?
+\item powers of negative one? log factors? solving recurrence relations in closed form? division?
+\item asymptotic solutions
+\item Potential application for expressing WFOMC as algebraic expressions over domain sizes. Q: Under what conditions over domain sizes would $\Pr(x) \ge \Pr(y)$ (or same for expectations)? We can solve this as an inequality. This could aid in probabilistic decision making, XAI, etc.
+\item enable double recursion
+\item learning FCGs
+\item completeness: if an algebraic solution exists, are we able to find it? Not yet, not quite.
+\item a different kind of completeness: what kind of sequences and integer functions can be encoded in FOL?
+\end{itemize}
+
+\paragraph{New applications.}
+\begin{itemize}
+\item random instance generators
+  \begin{itemize}
+  \item use the LP generator to find interesting WFOMC instances
+  \end{itemize}
+\item W(FO)MC algorithms
+  \begin{itemize}
+  \item other semirings
+  \item reductions to/from other sumprod problems
+  \end{itemize}
+\item WFOMC
+  \begin{itemize}
+  \item wider use in probabilistic inference
+  \item hybrid FO/propositional solvers (describe the current state of things)
+  \item citing the paper: automated enumerative combinatorist: if you can describe it, I can count it
+  \end{itemize}
+\end{itemize}
+
+Many open questions remain about the capabilities of logic-based methods for counting and performing sum-of-products computations, particularly in the context of first-order logic. The answer to a WFOMC instance depends on three things: the formula, the weights, and the domain sizes. By fixing the first two, the instance becomes a logical representation of a function $\mathbb{N}_0^n \to \mathbb{R}_{\ge 0}$, where $n$ is the number of domains. In particular, an unweighed formula $\phi$ that depends on only one domain $\Delta$ represents an integer sequence that we get by computing the model count of $\phi$ across all possible cardinalities of $\Delta$. This observation raises important open questions with the potential to improve WFOMC algorithms, contribute to other counting problems and find new efficiently-computable formulas to sequences of interest.
+
+First, how complete is first-order logic in its ability to describe such functions? Can we identify conditions (e.g., monotonicity) that must be satisfied by a function for it to be representable as an instance of WFOMC? Can we find examples of simple sequences that are provably unrepresentable? Would a different kind of logic (e.g., second-order or modal) be more complete in this way? Answering these questions could help identify new areas of application of WFOMC and ensure that instances that are solvable in theory can be solved in practice as well.
+
+Second, instead of finding (a more complex type of) arithmetic circuits that compute functions from their logical descriptions, is it possible to go in the other direction? That is, can we identify logical gadgets for all algebraic operations that could then be combined to form a WFOMC representation of a given function? This way, WFOMC could be used to automatically reformulate, e.g., functions that use an exponential amount of recursive calls to more tractable expressions.
+
+Third, if a WFOMC algorithm identifies a recursive function (or a recurrence relation) as part of the solution, can we use one of the many recurrence-relation-solving techniques to replace recursive computations with a closed-form solution? More generally, there is ample opportunity to expand the set of algorithmic techniques and algebraic constructions used in WFOMC to one that is more complete (i.e., able to construct tractable solutions) and efficient. For instance, the use of negation is currently limited to Skolemization (i.e., removal of existential quantification), but one can construct instances whose most efficient solutions feature powers of negative one despite the formula having no existential quantification. Similarly to \cref{chapter:wfomc}, this could further extend the set of instances that can be handled in a lifted (i.e., tractable with respect to domain sizes) manner and improve the complexity of solutions that are already tractable.
