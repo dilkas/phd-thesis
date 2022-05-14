@@ -9,7 +9,7 @@
 
 TODO: a short introduction?
 
-\section{Summary}
+\section{Contributions}
 
 The main contributions of this thesis can be divided into two parts:
 \begin{itemize}
@@ -23,105 +23,63 @@ On the empirical front, most of our contributions focus on the efficiency and tr
 
 % ================================= UNDERSTANDING =================================
 
-The experimental work in these last two chapters, i.e., \cref{chapter:randomlps,chapter:comparison}, also contain important observations about WMC and probabilistic inference algorithms.
+The experimental work in these last two chapters, i.e., \cref{chapter:randomlps,chapter:comparison}, also contains important observations about WMC and probabilistic inference algorithms. First, \cref{chapter:randomlps} demonstrates remarkable similarities among ProbLog inference algorithms. This observation suggests that the bottleneck of ProbLog inference (at least across our random instances) might be related to logic programming more than WMC. Second, \cref{chapter:comparison} reveals, among other things, that WMC algorithms based on algebraic decision diagrams (ADDs) and dynamic programming scale worse with primal treewidth and work better with instances that have fewer clauses (i.e., lower density) compared to other algorithms. Understanding such differences among algorithms is important in the development of new algorithms, algorithm portfolios, and hybrid approaches to WMC. Back in \cref{chapter:wmc1}, we show how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra. This insight leads us to consider generalised weight functions that express, e.g., conditional probabilities more succinctly and can lead to improved probabilistic inference speed for Bayesian networks. In \cref{chapter:wmc2}, we continue the work on generalising WMC and formally define the generalisation as pseudo-Boolean projection (PBP). Moreover, we show that previous work on WMC encodings is not in vain and the benefits can (in most cases) be transferred to PBP. Lastly, \cref{chapter:wfomc} contains two important lessons. First, `circuits' with cycles can be more expressive than their acyclic predecessors. Second, first-order model counting (and first-order knowledge compilation in particular) can discover the definitions of recursive functions (including recurrence relations) that capture the model count of a given sentence.
 
-% TODO: start here
-\paragraph{What do we understand better as a consequence of my work?}
-\begin{itemize}
-\item A better understanding of what determines efficiency (from both theoretical and experimental perspectives)
-  \begin{itemize}
-  \item the puzzling LP result: showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
-  \item interactions with density and primal treewidth: showed that ADD-based WMC algorithms scale worse w.r.t. it than all other algorithms
-  \end{itemize}
-\item both: WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions. \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra. \Cref{chapter:wmc1} shows how WMC can be understood as the process of computing the measure of an element of a free Boolean algebra. This observation allows us to generalise the domain of the weight function from literals to arbitrary formulas. With this generalisation, many variables and clauses added to a WMC instance while encoding, e.g., a Bayesian network become redundant.
-\item how generalising weight functions leads to a more `natural' version of WMC (and the new format (PBP) that comes from that), the transformation, several sets of sufficient conditions for its correctness. In \cref{chapter:wmc2}, we then show how most WMC encodings for Bayesian networks can be automatically preprocessed to take advantage of this new weight format, outlining the properties of encodings that allow the transformation to preserve the weighted model count.
-\item WFOMC (and first-order knowledge compilation in particular) as (potentially recursive) function generators
-\end{itemize}
+%% \section{Discussion}
 
-\paragraph{Impact: What broad areas of research are affected by my work?}
-\begin{itemize}
-\item AI: PGMs, statistical relational learning
-\item theory and algorithms: arithmetic complexity, counting algorithms
-\end{itemize}
+%% While WMC and its counterpart for first-order logic WFOMC both take logic-based input and compute a sum of products, algorithmically they are quite different. The first difference is in the size of input: most WFOMC benchmarks have at most three variables whereas most WMC instances have thousands of variables. This difference motivates the definition of liftability in lieu of tractability. Let us take DPMC \citep{DBLP:conf/cp/DudekPV20} and ForcLift as representative examples of algorithms for each problem. The way in which an algorithm solves an instance can be explained as a sequence of operations: on ADDs in the former case and on (a variation of) formulas in the latter. However, due to the difference in input size, WMC algorithms are expected to perform a much larger number of such operations. Hence, the efficiency of each individual operation is more important in the case of WMC. Here, optimising not just the asymptotic complexity of each operation but also the data structures in use can yield significant performance gains. Finally, there is an important difference regarding complexity. As is the case with all complete exact solutions to \NP-hard problems, WMC algorithms have an exponential worst-case complexity. A typical algorithm attempts to do much better on most realistic instances, but provides no guarantees. In contrast, one can often express the running time of a WFOMC algorithm on an instance $\mathscr{I}$ as $\Theta(p(n_1, \dots, n_k))$, where $p$ is a polynomial, and $\{\,n_i\,\}_{i=1}^k$ are the sizes of the domains in $\mathscr{I}$.
 
-% ================================= REFLECTIONS ABOUT WMC and WFOMC =================================
+%% Algorithmically, W(FO)MC is interesting because of its connections to classic decision problems such as SAT, counting problems like $\#\SAT{}$, and other function problems such as polynomial evaluation. The algorithms benefit from many disparate techniques such as dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}, knowledge compilation \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/BroeckTMDR11}, search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/BroeckTMDR11}, tree decompositions \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}, and close collaboration with SAT algorithms \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/sat/SangBBKP04}.
 
-\begin{itemize}
-\item Algorithmically, WMC is interesting because it relates to both classic decision problems such as SAT and function problems like polynomial evaluation.
-\item some of the algorithmic techniques employed are:
-  \begin{itemize}
-  \item knowledge compilation \citep{DBLP:journals/jair/DarwicheM02}
-  \item dynamic programming based on tree decompositions \citep{DBLP:conf/cp/DudekPV20}
-  \item SAT-based/inspired (Cachet \citep{DBLP:conf/sat/SangBBKP04})
-  \item search (greedy in \citep{DBLP:conf/ijcai/BroeckTMDR11} and greedy/breadth-first hybrid in \cref{chapter:wfomc})
-  \end{itemize}
-\item the fuzzy boundary between tractability and intractability
-\end{itemize}
+%% We hope that the contributions in this thesis will...
 
-\paragraph{Differences between WMC and WFOMC}
-\begin{itemize}
-\item size of instance
-\item number of operations performed (small well-implemented operations are more important for WMC)
-\item tractability considerations: heuristics (WMC) vs provable complexity (WFOMC)
-\end{itemize}
+%% \paragraph{Impact: What broad areas of research are affected by my work?}
+%% \begin{itemize}
+%% \item theory and algorithms: counting algorithms, arithmetic complexity
+%% \item AI: PGMs, statistical relational learning
+%% \end{itemize}
 
-\section{Future Directions}
-% ============================== EMPHASISE THE BIG PICTURE ==============================
-% challenges that we weren't successful in addressing: ???
+\section{Future Directions} % emphasise the big picture
+%% approximate DPMC: cite the APRICODD paper \citep{DBLP:conf/nips/St-AubinHB00}. Also, if two sinks have very similar values, an approximation could merge them
 
-\paragraph{Empirical algorithmics.}
-\begin{itemize}
-\item Random instance generation
-  \begin{itemize}
-  \item prove (e.g., for LPs or first-order logic more generally) that most random instances are easy
-  \item theoretical ties with parameterized complexity
-  \item portfolio development
-  \end{itemize}
-\end{itemize}
+In this section, we present a broad overview of how our contributions and the questions raised by this work could be taken forward and influence key areas of research in computer science, artificial intelligence, and mathematics.
 
-\paragraph{Dynamic programming algorithms.}
-\begin{itemize}
-\item (briefly mentioned) DPMC-inspired dynamic programming algorithms for other semiring-based problems
-\item approximate DPMC: cite the APRICODD paper. Also, if two sinks have very similar values, an approximation could merge them.
-\end{itemize}
+\paragraph{Algorithms and applications.}
+In this thesis, we contributed to the development and applicability of three WMC algorithms: ADDMC \citep{DBLP:conf/aaai/DudekPV20}, DPMC \citep{DBLP:conf/cp/DudekPV20}, and ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11}. The first two are propositional WMC algorithms based on ADDs while ForcLift is a WMC algorithm for first-order logic based on knowledge compilation. Most weighted first-order model counting (WFOMC) algorithms try to solve each instance in a lifted manner (i.e., run in polynomial time with respect to the sizes of the domains involved) and fail if unsuccessful. ForcLift is an exception as it supports using a (propositional) WMC algorithm for parts of the problem that cannot be solved by other compilation rules. Can this transition to WMC be implemented more efficiently, i.e., without fully grounding the instance? Is the WFOMC algorithm better off constructing its own exponential-time solution instead of relying on a WMC algorithm (and is that even possible)? The only way WFOMC can become the standard approach to probabilistic inference in statistical relational models is by being able to gracefully handle all instances, even if it means abandoning efficiency guarantees. Finally, ample opportunities remain to connect WMC with new problem domains. For instance, back in \cref{chapter:introduction} we compared WMC to a range of other computational problems that ask to compute a sum of products. Establishing efficient reductions among these problems could yield new fixed-parameter tractable algorithms and/or improvements to the empirical state of the art. Similarly, adapting a WMC algorithm to a semiring other than $(\mathbb{R}_{\ge 0}, +, \cdot)$ could yield improvements to some of the related problems outlined by \citet{DBLP:journals/japll/KimmigBR17}.
 
-\paragraph{Computational complexity.}
+\paragraph{Theory and computational complexity.}
 \begin{itemize}
 \item How much of the complexity comes from arithmetic circuit complexity and how much from looking for that circuit? Same for WMC.
-\item Arithmetic hardness for various sumprod/counting problems.
+\item prove that transitivity cannot be computed in polynomial time. Arithmetic hardness for various sumprod/counting problems.
 \item The central goal guiding my future work is to better understand what kind of function problems can be (efficiently) solved by WMC for various logics and extensions thereof.
-\item prove that transitivity cannot be computed in polynomial time
+\item completeness: if an algebraic solution exists, are we able to find it? Not yet, not quite.
+\item Another important avenue for future research is on the expressive power of various logics and languages. Mention $f(n) = f(f(n-1))$. A different kind of completeness: what kind of sequences and integer functions can be encoded in FOL? What about other kinds of logics and languages?
 \end{itemize}
 
-\paragraph{Improvements to WFOMC.}
+\paragraph{Random instance generation.}
 \begin{itemize}
-\item new compilation rules?
-\item powers of negative one? log factors? solving recurrence relations in closed form? division?
+\item random LPs that are guaranteed to be uniform
+\item use the LP generator to find interesting WFOMC instances
+\item conjecture: prove (e.g., for LPs or first-order logic more generally) that most random instances are easy
+\item random CNFs with bounds on primal treewidth (what makes it tricky in my case is that one random decision influences/conditions all subsequent decisions, unlike in the case of Erd\H{o}s-R\'enyi random graphs)
+\end{itemize}
+
+\paragraph{Artificial intelligence and combinatorics.}
+\begin{itemize}
+\item Making it more powerful
+  \begin{itemize}
+  \item new compilation rules?
+  \item powers of negative one?
+  \item log factors?
+  \item solving recurrence relations in closed form?
+  \item division?
+  \item enable double recursion
+  \end{itemize}
 \item asymptotic solutions
 \item Potential application for expressing WFOMC as algebraic expressions over domain sizes. Q: Under what conditions over domain sizes would $\Pr(x) \ge \Pr(y)$ (or same for expectations)? We can solve this as an inequality. This could aid in probabilistic decision making, XAI, etc.
-\item enable double recursion
 \item learning FCGs
-\item completeness: if an algebraic solution exists, are we able to find it? Not yet, not quite.
-\item a different kind of completeness: what kind of sequences and integer functions can be encoded in FOL?
-\end{itemize}
-
-\paragraph{New applications.}
-\begin{itemize}
-\item random instance generators
-  \begin{itemize}
-  \item use the LP generator to find interesting WFOMC instances
-  \end{itemize}
-\item W(FO)MC algorithms
-  \begin{itemize}
-  \item other semirings
-  \item reductions to/from other sumprod problems
-  \end{itemize}
-\item WFOMC
-  \begin{itemize}
-  \item wider use in probabilistic inference
-  \item hybrid FO/propositional solvers (describe the current state of things)
-  \item citing the paper: automated enumerative combinatorist: if you can describe it, I can count it
-  \end{itemize}
+\item wider use in probabilistic inference
+\item automated enumerative combinatorist \citep{DBLP:conf/ilp/BarvinekB0ZK21}: if you can describe it, I can count it
 \end{itemize}
 
 Many open questions remain about the capabilities of logic-based methods for counting and performing sum-of-products computations, particularly in the context of first-order logic. The answer to a WFOMC instance depends on three things: the formula, the weights, and the domain sizes. By fixing the first two, the instance becomes a logical representation of a function $\mathbb{N}_0^n \to \mathbb{R}_{\ge 0}$, where $n$ is the number of domains. In particular, an unweighed formula $\phi$ that depends on only one domain $\Delta$ represents an integer sequence that we get by computing the model count of $\phi$ across all possible cardinalities of $\Delta$. This observation raises important open questions with the potential to improve WFOMC algorithms, contribute to other counting problems and find new efficiently-computable formulas to sequences of interest.
