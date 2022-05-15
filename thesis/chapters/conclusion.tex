@@ -47,14 +47,27 @@ In this section, we present a broad overview of how our contributions and the qu
 \paragraph{Algorithms and applications.}
 In this thesis, we contributed to the development and applicability of three WMC algorithms: ADDMC \citep{DBLP:conf/aaai/DudekPV20}, DPMC \citep{DBLP:conf/cp/DudekPV20}, and ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11}. The first two are propositional WMC algorithms based on ADDs while ForcLift is a WMC algorithm for first-order logic based on knowledge compilation. Most weighted first-order model counting (WFOMC) algorithms try to solve each instance in a lifted manner (i.e., run in polynomial time with respect to the sizes of the domains involved) and fail if unsuccessful. ForcLift is an exception as it supports using a (propositional) WMC algorithm for parts of the problem that cannot be solved by other compilation rules. Can this transition to WMC be implemented more efficiently, i.e., without fully grounding the instance? Is the WFOMC algorithm better off constructing its own exponential-time solution instead of relying on a WMC algorithm (and is that even possible)? The only way WFOMC can become the standard approach to probabilistic inference in statistical relational models is by being able to gracefully handle all instances, even if it means abandoning efficiency guarantees. Finally, ample opportunities remain to connect WMC with new problem domains. For instance, back in \cref{chapter:introduction} we compared WMC to a range of other computational problems that ask to compute a sum of products. Establishing efficient reductions among these problems could yield new fixed-parameter tractable algorithms and/or improvements to the empirical state of the art. Similarly, adapting a WMC algorithm to a semiring other than $(\mathbb{R}_{\ge 0}, +, \cdot)$ could yield improvements to some of the related problems outlined by \citet{DBLP:journals/japll/KimmigBR17}.
 
-\paragraph{Theory and computational complexity.}
+%% The two theoretical directions for future work we discuss here are on the arithmetic complexity of WMC/WFOMC and the various notions of completeness of WFOMC algorithms. 
+%% \begin{itemize}
+%% \item arithmetic complexity
+%%   \begin{itemize}
+%%   \item prove that transitivity (sequence A006905 in the on-line encyclopedia of integer sequences\footnote{\url{https://oeis.org/A006905}}) cannot be computed in polynomial time.
+%%   \end{itemize}
+%% \item completeness: if an algebraic solution exists, are we able to find it? As we continue to expand the capabilities of WFOMC, the answer clearly is `not yet'. Two parts to this question:
+%%   \begin{itemize}
+%%   \item can a suitable FCG be constructed from the given node types?
+%%   \item can the right combination of compilation rules lead to the construction of such an FCG?
+%%   \item Another important avenue for future research is on the expressive power of various logics and languages. Mention $f(n) = f(f(n-1))$. A different kind of completeness: what kind of sequences and integer functions can be encoded in FOL? What about other kinds of logics and languages? \citep{Benthem2021INTERLEAVINGLA}
+%%   \end{itemize}
+%% \end{itemize}
+
+\paragraph{Computational complexity.}
+Note that the execution of both WMC and WFOMC algorithms can be divided into two parts:
 \begin{itemize}
-\item How much of the complexity comes from arithmetic circuit complexity and how much from looking for that circuit? Same for WMC.
-\item prove that transitivity cannot be computed in polynomial time. Arithmetic hardness for various sumprod/counting problems.
-\item The central goal guiding my future work is to better understand what kind of function problems can be (efficiently) solved by WMC for various logics and extensions thereof.
-\item completeness: if an algebraic solution exists, are we able to find it? Not yet, not quite.
-\item Another important avenue for future research is on the expressive power of various logics and languages. Mention $f(n) = f(f(n-1))$. A different kind of completeness: what kind of sequences and integer functions can be encoded in FOL? What about other kinds of logics and languages?
+\item looking for a \emph{solution} (i.e., an arithmetic circuit/expression that computes the required sum of products) and
+\item performing the numerical computations that produce the final answer.
 \end{itemize}
+(The two are typically much more intertwined in the case of propositional WMC.) With this dichotomy in mind, one could ask: are the algorithms finding optimal solutions? How much of the total running time depends on the complexity of the solution, and how much on the algorithmic methods for finding one? Answers to these questions would highlight the weaknesses of state-of-the-art algorithms and direct the efforts of future research towards addressing these weaknesses. On a more theoretical level, single-domain (W)FOMC problems compute sequences, many of which are well-known to mathematicians. Since there is significant interest in computing such sequences efficiently, the existence of many such sequences with no efficient formulas suggests that a tractable solution might not exist. However, we have no proof of that, i.e., no arithmetic circuit lower bounds for sequences that have been known for decades and are easy to describe in natural language and in logic. So far, the most notable hardness result states that there exists a sentence in first-order logic with three variables for which FOMC is $\#\P_1$-complete \citep{DBLP:conf/pods/BeameBGS15}. Having similar hardness results for sentences that are both simple and practical would be a significant advancement to the field.
 
 \paragraph{Random instance generation.}
 \begin{itemize}
@@ -73,12 +86,10 @@ In this thesis, we contributed to the development and applicability of three WMC
   \item log factors?
   \item solving recurrence relations in closed form?
   \item division?
-  \item enable double recursion
   \end{itemize}
 \item asymptotic solutions
 \item Potential application for expressing WFOMC as algebraic expressions over domain sizes. Q: Under what conditions over domain sizes would $\Pr(x) \ge \Pr(y)$ (or same for expectations)? We can solve this as an inequality. This could aid in probabilistic decision making, XAI, etc.
 \item learning FCGs
-\item wider use in probabilistic inference
 \item automated enumerative combinatorist \citep{DBLP:conf/ilp/BarvinekB0ZK21}: if you can describe it, I can count it
 \end{itemize}
 
