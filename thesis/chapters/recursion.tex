@@ -1,4 +1,4 @@
-\chapter{Recursive Solutions to First-Order Model Counting} \label{chapter:wfomc}
+\chapter{Recursive Solutions to FOMC} \label{chapter:wfomc}
 
 \paragraph{Abstract.}
 First-order model counting (FOMC) is a \#\P-complete computational problem that asks to count the models of a sentence in first-order logic. Despite being around for more than a decade, practical FOMC algorithms are still unable to compute functions as simple as a factorial. We argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To enable arbitrary recursion, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established (weighted) FOMC algorithm ForcLift with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to find efficient solutions to counting fundamental structures such as injections and bijections.
@@ -9,6 +9,8 @@ First-order model counting (FOMC) is a \#\P-complete computational problem that 
 % TODO: change "ForcLift [Van den Broecket al., 2011] can construct recursive functions that efficiently solve countingproblems that used to be beyond its reach." 
 % to
 % ForcLift [Van den Broecket al., 2011] is adapted to be able to construct recursive functions that efficiently solve countingproblems that used to be beyond its reach previously.
+
+TODO: fix the pfun symbol
 
 % Definition and scope of the topic: FOMC
 
@@ -115,7 +117,7 @@ In a way, we're dividing the idea of domain recursion between the IDR and the Re
 
 \section{First-Order Logic}
 
-In this section, we describe a variation of function-free first-order logic with equality. For a more complete exposition of first-order logic, see the book by \cite{DBLP:books/daglib/0023546}.
+In this section, we describe a variation of function-free first-order logic with equality. For a more complete exposition of first-order logic, see the book by \citet{DBLP:books/daglib/0023546}.
 
 In first-order logic, an \emph{atom} (i.e., an atomic formula) is either $t_1 = t_2$ or $P(t_1, \dots, t_n)$ for some predicate $P$ and terms $(t_i)_{i=1}^n$. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. A \emph{term} is either a constant or a variable (we also call terms \emph{arguments}). An atom is \emph{ground} if all of its terms are constants.
 
@@ -172,7 +174,7 @@ TODO: reorder Section 6 to introduce DR before CR before Ref.
 \item We write $\to$ for functions, $\pfun$ for partial functions, $\twoheadrightarrowtail$ for bijections, and $\hookrightarrow$ for set inclusion. Let $\id$ denote the identity function (on any domain). For any function $f$, let $\Imm f$ be the image of $f$.
 \end{itemize}
 
-Most of the definitions here are adaptations/formalisations of \cite{DBLP:conf/ijcai/BroeckTMDR11} and the corresponding code.
+Most of the definitions here are adaptations/formalisations of \citep{DBLP:conf/ijcai/BroeckTMDR11} and the corresponding code.
 
 \begin{definition}
   A \emph{domain} is a symbol for a finite set.\footnote{In the context of functions, the domain of a function $f$ retains its usual meaning and is denoted $\dom(f)$.}
@@ -182,6 +184,7 @@ Most of the definitions here are adaptations/formalisations of \cite{DBLP:conf/i
   An \emph{(inequality) constraint} is a pair $(a, b)$, where $a$ is a variable, and $b$ is either a variable or a constant.
 \end{definition}
 
+% TODO (V): It might be worth emphasising that you are introducing new notation in new concepts to provide a metatheory to the existing literature on listed reasoning
 \begin{definition}
   A \emph{clause} is a triple $c = (L, C, \delta_c)$, where $L$ is a set of literals, $C$ is a set of constraints, and $\delta_c$ is a function that maps all variables in $c$ to their domains such that (s.t.) if $(x, y) \in C$ for some variables $x$ and $y$, then $\delta_c(x) = \delta_c(y)$. Note that for convenience sometimes we write $\delta_c$ for the domain map of $c$ without unpacking $c$ into its three constituents.
 
@@ -217,11 +220,12 @@ Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list wit
 
 A \emph{first-order deterministic decomposable negation normal form computational graph} (FCG) is a (weakly connected) directed graph with a a single source, vertex labels, and ordered outgoing edges.\footnote{Note that imposing an ordering on outgoing edges is just a limited version of edge labelling.} We denote an FCG as $G = (V, s, N^+, \tau)$, where $V$ is the set of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct successor function that maps each vertex in $V$ to a \emph{list} that contains either other vertices in $V$ or a special symbol $\star$. This symbol means that the target of the edge is yet to be determined.
 
-Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. For the main definition, we leave the parameters implicit and let $\tau\colon V \to \mathcal{T}$ denote the vertex-labelling function that maps each vertex in $V$ to its type in $\mathcal{T}$. Most of our list of types $\mathcal{T} \coloneqq \{\, \Smoothing, \Unit, \Tautology, \Contradiction, \oland, \olor, \CR, \DR, \IE, \Reff \,\}$ is as described in previous work \cite{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the source code of \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}} but with one new type $\CR$ and two revamped types $\DR$ and $\Reff$. For each vertex $v \in V$, the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by its type $\tau(v)$.
+Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. For the main definition, we leave the parameters implicit and let $\tau\colon V \to \mathcal{T}$ denote the vertex-labelling function that maps each vertex in $V$ to its type in $\mathcal{T}$. Most of our list of types $\mathcal{T} \coloneqq \{\, \Smoothing, \Unit, \Tautology, \Contradiction, \oland, \olor, \CR, \DR, \IE, \Reff \,\}$ is as described in previous work \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the source code of \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}} but with one new type $\CR$ and two revamped types $\DR$ and $\Reff$. For each vertex $v \in V$, the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by its type $\tau(v)$.
 
 TODO: conjunctions and disjunctions should be different from set-conjunctions and set-disjunctions.
 
-As in previous work \cite{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual vertices and small (sub)-FCGs, we also use notation of the form, e.g., $\Reff_\rho(v)$. Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct successors (e.g., $v$) using either function or infix notation and provided with its parameter(s) (e.g., $\rho$) in the subscript. We say that `$G$ is an FCG for formula $\phi$' if two conditions are satisfied. First, the image of $N^+$ contains no $\star$'s. Second, $G$ encodes a function that maps the sizes of the domains in $\phi$ to the WMC of $\phi$ (more on this in \cref{sec:evaluation}).
+% TODO (V): It might be good to clarify which of this notation is new and which of this is from previous work.
+As in previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual vertices and small (sub)-FCGs, we also use notation of the form, e.g., $\Reff_\rho(v)$. Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct successors (e.g., $v$) using either function or infix notation and provided with its parameter(s) (e.g., $\rho$) in the subscript. We say that `$G$ is an FCG for formula $\phi$' if two conditions are satisfied. First, the image of $N^+$ contains no $\star$'s. Second, $G$ encodes a function that maps the sizes of the domains in $\phi$ to the WMC of $\phi$ (more on this in \cref{sec:evaluation}).
 
 \paragraph{TODO.}
 \begin{itemize}
@@ -240,6 +244,7 @@ As in previous work \cite{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual 
   \end{itemize}
 \end{definition}
 
+% TODO (V): Again here good to clarify which of the notation is New. But more importantly it would have been useful to just have a short discussion of what the contribution here exactly is. 
 \begin{definition}
   A (compilation) \emph{rule} is a function that takes a formula and returns a set of $(G, L)$ pairs, where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas.
 
@@ -371,6 +376,7 @@ We assume that if there is a pair $(\texttt{null}, L)$ in the set returned by a 
 TODO: explain the `tail' part of the algorithm, i.e., that the first formula is replaced by some vertices and some formulas. And explain why we don't want to have \textsc{Ref} vertices in the cache.
 
 Note: At the end, \texttt{mergeFcgs} will never return \texttt{null} because there is going to be at least one $\star$ in $G$ and the function will find it.
+% TODO (V): I understand that you have a fix or improvement to the existing procedure, but I hope you’re aware of how this is a noteworthy contribution from a high-level perspective
 
 \section{In-Between Compilation and Inference: Smoothing}
 
@@ -615,7 +621,7 @@ TODO: describe \cref{alg:constraintremoval} and rewrite the example below.
 \paragraph{The algorithm uses this notation for substitution.}
 Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. Then we write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
 
-TODO: Compare with the original \cite{DBLP:conf/nips/Broeck11}.
+TODO: Compare with the original \citep{DBLP:conf/nips/Broeck11}.
 
 The reason for this precondtion is the same as in the initial version of domain recursion: there must be a variable with that domain featured among the literals because it needs to be replaced by a constant. TODO: expand this.
 
@@ -667,13 +673,14 @@ One is picked as the multiplicative identity.
 
 \section{How to Evaluate an FCG} \label{sec:evaluation}
 
-Along with the three vertex types described above, here are all the other ones. This section is mostly just taken from \cite{DBLP:conf/ijcai/BroeckTMDR11} but with some changes in notation.
+Along with the three vertex types described above, here are all the other ones. This section is mostly just taken from \citep{DBLP:conf/ijcai/BroeckTMDR11} but with some changes in notation.
 
 \begin{definition}
   Let $\gr(\cdot; \sigma)$ be the function (parameterised by the domain size function $\size$) that takes a clause $c = (L, C, \delta)$ and returns the number of ways the variables in $c$ can be replaced by elements of their respective domains in a way that satisfies the inequality constraints.\footnote{Note that the literals of the clause have no effect on $\gr$.} Formally, for each variable $v \in \Vars(c)$, let $C_v = \{ w \mid (u, w) \in C \setminus \Vars(c)^2 \text{, }u \ne v \}$ be the set of (explicitly named) constants that $v$ is permitted to be equal to. Then
-  \[
-  \gr(c; \sigma) \coloneqq \left|\left\{\, (e_v)_{v \in \Vars(c)} \in \prod_{v \in \Vars(c)} C_v \sqcup [\sigma(\delta(v)) - |C_v|] \;\middle|\; \right.\right. e_u \ne e_w \text{ for all } (u, w) \in C \cap \Vars(c)^2 \left.\left. \vphantom{\prod_{v \in \Vars(c)}} \,\right\}\right|
-  \]
+  \begin{multline*}
+    \gr(c; \sigma) \coloneqq \left|\left\{\, (e_v)_{v \in \Vars(c)} \in \prod_{v \in \Vars(c)} C_v \sqcup [\sigma(\delta(v)) - |C_v|] \;\middle| \right.\right. \\
+    e_u \ne e_w \text{ for all } (u, w) \in C \cap \Vars(c)^2 \left.\left. \vphantom{\prod_{v \in \Vars(c)}} \,\right\}\right|
+  \end{multline*}
   for any clause $c$. (Here, $[n] \coloneqq \{\,1, 2, \dots, n\,\}$ for any non-negative integer $n$.)
 \end{definition}
 
@@ -711,8 +718,8 @@ TODO: explain that $x, y, z$ refer to vertices, $c$ refers to a clause, and desc
     Partial & Endo & Class & Best Known & With Circuits & With Graphs \\
     \midrule
     \rowcolor{gray!10}\cmark/\xmark & \cmark/\xmark & Functions & $\log m$ & $m$ & $m$ \\
-    \xmark & \xmark & \multirow{4}{*}{Surjections} & $n \log m$ \cite{30049} & ? & ? \\
-    \xmark & \cmark & & $n \log m$ \cite{30049} & ? & ? \\
+    \xmark & \xmark & \multirow{4}{*}{Surjections} & $n \log m$ \citet{30049} & ? & ? \\
+    \xmark & \cmark & & $n \log m$ \citet{30049} & ? & ? \\
     \cmark & \xmark & & \multicolumn{3}{c}{Same as injections from $b$ to $a$} \\
     \cmark & \cmark & & \multicolumn{3}{c}{Same as endo-injections} \\
     \rowcolor{gray!10}\xmark & \xmark & & $\log m$ & - & $mn$ \\
@@ -787,6 +794,7 @@ to ensure surjectivity or remove \cref{eq:def2} to consider partial functions. L
 
 \paragraph{Results.}
 \begin{itemize}
+  % TODO (V): Just to be clear for my understanding, the improvements and the alterations of the algorithms in the above pages are completely in service of extending the lifting algorithm to account for these new formulas, right? That is in other  words your contribution here is showing how the algorithms can be further extended to account for these additional formulas, & that’s what the paper is about?
 \item 1d bijections and 1d injections (note that it's the same problem). Depth 3 solution:
   \begin{align*}
     f(n) &= \sum_{m=0}^n \binom{n}{m} (-1)^{n-m}g(n, m) \\
