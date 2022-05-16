@@ -6,12 +6,6 @@ First-order model counting (FOMC) is a \#\P-complete computational problem that 
 \clearpage
 \section{Introduction/Summary}
 
-% TODO: change "ForcLift [Van den Broecket al., 2011] can construct recursive functions that efficiently solve countingproblems that used to be beyond its reach." 
-% to
-% ForcLift [Van den Broecket al., 2011] is adapted to be able to construct recursive functions that efficiently solve countingproblems that used to be beyond its reach previously.
-
-TODO: fix the pfun symbol
-
 % Definition and scope of the topic: FOMC
 
 \emph{First-order model counting} (FOMC) is the problem of computing the number of models of a sentence in first-order logic given the size(s) of its domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC (or, rather, its \emph{weighted} variant WFOMC) is in probabilistic inference, particularly for statistical relational models such as Markov logic networks that define probabilities over sets of objects and relations thereof \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
@@ -48,7 +42,7 @@ The topic of recursion in the context of WFOMC has been studied before but in ve
   \label{fig:idea}
 \end{figure}
 
-In this work, we show how new tractable solutions can be found by dispensing with these restrictions. With additional compilation rules and an algorithm for checking whether a `recursive call' is possible, ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} can construct recursive functions that efficiently solve counting problems that used to be beyond its reach. The main conceptual difference from the original algorithm is that the input formula is now compiled to a labelled directed graph rather than a circuit (i.e., cycles are allowed). This idea is illustrated in \cref{fig:idea}. Suppose the original formula $\phi$ depended on a domain of size $n \in \mathbb{N}$. Domain recursion transforms $\phi$ into a different formula $\psi$ that depends on a domain of size $n-1$. After some number of subsequent transformations, the algorithm identifies that a solution to $\psi$ can be constructed in part by finding a solution to a version of $\phi$ where the domain of size $n$ is replaced by a domain of size $n-1$. Recognising $\phi$ from before, we can add a cycle-forming edge to the graph, which can be interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
+In this work, we show how new tractable solutions can be found by dispensing with these restrictions. With additional compilation rules and an algorithm for checking whether a `recursive call' is possible, ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be able to construct recursive functions that efficiently solve counting problems that used to be beyond its reach. The main conceptual difference from the original algorithm is that the input formula is now compiled to a labelled directed graph rather than a circuit (i.e., cycles are allowed). This idea is illustrated in \cref{fig:idea}. Suppose the original formula $\phi$ depended on a domain of size $n \in \mathbb{N}$. Domain recursion transforms $\phi$ into a different formula $\psi$ that depends on a domain of size $n-1$. After some number of subsequent transformations, the algorithm identifies that a solution to $\psi$ can be constructed in part by finding a solution to a version of $\phi$ where the domain of size $n$ is replaced by a domain of size $n-1$. Recognising $\phi$ from before, we can add a cycle-forming edge to the graph, which can be interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
 
 %% \begin{itemize}
 %% \item one can then extract the (potentially recursive) definitions of functions from the graph
@@ -81,12 +75,6 @@ In our experiments, we consider variations of the function-counting problem. The
 \end{itemize}
 Many versions of this problem were previously unsolvable by any available (W)FOMC algorithm, whereas we can find recursive solutions (that can be evaluated in polynomial time) to all except one of these problems.
 
-%% \begin{itemize}
-%% \item $\Theta(mn)$ for $[m] \to [n]$ injections (optimal: $\Theta(\log m)$)
-%% \item $\Theta(m)$ for $[m] \to [n]$ bijections (optimal: $\Theta(\log m)$)
-%% \item TODO: add/explain the formulas as well
-%% \end{itemize}
-
 % Possible future enhancements and further work in progress
 
 Further work is necessary to fully automate this new way of computing the (W)FOMC of a formula. The new version of ForcLift produces a graph which then needs to be transformed to definitions of (potentially recursive) functions. In some cases, it is necessary to simplify the algebraic expressions in these definitions (e.g., reducing $x-x$ to zero for some expression $x$). Most importantly, the algorithm only gives us the recursive calls but not the base cases. What makes the problem of finding these base cases non-trivial is that the number of base cases is not constant for functions of arity greater than one (i.e., formulas that mention more than one domain). Nonetheless, these remaining challenges are minuscule compared to the broader goal of expanding the capabilities of (W)FOMC to new classes of instances.
@@ -100,10 +88,6 @@ Further work is necessary to fully automate this new way of computing the (W)FOM
 %% \end{itemize}
 
 \section{Introduction}
-
-TODO: incorporate Vaishak's feedback (from a PDF file)
-
-TODO: injectivity is similar to the all-different constraint
 
 \paragraph{Differences from the propositional setting.}
 \begin{itemize}
@@ -165,9 +149,8 @@ more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
 \item My formalisation of constraints is more restrictive than the original (e.g., in the thesis).
 \item \textsc{ForcLift}
 \item $\sqcup$ for both sets and functions
+\item injectivity is similar to the all-different constraint
 \end{itemize}
-
-TODO: reorder Section 6 to introduce DR before CR before Ref.
 
 \paragraph{Notation.}
 \begin{itemize}
@@ -408,7 +391,132 @@ Note: At the end, \texttt{mergeFcgs} will never return \texttt{null} because the
 
 Let $\mathcal{D}$ be the set of all domains. Note that this set expands during the compilation.
 
-\subsection{Identifying Possibilities for Recursion}
+\subsection{A Generalisation of Domain Recursion}
+
+\begin{algorithm}[t]
+  \caption{The compilation rule for $\DR$}
+  \label{alg:domainrecursion}
+  \KwIn{formula $\phi$}
+  \KwOut{set $S$}
+  $S \gets \emptyset$\;
+  \ForEach{domain $d \in \mathcal{D}$ s.t. there is a clause $c \in \phi$ and a variable $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$}{
+    $\phi' \gets \emptyset$\;
+    $x \gets \text{a new constant associated with domain } d$\;
+    \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
+      $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\;
+      \ForEach{subset $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and} $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant } y \,\} = \emptyset$\label{line:conditions}}{
+        \tcc{Here, $\delta'$ is the restriction of $\delta$ to the new set of variables}
+        $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;
+      }
+    }
+    $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \phi') \,\}$\;
+  }
+\end{algorithm}
+
+\paragraph{The algorithm uses this notation for substitution.}
+Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. Then we write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
+
+TODO: Compare with the original \citep{DBLP:conf/nips/Broeck11}.
+
+The reason for this precondtion is the same as in the initial version of domain recursion: there must be a variable with that domain featured among the literals because it needs to be replaced by a constant. TODO: expand this.
+
+TODO: describe \cref{alg:domainrecursion}.
+
+\begin{example}
+  Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
+  \begin{align*}
+    c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
+    c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
+  \end{align*}
+  While domain recursion is possible on both domains, here we illustrate how it works on $a$.
+
+  Suppose \cref{line:forclause} picks $c = c_1$ first. Then $V = \{\, X \,\}$. Both subsets of $V$ satisfy the conditions on \cref{line:conditions} and generate new clauses
+  \[
+  (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
+  \]
+  (from $W = \emptyset$) and
+  \[
+  (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
+  \]
+  (from $W = V$).
+
+  When $c = c_2$, then $V = \{\, X, Z \,\}$. The subset $W = V$ fails to satisfy the first condition because of the $Z \ne X$ constraint; without this condition, the resulting clause would have an unsatisfiable constraint $x \ne x$. The other three subsets of $V$ all generate clauses for $\phi'$:
+  \[
+  (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
+  \]
+  (from $W = \emptyset$),
+  \[
+  (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
+  \]
+  (from $W = \{\, X \,\}$), and
+  \[
+  (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
+  \]
+  (from $W = \{\, Z \,\}$).
+\end{example}
+
+\paragraph{Evaluation.}
+\[
+\WMC(\DR_{d \gets d \setminus \{\, x \,\}}(n); \size) =
+\begin{cases}
+  \WMC(n; \size) & \text{if } \size(d) > 0 \\
+  1 & \text{otherwise.}
+\end{cases}
+\]
+
+One is picked as the multiplicative identity.
+
+\subsection{Constraint Removal}
+
+\begin{algorithm}[t]
+  \caption{The compilation rule for $\CR$}
+  \label{alg:constraintremoval}
+  \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
+  \KwOut{set $S$}
+  $S \gets \emptyset$\;
+  \ForEach{domain $d \in \mathcal{D}$ and element $e \in d$ s.t. $e$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $ c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ {\bf or} $(v, e) \in C$}{
+    add a new domain $d'$ to $\mathcal{D}$\;
+    $\phi' \gets \emptyset$\;
+    \ForEach{clause $(L, C, \delta) \in \phi$}{
+      $C' \gets \{\, (x, y) \in C \mid y \ne e \,\}$\;
+      $\delta' \gets \emptyset$\;
+      \ForEach{variable $v \in \Vars(L) \cup \Vars(C')$}{
+        \lIf{$\delta(v) = d$}{$\delta' \gets \delta' \cup \{\, v \mapsto d' \,\}$}
+        \lElse{$\delta' \gets \delta' \cup \{\, v \mapsto \delta(v) \,\}$}
+      }
+      $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
+    }
+    $S \gets S \cup \{\, \CR_{d \mapsto d'}, \phi' \,\}$\;
+  }
+\end{algorithm}
+
+TODO: describe \cref{alg:constraintremoval} and rewrite the example below.
+
+\begin{example}
+  Let $\phi = \{\, c_1, c_2, c_e \,\}$ be a formula with clauses (constants lowercase, variables uppercase)
+  \begin{align*}
+    c_1 &= (\emptyset, \{\, (Y, X) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\}), \\
+    c_2 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (X, x), (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto b^\bot \,\}), \\
+    c_3 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, x), (Z, X), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto a \,\}).
+  \end{align*}
+  Domain $a$ and with its element $x \in a$ satisfy the preconditions for constraint removal. The operator introduces a new domain $a'$ and transforms $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
+  \begin{align*}
+    c_1' &= c_1 \\
+    c_2' &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}) \\
+    c_3' &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}).
+  \end{align*}
+\end{example}
+
+\paragraph{Evaluation.}
+\[
+\WMC(\CR_{d \mapsto d'}(n); \size) =
+\begin{cases}
+  \WMC(n; \size \cup \{\, d' \mapsto \size(d) - 1 \,\}) & \text{if } \size(d) > 0 \\
+  0 & \text{otherwise.}
+\end{cases}
+\]
+
+\subsection{Identifying Opportunities for Recursion}
 
 \subsubsection{Notation}
 
@@ -545,131 +653,6 @@ $\WMC(\Reff_\rho(v); \size) = \WMC(v; \size')$ ($n$ is the target vertex), where
 \end{cases}
 \]
 for all $x \in \mathcal{D}$.
-
-\subsection{Constraint Removal}
-
-\begin{algorithm}[t]
-  \caption{The compilation rule for $\CR$}
-  \label{alg:constraintremoval}
-  \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
-  \KwOut{set $S$}
-  $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ and element $e \in d$ s.t. $e$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $ c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ {\bf or} $(v, e) \in C$}{
-    add a new domain $d'$ to $\mathcal{D}$\;
-    $\phi' \gets \emptyset$\;
-    \ForEach{clause $(L, C, \delta) \in \phi$}{
-      $C' \gets \{\, (x, y) \in C \mid y \ne e \,\}$\;
-      $\delta' \gets \emptyset$\;
-      \ForEach{variable $v \in \Vars(L) \cup \Vars(C')$}{
-        \lIf{$\delta(v) = d$}{$\delta' \gets \delta' \cup \{\, v \mapsto d' \,\}$}
-        \lElse{$\delta' \gets \delta' \cup \{\, v \mapsto \delta(v) \,\}$}
-      }
-      $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
-    }
-    $S \gets S \cup \{\, \CR_{d \mapsto d'}, \phi' \,\}$\;
-  }
-\end{algorithm}
-
-TODO: describe \cref{alg:constraintremoval} and rewrite the example below.
-
-\begin{example}
-  Let $\phi = \{\, c_1, c_2, c_e \,\}$ be a formula with clauses (constants lowercase, variables uppercase)
-  \begin{align*}
-    c_1 &= (\emptyset, \{\, (Y, X) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\}), \\
-    c_2 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (X, x), (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto b^\bot \,\}), \\
-    c_3 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, x), (Z, X), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto a \,\}).
-  \end{align*}
-  Domain $a$ and with its element $x \in a$ satisfy the preconditions for constraint removal. The operator introduces a new domain $a'$ and transforms $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
-  \begin{align*}
-    c_1' &= c_1 \\
-    c_2' &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}) \\
-    c_3' &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}).
-  \end{align*}
-\end{example}
-
-\paragraph{Evaluation.}
-\[
-\WMC(\CR_{d \mapsto d'}(n); \size) =
-\begin{cases}
-  \WMC(n; \size \cup \{\, d' \mapsto \size(d) - 1 \,\}) & \text{if } \size(d) > 0 \\
-  0 & \text{otherwise.}
-\end{cases}
-\]
-
-\subsection{A Generalisation of Domain Recursion}
-
-\begin{algorithm}[t]
-  \caption{The compilation rule for $\DR$}
-  \label{alg:domainrecursion}
-  \KwIn{formula $\phi$}
-  \KwOut{set $S$}
-  $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ s.t. there is a clause $c \in \phi$ and a variable $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$}{
-    $\phi' \gets \emptyset$\;
-    $x \gets \text{a new constant associated with domain } d$\;
-    \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
-      $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\;
-      \ForEach{subset $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and} $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant } y \,\} = \emptyset$\label{line:conditions}}{
-        \tcc{Here, $\delta'$ is the restriction of $\delta$ to the new set of variables}
-        $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;
-      }
-    }
-    $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \phi') \,\}$\;
-  }
-\end{algorithm}
-
-\paragraph{The algorithm uses this notation for substitution.}
-Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. Then we write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
-
-TODO: Compare with the original \citep{DBLP:conf/nips/Broeck11}.
-
-The reason for this precondtion is the same as in the initial version of domain recursion: there must be a variable with that domain featured among the literals because it needs to be replaced by a constant. TODO: expand this.
-
-TODO: describe \cref{alg:domainrecursion}.
-
-\begin{example}
-  Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
-  \begin{align*}
-    c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
-    c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
-  \end{align*}
-  While domain recursion is possible on both domains, here we illustrate how it works on $a$.
-
-  Suppose \cref{line:forclause} picks $c = c_1$ first. Then $V = \{\, X \,\}$. Both subsets of $V$ satisfy the conditions on \cref{line:conditions} and generate new clauses
-  \[
-  (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
-  \]
-  (from $W = \emptyset$) and
-  \[
-  (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
-  \]
-  (from $W = V$).
-
-  When $c = c_2$, then $V = \{\, X, Z \,\}$. The subset $W = V$ fails to satisfy the first condition because of the $Z \ne X$ constraint; without this condition, the resulting clause would have an unsatisfiable constraint $x \ne x$. The other three subsets of $V$ all generate clauses for $\phi'$:
-  \[
-  (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
-  \]
-  (from $W = \emptyset$),
-  \[
-  (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
-  \]
-  (from $W = \{\, X \,\}$), and
-  \[
-  (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
-  \]
-  (from $W = \{\, Z \,\}$).
-\end{example}
-
-\paragraph{Evaluation.}
-\[
-\WMC(\DR_{d \gets d \setminus \{\, x \,\}}(n); \size) =
-\begin{cases}
-  \WMC(n; \size) & \text{if } \size(d) > 0 \\
-  1 & \text{otherwise.}
-\end{cases}
-\]
-
-One is picked as the multiplicative identity.
 
 \section{How to Evaluate an FCG} \label{sec:evaluation}
 
