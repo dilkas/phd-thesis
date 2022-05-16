@@ -35,7 +35,7 @@
 \usepackage{mathrsfs}
 \usepackage[nounderscore]{syntax}
 \usepackage{blkarray}
-\usepackage[binary-units]{siunitx}
+\usepackage{siunitx}
 \usepackage[inline,shortlabels]{enumitem}
 \usepackage{capt-of}
 %\usepackage[caption=false]{subfig}
@@ -47,7 +47,6 @@
 \usepackage{multirow}
 \usepackage{amsfonts}
 \usepackage{subcaption}
-\usepackage{graphicx}
 \usepackage{sectsty}
 \usepackage{stmaryrd}
 \usepackage{rotating}
@@ -55,7 +54,8 @@
 \usepackage{listings}
 \usepackage{microtype}
 \usepackage{csquotes}
-\usepackage[capitalise]{cleveref}
+\usepackage[capitalise,noabbrev]{cleveref}
+\usepackage[retainmissing]{MnSymbol}
 
 \usepackage{natbib}
 \usepackage{bibentry}
@@ -87,6 +87,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
+\newtheorem{experiment}{Experiment}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
 
@@ -132,6 +133,11 @@
 
 \Crefname{algocf}{Algorithm}{Algorithms}
 \Crefname{constraint}{Constraint}{Constraints}
+\Crefname{experiment}{Experiment}{Experiments}
+\Crefname{line}{line}{lines}
+
+\sisetup{range-phrase=--}
+\sisetup{range-units=single}
 
 \makeatletter
 \newcommand{\nosemic}{\renewcommand{\@endalgocfline}{\relax}}% Drop semi-colon ;
@@ -230,7 +236,7 @@
 % TODO:
 % * Alignment issues.
 % * Consider removing all the subfigure/minipage/subfig stuff.
-% * Fix references to not use the 'proceedings' command.
+% * Fix references to not use the 'proceedings' command and use the standard rather than compact format.
 % * Make sure all table captions are above (?) the table. Full stop at the end of a one-sentence caption?
 % * Add additional information from phd_notes and previous versions of some of the papers.
 % * Shorten the names of chapters
@@ -288,6 +294,7 @@
 % * replace citations of my own papers with references to chapters
 % * where do I define 'lifted'?
 % * past tense in conclusion: avoid?
+% * comparison chapter: do I want to include anything from the 'full' version of the paper?
 
 \include{chapters/introduction} % 5-14 pages (9 on average)
 \include{chapters/background} % 11-45 pages (27 on average)
@@ -295,7 +302,7 @@
 \include{chapters/wmc_without_parameters/chapter}
 \include{chapters/recursion}
 \include{chapters/random_lps/chapter}
-\include{chapters/random_wmc}
+\include{chapters/comparison/chapter}
 \include{chapters/conclusion} % 5-28 pages (mean: 8, median: 5)
 
 \appendix
