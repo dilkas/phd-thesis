@@ -1,3 +1,24 @@
+\SetKw{KwRet}{yield}
+\SetKwProg{Fn}{Function}{:}{}
+
+\SetKwData{changed}{changed}
+\SetKwData{compilationCache}{compilationCache}
+\SetKwData{solutions}{solutions}
+
+\SetKwFunction{applyAllRules}{applyAllRules}
+\SetKwFunction{applyGreedyRules}{applyGreedyRules}
+\SetKwFunction{applyGreedyRulesToAllFormulas}{applyGreedyRulesToFormulas}
+
+\SetKwFunction{emptyy}{empty}
+\SetKwFunction{get}{get}
+\SetKwFunction{put}{put}
+
+\SetKwFunction{constructDomainMap}{constructDomainMap}
+\SetKwFunction{identifyRecursion}{identifyRecursion}
+\SetKwFunction{generateMaps}{generateMaps}
+\SetKwFunction{mergeFcgs}{mergeFcgs}
+\SetKwFunction{updateCache}{updateCache}
+
 \chapter{Recursive Solutions to FOMC} \label{chapter:wfomc}
 
 \paragraph{Abstract.}
@@ -145,7 +166,7 @@ more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
 \item $\WMC$, $\wwp$, $\wwn$.
 \item two parts: compilation and inference.
 \item During inference, there is a domain size map $\size\colon \mathcal{D} \to \mathbb{N}_0$.
-\item mention which rules are in $\Gamma$ and which ones are in $\Delta$ (and why tryCache has to be in $\Delta$). TODO: having notation for $\Delta$ and $\Gamma$ isn't that necessary
+\item mention that all rules are partitioned into greedy and non-greedy (and why tryCache has to be non-greedy).
 \item My formalisation of constraints is more restrictive than the original (e.g., in the thesis).
 \item \textsc{ForcLift}
 \item $\sqcup$ for both sets and functions
@@ -236,21 +257,13 @@ As in previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual
 
 We assume that if there is a pair $(\texttt{null}, L)$ in the set returned by a rule, then $|L| = 1$, i.e., the rule transformed the formula without creating any vertices.
 
-\begin{algorithm}[t]
+\begin{algorithm}
   \caption{The (main part of the) search algorithm}
   \label{alg:search}
-  \SetKwProg{Fn}{Function}{:}{}
-  \SetKwData{solutions}{solutions}
-  \SetKwFunction{applyGreedyRules}{applyGreedyRules}
-  \SetKwFunction{applyAllRules}{applyAllRules}
-  \SetKwFunction{put}{put}
-  \SetKwFunction{get}{get}
-  \SetKwFunction{emptyy}{empty}
   \KwIn{a formula $\phi_0$}
-  \KwOut{all found FCGs for $\phi_0$ are in the set \solutions}
+  \KwResult{all found FCGs for $\phi_0$ are in the set \solutions}
   $\solutions \gets \emptyset$\;
-  $C_0 \gets \emptyset$\;
-  $(G_0, C_0, L_0) \gets \applyGreedyRules{$\phi_0$, $C_0$}$\;
+  $(G_0, C_0, L_0) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;
   \lIf{$L_0 = \langle\rangle$}{$\solutions \gets \{\, G_0 \,\}$}
   \Else{
     $q \gets \text{an empty queue of states}$\;
@@ -265,35 +278,46 @@ We assume that if there is a pair $(\texttt{null}, L)$ in the set returned by a 
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Functions used in \cref{alg:search} for applying compilation rules}
-  \label{alg:apply}
-  \SetKwProg{Fn}{Function}{:}{}
-  \SetKwData{newStates}{newStates}
-  \SetKwFunction{applyGreedyRules}{applyGreedyRules}
-  \SetKwFunction{applyAllRules}{applyAllRules}
-  \SetKwFunction{applyGreedyRulesToAllFormulas}{applyGreedyRulesToAllFormulas}
-  \SetKwFunction{mergeFcgs}{mergeFcgs}
-  \SetKwFunction{updateCache}{updateCache}
-  \KwData{a set of greedy rules $\Gamma$}
-  \KwData{a set of non-greedy rules $\Delta$}
-  \Fn{\applyGreedyRules{$\phi$, $C$}}{
-    \ForEach{rule $r \in \Gamma$}{
-      \If{$r(\phi) \ne \emptyset$}{
-        $(G, L) \gets \text{any element of } r(\phi)$\;
-        \lIf{$G = {\normalfont \texttt{null}}$}{\Return{\applyGreedyRules{the only element of $L$, $C$}}}
+  \caption{TODO (used in \cref{alg:search})}
+  \label{alg:applyallrules}
+  \Fn{\applyAllRules{state $s$}}{
+    $(G, C, L) \gets s$\;
+    $\phi : T \gets L$\;
+    $(G', C', L') \gets \text{a copy of } s$\;
+    $S \gets \langle\rangle$\;
+    \ForEach{non-greedy rule $r$}{
+      \ForEach{$(G'', L'') \in r(\phi)$}{
+        \lIf{$G'' = {\normalfont \texttt{null}}$}{$S \gets S \mdoubleplus \applyAllRules{$(G', C', L'')$}$}
         \Else{
-          $(V, s, N^+, \tau) \gets G$\;
-          $C \gets \updateCache{$C$, $\phi$, $G$}$\;
-          \Return{\applyGreedyRulesToAllFormulas{$G$, $C$, $L$}}\;
+          $(V, s, N^+, \tau) \gets G''$\;
+          $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
+          $(G'', C', L'') \gets \applyGreedyRulesToAllFormulas{$G''$, $C'$, $L''$}$\;
+          \lIf{$G' = {\normalfont \texttt{null}}$}{$S \gets S \mdoubleplus \langle(G'', C', L'' \mdoubleplus T)\rangle$}
+          \lElse{$S \gets S \mdoubleplus \langle(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)\rangle$}
         }
       }
+      $(G', C', L') \gets \text{a copy of } s$\;
+    }
+    \Return{$S$}\;
+  }
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Helper functions}
+  \label{alg:apply}
+  \Fn{\applyGreedyRules{formula $\phi$, cache $C$}}{
+    \ForEach{greedy rule $r$ s.t. $r(\phi) \ne \emptyset$}{
+      $(G, L) \gets \text{any element of } r(\phi)$\;
+      \lIf{$G = {\normalfont \texttt{null}}$}{\Return{\applyGreedyRules{the element of $L$, $C$}}}
+      $C \gets \updateCache{$C$, $\phi$, $G$}$\;
+      \Return{\applyGreedyRulesToAllFormulas{$G$, $C$, $L$}}\;
     }
     \Return{$({\normalfont \texttt{null}}, C, \langle\phi\rangle)$}\;
   }
   \Fn{\applyGreedyRulesToAllFormulas{$(V, s, N^+, \tau)$, $C$, $L$}}{
     \lIf{$L = \langle\rangle$}{\Return{$((V, s, N^+, \tau), C, L)$}}
-    $N^+(s) \gets \langle\rangle$\;
     $L' \gets \langle\rangle$\;
+    $N^+(s) \gets \langle\rangle$\;
     \ForEach{formula $\phi \in L$}{
       $(G', C, L'') \gets \applyGreedyRules{$\phi$, $C$}$\;
       $L' \gets L' \mdoubleplus L''$\;
@@ -308,34 +332,11 @@ We assume that if there is a pair $(\texttt{null}, L)$ in the set returned by a 
     }
     \Return{$((V, s, N^+, \tau), C, L')$}\;
   }
-  \Fn{\applyAllRules{$s$}}{
-    $(G, C, L) \gets s$\;
-    $\phi : T \gets L$\;
-    $(G', C', L') \gets \text{a copy of } s$\;
-    $\newStates \gets \langle\rangle$\;
-    \ForEach{rule $r \in \Delta$}{
-      \ForEach{$(G'', L'') \in r(\phi)$}{
-        \lIf{$G'' = {\normalfont \texttt{null}}$}{$\newStates \gets \newStates \mdoubleplus \applyAllRules{$(G', C', L'')$}$}
-        \Else{
-          $(V, s, N^+, \tau) \gets G''$\;
-          $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
-          $(G'', C', L'') \gets \applyGreedyRulesToAllFormulas{$G''$, $C'$, $L''$}$\;
-          \lIf{$G' = {\normalfont \texttt{null}}$}{$\newStates \gets \newStates \mdoubleplus \langle(G'', C', L'' \mdoubleplus T)\rangle$}
-          \lElse{$\newStates \gets \newStates \mdoubleplus \langle(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)\rangle$}
-        }
-      }
-      $(G', C', L') \gets \text{a copy of } s$\;
-    }
-    \Return{\newStates}\;
-  }
 \end{algorithm}
 
 \begin{algorithm}
   \caption{Helper functions used by \cref{alg:apply}}
   \label{alg:helpers}
-  \SetKwProg{Fn}{Function}{:}{}
-  \SetKwFunction{mergeFcgs}{mergeFcgs}
-  \SetKwFunction{updateCache}{updateCache}
   \Fn{\updateCache{$C$, $\phi$, $(V, s, N^+, \tau)$}}{
     \lIf{$\tau(s) = \textsc{Ref}$}{\Return{$C$}}
     \lIf{$\#\phi \not\in \dom(C)$}{\Return{$C \cup \{\, \#\phi \mapsto (\phi, s) \,\}$}}
@@ -364,7 +365,6 @@ Note: At the end, \texttt{mergeFcgs} will never return \texttt{null} because the
 \section{In-Between Compilation and Inference: Smoothing}
 
 \begin{algorithm}
-  \SetKwData{changed}{changed}
   \caption{Propagating atoms for smoothing across the FCG in a way that avoids infinite loops}
   \label{alg:smoothing}
   \KwIn{FCG $(V, s, N^+, \tau)$}
@@ -542,14 +542,6 @@ commute. For example, if clause $c_1$ is as in \cref{example:first}, then
 \begin{algorithm}[t]
   \caption{The compilation rule for $\Reff$}
   \label{alg:trycache}
-
-  \SetKwProg{Fn}{Function}{:}{}
-  \SetKw{KwRet}{yield}
-  \SetKwData{compilationCache}{compilationCache}
-  \SetKwFunction{identifyRecursion}{identifyRecursion}
-  \SetKwFunction{generateMaps}{generateMaps}
-  \SetKwFunction{constructDomainMap}{constructDomainMap}
-
   \KwIn{formula $\phi$}
   \KwOut{either a singleton with the new $\Reff$ vertex or $\emptyset$}
 
@@ -826,5 +818,5 @@ to ensure surjectivity or remove \cref{eq:def2} to consider partial functions. L
 \begin{itemize}
 \item Transform FCGs to definitions of (possibly recursive) functions on integers. Use a computer algebra system to simplify them.
 \item Design an algorithm to infer the necessary base cases. (Note that there can be an infinite amount of them when functions have more than one parameter.)
-\item Observation: -1 (and powers thereof) appear in every solution to a formula if and only if the formula has existential quantification. That's not very smart! By putting unit propagation into $\Gamma$, these powers are pushed to the outer layers of the solution (i.e., `early' in the FCG). It's likely that removing this restriction would enable the algorithm to find asymptotically optimal solutions.
+\item Observation: -1 (and powers thereof) appear in every solution to a formula if and only if the formula has existential quantification. That's not very smart! By classifying unit propagation as a greedy rule, these powers are pushed to the outer layers of the solution (i.e., `early' in the FCG). It's likely that removing this restriction would enable the algorithm to find asymptotically optimal solutions.
 \end{itemize}
