@@ -56,6 +56,7 @@
 \usepackage{csquotes}
 \usepackage[capitalise,noabbrev]{cleveref}
 %\usepackage{MnSymbol}
+\usepackage[color=gray]{todonotes} % TODO: temp
 
 \usepackage{natbib}
 \usepackage{bibentry}
@@ -90,6 +91,17 @@
 \newtheorem{experiment}{Experiment}
 \theoremstyle{remark}
 \newtheorem*{remark}{Remark}
+
+\numberwithin{assumption}{chapter}
+\numberwithin{conjecture}{chapter}
+\numberwithin{constraint}{chapter}
+\numberwithin{fact}{chapter}
+\numberwithin{proposition}{chapter}
+\numberwithin{theorem}{chapter}
+\numberwithin{lemma}{chapter}
+\numberwithin{definition}{chapter}
+\numberwithin{example}{chapter}
+\numberwithin{experiment}{chapter}
 
 \renewcommand\fbox{\fcolorbox{red}{white}}
 \newcommand{\hilight}[1]{\setlength{\fboxsep}{1pt}\colorbox{lightgray}{#1}}
@@ -137,7 +149,7 @@
 \Crefname{algocf}{Algorithm}{Algorithms}
 \Crefname{constraint}{Constraint}{Constraints}
 \Crefname{experiment}{Experiment}{Experiments}
-\Crefname{line}{line}{lines}
+\crefname{line}{line}{lines}
 
 \sisetup{range-phrase=--}
 \sisetup{range-units=single}
