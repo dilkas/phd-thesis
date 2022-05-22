@@ -25,6 +25,8 @@ First-order model counting (FOMC) is a \#\P-complete computational problem that 
 \clearpage
 \section{Introduction}
 
+\todo[inline]{Introduce Crane and explain that it's modus operandi is very different.}
+
 % Definition and scope of the topic: FOMC
 
 \emph{First-order model counting} (FOMC) is the problem of computing the number of models of a sentence in first-order logic given the size(s) of its domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC (or, rather, its \emph{weighted} variant WFOMC) is in probabilistic inference, particularly for statistical relational models such as Markov logic networks that define probabilities over sets of objects and relations thereof \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
@@ -119,7 +121,7 @@ Many versions of this problem were previously unsolvable by any available (W)FOM
 
 % Possible future enhancements and further work in progress
 
-Further work is necessary to fully automate this new way of computing the (W)FOMC of a formula. The new version of ForcLift produces a graph which then needs to be transformed to definitions of (potentially recursive) functions. In some cases, it is necessary to simplify the algebraic expressions in these definitions (e.g., reducing $x-x$ to zero for some expression $x$). Most importantly, the algorithm only gives us the recursive calls but not the base cases. What makes the problem of finding these base cases non-trivial is that the number of base cases is not constant for functions of arity greater than one (i.e., formulas that mention more than one domain). Nonetheless, these remaining challenges are minuscule compared to the broader goal of expanding the capabilities of (W)FOMC to new classes of instances.
+Further work is necessary to fully automate this new way of computing the (W)FOMC of a formula. Crane produces a graph which then needs to be transformed to definitions of (potentially recursive) functions. In some cases, it is necessary to simplify the algebraic expressions in these definitions (e.g., reducing $x-x$ to zero for some expression $x$). Most importantly, the algorithm only gives us the recursive calls but not the base cases. What makes the problem of finding these base cases non-trivial is that the number of base cases is not constant for functions of arity greater than one (i.e., formulas that mention more than one domain). Nonetheless, these remaining challenges are minuscule compared to the broader goal of expanding the capabilities of (W)FOMC to new classes of instances.
 
 %% \begin{itemize}
 %% \item open questions:
@@ -182,11 +184,10 @@ more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
 \begin{itemize}
 \item atom, (positive/negative) literal, constant, predicate, variable, clause, unit clause, first-order logic
 \item subformula
-\item $\WMC$, $\wwp$, $\wwn$.
 \item two parts: compilation and inference (see the slide about workflow: before and after).
 \item During inference, there is a domain size map $\size\colon \mathcal{D} \to \mathbb{N}_0$.
 \item My formalisation of constraints is more restrictive than the original (e.g., in the thesis).
-\item \textsc{ForcLift} works by always having a formula as input and adding nodes to the circuit/FCG that constitute the solution the that formula.
+\item \textsc{Crane/ForcLift} works by always having a formula as input and adding nodes to the circuit/FCG that constitute the solution the that formula.
 \item $\sqcup$ for both sets and functions
 \item injectivity is similar to the all-different constraint
 \end{itemize}
@@ -239,28 +240,45 @@ Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list wit
 
 % Generalising Circuits to Labelled Graphs
 
-\todo[inline]{Make the following two sections subsections of this one?}
-
 A \emph{first-order deterministic decomposable negation normal form computational graph} (FCG) is a (weakly connected) directed graph with a a single source, vertex labels, and ordered outgoing edges.\footnote{Note that imposing an ordering on outgoing edges is just a limited version of edge labelling.} We denote an FCG as $G = (V, s, N^+, \tau)$, where $V$ is the set of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct successor function that maps each vertex in $V$ to a \emph{list} that contains either other vertices in $V$ or a special symbol $\star$. This symbol means that the target of the edge is yet to be determined.
 
 Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. To avoid clutter, we leave the parameters implicit and let $\tau$ denote the vertex-labelling function that maps each vertex in $V$ to its type. The types are as described in previous work \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the source code of \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}} but with one new type for \emph{constraint removal} (denoted by $\CR$) and two revamped types for domain recursion (denoted by $\DR$) and non-tree-like edges that can encode recursive calls (denoted by $\Reff$). For each vertex $v \in V$, the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by its type $\tau(v)$.
 
 As in previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual vertices and small (sub)-FCGs, we also use notation of the form, e.g., $\Reff_\rho(v)$. Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct successors (e.g., some vertex $v$) like a function and provided with its parameter(s) (e.g., $\rho$) in the subscript.
 
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[every node/.style={draw,ellipse},edge from parent/.style={draw,-latex},sibling distance=2cm,level 6/.style={sibling distance=6cm}]
+    \node (dr) {$\DR_{a \gets a \setminus \{\, x \,\}}$}
+    child {node {$\bigvee_{b^\top \subseteq b}$}
+      child {node[circle] {$\wedge$}
+        child {node[fill=green!10,circle] {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
+        child {node[circle] {$\wedge$}
+          child {node[fill=green!10,circle] {$1$}} % _{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}
+          child {node[circle] {$\wedge$}
+            child {node[fill=green!10,circle] {$1$}} % _{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}
+            child {node {$\CR_{a \mapsto a'}$}
+              child {node[circle] {$\wedge$}
+                child {node[fill=red!10] {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
+                child {node (ref) {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}}
+              }}}}}};
+    \draw[-latex, bend right] (ref) to (dr);
+  \end{tikzpicture}
+  \caption{An example FCG constructed by Crane. Some parameters are omitted.}
+  \label{fig:examplefcg}
+\end{figure}
+
+\begin{example}
+TODO: describe \cref{fig:examplefcg}. Connect it to the definition (e.g., labels, edge ordering, source).
+\end{example}
+
 \paragraph{Hashing.}
 We use (integer-valued) hash functions to efficiently discard pairs of formulas that are too different for recursion to be established. The hash code of a clause $c = (L, C, \delta)$ (denoted by $\# c$) combines the hash codes of the sets of constants and predicates in $c$, the numbers of positive and negative literals, the number of inequality constraints $|C|$, and the number of variables $|\Vars(c)|$. The hash code of a formula $\phi$ combines the hash codes of all its clauses and is denoted by $\#\phi$.
-
-% TODO: start here
 
 \paragraph{Caching.}
 Previously, a cache was used to check if a formula is identical to one of the formulas that have already been fully compiled. If that is the case, then the circuit already contains the subcircuit for this formula. Instead of duplicating this subcircuit, one would draw an edge that creates an undirected (but not a directed) cycle (see \cref{fig:before}). Now, to facilitate recursion, we extend the caching scheme to include formulas that have been encountered but not fully compiled yet. Hence, the same procedure can now create directed cycles in the graph. Formally, we define a \emph{cache} to be a map from integers (e.g., hash codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and $v$ is an FCG node.
 
-\todo[inline,caption={}]{
-\begin{itemize}
-\item notation: conjunctions and disjunctions should be different from set-conjunctions and set-disjunctions. Maybe I don't need all those symbols. What about the example?
-\item have an example of a simple FCG. Maybe describe the figure from later and move it here. Clearly explain what we mean by `encodes'.
-\end{itemize}
-}
+\todo[inline]{Clearly explain what we mean by `encodes'.}
 
 \subsection{New Compilation Rules}
 
@@ -504,13 +522,13 @@ Again we have two non-empty formulas with equal hash codes, so \texttt{generateM
 \item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
 \item $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$.
 \end{itemize}
-Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new domains in $\Doms(c)$ and $\Doms(d)$, $\gamma$ exists and is equal to $\rho$. Again, the returned pair $(\beta, \gamma)$ satisfies $c[\beta, \gamma] = d$. \Cref{line:recursion} calls \texttt{identifyRecursion($\emptyset$, $\emptyset$, $\rho$)}, which immediately returns $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$ as the final answer. Therefore, one can indeed reuse an FCG for $\phi$ to compute $\WMC(\psi)$.
+Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new domains in $\Doms(c)$ and $\Doms(d)$, $\gamma$ exists and is equal to $\rho$. Again, the returned pair $(\beta, \gamma)$ satisfies $c[\beta, \gamma] = d$. \Cref{line:recursion} calls \texttt{identifyRecursion($\emptyset$, $\emptyset$, $\rho$)}, which immediately returns $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$ as the final answer. Therefore, one can indeed reuse an FCG for $\phi$ to compute the model count of $\psi$.
 \end{example}
 
 \subsection{Compilation as Search}
 % why is it important for tryCache to be non-greedy?
 
-Given a formula $\phi$, we want to find an FCG that encodes how the model count of $\phi$ can be computed. Traditionally, \textsc{ForcLift} tackles this search problem using a greedy algorithm.\footnote{The algorithm is not described in any paper on \textsc{ForcLift} but can be found in its source code.} In this section, we describe a new search algorithm which is a combination of greedy and breadth-first search.
+Given a formula $\phi$, we want to find an FCG that encodes how the model count of $\phi$ can be computed. \textsc{ForcLift} tackles this search problem using a greedy algorithm.\footnote{The algorithm is not described in any paper on \textsc{ForcLift} but can be found in its source code.} In this section, we describe a new search algorithm which is a combination of greedy and breadth-first search.
 
 We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules represent indisputable choices in the compilation process. They are applied to each encountered formula as soon and as many times as possible (in a predefined order). Most rules are greedy, i.e., those that produce a sink node with no leftover formula, those that simplify the formula without changing the FCG, and those that split the formula into parts that can be solved independently. The constraint removal rule describe in \cref{sec:cr} is greedy. On the other hand, non-greedy rules signify uncertain choices that we may want to retract. They also correspond to edges in our implicit search tree; thus, the first solution found by the search algorithm is always the one with fewest applications of non-greedy rules. These rules include the domain recursion and recursive call rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion, independent partial grounding, and shattering.
 
@@ -646,7 +664,7 @@ Note: At the end, \texttt{mergeFcgs} will never return \texttt{null} because the
 
 \section{How to Evaluate an FCG} \label{sec:evaluation}
 
-\todo[inline]{Explain how the new types are evaluated. Then have an example evaluation.}
+\todo[inline]{Explain how the new types are evaluated. Then have an example evaluation. Maybe move this to the beginning of the previous section?}
 
 \section{Examples of Newly Domain-Liftable Formulas}
 
@@ -671,34 +689,12 @@ Note: At the end, \texttt{mergeFcgs} will never return \texttt{null} because the
     \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
     \bottomrule
   \end{tabular}
-  \caption{Here, $m$ is the size of $a$, and $n$ is the size of $b$. All asymptotic complexities are in $\Theta(\cdot)$. This is for unweighted counting. A hyphen means that no solution was found. Assuming all arithmetic operations to take constant time. Maybe a better solution could be found with more search. TODO: explain assumptions for the counts to not be zero. TODO: double check. TODO: maybe combine more rows/columns. TODO: transfer the citations to text.}
+  \caption{Here, $m$ is the size of $a$, and $n$ is the size of $b$. All asymptotic complexities are in $\Theta(\cdot)$. This is for unweighted counting. A hyphen means that no solution was found. Assuming all arithmetic operations to take constant time. Maybe a better solution could be found with more search. TODO: explain assumptions for the counts to not be zero. TODO: double check. TODO: transfer the citations to text.}
 \end{table}
-
-\begin{figure}
-  \centering
-  \begin{tikzpicture}[every node/.style={draw,ellipse},edge from parent/.style={draw,-latex},sibling distance=48mm]
-    \node (dr) {$\DR_{a \gets a \setminus \{\, x \,\}}$}
-    child {node {$\bigvee_{b^\top \subseteq b}$}
-      child {node {$\wedge$}
-        child {node[fill=green!10] {$1_{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}$}}
-        child {node {$\wedge$}
-          child {node[fill=green!10] {$1_{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}$}}
-          child {node {$\wedge$}
-            child {node[fill=green!10] {$1_{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}$}}
-            child {node {$\CR_{a \mapsto a'}$}
-              child {node {$\wedge$}
-                child {node[fill=red!10] {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
-                child {node (ref) {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}}
-              }}}}}};
-    \draw[-latex, bend right] (ref) to (dr);
-  \end{tikzpicture}
-  \caption{A graphical representation of an FCG for injections and partial injections between two domains. TODO: add a reference to a formula? TODO: need this to be narrower.}
-  \label{fig:examplefcg}
-\end{figure}
 
 \todo[inline,caption={}]{
 \begin{itemize}
-\item Describe \cref{fig:examplefcg} and connect it to the algebraic formula.
+\item \Cref{fig:examplefcg} counts injections and partial injections between two sets.
 \item Explain the algebraic notation that I'm using here (e.g., that $f$ is always the main function)
 \item Explain the importance of comparing domain sizes to 2. FCGs that compare the size of a domain to an integer can be constructed automatically using compilation rules, although $n$ is upper bounded by the maximum number of variables in any clause of the input formula since there is no rule that would introduce new variables.
 \item Mention that it only takes a few seconds to find these solutions. Going beyond depth 6 (or sometimes even completing depth 6) is computationally infeasible with the current implementation, but depth at most 5 can be searched within at most a few seconds.
