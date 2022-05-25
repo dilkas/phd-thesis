@@ -242,9 +242,15 @@ Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list wit
 
 A \emph{first-order deterministic decomposable negation normal form computational graph} (FCG) is a (weakly connected) directed graph with a a single source, vertex labels, and ordered outgoing edges.\footnote{Note that imposing an ordering on outgoing edges is just a limited version of edge labelling.} We denote an FCG as $G = (V, s, N^+, \tau)$, where $V$ is the set of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct successor function that maps each vertex in $V$ to a \emph{list} that contains either other vertices in $V$ or a special symbol $\star$. This symbol means that the target of the edge is yet to be determined.
 
-Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. To avoid clutter, we leave the parameters implicit and let $\tau$ denote the vertex-labelling function that maps each vertex in $V$ to its type. The types are as described in previous work \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the source code of \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}} but with one new type for \emph{constraint removal} (denoted by $\CR$) and two revamped types for domain recursion (denoted by $\DR$) and non-tree-like edges that can encode recursive calls (denoted by $\Reff$). For each vertex $v \in V$, the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by its type $\tau(v)$.
+\todo[inline,caption={}]{
+\begin{itemize}
+\item Many $\star$'s, not one. They are counted as nodes (and change the text at the beginning of Section 5.3.1 appropriately).
+\item Maybe star should be considered a type? I would need to modify the algorithms.
+\item When visualising FCGs, we omit node labels and/or parameters when they are immaterial to what is being discussed. Propagate this change to figures and their descriptions.
+\end{itemize}
+}
 
-As in previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual vertices and small (sub)-FCGs, we also use notation of the form, e.g., $\Reff_\rho(v)$. Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct successors (e.g., some vertex $v$) like a function and provided with its parameter(s) (e.g., $\rho$) in the subscript.
+Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. To avoid clutter, we leave the parameters implicit and let $\tau$ denote the vertex-labelling function that maps each vertex in $V$ to its type. The types are as described in previous work \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the source code of \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}} but with one new type for \emph{constraint removal} (denoted by $\CR$) and two revamped types for domain recursion (denoted by $\DR$) and non-tree-like edges that can encode recursive calls (denoted by $\Reff$). For each vertex $v \in V$, the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by its type $\tau(v)$.
 
 \begin{figure}[t]
   \centering
@@ -252,25 +258,31 @@ As in previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, to describe individual
     \node (dr) {$\DR_{a \gets a \setminus \{\, x \,\}}$}
     child {node {$\bigvee_{b^\top \subseteq b}$}
       child {node[circle] {$\wedge$}
-        child {node[fill=green!10,circle] {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
+        child {node[circle] {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
         child {node[circle] {$\wedge$}
-          child {node[fill=green!10,circle] {$1$}} % _{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}
+          child {node[circle] {$1$}} % _{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}
           child {node[circle] {$\wedge$}
-            child {node[fill=green!10,circle] {$1$}} % _{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}
+            child {node[circle] {$1$}} % _{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}
             child {node {$\CR_{a \mapsto a'}$}
               child {node[circle] {$\wedge$}
-                child {node[fill=red!10] {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
+                child {node {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
                 child {node (ref) {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}}
               }}}}}};
     \draw[-latex, bend right] (ref) to (dr);
   \end{tikzpicture}
-  \caption{An example FCG constructed by Crane. Some parameters are omitted.}
+  \caption{An example FCG constructed by Crane. Node labels are written directly on the nodes. Some parameters are omitted for brevity. Outgoing edges are ordered from left to right.}
   \label{fig:examplefcg}
 \end{figure}
 
 \begin{example}
-TODO: describe \cref{fig:examplefcg}. Connect it to the definition (e.g., labels, edge ordering, source).
+The FCG in \cref{fig:examplefcg} has twelve nodes. The source vertex has out-degree 1 (i.e., $|N^+(s)| = 1$), label $\DR_{a \gets a \setminus \{\, x \,\}}$, and type $\DR$ (i.e., $\tau(s) = \DR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for an explanation of other node types and how they are to be evaluated. \todo[inline]{How does my notation differ from previous work? Does it need explaining?}
 \end{example}
+
+\todo[inline]{This is probably the right place to discuss how an FCG is to be evaluated.}
+
+Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$ for an FCG that has one vertex with label $T_p$ (i.e., type $T$ and parameter(s) $p$) and with $\star$ as the target of all of its outgoing edges. We also write $T_p(v)$ for an FCG with two vertices and an edge between them (and no edges incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the label of the source.
+
+%% Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct successors (e.g., some vertex $v$) like a function and provided with its parameter(s) (e.g., $\rho$) in the subscript.
 
 \paragraph{Hashing.}
 We use (integer-valued) hash functions to efficiently discard pairs of formulas that are too different for recursion to be established. The hash code of a clause $c = (L, C, \delta)$ (denoted by $\# c$) combines the hash codes of the sets of constants and predicates in $c$, the numbers of positive and negative literals, the number of inequality constraints $|C|$, and the number of variables $|\Vars(c)|$. The hash code of a formula $\phi$ combines the hash codes of all its clauses and is denoted by $\#\phi$.
@@ -278,27 +290,53 @@ We use (integer-valued) hash functions to efficiently discard pairs of formulas 
 \paragraph{Caching.}
 Previously, a cache was used to check if a formula is identical to one of the formulas that have already been fully compiled. If that is the case, then the circuit already contains the subcircuit for this formula. Instead of duplicating this subcircuit, one would draw an edge that creates an undirected (but not a directed) cycle (see \cref{fig:before}). Now, to facilitate recursion, we extend the caching scheme to include formulas that have been encountered but not fully compiled yet. Hence, the same procedure can now create directed cycles in the graph. Formally, we define a \emph{cache} to be a map from integers (e.g., hash codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and $v$ is an FCG node.
 
-\todo[inline]{Clearly explain what we mean by `encodes'.}
+\todo[inline]{Clearly explain what we mean by `encodes' and `for'.}
 
-\subsection{New Compilation Rules}
+\subsection{New Compilation Rules} \label{sec:rules}
 
-\begin{definition}
-  A (compilation) \emph{rule} is a function that takes a formula and returns a set of $(G, L)$ pairs, where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas.
+\begin{figure}
+\centering
+\begin{subfigure}{0.49\textwidth}
+\centering
+\begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
+\node[draw,circle,label={[text=blue]1}] (top) {}
+child {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {}
+child {node[draw,ellipse] (ref) {$\Reff$}}
+child {node[label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}}
+}
+child {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}}
+;
+\draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
+\end{tikzpicture}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+\centering
+\begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
+\node[draw,circle,label={[text=blue]1}] (top) {}
+child {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {}
+child {node[label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}}
+}
+child {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}}
+;
+\end{tikzpicture}
+\end{subfigure}
+\caption{An FCG (on the left) and its underlying tree (on the right). The integers in blue denote the pre-order traversal of the underlying tree.}
+\label{fig:ordering}
+\end{figure}
 
-  \todo[inline]{Take the example from the AIAI talk.}
-\end{definition}
+A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs, where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas such that $|L|$ is equal to the number of $\star$'s in $G$. Let the \emph{underlying tree} of an FCG $G$ be the induced subgraph of $G$ that omits all $\Reff$ nodes (subsequently presented algorithms ensure that it is always a tree). Then we can define an implicit bijection between the formulas in $L$ and the $\star$'s in $G$ according to the order in which elements of $L$ are listed and the pre-order traversal of the underlying tree of $G$. For example, if the FCG in \cref{fig:ordering} were to be returned by a compilation rule, its corresponding list of formulas $L$ would have two elements. These elements would then be implicitly associated with the $\star$'s that have labels `3' and `4' next to them, respectively.
 
 Let $\mathcal{D}$ be the set of all domains. Note that this set expands during the compilation.
 
 \subsubsection{A Generalisation of Domain Recursion} \label{sec:dr}
 
 \begin{algorithm}
-  \caption{The compilation rule for $\DR$}
+  \caption{The compilation rule for $\DR$ nodes}
   \label{alg:domainrecursion}
   \KwIn{formula $\phi$}
   \KwOut{set $S$}
   $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ s.t. there is a $c \in \phi$ and a $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$}{
+  \ForEach{domain $d \in \mathcal{D}$ s.t. there is a $c \in \phi$ and a $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$\label{line:condition}}{
     $\phi' \gets \emptyset$\;
     $x \gets \text{a new constant associated with domain } d$\;
     \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
@@ -308,19 +346,41 @@ Let $\mathcal{D}$ be the set of all domains. Note that this set expands during t
         $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;
       }
     }
-    $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \phi') \,\}$\;
+    $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
 
-\paragraph{The algorithm uses this notation for substitution.}
-Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. Then we write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
+\paragraph{Notation.}
+Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. We write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
 
-\todo[inline]{Compare with the original \citep{DBLP:conf/nips/Broeck11}.}
+\todo[inline]{Invite the reader to look up the original paper for more details.}
 
-The reason for this precondtion is the same as in the initial version of domain recursion: there must be a variable with that domain featured among the literals because it needs to be replaced by a constant.
-\todo[inline]{Expand this.}
+The original rule for domain recursion by \citet{DBLP:conf/nips/Broeck11} requires three conditions to be satisfied:
+\begin{itemize}
+\item the formula is shattered,
+\item the formula has no independent subformulas,
+\item and there exists a root binding class.
+\end{itemize}
+We replace them with just one condition featured on \cref{line:condition} of \cref{alg:domainrecursion}: for domain recursion to be applicable on domain $d \in \mathcal{D}$, there must be at least one variable \emph{featured in a literal} associated with $d$. This condition is necessary because domain recursion on $d$ (both this new version and the original one) considers all possible ways of replacing a subset of the variables in literals with a constant. Hence, if there are no such variables,
 
-\todo[inline]{Describe \cref{alg:domainrecursion}.}
+\todo[inline]{Describe \cref{alg:domainrecursion}. Compare with the original \citep{DBLP:conf/nips/Broeck11}.}
+\paragraph{Originally...}
+\begin{itemize}
+\item Three conditions (verbatim):
+\begin{itemize}
+\item the formula is shattered (i.e., all pairs of atoms represent either a disjoint or identical set of ground atoms)
+\item the formula cannot be partitioned into independent subformulas that could be solved separately
+\item there exists a root binding class (of variables) (see the original paper for the definition)
+\end{itemize}
+\item We replace these conditions with just one. The reason for this precondtion is the same as in the initial version of domain recursion: there must be a variable with that domain featured among the literals because it needs to be replaced by a constant.
+\item They create three sets of clauses instead of just one. They are independent and their conjunction is decomposable.
+\begin{itemize}
+\item the part with only variables $v$
+\item the part with only constants $x$
+\item the part with both constants and variables $r$
+\end{itemize}
+\item During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be computed independently. Note that the WMC of $x$ is independent of the size of $D$---this further simplifies the matters.
+\end{itemize}
 
 \begin{example}
   Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
@@ -358,7 +418,7 @@ The reason for this precondtion is the same as in the initial version of domain 
 \subsubsection{Constraint Removal} \label{sec:cr}
 
 \begin{algorithm}
-  \caption{The compilation rule for $\CR$}
+  \caption{The compilation rule for $\CR$ nodes}
   \label{alg:constraintremoval}
   \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
   \KwOut{set $S$}
@@ -375,7 +435,7 @@ The reason for this precondtion is the same as in the initial version of domain 
       }
       $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
     }
-    $S \gets S \cup \{\, \CR_{d \mapsto d'}, \phi' \,\}$\;
+    $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
 
@@ -420,14 +480,14 @@ commute. For example, if clause $c_1$ is as in \cref{example:first}, then
 % Everything Else
 
 \begin{algorithm}
-  \caption{The compilation rule for $\Reff$}
+  \caption{The compilation rule for $\Reff$ nodes}
   \label{alg:trycache}
   \KwIn{formula $\phi$, cache $C$}
-  \KwOut{either a singleton set with the new $\Reff$ node or $\emptyset$}
+  \KwOut{a set}
 
   \ForEach{$(\psi, v) \in C(\#\phi)$}{
     $\rho \gets \identifyRecursion{$\phi$, $\psi$}$\;
-    \lIf{$\rho \ne {\normalfont \texttt{null}}$}{\Return{$\{\, (\Reff_\rho(v), \emptyset) \,\}$}}
+    \lIf{$\rho \ne {\normalfont \texttt{null}}$}{\Return{$\{\, (\Reff_\rho(v), \langle\rangle) \,\}$}}
   }
   \Return{$\emptyset$}\;
 
@@ -531,6 +591,8 @@ Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new
 Given a formula $\phi$, we want to find an FCG that encodes how the model count of $\phi$ can be computed. \textsc{ForcLift} tackles this search problem using a greedy algorithm.\footnote{The algorithm is not described in any paper on \textsc{ForcLift} but can be found in its source code.} In this section, we describe a new search algorithm which is a combination of greedy and breadth-first search.
 
 We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules represent indisputable choices in the compilation process. They are applied to each encountered formula as soon and as many times as possible (in a predefined order). Most rules are greedy, i.e., those that produce a sink node with no leftover formula, those that simplify the formula without changing the FCG, and those that split the formula into parts that can be solved independently. The constraint removal rule describe in \cref{sec:cr} is greedy. On the other hand, non-greedy rules signify uncertain choices that we may want to retract. They also correspond to edges in our implicit search tree; thus, the first solution found by the search algorithm is always the one with fewest applications of non-greedy rules. These rules include the domain recursion and recursive call rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion, independent partial grounding, and shattering.
+
+\todo[inline]{Mention that the implicit bijection is the same as in the definition of a compilation rule at the beginning of \cref{sec:rules}.}
 
 \begin{definition}
   A \emph{state} (of the search for an FCG) is a triple $(G, C, L)$, where $G$ is an FCG (or \texttt{null}), $C$ is a cache, and $L$ is a list of formulas.
@@ -649,7 +711,7 @@ NOTE: if a non-greedy rule is not applicable, it returns an empty set, and \cref
     \ForEach{$t \in N^+(r)$}{
       \If{$t = \star$}{
         replace $t$ with $s'$ in $N^+(r)$\;
-        \Return{$(V \sqcup V', s, N^+ \sqcup N', \tau \sqcup \tau')$}\;
+        \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\;
       }
       $G'' \gets \mergeFcgs{$G$, $G'$, $t$}$\;
       \lIf{$G'' \ne {\normalfont \texttt{null}}$}{\Return{$G''$}}
