@@ -27,6 +27,10 @@ First-order model counting (FOMC) is a \#\P-complete computational problem that 
 
 \todo[inline]{Introduce Crane and explain that it's modus operandi is very different.}
 
+\todo[inline]{Introduce the acronym for GDR?}
+
+\todo[inline]{Maybe rename the DR command to GDR?}
+
 % Definition and scope of the topic: FOMC
 
 \emph{First-order model counting} (FOMC) is the problem of computing the number of models of a sentence in first-order logic given the size(s) of its domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC (or, rather, its \emph{weighted} variant WFOMC) is in probabilistic inference, particularly for statistical relational models such as Markov logic networks that define probabilities over sets of objects and relations thereof \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
@@ -328,7 +332,43 @@ A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs,
 
 Let $\mathcal{D}$ be the set of all domains. Note that this set expands during the compilation.
 
-\subsubsection{A Generalisation of Domain Recursion} \label{sec:dr}
+\subsubsection{Generalised Domain Recursion} \label{sec:dr}
+
+\paragraph{Notation.}
+Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. We write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
+\todo[inline]{Short example?}
+
+\todo[inline,caption={}]{Feedback for the paragraph below:
+\begin{itemize}
+\item introduce the algo in the first sentence: The Domain recursion algorithm (Van den Broeck, 2011) takes as input a formula and outputs an equivalent formula, which is formed by the following process.
+\item omit the power-of-two stuff
+\item should not refer to intermediary formula as the resulting formula. what you could do is describe the algorithms in two steps: As an preliminary/intermediate step DR .... , Then you can refer to it as `the intermediate step results in ....'
+\item clarify `original rule'
+\item explain DR before GDR
+\end{itemize}
+}
+
+\todo[inline,caption={}]{After a description of the algorithm, compare with the original \citep{DBLP:conf/nips/Broeck11}. Invite the reader to look up the original paper for more details.
+The original rule for domain recursion by \citet{DBLP:conf/nips/Broeck11} requires three conditions to be satisfied:
+\begin{itemize}
+\item the formula is shattered,
+\item the formula has no independent subformulas,
+\item and there exists a root binding class.
+\end{itemize}
+Domain recursion by \citet{DBLP:conf/nips/Broeck11} then splits the...
+
+\begin{itemize}
+\item They create three sets of clauses instead of just one. They are independent and their conjunction is decomposable.
+\begin{itemize}
+\item the part with only variables $v$
+\item the part with only constants $x$
+\item the part with both constants and variables $r$
+\end{itemize}
+\item During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be computed independently. Note that the WMC of $x$ is independent of the size of $D$---this further simplifies the matters.
+\end{itemize}
+}
+
+The main idea of domain recursion (both the original version by \citet{DBLP:conf/nips/Broeck11} and the one presented here) is as follows. Let $d \in \mathcal{D}$ be a domain. Assuming that $d \ne \emptyset$, it can be partitioned into a singleton set (say, $\{\, x \,\}$) and a set of cardinality $|d| - 1$. Then, for every variable $X$ associated with domain $d$ that occurs in a literal, we want to investigate two possibilities: $X = x$ and $X \ne x$. Note that the total number of such possibilities is not necessarily a power of two: some combinations produce clearly unsatisfiable formulas that can be immediately discarded. We can combine all of these possibilities into a single formula equivalent to the original one. The differences between domain recursion and GDR are in the preconditions for the rule to be applicable and in how the resulting formula (or parts thereof) are handled. The original rule ensures that the remaining formula can be handled efficiently and without the risk of the search algorithm running forever at the expense of more stringent preconditions.
 
 \begin{algorithm}
   \caption{The compilation rule for $\DR$ nodes}
@@ -343,76 +383,48 @@ Let $\mathcal{D}$ be the set of all domains. Note that this set expands during t
       $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\;
       \ForEach{subset $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and} $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant } y \,\} = \emptyset$\label{line:conditions}}{
         \tcc{$\delta'$ restricts $\delta$ to the new set of variables}
-        $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;
+        $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;\label{line:generation}
       }
     }
     $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
 
-\paragraph{Notation.}
-Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. We write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
-
-\todo[inline]{Invite the reader to look up the original paper for more details.}
-
-The original rule for domain recursion by \citet{DBLP:conf/nips/Broeck11} requires three conditions to be satisfied:
-\begin{itemize}
-\item the formula is shattered,
-\item the formula has no independent subformulas,
-\item and there exists a root binding class.
-\end{itemize}
-We replace them with just one condition featured on \cref{line:condition} of \cref{alg:domainrecursion}: for domain recursion to be applicable on domain $d \in \mathcal{D}$, there must be at least one variable \emph{featured in a literal} associated with $d$. This condition is necessary because domain recursion on $d$ (both this new version and the original one) considers all possible ways of replacing a subset of the variables in literals with a constant. Hence, if there are no such variables,
-
-\todo[inline]{Describe \cref{alg:domainrecursion}. Compare with the original \citep{DBLP:conf/nips/Broeck11}.}
-\paragraph{Originally...}
-\begin{itemize}
-\item Three conditions (verbatim):
-\begin{itemize}
-\item the formula is shattered (i.e., all pairs of atoms represent either a disjoint or identical set of ground atoms)
-\item the formula cannot be partitioned into independent subformulas that could be solved separately
-\item there exists a root binding class (of variables) (see the original paper for the definition)
-\end{itemize}
-\item We replace these conditions with just one. The reason for this precondtion is the same as in the initial version of domain recursion: there must be a variable with that domain featured among the literals because it needs to be replaced by a constant.
-\item They create three sets of clauses instead of just one. They are independent and their conjunction is decomposable.
-\begin{itemize}
-\item the part with only variables $v$
-\item the part with only constants $x$
-\item the part with both constants and variables $r$
-\end{itemize}
-\item During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be computed independently. Note that the WMC of $x$ is independent of the size of $D$---this further simplifies the matters.
-\end{itemize}
+The algorithm for GDR is summarised as \cref{alg:domainrecursion}, and it features only one precondition. Namely, \cref{line:condition} says that for GDR to be applicable on domain $d \in \mathcal{D}$, there must be at least one variable with domain $d$ that is featured in a literal (and not just in constraints). Without such variables, GDR would have no effect on the formula.
 
 \begin{example}
-  Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
-  \begin{align*}
-    c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
-    c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
-  \end{align*}
-  While domain recursion is possible on both domains, here we illustrate how it works on $a$.
+Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
+\begin{align*}
+c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
+c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
+\end{align*}
+While domain recursion is possible on both domains, here we illustrate how it works on $a$. Having chosen a domain, the algorithm iterates over the clauses of $\phi$. Suppose \cref{line:forclause} picks $c = c_1$ as the first clause. Then, set $V$ is constructed to contain all variables with domain $d = a$ that occur in the literals of clause $c$. In this case, $V = \{\, X \,\}$. 
 
-  Suppose \cref{line:forclause} picks $c = c_1$ first. Then $V = \{\, X \,\}$. Both subsets of $V$ satisfy the conditions on \cref{line:conditions} and generate new clauses
-  \[
-  (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
-  \]
-  (from $W = \emptyset$) and
-  \[
-  (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
-  \]
-  (from $W = V$).
+\todo[inline]{What does it mean to generate a clause?}
 
-  When $c = c_2$, then $V = \{\, X, Z \,\}$. The subset $W = V$ fails to satisfy the first condition because of the $Z \ne X$ constraint; without this condition, the resulting clause would have an unsatisfiable constraint $x \ne x$. The other three subsets of $V$ all generate clauses for $\phi'$:
-  \[
-  (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
-  \]
-  (from $W = \emptyset$),
-  \[
-  (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
-  \]
-  (from $W = \{\, X \,\}$), and
-  \[
-  (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
-  \]
-  (from $W = \{\, Z \,\}$).
+\Cref{line:conditions} iterates over all subsets $W \subseteq V$ of variables that can be replaced by a constant without resulting in formulas that are evidently unsatisfiable. We impose two restrictions on $W$. First, $W^2 \cap C = \emptyset$ ensures that there are no pairs of variables in $W$ that are constrained to be distinct, since that would result in a $x \ne x$ constraint after substitution. Similarly, we want to avoid variables in $W$ that have inequality constraints with constants: after substitution, such constraints would transform into inequality constraints between two constants. In this case, both subsets of $V$ satisfy these conditions, and \cref{line:generation} generates two clauses for the output formula:
+\[
+(\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
+\]
+(from $W = \emptyset$) and
+\[
+(\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
+\]
+(from $W = V$).
+
+When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subset $W = V$ fails to satisfy the conditions on \cref{line:conditions} because of the $Z \ne X$ constraint. The other three subsets of $V$ all generate clauses for $\phi'$:
+\[
+(\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
+\]
+(from $W = \emptyset$),
+\[
+(\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
+\]
+(from $W = \{\, X \,\}$), and
+\[
+(\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
+\]
+(from $W = \{\, Z \,\}$).
 \end{example}
 
 \subsubsection{Constraint Removal} \label{sec:cr}
