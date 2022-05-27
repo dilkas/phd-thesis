@@ -25,6 +25,9 @@
 
 % * description and example(s)
 
+%% TODO (V): I do not know if you intended to add more things at the start, but this might be too abrupt start for most readers. 
+%% I would instead say that probability theory and statistics is the foundation of modern data science, et cetera, and in this thesis we are concerned with certain approaches to formulate and compute probabilities in popular representations such as Bayes  networks. That’s one way of starting. The other way of starting is to make the argument about the need for the unification of logic and probability, perhaps this doesn’t fit well with the introduction as it is written.
+
 \begin{example} \label{example:veryfirst}
   Suppose we have a biased coin that has a probability $0 \le p \le 1$ of landing heads. What is the probability that it lands heads \emph{at least once} if we toss it \emph{three times}? More formally, we have three independent Bernoulli random variables $X_1$, $X_2$, and $X_3$ such that $X_i \sim \Bernoulli(p)$ for all $i$, and we want to compute
   \[
@@ -49,6 +52,8 @@
 \end{example}
 
 The first of these three approaches hints at the central problem of this thesis. Our goal is to efficiently compute a sum-of-products expression such as the one in \cref{eq:naive}. Of course, the difficulty of this problem partially depends on how each problem instance is formulated, i.e., the input format. The main input format that we concern ourselves with is based on propositional logic---this variation of the problem is known as \emph{weighted model counting} (WMC) \citep{DBLP:journals/ai/ChaviraD08}. \Cref{eq:wmcexample} is an example of the kind of efficiency improvements that can be achieved by WMC.
+
+% TODO (V): I think it is important to add an intermediate paragraph here where you say something like - readers familiar with proba theory but not logic might find this a curious choice. But as it turns out this formulation is an underlying computational representation for the problem off computing condition inference in a range of different representations from factor graphs to probl programs, and provide references. In fact in most inference competitions for example the conference U AI, this formulation often comes off at the top
 
 % * More generally: WMC, WFOMC, and other sum-of-products problems
 
@@ -85,6 +90,8 @@ Many reductions are possible among instances of these problems, e.g., both WFOMC
 \item understand the comparative strengths and weaknesses of different approaches,
 \item and optimise the encoding process that transforms problems from the application (e.g., probabilistic inference) domain to a representation accepted by the algorithm.
 \end{itemize}
+
+% TODO (V): Perhaps conclude this list by saying in this thesis, we will look at precisely these aspects and propose certain contributions to w model counting that address these aspects from different perspectives. This provides a nice lead up to the next section
 
 %% Many algorithms for probabilistic inference have been proposed. Variable
 %% elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
@@ -211,5 +218,7 @@ In recent experiments, \textsf{WMC} algorithms are shown to perform similarly ov
   \caption{Concepts relevant to the thesis. The first row contains two approaches to generating random problem instances. The second row contains some representations of probability distributions. The third row contains encodings, i.e., computational problems that encode probabilistic inference tasks. The last row contains WMC and WFOMC algorithms. Each chapter is assigned a colour that indicates which concepts and interactions between concepts the chapter is about.}
   \label{fig:overview}
 \end{figure}
+
+% TODO (V) ('combine into a coherent picture'): Play a role in the overall development aroundmodel counting. Alt phrasing - We shareholder contributions connect to each other in relation to developments in model counting
 
 We end the introduction with a visual description of how the topics covered in this thesis combine into a coherent picture. \Cref{fig:overview} lists some of the key concepts of this work and shows how each chapter of the thesis relates to these concepts and interactions between them. \Cref{chapter:background} covers a selection of topics related to this work and refers the reader to suitable literature for further information. \Cref{chapter:wmc1} examines the definition of WMC more closely and suggests a way to bypass it, leading to a more succinct encoding of Bayesian network probabilistic inference compatible with the ADDMC algorithm. Then \cref{chapter:wmc2} describes WMC encodings for Bayesian networks, defines PBP, shows how to transform WMC instances to PBP instances, and how the DPMC algorithm benefits from this new format. In \cref{chapter:wfomc}, we expand the capabilities of the WFOMC algorithm ForcLift to new (previously unsolvable) instances. \Cref{chapter:randomlps} describes a constraint model that can generate random (probabilistic) logic programs in the ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} language---a well known use-case of WMC. \Cref{chapter:comparison} develops an algorithm for generating random WMC instances and uses it showcase some important differences in the behaviour of WMC algorithms. Finally, \cref{chapter:conclusion} summarises our results and provides a perspective for potential future work.

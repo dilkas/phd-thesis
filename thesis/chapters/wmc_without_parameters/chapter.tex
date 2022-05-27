@@ -2,6 +2,8 @@
 
 \section{Introduction}
 
+% TODO (V) (first paragraph): This is redundant right given all the text you have written previously. Perhaps simply position the exact focus of the current chapter. You also need to contrast it to the contributions of the previous chapter. Or at least say given what you explored in the previous chap what is it that you will do with the current chapter. I don't see a discussion of this.
+
 Weighted model counting (WMC), i.e., a generalisation of propositional model
 counting that assigns weights to literals and computes the total weight of all
 models of a propositional formula \citep{DBLP:journals/ai/ChaviraD08}, has
@@ -45,9 +47,7 @@ way to avoid parameter variables could be via direct compilation to a more
 convenient representation. Direct compilation of Bayesian networks to SDDs has
 been investigated \citep{DBLP:conf/ecsqaru/ChoiKD13}. However, SDDs only support
 weights on literals, and so are not expressive enough to avoid the issue. To the
-best of the authors' knowledge, neither approach
-\citep{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10} has a publicly
-available implementation.
+best of my knowledge, neither approach \citep{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10} has a publicly available implementation.
 
 In this work, we introduce a way to transform WMC problems into a new format
 based on pseudo-Boolean functions---\emph{pseudo-Boolean projection} (PBP). We
@@ -85,6 +85,8 @@ encodings on common ground, identifying their key properties and assumptions.
 % instance into PBP
 
 \section{WMC} % TODO: probably need to rewrite this
+
+ % TODO (V): Perhaps you need to quickly argue why in different chapters you have different perspectives on the same formalism. You could argue that these different perspectives is precisely what allows you to explore different types of generalisations
 
 We begin with an overview of some notation and terminology. We use $\land$,
 $\lor$, $\neg$, $\Rightarrow$, and $\Leftrightarrow$ to denote conjunction,
@@ -852,6 +854,10 @@ transformation makes it possible to use \texttt{cd05} and \texttt{cd06} with
 \textsf{DPMC}, the two combinations remain inefficient.
 
 \section{Conclusion}
+
+% TODO (V): again make sure that the conclusions are befitting a thesis by indicating pointers to previous and upcoming chapters. This should be a minor modification but is still necessary. You could search for the text "in this paper" and this will tell you where the changes need to occur
+
+% TODO (V): I also think this conclusion is too short at least for the thesis. You need to have more reflection on what was accomplished and where things are. For example if you focused on bayes networks does that mean that an important direction for the future is to look at other kinds of models? What are the directions for the future present themselves that you have not investigated in this thesis? What other lessons can you draw? These commands are applicable in general to all conclusions of chapters.
 
 In this paper, we showed how the number of variables in a WMC instance can be
 significantly reduced by transforming it into a representation based on

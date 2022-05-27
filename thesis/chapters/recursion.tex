@@ -19,17 +19,21 @@
 
 \chapter{Recursive Solutions to FOMC} \label{chapter:wfomc}
 
+% TODO (V): Some version of this could become the introduction to the chapter
 \paragraph{Abstract.}
 First-order model counting (FOMC) is a \#\P-complete computational problem that asks to count the models of a sentence in first-order logic. Despite being around for more than a decade, practical FOMC algorithms are still unable to compute functions as simple as a factorial. We argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To enable arbitrary recursion, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established (weighted) FOMC algorithm ForcLift with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to find efficient solutions to counting fundamental structures such as injections and bijections.
 
 \clearpage
 \section{Introduction}
 
-\todo[inline]{Introduce Crane and explain that it's modus operandi is very different.}
-
-\todo[inline]{Introduce the acronym for GDR?}
-
-\todo[inline]{Maybe rename the DR command to GDR?}
+\todo[inline,caption={}]{
+\begin{itemize}
+\item Introduce Crane and explain that it's modus operandi is very different.
+\item Introduce the acronym for GDR
+\item Rename the DR command to GDR
+\item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$, variable $X$, and constant $x$. Then use this notation instead of using phrases such as `associated with'.
+\end{itemize}
+}
 
 % Definition and scope of the topic: FOMC
 
@@ -435,7 +439,7 @@ When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subse
   \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
   \KwOut{set $S$}
   $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ and element $e \in d$ s.t. $e$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $ c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ {\bf or} $(v, e) \in C$}{
+  \ForEach{domain $d \in \mathcal{D}$ and element $e \in d$ s.t. $e$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $ c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ {\bf or} $(v, e) \in C$\label{line:crconditions}}{
     add a new domain $d'$ to $\mathcal{D}$\;
     $\phi' \gets \emptyset$\;
     \ForEach{clause $(L, C, \delta) \in \phi$}{
@@ -451,7 +455,14 @@ When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subse
   }
 \end{algorithm}
 
+% TODO: start here
 \todo[inline]{Describe \cref{alg:constraintremoval} and rewrite the example below. Highlight changes, more intuitive explanations and references to the inner workings of the algorithm.}
+
+\begin{itemize}
+\item Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for some constant $x \in d$ and family of variables $X_i$ associated with $d$.
+\item Once certain conditions are satisfied, the constraint removal rule can be used to remove these constraints (and replace $d$ with a new domain $d'$, which is interpreted to be $d' = d \setminus \{\, x \,\}$).
+\item The conditions on \cref{line:crconditions} ensure that a constraint of the form $X \ne e$ exists for all variables from $d$ across all clauses, and that is the only place where $e$ occurs.
+\end{itemize}
 
 \begin{example}
   Let $\phi = \{\, c_1, c_2, c_3 \,\}$ be a formula with clauses
@@ -460,7 +471,7 @@ When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subse
     c_2 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (X, x), (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto b^\bot \,\}), \\
     c_3 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, x), (Z, X), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto a \,\}).
   \end{align*}
-  Domain $a$ and with its element $x \in a$ satisfy the preconditions for constraint removal. The operator introduces a new domain $a'$ and transforms $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
+  Domain $a$ and with its element $x \in a$ satisfy the preconditions for constraint removal. The rule introduces a new domain $a'$ and transforms $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
   \begin{align*}
     c_1' &= c_1 \\
     c_2' &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}) \\
