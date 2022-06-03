@@ -344,7 +344,7 @@ Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ eit
 
 \todo[inline,caption={}]{Feedback for the paragraph below:
 \begin{itemize}
-\item introduce the algo in the first sentence: The Domain recursion algorithm (Van den Broeck, 2011) takes as input a formula and outputs an equivalent formula, which is formed by the following process.
+\item introduce the algo in the first sentence: The Domain recursion algorithm (Van den Broeck, 2011) takes as input a formula and outputs a formula, which is formed by the following process.
 \item omit the power-of-two stuff
 \item should not refer to intermediary formula as the resulting formula. what you could do is describe the algorithms in two steps: As an preliminary/intermediate step DR .... , Then you can refer to it as `the intermediate step results in ....'
 \item clarify `original rule'
@@ -439,30 +439,19 @@ When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subse
   \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
   \KwOut{set $S$}
   $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ and element $e \in d$ s.t. $e$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $ c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ {\bf or} $(v, e) \in C$\label{line:crconditions}}{
+  \ForEach{domain $d \in \mathcal{D}$ and element $x \in d$ s.t. $x$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ or $(v, x) \in C$\label{line:crconditions}}{
     add a new domain $d'$ to $\mathcal{D}$\;
     $\phi' \gets \emptyset$\;
     \ForEach{clause $(L, C, \delta) \in \phi$}{
-      $C' \gets \{\, (x, y) \in C \mid y \ne e \,\}$\;
-      $\delta' \gets \emptyset$\;
-      \ForEach{variable $v \in \Vars(L) \cup \Vars(C')$}{
-        \lIf{$\delta(v) = d$}{$\delta' \gets \delta' \cup \{\, v \mapsto d' \,\}$}
-        \lElse{$\delta' \gets \delta' \cup \{\, v \mapsto \delta(v) \,\}$}
-      }
+      $C' \gets \{\, (a, b) \in C \mid b \ne x \,\}$\;\label{line:constraintremoval}
+      \nosemic$\delta' \gets v \mapsto \begin{cases} d' & \text{if } \delta(v) = d\\ \delta(v) & \text{otherwise;} \end{cases}$\;\label{line:newdelta}
       $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
     }
     $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
 
-% TODO: start here
-\todo[inline]{Describe \cref{alg:constraintremoval} and rewrite the example below. Highlight changes, more intuitive explanations and references to the inner workings of the algorithm.}
-
-\begin{itemize}
-\item Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for some constant $x \in d$ and family of variables $X_i$ associated with $d$.
-\item Once certain conditions are satisfied, the constraint removal rule can be used to remove these constraints (and replace $d$ with a new domain $d'$, which is interpreted to be $d' = d \setminus \{\, x \,\}$).
-\item The conditions on \cref{line:crconditions} ensure that a constraint of the form $X \ne e$ exists for all variables from $d$ across all clauses, and that is the only place where $e$ occurs.
-\end{itemize}
+Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for some constant $x \in d$ and family of variables $X_i \in d$. Once certain conditions are satisfied, \cref{alg:constraintremoval} can eliminate these constraints and replace $d$ with a new domain $d'$, which can be interpreted as $d \setminus \{\, x \,\}$. These conditions (on \cref{line:crconditions} of the algorithm) are that a constraint of the form $X \ne e$ exists for all variables $X \in d$ across all clauses, and such constraints are the only place where $e$ occurs. The algorithm then proceeds to construct the new formula by removing constraints (on \cref{line:constraintremoval}) and constructing a new domain map $\delta'$ that replaces $d$ with $d'$ (on \cref{line:newdelta}).
 
 \begin{example}
   Let $\phi = \{\, c_1, c_2, c_3 \,\}$ be a formula with clauses
@@ -483,18 +472,19 @@ When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subse
 
 % Notation
 
-Let $\Doms$ be a function that maps any clause or formula to the set of domains used within. Specifically, $\Doms(c) \coloneqq \Imm \delta_c$ for any clause $c$, and $\Doms(\phi) \coloneqq \bigcup_{c \in \phi} \Doms(c)$ for any formula $\phi$.
-
-For partial functions $\alpha, \beta\colon A \pfun B$ s.t. $\alpha|_{\dom(\alpha) \cap \dom(\beta)} = \beta|_{\dom(\alpha) \cap \dom(\beta)}$, we write $\alpha \cup \beta$ for the unique partial function s.t. $\alpha \cup \beta|_{\dom(\alpha)} = \alpha$, and $\alpha \cup \beta|_{\dom(\beta)} = \beta$.
-
-For any clause $c = (L, C, \delta_c)$, bijection $\beta\colon \Vars(c) \twoheadrightarrowtail V$ (for some set of variables $V$), and function $\gamma\colon \Doms(c) \to \mathcal{D}$, let $c[\beta, \gamma] = d$ be the clause $c$ with all occurrences of any variable $v \in \Vars(c)$ in $L$ and $C$ replaced with $\beta(v)$ (so $\Vars(d) = V$) and $\delta_d\colon V \to \mathcal{D}$ defined as $\delta_d \coloneqq \gamma \circ \delta_c \circ \beta^{-1}$. In other words, $\delta_d$ is the unique function that makes
+\paragraph{Notation.}
+First, for partial functions $\alpha, \beta\colon A \pfun B$ s.t. $\alpha|_{\dom(\alpha) \cap \dom(\beta)} = \beta|_{\dom(\alpha) \cap \dom(\beta)}$, we write $\alpha \cup \beta$ for the unique partial function s.t. $\alpha \cup \beta|_{\dom(\alpha)} = \alpha$, and $\alpha \cup \beta|_{\dom(\beta)} = \beta$. Second, let $\Doms$ be a function that maps any clause or formula to the set of domains used within. Specifically, $\Doms(c) \coloneqq \Imm \delta_c$ for any clause $c$, and $\Doms(\phi) \coloneqq \bigcup_{c \in \phi} \Doms(c)$ for any formula $\phi$. Third, for any clause $c = (L, C, \delta_c)$, bijection $\beta\colon \Vars(c) \twoheadrightarrowtail V$ (for some set of variables $V$), and function $\gamma\colon \Doms(c) \to \mathcal{D}$, let $c[\beta, \gamma] = d$ be the clause $c$ with all occurrences of any variable $v \in \Vars(c)$ in $L$ and $C$ replaced with $\beta(v)$ (so $\Vars(d) = V$) and $\delta_d\colon V \to \mathcal{D}$ defined as $\delta_d \coloneqq \gamma \circ \delta_c \circ \beta^{-1}$. In other words, $\delta_d$ is the unique function that makes
 \[
 \begin{tikzcd}
   \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & V = \Vars(d) \ar[d, dashed, "\exists!\delta_d"] \\
   \Doms(c) \ar[r, swap, "\gamma"] & \mathcal{D}
 \end{tikzcd}
 \]
-commute. For example, if clause $c_1$ is as in \cref{example:first}, then
+commute. For example, if clause
+\[
+c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\})
+\]
+is as in \cref{example:first}, then
 \begin{multline*}
   c_1[\{\, X \mapsto A, Y \mapsto B, Z \mapsto C \,\}, \{\, a \mapsto b, b \mapsto c \,\}] = \\
   (\{\, \neg p(A, B), \neg p(A, C) \,\}, \{\, (B, C) \,\}, \{\, A \mapsto b, B \mapsto c, C \mapsto c \,\}).
@@ -508,7 +498,7 @@ commute. For example, if clause $c_1$ is as in \cref{example:first}, then
   \KwIn{formula $\phi$, cache $C$}
   \KwOut{a set}
 
-  \ForEach{$(\psi, v) \in C(\#\phi)$}{
+  \ForAll{pairs of formulas and vertices $(\psi, v) \in C(\#\phi)$}{
     $\rho \gets \identifyRecursion{$\phi$, $\psi$}$\;
     \lIf{$\rho \ne {\normalfont \texttt{null}}$}{\Return{$\{\, (\Reff_\rho(v), \langle\rangle) \,\}$}}
   }
@@ -518,26 +508,26 @@ commute. For example, if clause $c_1$ is as in \cref{example:first}, then
     \lIf{$|\phi| \ne |\psi|$ {\bf or} $\#\phi \ne \#\psi$}{\Return{\normalfont \texttt{null}}}
     \lIf{$\phi = \emptyset$}{\Return{$\rho$}}
     \ForEach{clause $c \in \phi$\label{line:for1}}{
-      \ForEach{clause $d \in \psi$ s.t. $\#d = \#c$\label{line:for2}} {
-        \ForEach{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t. $c[\beta, \gamma] = d$\label{line:generateMaps}}{
-          $\rho' \gets \identifyRecursion{$\phi \setminus \{\, c \,\}$, $\psi \setminus \{\, d \,\}$, $\rho \cup \gamma$}$\;\label{line:recursion}
-          \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}}
-        }
-      }
-      \Return{\normalfont \texttt{null}}\;
+    \ForEach{clause $d \in \psi$ s.t. $\#d=\#c$\label{line:for2}}{
+    \ForAll{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t. $c[\beta, \gamma] = d$\label{line:generateMaps}}{
+    $\rho' \gets \identifyRecursion{$\phi \setminus \{\, c \,\}$, $\psi \setminus \{\, d \,\}$, $\rho \cup \gamma$}$\;\label{line:recursion}
+    \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}}
+    }
+    }
+    \Return{\normalfont \texttt{null}}\;
     }
   }
 
   \Fn{\generateMaps{clause $c$, clause $d$, map $\rho$}}{
-    \ForEach{bijection $\beta\colon \Vars(c) \to \Vars(d)$\label{line:bijection}}{
+    \ForEach{bijection $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$\label{line:bijection}}{
       $\gamma \gets \constructDomainMap{$\Vars(c)$, $\delta_c$, $\delta_d$, $\beta$, $\rho$}$\;
       \lIf{$\gamma \ne {\normalfont \texttt{null}}$}{\KwRet{$(\beta, \gamma)$}}
     }
   }
 
-  \Fn{\constructDomainMap{set $V$, maps $\delta_c$, $\delta_d$, $\beta$, $\rho$}}{
+  \Fn{\constructDomainMap{set of variables $V$, maps $\delta_c$, $\delta_d$, $\beta$, $\rho$}}{
     $\gamma \gets \emptyset$\;
-    \ForEach{$v \in V$}{
+    \ForEach{variable $v \in V$}{
       \lIf{$\delta_c(v) \in \dom(\rho)$ {\bf and} $\rho(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont \texttt{null}}}
       \lIf{$\delta_c(v) \not\in \dom(\gamma)$}{$\gamma \gets \gamma \cup \{\, \delta_c(v) \mapsto \delta_d(\beta(v)) \,\}$}
       \lElseIf{$\gamma(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont \texttt{null}}}
@@ -546,25 +536,24 @@ commute. For example, if clause $c_1$ is as in \cref{example:first}, then
   }
 \end{algorithm}
 
-\todo[inline,caption={}]{
-\begin{itemize}
-\item Give a general overview of \cref{alg:trycache}.
-\item explain why $\rho \cup \gamma$ is possible
-\item \texttt{identifyRecursion}: explain what the second return statement is about and why a third one is not necessary. Function \texttt{identifyRecursion} returns \texttt{null} if formulas $\phi$ and $\psi$ are too different for recursion to work. This happens if $\phi$ and $\psi$ (or their subformulas explored in recursive calls) are structurally different (i.e., the numbers of clauses or the hash codes fail to match) or if a clause of $\phi$ cannot be paired with a sufficiently similar clause of $\psi$. Otherwise, \texttt{identifyRecursion} returns...
-\item explain the yield keyword
-\item explicitly mention the algorithm
-\end{itemize}
-}
+% Cache $C$ is used to partition all previously-encountered formulas based on their hash codes. 
+\Cref{alg:trycache} describes the compilation rule for creating $\Reff$ nodes. For every formula $\psi$ s.t. $\#\psi = \#\phi$ that we have encountered so far, function \texttt{identifyRecursion} is called to check whether a recursive call is actually feasible. If it is, the function returns a (total) map $\rho\colon \Doms(\phi) \to \Doms(\psi)$ that shows how $\phi$ can be transformed into $\psi$ by replacing each domain $d \in \Doms(\phi)$ with $\rho(d) \in \Doms(\psi)$. Otherwise, \texttt{identifyRecursion} returns \texttt{null} to signify that $\phi$ and $\psi$ are too different for recursion to work. This happens if $\phi$ and $\psi$ (or their subformulas explored in recursive calls) are structurally different (i.e., the numbers of clauses or the hash codes fail to match) or if a clause of $\phi$ cannot be paired with a sufficiently similar clause of $\psi$.
+
+Function \texttt{identifyRecursion} iterates over pairs of clauses of $\phi$ and $\psi$ that have the same hash codes. It uses function \texttt{generateMaps} to check whether the two clauses are sufficiently similar. If so, the function calls itself on the remaining clauses until the map $\rho\colon \Doms(\phi) \to \Doms(\psi)$ becomes total, and all clauses are successfully coupled.
+
+%% If the bijection makes the clauses equal, and the domain map is compatible with previously decided domain mappings, move on to another pair of clauses.
+
+Given two clauses $c \in \phi$ and $d \in \psi$, \texttt{generateMaps} considers all possible bijections\footnote{Although the number of bijections between two sets of cardinality $n$ is $n!$, this part of the algorithm is unlikely to cause performance issues for two reasons. First, in practice, $n$ is usually at most two or three. Second, due to the manner in which formulas are modified by compilation rules, if any bijection results in a successfully identified recursive relationship, it is almost always the identity bijection.} $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$ and calls \texttt{constructDomainMap}, which then attempts to construct a map $\gamma\colon \Doms(c) \to \Doms(d)$ `consistent' with both $\beta$ and (the as yet partial map) $\rho\colon \Doms(\phi) \pfun \Doms(\psi)$. The \textbf{yield} keyword in \texttt{generateMaps} works as in programming languages such as C\#, JavaScript, and Python, and lazily returns a sequence of values, computing each element of the sequence as needed.
 
 Diagrammatically, \texttt{constructDomainMap} attempts to find a $\gamma\colon \Doms(c) \to \Doms(d)$ s.t.
 \begin{equation} \label{eq:commute}
 \begin{tikzcd}
-  \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & \Vars(d) \ar[d, "\delta_d"] \\
+  V = \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & \Vars(d) \ar[d, "\delta_d"] \\
   \Doms(c) \ar[r, dashed, "\gamma"] \ar[d, hookrightarrow] & \Doms(d) \ar[d, hookrightarrow] \\
   \Doms(\phi) \ar[r, swap, "\rho", "|" marking, outer sep=5pt] & \Doms(\psi).
 \end{tikzcd}
 \end{equation}
-commutes (and returns \texttt{null} if such a function does not exist).
+commutes (and returns \texttt{null} if such a function does not exist). Indeed, for every variable in $V = \Vars(c)$, the function returns \texttt{null} if either the top rectangle from $V$ to $\Doms(d)$ or the outer rectangle from $V$ to $\Doms(\psi)$ fails to commute. These checks also ensure that $\rho \cup \gamma$ is possible on \cref{line:recursion} of the algorithm, i.e., $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
 \begin{example} \label{example}
 
@@ -595,9 +584,9 @@ Since both formulas are non-empty, the algorithm proceeds with the for-loops on 
 \item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
 \item $\rho = \emptyset$.
 \end{itemize}
-Since $\delta_i(Y) = \delta_i(Z)$ for $i \in \{\, c, d \,\}$, \texttt{constructDomainMap} returns $\gamma = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Thus, \texttt{generateMaps} yields its first pair of maps $(\beta, \gamma)$ to \cref{line:generateMaps}. Furthermore, the pair satisfies $c[\beta, \gamma] = d$. On \cref{line:recursion}, a recursive call to \texttt{identifyRecursion($\{\,c_2\,\}$, $\{\,d_2\,\}$, $\gamma$)} is made.
+Since $\delta_c(Y) = \delta_c(Z)$ and $\delta_d(Y) = \delta_d(Z)$, \texttt{constructDomainMap} returns $\gamma = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Thus, \texttt{generateMaps} yields its first pair of maps $(\beta, \gamma)$ to \cref{line:generateMaps}. Furthermore, this pair satisfies $c[\beta, \gamma] = d$. On \cref{line:recursion}, a recursive call to \texttt{identifyRecursion($\{\,c_2\,\}$, $\{\,d_2\,\}$, $\gamma$)} is made.
 
-Again we have two non-empty formulas with equal hash codes, so \texttt{generateMaps} is called with $c = c_2$, $d = d_2$, and $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Suppose \cref{line:bijection} picks the identity bijection gain. Then \texttt{constructDomainMap} is called with the following parameters:
+In this subproblem where both formulas are left with a single clause each, again we have two non-empty formulas with equal hash codes. Thus \texttt{generateMaps} is called with $c = c_2$, $d = d_2$, and $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Suppose \cref{line:bijection} picks the identity bijection gain. Then \texttt{constructDomainMap} is called with the following parameters:
 \begin{itemize}
 \item $V = \{\, X, Y, Z \,\}$,
 \item $\delta_c = \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}$,
@@ -605,7 +594,7 @@ Again we have two non-empty formulas with equal hash codes, so \texttt{generateM
 \item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
 \item $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$.
 \end{itemize}
-Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new domains in $\Doms(c)$ and $\Doms(d)$, $\gamma$ exists and is equal to $\rho$. Again, the returned pair $(\beta, \gamma)$ satisfies $c[\beta, \gamma] = d$. \Cref{line:recursion} calls \texttt{identifyRecursion($\emptyset$, $\emptyset$, $\rho$)}, which immediately returns $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$ as the final answer. Therefore, one can indeed reuse an FCG for $\phi$ to compute the model count of $\psi$.
+Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new domains in $\Doms(c)$ and $\Doms(d)$, $\gamma$ exists and is equal to $\rho$. Again, the returned pair $(\beta, \gamma)$ satisfies $c[\beta, \gamma] = d$. \Cref{line:recursion} calls \texttt{identifyRecursion($\emptyset$, $\emptyset$, $\rho$)}, which immediately returns $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$ as the final answer. Therefore, one can indeed reuse an FCG for $\psi$ to compute the model count of $\phi$.
 \end{example}
 
 \subsection{Compilation as Search}
