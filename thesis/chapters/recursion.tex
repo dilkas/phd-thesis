@@ -1,8 +1,6 @@
 \SetKw{KwRet}{yield}
 \SetKwProg{Fn}{Function}{:}{}
 
-\SetKwData{solutions}{solutions}
-
 \SetKwFunction{applyAllRules}{applyAllRules}
 \SetKwFunction{applyGreedyRules}{applyGreedyRules}
 \SetKwFunction{applyGreedyRulesToAllFormulas}{applyGreedyRulesToFormulas}
@@ -32,6 +30,8 @@ First-order model counting (FOMC) is a \#\P-complete computational problem that 
 \item Introduce the acronym for GDR
 \item Rename the DR command to GDR
 \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$, variable $X$, and constant $x$. Then use this notation instead of using phrases such as `associated with'.
+\item Have a one-star graph instead of null.
+\item We call an FCG full (complete?) if $L = \langle\rangle$ or, equivalently, there are no $\star$s in $G$.
 \end{itemize}
 }
 
@@ -286,7 +286,7 @@ Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. T
 The FCG in \cref{fig:examplefcg} has twelve nodes. The source vertex has out-degree 1 (i.e., $|N^+(s)| = 1$), label $\DR_{a \gets a \setminus \{\, x \,\}}$, and type $\DR$ (i.e., $\tau(s) = \DR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for an explanation of other node types and how they are to be evaluated. \todo[inline]{How does my notation differ from previous work? Does it need explaining?}
 \end{example}
 
-\todo[inline]{This is probably the right place to discuss how an FCG is to be evaluated.}
+\todo[inline]{Explain how the new types are evaluated. Then have an example evaluation.}
 
 Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$ for an FCG that has one vertex with label $T_p$ (i.e., type $T$ and parameter(s) $p$) and with $\star$ as the target of all of its outgoing edges. We also write $T_p(v)$ for an FCG with two vertices and an edge between them (and no edges incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the label of the source.
 
@@ -299,6 +299,8 @@ We use (integer-valued) hash functions to efficiently discard pairs of formulas 
 Previously, a cache was used to check if a formula is identical to one of the formulas that have already been fully compiled. If that is the case, then the circuit already contains the subcircuit for this formula. Instead of duplicating this subcircuit, one would draw an edge that creates an undirected (but not a directed) cycle (see \cref{fig:before}). Now, to facilitate recursion, we extend the caching scheme to include formulas that have been encountered but not fully compiled yet. Hence, the same procedure can now create directed cycles in the graph. Formally, we define a \emph{cache} to be a map from integers (e.g., hash codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and $v$ is an FCG node.
 
 \todo[inline]{Clearly explain what we mean by `encodes' and `for'.}
+
+\todo[inline]{Be clear about how nodes relate to formulas.}
 
 \subsection{New Compilation Rules} \label{sec:rules}
 
@@ -333,6 +335,8 @@ child {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}}
 \end{figure}
 
 A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs, where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas such that $|L|$ is equal to the number of $\star$'s in $G$. Let the \emph{underlying tree} of an FCG $G$ be the induced subgraph of $G$ that omits all $\Reff$ nodes (subsequently presented algorithms ensure that it is always a tree). Then we can define an implicit bijection between the formulas in $L$ and the $\star$'s in $G$ according to the order in which elements of $L$ are listed and the pre-order traversal of the underlying tree of $G$. For example, if the FCG in \cref{fig:ordering} were to be returned by a compilation rule, its corresponding list of formulas $L$ would have two elements. These elements would then be implicitly associated with the $\star$'s that have labels `3' and `4' next to them, respectively.
+
+\todo[inline]{if a rule is not applicable to a given formula, it returns an empty set and is skipped.}
 
 Let $\mathcal{D}$ be the set of all domains. Note that this set expands during the compilation.
 
@@ -598,62 +602,42 @@ Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new
 \end{example}
 
 \subsection{Compilation as Search}
-% why is it important for tryCache to be non-greedy?
 
-Given a formula $\phi$, we want to find an FCG that encodes how the model count of $\phi$ can be computed. \textsc{ForcLift} tackles this search problem using a greedy algorithm.\footnote{The algorithm is not described in any paper on \textsc{ForcLift} but can be found in its source code.} In this section, we describe a new search algorithm which is a combination of greedy and breadth-first search.
+% intro
+Given a formula $\phi$, we want to find an FCG (or a circuit) that encodes a way to compute the model count of $\phi$. \textsc{ForcLift} tackles this search problem using a greedy algorithm.\footnote{The algorithm is not described in any paper on \textsc{ForcLift} but can be found in its source code.} In this section, we describe a new search algorithm---a combination of greedy and breadth-first search.
 
-We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules represent indisputable choices in the compilation process. They are applied to each encountered formula as soon and as many times as possible (in a predefined order). Most rules are greedy, i.e., those that produce a sink node with no leftover formula, those that simplify the formula without changing the FCG, and those that split the formula into parts that can be solved independently. The constraint removal rule describe in \cref{sec:cr} is greedy. On the other hand, non-greedy rules signify uncertain choices that we may want to retract. They also correspond to edges in our implicit search tree; thus, the first solution found by the search algorithm is always the one with fewest applications of non-greedy rules. These rules include the domain recursion and recursive call rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion, independent partial grounding, and shattering.
+% greedy and non-greedy rules
+We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules represent indisputable choices in the compilation process. They are applied to each encountered formula as soon and as many times as possible (in a predefined order). Most rules are greedy, i.e., those that produce a sink node with no leftover formula, those that simplify the formula without changing the FCG, and those that split the formula into parts that can be solved independently. The constraint removal rule described in \cref{sec:cr} is greedy. On the other hand, non-greedy rules signify uncertain choices that we may want to retract. They also correspond to edges in the implicit search tree; thus, the first solution found by the search algorithm is always the one with fewest applications of non-greedy rules. These rules include the $\DR$ and $\Reff$ rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion, independent partial grounding, and shattering.
 
-\todo[inline]{Mention that the implicit bijection is the same as in the definition of a compilation rule at the beginning of \cref{sec:rules}.}
-
-\begin{definition}
-  A \emph{state} (of the search for an FCG) is a triple $(G, C, L)$, where $G$ is an FCG (or \texttt{null}), $C$ is a cache, and $L$ is a list of formulas.
-\end{definition}
-
-% TODO: start here
-
-The actions that can be taken in this kind of state are applications of compilation rules that remove one (e.g., the first) formula from $L$ and potentially add something to $G$, $C$, and $L$.
-
-%% Each node in an FCG $G$ is created by... We say that `$G$ is an FCG for formula $\phi$'
-
-(that are yet to be compiled). (Note that the order is crucial!)
-
-TODO: describe how the algorithm describes an infinite search that can be stopped when some number of solutions is hit, or after some depth of the search tree is exhausted, or after a timeout.
-
-% TODO: end here
-
-We assume that if there is a pair $(\texttt{null}, L)$ in the set returned by a rule, then $|L| = 1$, i.e., the rule transformed the formula without creating any vertices.
-
-NOTE: if a non-greedy rule is not applicable, it returns an empty set, and \cref{alg:applyallrules} skips it.
+% states and actions
+Search can be conceptualised as traversing a directed graph composed of states and actions that lead from one state to the next. We define a \emph{state} as a triple $(G, C, L)$, where $G$ is an FCG (or \texttt{null}), $C$ is a cache, and $L$ is a list of formulas. The actions that can be taken in such a state are applications of compilation rules that remove the first formula from $L$ and potentially add something to $G$, $C$, and $L$. The meaning of $G$, $L$, and the correspondence between the $\star$'s in $G$ and the formulas in $L$ is the same as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
 
 \begin{algorithm}
   \caption{The (main part of the) search algorithm}
   \label{alg:search}
   \KwIn{a formula $\phi_0$}
-  \KwResult{all found FCGs for $\phi_0$ are in the set \solutions}
-  $\solutions \gets \emptyset$\;
-  $(G_0, C_0, L_0) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;
-  \lIf{$L_0 = \langle\rangle$}{$\solutions \gets \{\, G_0 \,\}$}
+  \KwResult{all found FCGs for $\phi_0$ are in set $S$}
+  $S \gets \emptyset$\;
+  $(G_0, C_0, L_0) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;\label{line:greedy}
+  \lIf{$L_0 = \langle\rangle$}{$S \gets \{\, G_0 \,\}$}
   \Else{
-    $q \gets \text{a empty queue of states}$\;
-    $q.\put{$(G_0, C_0, L_0)$}$\;
-    \While{{\bf not} $q.\emptyy{}$}{
+    $q \gets \text{a empty queue of states}$\;\label{line:q1}
+    $q.\put{$(G_0, C_0, L_0)$}$\;\label{line:q2}
+    \While{{\bf not} $q.\emptyy{}$\label{line:while}}{
       \ForEach{state $(G, C, L) \in \applyAllRules{$q.\get{}$}$}{
-        \lIf{$L = \langle\rangle$}{$\solutions \gets \solutions \cup \{\, G \,\}$}
+        \lIf{$L = \langle\rangle$}{$S \gets S \cup \{\, G \,\}$}
         \lElse{$q.\put{$(G, C, L)$}$}
       }
     }
   }
 \end{algorithm}
 
-% assumptions:
-% greedy rules have already been applied to the initial state s
 \begin{algorithm}
-  \caption{Return a list of new states created by applying one non-greedy rule followed by all applicable greedy rules}
+  \caption{The function responsible for applying non-greedy rules.}
   \label{alg:applyallrules}
   \Fn{\applyAllRules{state $s$}}{
     $(G, C, L) \gets s$\;
-    $\phi : T \gets L$\tcc*{separate the first formula from the rest}
+    $\phi : T \gets L$\tcc*{separate the first formula from the rest}\label{line:separate}
     $(G', C', L') \gets \text{a copy of } s$\;
     $S \gets \langle\rangle$\tcc*{direct successors of $s$}
     \ForEach{non-greedy rule $r$}{
@@ -732,15 +716,33 @@ NOTE: if a non-greedy rule is not applicable, it returns an empty set, and \cref
   }
 \end{algorithm}
 
-\todo[inline]{Explain the `tail' part of the algorithm, i.e., that the first formula is replaced by some vertices and some formulas. And explain why we don't want to have \textsc{Ref} vertices in the cache.}
+The search algorithm is described as \cref{alg:search,alg:applyallrules,alg:apply,alg:helpers}, with the main procedure in \cref{alg:search}. Since for most formulas we are able to find several FCGs (of various complexities), the algorithm maintains set $S$ of found solutions. We begin by applying all suitable greedy rules on \cref{line:greedy}. If greedy rules are enough to find a full FCG, the algorithm stops. Otherwise, \cref{line:q1,line:q2} set up a queue for breadth-first search. The algorithm continues to take a state from the queue, call \texttt{applyAllRules} on it, and place the resulting states back on the queue while filtering out full FCGs and adding them to $S$ instead. Since GDR can be applied to almost all formulas, the search is infinite. In our implementation, we stop searching when
+\begin{itemize}
+\item the desired number of solutions is found,
+\item the search tree reaches a certain height,
+\item or the algorithm times out.
+\end{itemize}
 
-Note: At the end, \texttt{mergeFcgs} will never return \texttt{null} because there is going to be at least one $\star$ in $G$ and the function will find it.
+% TODO: start here. Describe applyAllRules
 
-\section{How to Evaluate an FCG} \label{sec:evaluation}
+\begin{itemize}
+\item \cref{alg:applyallrules}
+\begin{itemize}
+\item Assumption: greedy rules have already been applied to the initial state $s$.
+\item It returns a list of new states created by applying one non-greedy rule followed by all applicable greedy rules.
+\end{itemize}
+\item \cref{alg:apply}
+\begin{itemize}
+\item Queue $q$ only holds states with at least one uncompiled formula, so \cref{line:separate} never fails.
+\end{itemize}
+\item \cref{alg:helpers}
+\begin{itemize}
+\item \texttt{updCache}: Note that $\Reff$ nodes are not placed in the cache because the relation identified by the compilation rule for $\Reff$ (i.e., \cref{alg:trycache}) is transitive. In other words, instead of calling a function $f(\mathbf{n}) \coloneqq g(\mathbf{m})$ (where $\mathbf{n}$ and $\mathbf{m}$ are integer parameter vectors, and $\mathbf{m}$ is constructed from $\mathbf{n}$), we can always directly call function $g$.
+\item \texttt{mergeFcgs}: Note that the initial (i.e., non-recursive) call to \texttt{mergeFcgs} will never return \texttt{null} because there is going to be at least one $\star$ in $G$, and the function will find it.
+\end{itemize}
+\end{itemize}
 
-\todo[inline]{Explain how the new types are evaluated. Then have an example evaluation. Maybe move this to the beginning of the previous section?}
-
-\section{Examples of Newly Domain-Liftable Formulas}
+\section{Results} % Newly Domain-Liftable Formulas
 
 \begin{table}
   \centering
@@ -798,9 +800,10 @@ to ensure surjectivity or remove \cref{eq:def2} to consider partial functions. L
 
 \paragraph{Notes.}
 \begin{itemize}
-\item \textsc{ForcLift} fails on all of these.
 \item Functions, surjections, and their partial counterparts are/were already liftable. It seems like lifting injectivity (which is a fairly general property) is the main accomplishment. (But this is just the one I noticed. There may be many others as well.)
 \item Here, $[\cdot]$ is the Iverson bracket.
+\item My examples for 1 domain are expressible using 2 variables and counting quantifiers, so they're already known to be liftable.
+\item Recursion is guaranteed to terminate if at least one domain shrinks by at least one. But note that allowing recursive calls with the same domain sizes (e.g., $f(n) = f(n) + \dots$) could be useful because these problematic terms might cancel out.
 \end{itemize}
 
 \paragraph{Results.}
@@ -828,26 +831,7 @@ to ensure surjectivity or remove \cref{eq:def2} to consider partial functions. L
 \item 2d partial injections, depth 2. Exactly the same circuit as above but with base case $f(m, 0) = 1$.
 \end{itemize}
 
-\section{Discussion}
-
-\begin{itemize}
-\item new rules that don't create vertices (e.g., duplicate removal, unconditional contradiction detection, etc.)
-\item some notes on halting
-  \begin{itemize}
-  \item Search is infinite. Some rules increase the size of the formula(s), but most reduce it.
-  \item Inference is guaranteed to terminate if at least one domain shrinks by at least one. But note that allowing recursive calls with the same domain sizes (e.g., $f(n) = f(n) + \dots$) could be useful because these problematic terms might cancel out.
-  \item It's impossible for $n \gets n - 1$ and $\texttt{for } n \in \dots$ to combine in a way that results in an infinite loop.
-  \end{itemize}
-\item care should be taken when cloning to preserve the validity of the cache and avoid infinite cycles (we use a separate (node $\to$ node) cache for this)
-\item My examples for 1 domain are expressible using 2 variables and counting quantifiers, so they're already known to be liftable.
-\end{itemize}
-
 \section{Conclusions and Future Work}
-
-\paragraph{Conclusions and observations.}
-\begin{itemize}
-\item $\CR$ must be separate from $\DR$ because initially the requirement to not have the newly introduced constant in the literals is not satisfied.
-\end{itemize}
 
 \paragraph{Future work.}
 \begin{itemize}
