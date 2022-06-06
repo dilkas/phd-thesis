@@ -19,173 +19,279 @@
 
 % TODO (V): Some version of this could become the introduction to the chapter
 \paragraph{Abstract.}
-First-order model counting (FOMC) is a \#\P-complete computational problem that asks to count the models of a sentence in first-order logic. Despite being around for more than a decade, practical FOMC algorithms are still unable to compute functions as simple as a factorial. We argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To enable arbitrary recursion, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established (weighted) FOMC algorithm ForcLift with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to find efficient solutions to counting fundamental structures such as injections and bijections.
+First-order model counting (FOMC) is a \#\P-complete computational problem that
+asks to count the models of a sentence in first-order logic. Despite being
+around for more than a decade, practical FOMC algorithms are still unable to
+compute functions as simple as a factorial. We argue that the capabilities of
+FOMC algorithms are severely limited by their inability to express arbitrary
+recursive computations. To enable arbitrary recursion, we relax the restrictions
+that typically accompany domain recursion and generalise circuits used to
+express a solution to an FOMC problem to graphs that may contain cycles. To this
+end, we enhance the most well-established (weighted) FOMC algorithm ForcLift
+with new compilation rules and an algorithm to check whether a recursive call is
+feasible. These improvements allow us to find efficient solutions to counting
+fundamental structures such as injections and bijections.
 
 \clearpage
 \section{Introduction}
 
 \todo[inline,caption={}]{
-\begin{itemize}
-\item Introduce Crane and explain that it's modus operandi is very different.
-\item Introduce the acronym for GDR
-\item Rename the DR command to GDR
-\item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$, variable $X$, and constant $x$. Then use this notation instead of using phrases such as `associated with'.
-\item Have a one-star graph instead of null.
-\item We call an FCG full (complete?) if $L = \langle\rangle$ or, equivalently, there are no $\star$s in $G$.
-\item Maybe have a name for a pair of an FCG and a list of formulas? This could be conveniently combined with the definition of full/partial.
-\end{itemize}
+  \begin{itemize}
+    \item Introduce Crane and explain that it's modus operandi is very
+          different.
+    \item Introduce the acronym for GDR
+    \item Rename the DR command to GDR
+    \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$,
+          variable $X$, and constant $x$. Then use this notation instead of
+          using phrases such as `associated with'.
+    \item Maybe have a name for a pair of an FCG and a list of formulas? This
+          could be conveniently combined with the definition of full/partial.
+  \end{itemize}
 }
 
 % Definition and scope of the topic: FOMC
 
-\emph{First-order model counting} (FOMC) is the problem of computing the number of models of a sentence in first-order logic given the size(s) of its domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC (or, rather, its \emph{weighted} variant WFOMC) is in probabilistic inference, particularly for statistical relational models such as Markov logic networks that define probabilities over sets of objects and relations thereof \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
+\emph{First-order model counting} (FOMC) is the problem of computing the number
+of models of a sentence in first-order logic given the size(s) of its domain(s)
+\citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC (or, rather,
+its \emph{weighted} variant WFOMC) is in probabilistic inference, particularly
+for statistical relational models such as Markov logic networks that define
+probabilities over sets of objects and relations thereof
+\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
 
-Over slightly more than a decade, research on (W)FOMC advanced on both theoretical and empirical fronts. Several WFOMC algorithms such as ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11}, probabilistic theorem proving \citep{DBLP:journals/cacm/GogateD16}, and L2C \citep{DBLP:conf/kr/KazemiP16} were developed. More and more classes of formulas were shown to be \emph{liftable}, i.e., solvable in polynomial time with respect to the size(s) of the domain(s) \citep{DBLP:conf/kr/BremenK21,DBLP:conf/nips/KazemiKBP16,DBLP:conf/lics/KuusistoL18,DBLP:journals/jair/Kuzelka21}. Much of the researchers' attention was devoted to developing efficient solutions to formulas with up to two variables \citep{DBLP:conf/uai/BremenK21,DBLP:journals/corr/abs-2110-05992}.
+Over slightly more than a decade, research on (W)FOMC advanced on both
+theoretical and empirical fronts. Several WFOMC algorithms such as ForcLift
+\citep{DBLP:conf/ijcai/BroeckTMDR11}, probabilistic theorem proving
+\citep{DBLP:journals/cacm/GogateD16}, and L2C \citep{DBLP:conf/kr/KazemiP16}
+were developed. More and more classes of formulas were shown to be
+\emph{liftable}, i.e., solvable in polynomial time with respect to the size(s)
+of the domain(s)
+\citep{DBLP:conf/kr/BremenK21,DBLP:conf/nips/KazemiKBP16,DBLP:conf/lics/KuusistoL18,DBLP:journals/jair/Kuzelka21}.
+Much of the researchers' attention was devoted to developing efficient solutions
+to formulas with up to two variables
+\citep{DBLP:conf/uai/BremenK21,DBLP:journals/corr/abs-2110-05992}.
 
 % The problem you are to focus on the topic: recursion
 
-However, none of the publicly available (W)FOMC algorithms can efficiently compute functions as simple as a factorial.\footnote{The problem of computing the factorial can be described using two variables and counting quantifiers, so it belongs to a fragment of first-order logic which is known to be liftable \citep{DBLP:journals/jair/Kuzelka21}.} We claim that this shortcoming is due to the inability of these algorithms to construct recursive solutions.
+However, none of the publicly available (W)FOMC algorithms can efficiently
+compute functions as simple as a factorial.\footnote{The problem of computing
+  the factorial can be described using two variables and counting quantifiers,
+  so it belongs to a fragment of first-order logic which is known to be liftable
+  \citep{DBLP:journals/jair/Kuzelka21}.} We claim that this shortcoming is due
+to the inability of these algorithms to construct recursive solutions.
 
 % If the problem was faced before, describe the state of the art.
 
-The topic of recursion in the context of WFOMC has been studied before but in very limited ways. \Citet{DBLP:conf/ilp/BarvinekB0ZK21} use WFOMC to generate numerical data which is then used to conjecture recurrence relations that explain that data. \Citet{DBLP:conf/nips/Broeck11} introduced the idea of \emph{domain recursion}. Intuitively, domain recursion partitions a domain of size $n$ into a single explicitly named constant and the remaining domain of size $n-1$. However, many stringent conditions are enforced to ensure that the search for a tractable solution always terminates.
+The topic of recursion in the context of WFOMC has been studied before but in
+very limited ways. \Citet{DBLP:conf/ilp/BarvinekB0ZK21} use WFOMC to generate
+numerical data which is then used to conjecture recurrence relations that
+explain that data. \Citet{DBLP:conf/nips/Broeck11} introduced the idea of
+\emph{domain recursion}. Intuitively, domain recursion partitions a domain of
+size $n$ into a single explicitly named constant and the remaining domain of
+size $n-1$. However, many stringent conditions are enforced to ensure that the
+search for a tractable solution always terminates.
 
-%1) But their code only conjectures stuff on data. My conjectures are guaranteed always true.
-%2) everything has to be expressible in $\mathbf{C}^2$, i.e., the two-variable fragment of first-order logic with counting quantifiers on one domain.
-%3) They only consider P-recursive functions, which means that, e.g., $f(n) = f(n-1)f(n-2)$ would not be allowed.
+% 1) But their code only conjectures stuff on data. My conjectures are
+% guaranteed always true. 2) everything has to be expressible in $\mathbf{C}^2$,
+% i.e., the two-variable fragment of first-order logic with counting quantifiers
+% on one domain. 3) They only consider P-recursive functions, which means that,
+% e.g., $f(n) = f(n-1)f(n-2)$ would not be allowed.
 
 % Discuss the methods and novel techniques to be employed
 
 \begin{figure}
-\centering
-\begin{subfigure}{0.49\textwidth}
-\begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon sides=3},edge from parent/.style={draw,-{Latex[length=2mm]}}]
-\node[draw,circle] {}
-child {node[draw,ellipse] (b) {$\phi(n)$}
-child {node[draw,triangle] {}}
-}
-child {node[draw,circle] {}
-child {node[draw,ellipse] (a) {$\phi(n)$}}
-}
-;
-\draw[-{Latex[length=2mm]}] (a) -- (b);
-\end{tikzpicture}
-\caption{Before}
-\label{fig:before}
-\end{subfigure}
-\begin{subfigure}{0.49\textwidth}
-\centering
-\begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon sides=3}]
-\node[draw,ellipse] (a) at (0, 0) {$\phi(n)$};
-\node[draw,ellipse] (b) at (0, -2) {$\psi(n-1)$};
-\node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
-\node[draw,triangle] (d) at (1, -4) {};
-\draw[-{Latex[length=2mm]}] (a) -- (b) node [midway,xshift=50] {Domain recursion};
-\draw[-{Latex[length=2mm]}] (b) -- (c);
-\draw[-{Latex[length=2mm]}] (b) -- (d);
-\draw[-{Latex[length=2mm]}] (c) to [bend left=45] node [midway,xshift=-30] () {$n \mapsto n-1$} (a);
-\end{tikzpicture}
-\caption{After}
-\label{fig:after}
-\end{subfigure}
-\caption{Non-tree-like edges in first-order knowledge compilation}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
+        sides=3},edge from parent/.style={draw,-{Latex[length=2mm]}}]
+      \node[draw,circle] {} child {node[draw,ellipse] (b) {$\phi(n)$} child
+        {node[draw,triangle] {}} } child {node[draw,circle] {} child
+        {node[draw,ellipse] (a) {$\phi(n)$}} } ; \draw[-{Latex[length=2mm]}] (a)
+      -- (b);
+    \end{tikzpicture}
+    \caption{Before}
+    \label{fig:before}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
+        sides=3}]
+      \node[draw,ellipse] (a) at (0, 0) {$\phi(n)$}; \node[draw,ellipse] (b) at
+      (0, -2) {$\psi(n-1)$}; \node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
+      \node[draw,triangle] (d) at (1, -4) {}; \draw[-{Latex[length=2mm]}] (a) --
+      (b) node [midway,xshift=50] {Domain recursion};
+      \draw[-{Latex[length=2mm]}] (b) -- (c); \draw[-{Latex[length=2mm]}] (b) --
+      (d); \draw[-{Latex[length=2mm]}] (c) to [bend left=45] node
+      [midway,xshift=-30] () {$n \mapsto n-1$} (a);
+    \end{tikzpicture}
+    \caption{After}
+    \label{fig:after}
+  \end{subfigure}
+  \caption{Non-tree-like edges in first-order knowledge compilation}
 \end{figure}
 
 \todo[inline]{Informally introduce what a compilation rule is.}
 
 \todo[inline]{Vertex or node?}
 
-In this work, we show how new tractable solutions can be found by dispensing with these restrictions. With additional compilation rules and an algorithm for checking whether a `recursive call' is possible, ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be able to construct recursive functions that efficiently solve counting problems that used to be beyond its reach. The main conceptual difference from the original algorithm is that the input formula is now compiled to a labelled directed graph rather than a circuit (i.e., cycles are allowed). This idea is illustrated in \cref{fig:after}. Suppose the original formula $\phi$ depended on a domain of size $n \in \mathbb{N}$. Domain recursion transforms $\phi$ into a different formula $\psi$ that depends on a domain of size $n-1$. After some number of subsequent transformations, the algorithm identifies that a solution to $\psi$ can be constructed in part by finding a solution to a version of $\phi$ where the domain of size $n$ is replaced by a domain of size $n-1$. Recognising $\phi$ from before, we can add a cycle-forming edge to the graph, which can be interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
+In this work, we show how new tractable solutions can be found by dispensing
+with these restrictions. With additional compilation rules and an algorithm for
+checking whether a `recursive call' is possible, ForcLift
+\citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be able to construct
+recursive functions that efficiently solve counting problems that used to be
+beyond its reach. The main conceptual difference from the original algorithm is
+that the input formula is now compiled to a labelled directed graph rather than
+a circuit (i.e., cycles are allowed). This idea is illustrated in
+\cref{fig:after}. Suppose the original formula $\phi$ depended on a domain of
+size $n \in \mathbb{N}$. Domain recursion transforms $\phi$ into a different
+formula $\psi$ that depends on a domain of size $n-1$. After some number of
+subsequent transformations, the algorithm identifies that a solution to $\psi$
+can be constructed in part by finding a solution to a version of $\phi$ where
+the domain of size $n$ is replaced by a domain of size $n-1$. Recognising $\phi$
+from before, we can add a cycle-forming edge to the graph, which can be
+interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
 
 %% \begin{itemize}
-%% \item one can then extract the (potentially recursive) definitions of functions from the graph
-%% \item simplify the algebraic expressions, e.g.:
-%%   \begin{itemize}
-%%   \item adding and subtracting the same thing
-%%   \item $\sum_{i=0}^n[i < 2]f(i) = f(0) + f(1)$
-%%   \end{itemize}
-%% \item evaluate the functions
-%% \item definition of an FCG
-%% \item maybe example of an FCG for injections
-%% \item new compilation rules
-%%   \begin{itemize}
-%%   \item (generalised) domain recursion (via example)
-%%   \item constraint removal (via example)
-%%   \item recursion checking algorithm (sketch it)
-%%   \end{itemize}
-%% \item combining BFS and greedy search
-%% \item smoothing needs to be adapted so as to not get stuck in an infinite loop
-%% \item dynamic programming may be necessary to compute in polynomial time
-%% \end{itemize}
+           %%      \item one can then extract the (potentially recursive)
+           %%      definitions of functions from the graph
+           %%      \item simplify the algebraic expressions, e.g.:
+           %%            \begin{itemize}
+           %%      \item adding and subtracting the same thing
+           %%      \item $\sum_{i=0}^n[i < 2]f(i) = f(0) + f(1)$
+           %%    \end{itemize}
+           %%      \item evaluate the functions
+           %%      \item definition of an FCG
+           %%      \item maybe example of an FCG for injections
+           %%      \item new compilation rules
+           %%            \begin{itemize}
+           %%      \item (generalised) domain recursion (via example)
+           %%      \item constraint removal (via example)
+           %%      \item recursion checking algorithm (sketch it)
+           %%    \end{itemize}
+           %%      \item combining BFS and greedy search
+           %%      \item smoothing needs to be adapted so as to not get stuck in
+           %%      an infinite loop
+           %%      \item dynamic programming may be necessary to compute in
+           %%      polynomial time
+           %%    \end{itemize}
 
-% Highlights of the results obtained
+           %    Highlights of the results obtained
 
-In our experiments, we consider variations of the function-counting problem. These functions vary in:
+In our experiments, we consider variations of the function-counting problem.
+These functions vary in:
 \begin{itemize}
-\item whether they are full or partial,
-\item whether they are injective/surjective/bijective or not,
-\item and whether the domain and the codomain are the same.
+  \item whether they are full or partial,
+  \item whether they are injective/surjective/bijective or not,
+  \item and whether the domain and the codomain are the same.
 \end{itemize}
-Many versions of this problem were previously unsolvable by any available (W)FOMC algorithm, whereas we can find recursive solutions (that can be evaluated in polynomial time) to all except one of these problems.
+Many versions of this problem were previously unsolvable by any available
+(W)FOMC algorithm, whereas we can find recursive solutions (that can be
+evaluated in polynomial time) to all except one of these problems.
 
 % Possible future enhancements and further work in progress
 
-Further work is necessary to fully automate this new way of computing the (W)FOMC of a formula. Crane produces a graph which then needs to be transformed to definitions of (potentially recursive) functions. In some cases, it is necessary to simplify the algebraic expressions in these definitions (e.g., reducing $x-x$ to zero for some expression $x$). Most importantly, the algorithm only gives us the recursive calls but not the base cases. What makes the problem of finding these base cases non-trivial is that the number of base cases is not constant for functions of arity greater than one (i.e., formulas that mention more than one domain). Nonetheless, these remaining challenges are minuscule compared to the broader goal of expanding the capabilities of (W)FOMC to new classes of instances.
+Further work is necessary to fully automate this new way of computing the
+(W)FOMC of a formula. Crane produces a graph which then needs to be transformed
+to definitions of (potentially recursive) functions. In some cases, it is
+necessary to simplify the algebraic expressions in these definitions (e.g.,
+reducing $x-x$ to zero for some expression $x$). Most importantly, the algorithm
+only gives us the recursive calls but not the base cases. What makes the problem
+of finding these base cases non-trivial is that the number of base cases is not
+constant for functions of arity greater than one (i.e., formulas that mention
+more than one domain). Nonetheless, these remaining challenges are minuscule
+compared to the broader goal of expanding the capabilities of (W)FOMC to new
+classes of instances.
 
 %% \begin{itemize}
-%% \item open questions:
-%%   \begin{itemize}
-%%     \item what kind of sequences are computable in this way?
-%%     \item would using a different logic extend the capabilities of FOMC even further?
-%%   \end{itemize}
-%% \end{itemize}
+           %%      \item open questions:
+           %%            \begin{itemize}
+           %%      \item what kind of sequences are computable in this way?
+           %%      \item would using a different logic extend the capabilities
+           %%            of FOMC even further?
+           %%    \end{itemize}
+           %%    \end{itemize}
 
 \subsection{Notes}
 
-In a way, we're dividing the idea of domain recursion between the IDR and the Ref nodes, thus also generalising it.
+In a way, we're dividing the idea of domain recursion between the IDR and the
+Ref nodes, thus also generalising it.
 
-[Insert motivation for smoothing from Section 3.4. of the ForcLift paper.] Originally, smoothing was (and still is) a two-step process. First, atoms that are still accounted for in the circuit are propagated upwards. Then, at vertices of certain types, missing atoms are detected and additional sinks are created to account for them. If left unchanged, the first step of this process would result in an infinite loop whenever a cycle is encountered. \Cref{alg:smoothing} outlines how the first step can be adapted to an arbitrary directed graph.
+[Insert motivation for smoothing from Section 3.4. of the ForcLift paper.]
+Originally, smoothing was (and still is) a two-step process. First, atoms that
+are still accounted for in the circuit are propagated upwards. Then, at vertices
+of certain types, missing atoms are detected and additional sinks are created to
+account for them. If left unchanged, the first step of this process would result
+in an infinite loop whenever a cycle is encountered. \Cref{alg:smoothing}
+outlines how the first step can be adapted to an arbitrary directed graph.
 
 \section{Preliminaries}
 
 \subsection{First-Order Logic}
 
-In this section, we describe a variation of function-free first-order logic with equality. For a more complete exposition of first-order logic, see the book by \citet{DBLP:books/daglib/0023546}.
+In this section, we describe a variation of function-free first-order logic with
+equality. For a more complete exposition of first-order logic, see the book by
+\citet{DBLP:books/daglib/0023546}.
 
-In first-order logic, an \emph{atom} (i.e., an atomic formula) is either $t_1 = t_2$ or $P(t_1, \dots, t_n)$ for some predicate $P$ and terms $(t_i)_{i=1}^n$. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. A \emph{term} is either a constant or a variable (we also call terms \emph{arguments}). An atom is \emph{ground} if all of its terms are constants.
+In first-order logic, an \emph{atom} (i.e., an atomic formula) is either
+$t_1 = t_2$ or $P(t_1, \dots, t_n)$ for some predicate $P$ and terms
+$(t_i)_{i=1}^n$. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. A
+\emph{term} is either a constant or a variable (we also call terms
+\emph{arguments}). An atom is \emph{ground} if all of its terms are constants.
 
-A \emph{formula} is a well-formed expression that connects atoms using the previously described logical operators as well as universal ($\forall x \in D. \phi$) and existential ($\exists x \in D. \phi$) quantifiers. Here, $x$ is a variable, $D$ is a domain, and $\phi$ is a formula. A variable occurrence is \emph{bound} if it is within the scope of a quantifier for that variable, otherwise it is \emph{free}. A formula is a \emph{sentence} if all of its variable occurrences are bound.\footnote{In the rest of this chapter, all formulas in first-order logic are assumed to be sentences.}
+A \emph{formula} is a well-formed expression that connects atoms using the
+previously described logical operators as well as universal
+($\forall x \in D. \phi$) and existential ($\exists x \in D. \phi$) quantifiers.
+Here, $x$ is a variable, $D$ is a domain, and $\phi$ is a formula. A variable
+occurrence is \emph{bound} if it is within the scope of a quantifier for that
+variable, otherwise it is \emph{free}. A formula is a \emph{sentence} if all of
+its variable occurrences are bound.\footnote{In the rest of this chapter, all
+  formulas in first-order logic are assumed to be sentences.}
 
 \subsubsection{How to Interpret a Sentence}
 
-Let $\phi$ be a sentence. Since each variable in $\phi$ is introduced by a quantifier, each variable is linked to a unique domain. As is done implicitly in previous work \citep{DBLP:phd/basesearch/VandenBroeck13}, we make the following assumption.
+Let $\phi$ be a sentence. Since each variable in $\phi$ is introduced by a
+quantifier, each variable is linked to a unique domain. As is done implicitly in
+previous work \citep{DBLP:phd/basesearch/VandenBroeck13}, we make the following
+assumption.
 
 \begin{assumption}
-  Each constant can be mapped to a domain, and each $n$-ary predicate can be mapped to a sequence of $n$ domains such that:
+  Each constant can be mapped to a domain, and each $n$-ary predicate can be
+  mapped to a sequence of $n$ domains such that:
   \begin{enumerate}
-  \item ...
-  \item ...
+    \item ...
+    \item ...
   \end{enumerate}
 \end{assumption}
 
-First, we assume that each $n$-ary predicate can be associated with a sequence of $n$ domains, one for each of its terms. Second, we assume that each constant can be similarly linked to a unique domain. Third, we assume that equality is only checked between terms that have the same domain.
+First, we assume that each $n$-ary predicate can be associated with a sequence
+of $n$ domains, one for each of its terms. Second, we assume that each constant
+can be similarly linked to a unique domain. Third, we assume that equality is
+only checked between terms that have the same domain.
 
-\todo[inline]{Describe this more formally. Maybe just two rules: whenever two terms are compared, they have the same domain, the domain of a term is always the same as the $k$-th domain of the predicate.}
+\todo[inline]{Describe this more formally. Maybe just two rules: whenever two
+  terms are compared, they have the same domain, the domain of a term is always
+  the same as the $k$-th domain of the predicate.}
 
 \begin{itemize}
-\item Interpretation
-  \begin{itemize}
-  \item domains as sets
-  \item constants as specific elements of domains (different constant names $\implies$ different elements). If the domain is not big enough, then the formula is unsat.)
-  \item variables (indicated during quantification)
-  \item Variables are always uppercase, constants are always lowercase.
-  \item predicates are interpreted as relations
-  \end{itemize}
-\item models are defined very differently: all combinations of relations that satisfy the sentence.
-\item (multiple) (finite) domains (of discourse). This makes, e.g., satisfiability decidable and a FO formula can always be expanded to a propositional one.
+  \item Interpretation
+        \begin{itemize}
+          \item domains as sets
+          \item constants as specific elements of domains (different constant
+                names $\implies$ different elements). If the domain is not big
+                enough, then the formula is unsat.)
+          \item variables (indicated during quantification)
+          \item Variables are always uppercase, constants are always lowercase.
+          \item predicates are interpreted as relations
+        \end{itemize}
+  \item models are defined very differently: all combinations of relations that
+        satisfy the sentence.
+  \item (multiple) (finite) domains (of discourse). This makes, e.g.,
+        satisfiability decidable and a FO formula can always be expanded to a
+        propositional one.
 \end{itemize}
 
-more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also has a description
+more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
+has a description
 
 \subsection{Everything Else}
 
@@ -209,31 +315,50 @@ more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
 
 \paragraph{Notation.}
 \begin{itemize}
-\item We write $\to$ for functions, $\pfun$ for partial functions, $\twoheadrightarrowtail$ for bijections, and $\hookrightarrow$ for set inclusion. Let $\id$ denote the identity function (on any domain). For any function $f$, let $\Imm f$ be the image of $f$.
+  \item We write $\to$ for functions, $\pfun$ for partial functions,
+        $\twoheadrightarrowtail$ for bijections, and $\hookrightarrow$ for set
+        inclusion. Let $\id$ denote the identity function (on any domain). For
+        any function $f$, let $\Imm f$ be the image of $f$.
 \end{itemize}
 
-Most of the definitions here are adaptations/formalisations of \citep{DBLP:conf/ijcai/BroeckTMDR11} and the corresponding code.
+Most of the definitions here are adaptations/formalisations of
+\citep{DBLP:conf/ijcai/BroeckTMDR11} and the corresponding code.
 
 \begin{definition}
-  A \emph{domain} is a symbol for a finite set.\footnote{In the context of functions, the domain of a function $f$ retains its usual meaning and is denoted $\dom(f)$.}
+  A \emph{domain} is a symbol for a finite set.\footnote{In the context of
+    functions, the domain of a function $f$ retains its usual meaning and is
+    denoted $\dom(f)$.}
 \end{definition}
 
 \begin{definition}
-  An \emph{(inequality) constraint} is a pair $(a, b)$, where $a$ is a variable, and $b$ is either a variable or a constant.
+  An \emph{(inequality) constraint} is a pair $(a, b)$, where $a$ is a variable,
+  and $b$ is either a variable or a constant.
 \end{definition}
 
-\todo[inline]{V: It might be worth emphasising that you are introducing new notation in new concepts to provide a metatheory to the existing literature on listed reasoning.}
+\todo[inline]{V: It might be worth emphasising that you are introducing new
+  notation in new concepts to provide a metatheory to the existing literature on
+  listed reasoning.}
 \begin{definition}
-  A \emph{clause} is a triple $c = (L, C, \delta_c)$, where $L$ is a set of literals, $C$ is a set of constraints, and $\delta_c$ is a function that maps all variables in $c$ to their domains such that (s.t.) if $(x, y) \in C$ for some variables $x$ and $y$, then $\delta_c(x) = \delta_c(y)$. Note that for convenience sometimes we write $\delta_c$ for the domain map of $c$ without unpacking $c$ into its three constituents.
+  A \emph{clause} is a triple $c = (L, C, \delta_c)$, where $L$ is a set of
+  literals, $C$ is a set of constraints, and $\delta_c$ is a function that maps
+  all variables in $c$ to their domains such that (s.t.) if $(x, y) \in C$ for
+  some variables $x$ and $y$, then $\delta_c(x) = \delta_c(y)$. Note that for
+  convenience sometimes we write $\delta_c$ for the domain map of $c$ without
+  unpacking $c$ into its three constituents.
 
-  Also, let $\Vars$ be a function that maps clauses and sets of literals and inequalities to the set of variables contained within. In particular, $\Vars(c) \coloneqq \Vars(L) \cup \Vars(C)$.
+  Also, let $\Vars$ be a function that maps clauses and sets of literals and
+  inequalities to the set of variables contained within. In particular,
+  $\Vars(c) \coloneqq \Vars(L) \cup \Vars(C)$.
 \end{definition}
 
-A \emph{formula} is a set of clauses. All variables in a clause are implicitly universally quantified (but note that variables are never shared among clauses), and all clauses in a formula are implicitly linked by conjunction. This way, one can read formulas as defined here as sentences in first-order logic.
+A \emph{formula} is a set of clauses. All variables in a clause are implicitly
+universally quantified (but note that variables are never shared among clauses),
+and all clauses in a formula are implicitly linked by conjunction. This way, one
+can read formulas as defined here as sentences in first-order logic.
 
 \todo[inline]{Note: we will reuse this several times.}
-\begin{example} \label{example:first}
-  Let $\phi \coloneqq \{\, c_1, c_2 \,\}$ be a formula, where
+\begin{example} \label{example:first} Let $\phi \coloneqq \{\, c_1, c_2 \,\}$ be
+  a formula, where
   \[
     c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}),
   \]
@@ -241,7 +366,8 @@ A \emph{formula} is a set of clauses. All variables in a clause are implicitly u
   \[
     c_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}),
   \]
-  for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then in first-order logic $\phi$ could be read as
+  for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then
+  in first-order logic $\phi$ could be read as
   \begin{align*}
     (\forall X \in a. \forall Y \in b. \forall Z \in b. Y \ne Z &\implies \neg p(X, Y) \lor \neg p(X, Z)) \land \\
     (\forall X \in a. \forall Y \in b. \forall Z \in a. X \ne Z &\implies \neg p(X, Y) \lor \neg p(Z, Y)).
@@ -249,61 +375,139 @@ A \emph{formula} is a set of clauses. All variables in a clause are implicitly u
 \end{example}
 
 \paragraph{Notation for lists.}
-Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list with one element $x$, respectively. We write $\in$ for (in-order) enumeration, $\mdoubleplus$ for concatenation, and $|\cdot|$ for the length of a list. Let $h : t$ denote a list with first element (a.k.a. head) $h$ and remaining list (a.k.a. tail) $t$. We also use list comprehensions written equivalently to set comprehensions. For example, let $L \coloneqq \langle 1 \rangle$ and $M \coloneqq \langle 2 \rangle$ be two lists. Then $M = \langle 2x \mid x \in L \rangle$, $L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
+Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list
+with one element $x$, respectively. We write $\in$ for (in-order) enumeration,
+$\mdoubleplus$ for concatenation, and $|\cdot|$ for the length of a list. Let
+$h : t$ denote a list with first element (a.k.a. head) $h$ and remaining list
+(a.k.a. tail) $t$. We also use list comprehensions written equivalently to set
+comprehensions. For example, let $L \coloneqq \langle 1 \rangle$ and
+$M \coloneqq \langle 2 \rangle$ be two lists. Then
+$M = \langle 2x \mid x \in L \rangle$,
+$L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
 
 \section{Methods}
 
 % Generalising Circuits to Labelled Graphs
 
-A \emph{first-order deterministic decomposable negation normal form computational graph} (FCG) is a (weakly connected) directed graph with a a single source, vertex labels, and ordered outgoing edges.\footnote{Note that imposing an ordering on outgoing edges is just a limited version of edge labelling.} We denote an FCG as $G = (V, s, N^+, \tau)$, where $V$ is the set of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct successor function that maps each vertex in $V$ to a \emph{list} that contains either other vertices in $V$ or a special symbol $\star$. This symbol means that the target of the edge is yet to be determined.
-
 \todo[inline,caption={}]{
-\begin{itemize}
-\item Many $\star$'s, not one. They are counted as nodes (and change the text at the beginning of Section 5.3.1 appropriately).
-\item Maybe star should be considered a type? I would need to modify the algorithms.
-\item When visualising FCGs, we omit node labels and/or parameters when they are immaterial to what is being discussed. Propagate this change to figures and their descriptions.
-\end{itemize}
+  \begin{itemize}
+    \item Have a one-star graph instead of null.
+    \item We call an FCG full (complete?) if $L = \langle\rangle$ or,
+          equivalently, there are no $\star$s in $G$.
+    \item Many $\star$'s, not one. They are counted as nodes (and change the
+          text at the beginning of Section 5.3.1 appropriately).
+    \item Maybe star should be considered a type? I would need to modify the
+          algorithms.
+    \item When visualising FCGs, we omit node labels and/or parameters when they
+          are immaterial to what is being discussed. Propagate this change to
+          figures and their descriptions.
+  \end{itemize}
 }
 
-Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}. To avoid clutter, we leave the parameters implicit and let $\tau$ denote the vertex-labelling function that maps each vertex in $V$ to its type. The types are as described in previous work \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the source code of \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}} but with one new type for \emph{constraint removal} (denoted by $\CR$) and two revamped types for domain recursion (denoted by $\DR$) and non-tree-like edges that can encode recursive calls (denoted by $\Reff$). For each vertex $v \in V$, the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by its type $\tau(v)$.
+A \emph{first-order deterministic decomposable negation normal form
+  computational graph} (FCG) is a (weakly connected) directed graph with a
+single source, vertex labels, and ordered outgoing edges.\footnote{Note that
+  imposing an ordering on outgoing edges is just a limited version of edge
+  labelling.} We denote an FCG as $G = (V, s, N^+, \tau)$, where $V$ is the set
+of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct
+successor function that maps each vertex in $V$ to a \emph{list} that contains
+other vertices in $V$.
+
+Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}.
+To avoid clutter, we leave the parameters implicit and let $\tau$ denote the
+vertex-labelling function that maps each vertex in $V$ to its type. The types
+are mostly as described in previous work
+\citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the
+source code of
+\textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}. The
+type for non-tree-like edges (denoted by $\Reff$), while used before, is
+extended to contain the information necessary to support recursive calls. We
+also add three new types:
+\begin{itemize}
+  \item $\CR$ for constraint removal,
+  \item $\DR$ for GDR,
+  \item and $\star$ as a placeholder to be replaced by...
+\end{itemize}
+
+% TODO: start here
+one new type for \emph{constraint removal} (denoted by $\CR$) and  For each vertex $v \in V$,
+the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by
+its type $\tau(v)$.
+
+This symbol means that the target of the edge is yet to be determined.
+
+\todo[inline]{Do I need to introduce constraint removal here?}
 
 \begin{figure}[t]
   \centering
-  \begin{tikzpicture}[every node/.style={draw,ellipse},edge from parent/.style={draw,-latex},sibling distance=2cm,level 6/.style={sibling distance=6cm}]
-    \node (dr) {$\DR_{a \gets a \setminus \{\, x \,\}}$}
-    child {node {$\bigvee_{b^\top \subseteq b}$}
-      child {node[circle] {$\wedge$}
-        child {node[circle] {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
-        child {node[circle] {$\wedge$}
-          child {node[circle] {$1$}} % _{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}
-          child {node[circle] {$\wedge$}
-            child {node[circle] {$1$}} % _{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}
-            child {node {$\CR_{a \mapsto a'}$}
-              child {node[circle] {$\wedge$}
-                child {node {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
-                child {node (ref) {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}}
-              }}}}}};
+  \begin{tikzpicture}[every node/.style={draw,ellipse},edge from
+    parent/.style={draw,-latex},sibling distance=2cm,level 6/.style={sibling
+      distance=6cm}]
+    \node (dr) {$\DR_{a \gets a \setminus \{\, x \,\}}$} child {node
+      {$\bigvee_{b^\top \subseteq b}$} child {node[circle] {$\wedge$} child
+        {node[circle]
+          {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
+        child {node[circle] {$\wedge$} child {node[circle]
+            {$1$}} % _{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}
+          child {node[circle] {$\wedge$} child {node[circle]
+              {$1$}} % _{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}
+            child {node {$\CR_{a \mapsto a'}$} child {node[circle] {$\wedge$}
+                child {node
+                  {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
+                child {node (ref)
+                  {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}} }}}}}};
     \draw[-latex, bend right] (ref) to (dr);
   \end{tikzpicture}
-  \caption{An example FCG constructed by Crane. Node labels are written directly on the nodes. Some parameters are omitted for brevity. Outgoing edges are ordered from left to right.}
+  \caption{An example FCG constructed by Crane. Node labels are written directly
+    on the nodes. Some parameters are omitted for brevity. Outgoing edges are
+    ordered from left to right.}
   \label{fig:examplefcg}
 \end{figure}
 
 \begin{example}
-The FCG in \cref{fig:examplefcg} has twelve nodes. The source vertex has out-degree 1 (i.e., $|N^+(s)| = 1$), label $\DR_{a \gets a \setminus \{\, x \,\}}$, and type $\DR$ (i.e., $\tau(s) = \DR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for an explanation of other node types and how they are to be evaluated. \todo[inline]{How does my notation differ from previous work? Does it need explaining?}
+  The FCG in \cref{fig:examplefcg} has twelve nodes. The source vertex has
+  out-degree 1 (i.e., $|N^+(s)| = 1$), label
+  $\DR_{a \gets a \setminus \{\, x \,\}}$, and type $\DR$ (i.e.,
+  $\tau(s) = \DR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for
+  an explanation of other node types and how they are to be evaluated.
+  \todo[inline]{How does my notation differ from previous work? Does it need
+    explaining?}
 \end{example}
 
-\todo[inline]{Explain how the new types are evaluated. Then have an example evaluation.}
+\todo[inline]{Explain how the new types are evaluated. Then have an example
+  evaluation.}
 
-Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$ for an FCG that has one vertex with label $T_p$ (i.e., type $T$ and parameter(s) $p$) and with $\star$ as the target of all of its outgoing edges. We also write $T_p(v)$ for an FCG with two vertices and an edge between them (and no edges incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the label of the source.
+Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$
+for an FCG that has one vertex with label $T_p$ (i.e., type $T$ and parameter(s)
+$p$) and with $\star$ as the target of all of its outgoing edges. We also write
+$T_p(v)$ for an FCG with two vertices and an edge between them (and no edges
+incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the
+label of the source.
 
-%% Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct successors (e.g., some vertex $v$) like a function and provided with its parameter(s) (e.g., $\rho$) in the subscript.
+%% Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct
+%% successors (e.g., some vertex $v$) like a function and provided with its
+%% parameter(s) (e.g., $\rho$) in the subscript.
 
 \paragraph{Hashing.}
-We use (integer-valued) hash functions to efficiently discard pairs of formulas that are too different for recursion to be established. The hash code of a clause $c = (L, C, \delta)$ (denoted by $\# c$) combines the hash codes of the sets of constants and predicates in $c$, the numbers of positive and negative literals, the number of inequality constraints $|C|$, and the number of variables $|\Vars(c)|$. The hash code of a formula $\phi$ combines the hash codes of all its clauses and is denoted by $\#\phi$.
+We use (integer-valued) hash functions to efficiently discard pairs of formulas
+that are too different for recursion to be established. The hash code of a
+clause $c = (L, C, \delta)$ (denoted by $\# c$) combines the hash codes of the
+sets of constants and predicates in $c$, the numbers of positive and negative
+literals, the number of inequality constraints $|C|$, and the number of
+variables $|\Vars(c)|$. The hash code of a formula $\phi$ combines the hash
+codes of all its clauses and is denoted by $\#\phi$.
 
 \paragraph{Caching.}
-Previously, a cache was used to check if a formula is identical to one of the formulas that have already been fully compiled. If that is the case, then the circuit already contains the subcircuit for this formula. Instead of duplicating this subcircuit, one would draw an edge that creates an undirected (but not a directed) cycle (see \cref{fig:before}). Now, to facilitate recursion, we extend the caching scheme to include formulas that have been encountered but not fully compiled yet. Hence, the same procedure can now create directed cycles in the graph. Formally, we define a \emph{cache} to be a map from integers (e.g., hash codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and $v$ is an FCG node.
+Previously, a cache was used to check if a formula is identical to one of the
+formulas that have already been fully compiled. If that is the case, then the
+circuit already contains the subcircuit for this formula. Instead of duplicating
+this subcircuit, one would draw an edge that creates an undirected (but not a
+directed) cycle (see \cref{fig:before}). Now, to facilitate recursion, we extend
+the caching scheme to include formulas that have been encountered but not fully
+compiled yet. Hence, the same procedure can now create directed cycles in the
+graph. Formally, we define a \emph{cache} to be a map from integers (e.g., hash
+codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and
+$v$ is an FCG node.
 
 \todo[inline]{Clearly explain what we mean by `encodes' and `for'.}
 
@@ -312,52 +516,71 @@ Previously, a cache was used to check if a formula is identical to one of the fo
 \subsection{New Compilation Rules} \label{sec:rules}
 
 \begin{figure}
-\centering
-\begin{subfigure}{0.49\textwidth}
-\centering
-\begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
-\node[draw,circle,label={[text=blue]1}] (top) {}
-child {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {}
-child {node[draw,ellipse] (ref) {$\Reff$}}
-child {node[label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}}
-}
-child {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}}
-;
-\draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
-\end{tikzpicture}
-\end{subfigure}
-\begin{subfigure}{0.49\textwidth}
-\centering
-\begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
-\node[draw,circle,label={[text=blue]1}] (top) {}
-child {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {}
-child {node[label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}}
-}
-child {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}}
-;
-\end{tikzpicture}
-\end{subfigure}
-\caption{An FCG (on the left) and its underlying tree (on the right). The integers in blue denote the pre-order traversal of the underlying tree.}
-\label{fig:ordering}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
+      \node[draw,circle,label={[text=blue]1}] (top) {} child
+      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
+        {node[draw,ellipse] (ref) {$\Reff$}} child
+        {node[label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}} } child
+      {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+      \draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
+    \end{tikzpicture}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
+      \node[draw,circle,label={[text=blue]1}] (top) {} child
+      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
+        {node[label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}} } child
+      {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+    \end{tikzpicture}
+  \end{subfigure}
+  \caption{An FCG (on the left) and its underlying tree (on the right). The
+    integers in blue denote the pre-order traversal of the underlying tree.}
+  \label{fig:ordering}
 \end{figure}
 
-A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs, where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas such that $|L|$ is equal to the number of $\star$'s in $G$. Let the \emph{underlying tree} of an FCG $G$ be the induced subgraph of $G$ that omits all $\Reff$ nodes (subsequently presented algorithms ensure that it is always a tree). Then we can define an implicit bijection between the formulas in $L$ and the $\star$'s in $G$ according to the order in which elements of $L$ are listed and the pre-order traversal of the underlying tree of $G$. For example, if the FCG in \cref{fig:ordering} were to be returned by a compilation rule, its corresponding list of formulas $L$ would have two elements. These elements would then be implicitly associated with the $\star$'s that have labels `3' and `4' next to them, respectively.
+A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs,
+where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas
+such that $|L|$ is equal to the number of $\star$'s in $G$. Let the
+\emph{underlying tree} of an FCG $G$ be the induced subgraph of $G$ that omits
+all $\Reff$ nodes (subsequently presented algorithms ensure that it is always a
+tree). Then we can define an implicit bijection between the formulas in $L$ and
+the $\star$'s in $G$ according to the order in which elements of $L$ are listed
+and the pre-order traversal of the underlying tree of $G$. For example, if the
+FCG in \cref{fig:ordering} were to be returned by a compilation rule, its
+corresponding list of formulas $L$ would have two elements. These elements would
+then be implicitly associated with the $\star$'s that have labels `3' and `4'
+next to them, respectively.
 
-\todo[inline]{if a rule is not applicable to a given formula, it returns an empty set and is skipped.}
+\todo[inline]{if a rule is not applicable to a given formula, it returns an
+  empty set and is skipped.}
 
-Let $\mathcal{D}$ be the set of all domains. Note that this set expands during the compilation.
+Let $\mathcal{D}$ be the set of all domains. Note that this set expands during
+the compilation.
 
 \subsubsection{Generalised Domain Recursion} \label{sec:dr}
 
 \paragraph{Notation.}
-Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ either a variable or a constant. We write $S[x/V]$ to denote $S$ with all occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$ would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit the definition of a constraint.}
-\todo[inline]{Short example?}
+Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$
+either a variable or a constant. We write $S[x/V]$ to denote $S$ with all
+occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if
+  $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$
+  would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit
+  the definition of a constraint.} \todo[inline]{Short example?}
 
 \todo[inline,caption={}]{Feedback for the paragraph below:
   \begin{itemize}
-    \item introduce the algo in the first sentence: The Domain recursion algorithm (Van den Broeck, 2011) takes as input a formula and outputs a formula, which is formed by the following process.
+    \item introduce the algo in the first sentence: The Domain recursion
+          algorithm (Van den Broeck, 2011) takes as input a formula and outputs
+          a formula, which is formed by the following process.
     \item omit the power-of-two stuff
-    \item should not refer to intermediary formula as the resulting formula. what you could do is describe the algorithms in two steps: As an preliminary/intermediate step DR .... , Then you can refer to it as `the intermediate step results in ....'
+    \item should not refer to intermediary formula as the resulting formula.
+          what you could do is describe the algorithms in two steps: As an
+          preliminary/intermediate step DR .... , Then you can refer to it as
+          `the intermediate step results in ....'
     \item clarify `original rule'
     \item explain DR before GDR
   \end{itemize}
