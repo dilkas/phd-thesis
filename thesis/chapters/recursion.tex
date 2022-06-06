@@ -15,7 +15,7 @@
 \SetKwFunction{mergeFcgs}{mergeFcgs}
 \SetKwFunction{updateCache}{updCache}
 
-\chapter{Recursive Solutions to FOMC} \label{chapter:wfomc}
+\chapter{Recursive Solutions to FOMC}\label{chapter:wfomc}
 
 % TODO (V): Some version of this could become the introduction to the chapter
 \paragraph{Abstract.}
@@ -32,6 +32,7 @@ First-order model counting (FOMC) is a \#\P-complete computational problem that 
 \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$, variable $X$, and constant $x$. Then use this notation instead of using phrases such as `associated with'.
 \item Have a one-star graph instead of null.
 \item We call an FCG full (complete?) if $L = \langle\rangle$ or, equivalently, there are no $\star$s in $G$.
+\item Maybe have a name for a pair of an FCG and a list of formulas? This could be conveniently combined with the definition of full/partial.
 \end{itemize}
 }
 
@@ -190,14 +191,20 @@ more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
 
 \paragraph{Things I might need to explain.}
 \begin{itemize}
-\item atom, (positive/negative) literal, constant, predicate, variable, clause, unit clause, first-order logic
-\item subformula
-\item two parts: compilation and inference (see the slide about workflow: before and after).
-\item During inference, there is a domain size map $\size\colon \mathcal{D} \to \mathbb{N}_0$.
-\item My formalisation of constraints is more restrictive than the original (e.g., in the thesis).
-\item \textsc{Crane/ForcLift} works by always having a formula as input and adding nodes to the circuit/FCG that constitute the solution the that formula.
-\item $\sqcup$ for both sets and functions
-\item injectivity is similar to the all-different constraint
+  \item atom, (positive/negative) literal, constant, predicate, variable,
+        clause, unit clause, first-order logic
+  \item subformula
+  \item two parts: compilation and inference (see the slide about workflow:
+        before and after).
+  \item During inference, there is a domain size map
+        $\size\colon \mathcal{D} \to \mathbb{N}_0$.
+  \item My formalisation of constraints is more restrictive than the original
+        (e.g., in the thesis).
+  \item \textsc{Crane/ForcLift} works by always having a formula as input and
+        adding nodes to the circuit/FCG that constitute the solution the that
+        formula.
+  \item $\sqcup$ for both sets and functions
+  \item injectivity is similar to the all-different constraint
 \end{itemize}
 
 \paragraph{Notation.}
@@ -347,92 +354,129 @@ Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$ eit
 \todo[inline]{Short example?}
 
 \todo[inline,caption={}]{Feedback for the paragraph below:
-\begin{itemize}
-\item introduce the algo in the first sentence: The Domain recursion algorithm (Van den Broeck, 2011) takes as input a formula and outputs a formula, which is formed by the following process.
-\item omit the power-of-two stuff
-\item should not refer to intermediary formula as the resulting formula. what you could do is describe the algorithms in two steps: As an preliminary/intermediate step DR .... , Then you can refer to it as `the intermediate step results in ....'
-\item clarify `original rule'
-\item explain DR before GDR
-\end{itemize}
+  \begin{itemize}
+    \item introduce the algo in the first sentence: The Domain recursion algorithm (Van den Broeck, 2011) takes as input a formula and outputs a formula, which is formed by the following process.
+    \item omit the power-of-two stuff
+    \item should not refer to intermediary formula as the resulting formula. what you could do is describe the algorithms in two steps: As an preliminary/intermediate step DR .... , Then you can refer to it as `the intermediate step results in ....'
+    \item clarify `original rule'
+    \item explain DR before GDR
+  \end{itemize}
 }
 
-\todo[inline,caption={}]{After a description of the algorithm, compare with the original \citep{DBLP:conf/nips/Broeck11}. Invite the reader to look up the original paper for more details.
-The original rule for domain recursion by \citet{DBLP:conf/nips/Broeck11} requires three conditions to be satisfied:
-\begin{itemize}
-\item the formula is shattered,
-\item the formula has no independent subformulas,
-\item and there exists a root binding class.
-\end{itemize}
-Domain recursion by \citet{DBLP:conf/nips/Broeck11} then splits the...
+\todo[inline,caption={}]{After a description of the algorithm, compare with the
+  original \citep{DBLP:conf/nips/Broeck11}. Invite the reader to look up the
+  original paper for more details. The original rule for domain recursion by
+  \citet{DBLP:conf/nips/Broeck11} requires three conditions to be satisfied:
+  \begin{itemize}
+    \item the formula is shattered,
+    \item the formula has no independent subformulas,
+    \item and there exists a root binding class.
+  \end{itemize}
+  Domain recursion by \citet{DBLP:conf/nips/Broeck11} then splits the...
 
-\begin{itemize}
-\item They create three sets of clauses instead of just one. They are independent and their conjunction is decomposable.
-\begin{itemize}
-\item the part with only variables $v$
-\item the part with only constants $x$
-\item the part with both constants and variables $r$
-\end{itemize}
-\item During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be computed independently. Note that the WMC of $x$ is independent of the size of $D$---this further simplifies the matters.
-\end{itemize}
+  \begin{itemize}
+    \item They create three sets of clauses instead of just one. They are
+          independent and their conjunction is decomposable.
+          \begin{itemize}
+            \item the part with only variables $v$
+            \item the part with only constants $x$
+            \item the part with both constants and variables $r$
+          \end{itemize}
+    \item During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be
+          computed independently. Note that the WMC of $x$ is independent of the
+          size of $D$---this further simplifies the matters.
+  \end{itemize}
 }
 
-The main idea of domain recursion (both the original version by \citet{DBLP:conf/nips/Broeck11} and the one presented here) is as follows. Let $d \in \mathcal{D}$ be a domain. Assuming that $d \ne \emptyset$, it can be partitioned into a singleton set (say, $\{\, x \,\}$) and a set of cardinality $|d| - 1$. Then, for every variable $X$ associated with domain $d$ that occurs in a literal, we want to investigate two possibilities: $X = x$ and $X \ne x$. Note that the total number of such possibilities is not necessarily a power of two: some combinations produce clearly unsatisfiable formulas that can be immediately discarded. We can combine all of these possibilities into a single formula equivalent to the original one. The differences between domain recursion and GDR are in the preconditions for the rule to be applicable and in how the resulting formula (or parts thereof) are handled. The original rule ensures that the remaining formula can be handled efficiently and without the risk of the search algorithm running forever at the expense of more stringent preconditions.
+The main idea of domain recursion (both the original version by
+\citet{DBLP:conf/nips/Broeck11} and the one presented here) is as follows. Let
+$d \in \mathcal{D}$ be a domain. Assuming that $d \ne \emptyset$, it can be
+partitioned into a singleton set (say, $\{\, x \,\}$) and a set of cardinality
+$|d| - 1$. Then, for every variable $X$ associated with domain $d$ that occurs
+in a literal, we want to investigate two possibilities: $X = x$ and $X \ne x$.
+Note that the total number of such possibilities is not necessarily a power of
+two: some combinations produce clearly unsatisfiable formulas that can be
+immediately discarded. We can combine all of these possibilities into a single
+formula equivalent to the original one. The differences between domain recursion
+and GDR are in the preconditions for the rule to be applicable and in how the
+resulting formula (or parts thereof) are handled. The original rule ensures that
+the remaining formula can be handled efficiently and without the risk of the
+search algorithm running forever at the expense of more stringent preconditions.
 
 \begin{algorithm}
   \caption{The compilation rule for $\DR$ nodes}
   \label{alg:domainrecursion}
-  \KwIn{formula $\phi$}
-  \KwOut{set $S$}
-  $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ s.t. there is a $c \in \phi$ and a $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$\label{line:condition}}{
-    $\phi' \gets \emptyset$\;
-    $x \gets \text{a new constant associated with domain } d$\;
-    \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
-      $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\;
-      \ForEach{subset $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and} $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant } y \,\} = \emptyset$\label{line:conditions}}{
-        \tcc{$\delta'$ restricts $\delta$ to the new set of variables}
+  \KwIn{formula $\phi$} \KwOut{set $S$} $S \gets \emptyset$\; \ForEach{domain
+    $d \in \mathcal{D}$ s.t. there is a $c \in \phi$ and a $v \in \Vars(L_c)$
+    s.t. $\delta_c(v) = d$\label{line:condition}}{ $\phi' \gets \emptyset$\;
+    $x \gets \text{a new constant associated with domain } d$\; \ForEach{clause
+      $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
+      $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\; \ForEach{subset
+        $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and}
+        $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant
+        } y \,\} = \emptyset$\label{line:conditions}}{ \tcc{$\delta'$ restricts
+          $\delta$ to the new set of variables}
         $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;\label{line:generation}
-      }
-    }
+      } }
     $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
 
-The algorithm for GDR is summarised as \cref{alg:domainrecursion}, and it features only one precondition. Namely, \cref{line:condition} says that for GDR to be applicable on domain $d \in \mathcal{D}$, there must be at least one variable with domain $d$ that is featured in a literal (and not just in constraints). Without such variables, GDR would have no effect on the formula.
+The algorithm for GDR is summarised as \cref{alg:domainrecursion}, and it
+features only one precondition. Namely, \cref{line:condition} says that for GDR
+to be applicable on domain $d \in \mathcal{D}$, there must be at least one
+variable with domain $d$ that is featured in a literal (and not just in
+constraints). Without such variables, GDR would have no effect on the formula.
 
 \begin{example}
-Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
-\begin{align*}
-c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
-c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
-\end{align*}
-While domain recursion is possible on both domains, here we illustrate how it works on $a$. Having chosen a domain, the algorithm iterates over the clauses of $\phi$. Suppose \cref{line:forclause} picks $c = c_1$ as the first clause. Then, set $V$ is constructed to contain all variables with domain $d = a$ that occur in the literals of clause $c$. In this case, $V = \{\, X \,\}$. 
+  Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
+  \begin{align*}
+    c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
+    c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
+  \end{align*}
+  While domain recursion is possible on both domains, here we illustrate how it
+  works on $a$. Having chosen a domain, the algorithm iterates over the clauses
+  of $\phi$. Suppose \cref{line:forclause} picks $c = c_1$ as the first clause.
+  Then, set $V$ is constructed to contain all variables with domain $d = a$ that
+  occur in the literals of clause $c$. In this case, $V = \{\, X \,\}$.
 
-\todo[inline]{What does it mean to generate a clause?}
+  \todo[inline]{What does it mean to generate a clause?}
 
-\Cref{line:conditions} iterates over all subsets $W \subseteq V$ of variables that can be replaced by a constant without resulting in formulas that are evidently unsatisfiable. We impose two restrictions on $W$. First, $W^2 \cap C = \emptyset$ ensures that there are no pairs of variables in $W$ that are constrained to be distinct, since that would result in a $x \ne x$ constraint after substitution. Similarly, we want to avoid variables in $W$ that have inequality constraints with constants: after substitution, such constraints would transform into inequality constraints between two constants. In this case, both subsets of $V$ satisfy these conditions, and \cref{line:generation} generates two clauses for the output formula:
-\[
-(\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
-\]
-(from $W = \emptyset$) and
-\[
-(\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
-\]
-(from $W = V$).
+  \Cref{line:conditions} iterates over all subsets $W \subseteq V$ of variables
+  that can be replaced by a constant without resulting in formulas that are
+  evidently unsatisfiable. We impose two restrictions on $W$. First,
+  $W^2 \cap C = \emptyset$ ensures that there are no pairs of variables in $W$
+  that are constrained to be distinct, since that would result in a $x \ne x$
+  constraint after substitution. Similarly, we want to avoid variables in $W$
+  that have inequality constraints with constants: after substitution, such
+  constraints would transform into inequality constraints between two constants.
+  In this case, both subsets of $V$ satisfy these conditions, and
+  \cref{line:generation} generates two clauses for the output formula:
+  \[
+    (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
+  \]
+  (from $W = \emptyset$) and
+  \[
+    (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
+  \]
+  (from $W = V$).
 
-When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subset $W = V$ fails to satisfy the conditions on \cref{line:conditions} because of the $Z \ne X$ constraint. The other three subsets of $V$ all generate clauses for $\phi'$:
-\[
-(\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
-\]
-(from $W = \emptyset$),
-\[
-(\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
-\]
-(from $W = \{\, X \,\}$), and
-\[
-(\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
-\]
-(from $W = \{\, Z \,\}$).
+  When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The
+  subset $W = V$ fails to satisfy the conditions on \cref{line:conditions}
+  because of the $Z \ne X$ constraint. The other three subsets of $V$ all
+  generate clauses for $\phi'$:
+  \[
+    (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
+  \]
+  (from $W = \emptyset$),
+  \[
+    (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
+  \]
+  (from $W = \{\, X \,\}$), and
+  \[
+    (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
+  \]
+  (from $W = \{\, Z \,\}$).
 \end{example}
 
 \subsubsection{Constraint Removal} \label{sec:cr}
@@ -440,22 +484,31 @@ When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The subse
 \begin{algorithm}
   \caption{The compilation rule for $\CR$ nodes}
   \label{alg:constraintremoval}
-  \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
-  \KwOut{set $S$}
-  $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ and element $x \in d$ s.t. $x$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ or $(v, x) \in C$\label{line:crconditions}}{
-    add a new domain $d'$ to $\mathcal{D}$\;
-    $\phi' \gets \emptyset$\;
-    \ForEach{clause $(L, C, \delta) \in \phi$}{
+  \KwIn{formula $\phi$, set of domains $\mathcal{D}$} \KwOut{set $S$}
+  $S \gets \emptyset$\; \ForEach{domain $d \in \mathcal{D}$ and element
+    $x \in d$ s.t. $x$ does not occur in any literal of any clause of $\phi$
+    {\bf and} for each clause $c = (L, C, \delta_c) \in \phi$ and variable
+    $v \in \Vars(c)$, either $\delta_c(v) \ne d$ or
+    $(v, x) \in C$\label{line:crconditions}}{ add a new domain $d'$ to
+    $\mathcal{D}$\; $\phi' \gets \emptyset$\; \ForEach{clause
+      $(L, C, \delta) \in \phi$}{
       $C' \gets \{\, (a, b) \in C \mid b \ne x \,\}$\;\label{line:constraintremoval}
-      \nosemic$\delta' \gets v \mapsto \begin{cases} d' & \text{if } \delta(v) = d\\ \delta(v) & \text{otherwise;} \end{cases}$\;\label{line:newdelta}
-      $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
-    }
-    $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\;
-  }
+      \nosemic$\delta' \gets v \mapsto \begin{cases} d' & \text{if
+        } \delta(v) = d\\ \delta(v) & \text{otherwise;} \end{cases}$\;\label{line:newdelta}
+      $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\; }
+    $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\; }
 \end{algorithm}
 
-Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for some constant $x \in d$ and family of variables $X_i \in d$. Once certain conditions are satisfied, \cref{alg:constraintremoval} can eliminate these constraints and replace $d$ with a new domain $d'$, which can be interpreted as $d \setminus \{\, x \,\}$. These conditions (on \cref{line:crconditions} of the algorithm) are that a constraint of the form $X \ne e$ exists for all variables $X \in d$ across all clauses, and such constraints are the only place where $e$ occurs. The algorithm then proceeds to construct the new formula by removing constraints (on \cref{line:constraintremoval}) and constructing a new domain map $\delta'$ that replaces $d$ with $d'$ (on \cref{line:newdelta}).
+Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for
+some constant $x \in d$ and family of variables $X_i \in d$. Once certain
+conditions are satisfied, \cref{alg:constraintremoval} can eliminate these
+constraints and replace $d$ with a new domain $d'$, which can be interpreted as
+$d \setminus \{\, x \,\}$. These conditions (on \cref{line:crconditions} of the
+algorithm) are that a constraint of the form $X \ne e$ exists for all variables
+$X \in d$ across all clauses, and such constraints are the only place where $e$
+occurs. The algorithm then proceeds to construct the new formula by removing
+constraints (on \cref{line:constraintremoval}) and constructing a new domain map
+$\delta'$ that replaces $d$ with $d'$ (on \cref{line:newdelta}).
 
 \begin{example}
   Let $\phi = \{\, c_1, c_2, c_3 \,\}$ be a formula with clauses
@@ -464,7 +517,9 @@ Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for 
     c_2 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (X, x), (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto b^\bot \,\}), \\
     c_3 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, x), (Z, X), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\bot, Z \mapsto a \,\}).
   \end{align*}
-  Domain $a$ and with its element $x \in a$ satisfy the preconditions for constraint removal. The rule introduces a new domain $a'$ and transforms $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
+  Domain $a$ and with its element $x \in a$ satisfy the preconditions for
+  constraint removal. The rule introduces a new domain $a'$ and transforms
+  $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
   \begin{align*}
     c_1' &= c_1 \\
     c_2' &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}) \\
@@ -477,16 +532,31 @@ Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for 
 % Notation
 
 \paragraph{Notation.}
-First, for partial functions $\alpha, \beta\colon A \pfun B$ s.t. $\alpha|_{\dom(\alpha) \cap \dom(\beta)} = \beta|_{\dom(\alpha) \cap \dom(\beta)}$, we write $\alpha \cup \beta$ for the unique partial function s.t. $\alpha \cup \beta|_{\dom(\alpha)} = \alpha$, and $\alpha \cup \beta|_{\dom(\beta)} = \beta$. Second, let $\Doms$ be a function that maps any clause or formula to the set of domains used within. Specifically, $\Doms(c) \coloneqq \Imm \delta_c$ for any clause $c$, and $\Doms(\phi) \coloneqq \bigcup_{c \in \phi} \Doms(c)$ for any formula $\phi$. Third, for any clause $c = (L, C, \delta_c)$, bijection $\beta\colon \Vars(c) \twoheadrightarrowtail V$ (for some set of variables $V$), and function $\gamma\colon \Doms(c) \to \mathcal{D}$, let $c[\beta, \gamma] = d$ be the clause $c$ with all occurrences of any variable $v \in \Vars(c)$ in $L$ and $C$ replaced with $\beta(v)$ (so $\Vars(d) = V$) and $\delta_d\colon V \to \mathcal{D}$ defined as $\delta_d \coloneqq \gamma \circ \delta_c \circ \beta^{-1}$. In other words, $\delta_d$ is the unique function that makes
+First, for partial functions $\alpha, \beta\colon A \pfun B$ s.t.
+$\alpha|_{\dom(\alpha) \cap \dom(\beta)} = \beta|_{\dom(\alpha) \cap \dom(\beta)}$,
+we write $\alpha \cup \beta$ for the unique partial function s.t.
+$\alpha \cup \beta|_{\dom(\alpha)} = \alpha$, and
+$\alpha \cup \beta|_{\dom(\beta)} = \beta$. Second, let $\Doms$ be a function
+that maps any clause or formula to the set of domains used within. Specifically,
+$\Doms(c) \coloneqq \Imm \delta_c$ for any clause $c$, and
+$\Doms(\phi) \coloneqq \bigcup_{c \in \phi} \Doms(c)$ for any formula $\phi$.
+Third, for any clause $c = (L, C, \delta_c)$, bijection
+$\beta\colon \Vars(c) \twoheadrightarrowtail V$ (for some set of variables $V$),
+and function $\gamma\colon \Doms(c) \to \mathcal{D}$, let $c[\beta, \gamma] = d$
+be the clause $c$ with all occurrences of any variable $v \in \Vars(c)$ in $L$
+and $C$ replaced with $\beta(v)$ (so $\Vars(d) = V$) and
+$\delta_d\colon V \to \mathcal{D}$ defined as
+$\delta_d \coloneqq \gamma \circ \delta_c \circ \beta^{-1}$. In other words,
+$\delta_d$ is the unique function that makes
 \[
-\begin{tikzcd}
-  \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & V = \Vars(d) \ar[d, dashed, "\exists!\delta_d"] \\
-  \Doms(c) \ar[r, swap, "\gamma"] & \mathcal{D}
-\end{tikzcd}
+  \begin{tikzcd}
+    \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & V = \Vars(d) \ar[d, dashed, "\exists!\delta_d"] \\
+    \Doms(c) \ar[r, swap, "\gamma"] & \mathcal{D}
+  \end{tikzcd}
 \]
 commute. For example, if clause
 \[
-c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\})
+  c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\})
 \]
 is as in \cref{example:first}, then
 \begin{multline*}
@@ -499,162 +569,238 @@ is as in \cref{example:first}, then
 \begin{algorithm}
   \caption{The compilation rule for $\Reff$ nodes}
   \label{alg:trycache}
-  \KwIn{formula $\phi$, cache $C$}
-  \KwOut{a set}
+  \KwIn{formula $\phi$, cache $C$} \KwOut{a set}
 
   \ForAll{pairs of formulas and vertices $(\psi, v) \in C(\#\phi)$}{
     $\rho \gets \identifyRecursion{$\phi$, $\psi$}$\;
     \lIf{$\rho \ne {\normalfont \texttt{null}}$}{\Return{$\{\, (\Reff_\rho(v), \langle\rangle) \,\}$}}
-  }
-  \Return{$\emptyset$}\;
+  } \Return{$\emptyset$}\;
 
-  \Fn{\identifyRecursion{formula $\phi$, formula $\psi$, map $\rho = \emptyset$}}{
-    \lIf{$|\phi| \ne |\psi|$ {\bf or} $\#\phi \ne \#\psi$}{\Return{\normalfont \texttt{null}}}
-    \lIf{$\phi = \emptyset$}{\Return{$\rho$}}
-    \ForEach{clause $c \in \phi$\label{line:for1}}{
-    \ForEach{clause $d \in \psi$ s.t. $\#d=\#c$\label{line:for2}}{
-    \ForAll{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t. $c[\beta, \gamma] = d$\label{line:generateMaps}}{
-    $\rho' \gets \identifyRecursion{$\phi \setminus \{\, c \,\}$, $\psi \setminus \{\, d \,\}$, $\rho \cup \gamma$}$\;\label{line:recursion}
-    \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}}
-    }
-    }
-    \Return{\normalfont \texttt{null}}\;
-    }
-  }
+  \Fn{\identifyRecursion{formula $\phi$, formula $\psi$, map
+      $\rho = \emptyset$}}{ \lIf{$|\phi| \ne |\psi|$ {\bf or}
+      $\#\phi \ne \#\psi$}{\Return{\normalfont \texttt{null}}}
+    \lIf{$\phi = \emptyset$}{\Return{$\rho$}} \ForEach{clause
+      $c \in \phi$\label{line:for1}}{ \ForEach{clause $d \in \psi$ s.t.
+        $\#d=\#c$\label{line:for2}}{
+        \ForAll{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t.
+          $c[\beta, \gamma] = d$\label{line:generateMaps}}{
+          $\rho' \gets \identifyRecursion{$\phi \setminus \{\, c \,\}$, $\psi
+            \setminus \{\, d \,\}$, $\rho \cup \gamma$}$\;\label{line:recursion}
+          \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}} } }
+      \Return{\normalfont \texttt{null}}\; } }
 
-  \Fn{\generateMaps{clause $c$, clause $d$, map $\rho$}}{
-    \ForEach{bijection $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$\label{line:bijection}}{
+  \Fn{\generateMaps{clause $c$, clause $d$, map $\rho$}}{ \ForEach{bijection
+      $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$\label{line:bijection}}{
       $\gamma \gets \constructDomainMap{$\Vars(c)$, $\delta_c$, $\delta_d$, $\beta$, $\rho$}$\;
       \lIf{$\gamma \ne {\normalfont \texttt{null}}$}{\KwRet{$(\beta, \gamma)$}}
-    }
-  }
+    } }
 
-  \Fn{\constructDomainMap{set of variables $V$, maps $\delta_c$, $\delta_d$, $\beta$, $\rho$}}{
-    $\gamma \gets \emptyset$\;
-    \ForEach{variable $v \in V$}{
-      \lIf{$\delta_c(v) \in \dom(\rho)$ {\bf and} $\rho(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont \texttt{null}}}
+  \Fn{\constructDomainMap{set of variables $V$, maps $\delta_c$, $\delta_d$,
+      $\beta$, $\rho$}}{ $\gamma \gets \emptyset$\; \ForEach{variable
+      $v \in V$}{ \lIf{$\delta_c(v) \in \dom(\rho)$ {\bf and}
+        $\rho(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont
+          \texttt{null}}}
       \lIf{$\delta_c(v) \not\in \dom(\gamma)$}{$\gamma \gets \gamma \cup \{\, \delta_c(v) \mapsto \delta_d(\beta(v)) \,\}$}
-      \lElseIf{$\gamma(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont \texttt{null}}}
-    }
-    \Return{$\gamma$}\;
-  }
+      \lElseIf{$\gamma(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont
+          \texttt{null}}} } \Return{$\gamma$}\; }
 \end{algorithm}
 
-% Cache $C$ is used to partition all previously-encountered formulas based on their hash codes. 
-\Cref{alg:trycache} describes the compilation rule for creating $\Reff$ nodes. For every formula $\psi$ s.t. $\#\psi = \#\phi$ that we have encountered so far, function \texttt{identifyRecursion} is called to check whether a recursive call is actually feasible. If it is, the function returns a (total) map $\rho\colon \Doms(\phi) \to \Doms(\psi)$ that shows how $\phi$ can be transformed into $\psi$ by replacing each domain $d \in \Doms(\phi)$ with $\rho(d) \in \Doms(\psi)$. Otherwise, \texttt{identifyRecursion} returns \texttt{null} to signify that $\phi$ and $\psi$ are too different for recursion to work. This happens if $\phi$ and $\psi$ (or their subformulas explored in recursive calls) are structurally different (i.e., the numbers of clauses or the hash codes fail to match) or if a clause of $\phi$ cannot be paired with a sufficiently similar clause of $\psi$.
+% Cache $C$ is used to partition all previously-encountered formulas based on
+% their hash codes.
+\Cref{alg:trycache} describes the compilation rule for creating $\Reff$ nodes.
+For every formula $\psi$ s.t. $\#\psi = \#\phi$ that we have encountered so far,
+function \texttt{identifyRecursion} is called to check whether a recursive call
+is actually feasible. If it is, the function returns a (total) map
+$\rho\colon \Doms(\phi) \to \Doms(\psi)$ that shows how $\phi$ can be
+transformed into $\psi$ by replacing each domain $d \in \Doms(\phi)$ with
+$\rho(d) \in \Doms(\psi)$. Otherwise, \texttt{identifyRecursion} returns
+\texttt{null} to signify that $\phi$ and $\psi$ are too different for recursion
+to work. This happens if $\phi$ and $\psi$ (or their subformulas explored in
+recursive calls) are structurally different (i.e., the numbers of clauses or the
+hash codes fail to match) or if a clause of $\phi$ cannot be paired with a
+sufficiently similar clause of $\psi$.
 
-Function \texttt{identifyRecursion} iterates over pairs of clauses of $\phi$ and $\psi$ that have the same hash codes. It uses function \texttt{generateMaps} to check whether the two clauses are sufficiently similar. If so, the function calls itself on the remaining clauses until the map $\rho\colon \Doms(\phi) \to \Doms(\psi)$ becomes total, and all clauses are successfully coupled.
+Function \texttt{identifyRecursion} iterates over pairs of clauses of $\phi$ and
+$\psi$ that have the same hash codes. It uses function \texttt{generateMaps} to
+check whether the two clauses are sufficiently similar. If so, the function
+calls itself on the remaining clauses until the map
+$\rho\colon \Doms(\phi) \to \Doms(\psi)$ becomes total, and all clauses are
+successfully coupled.
 
-%% If the bijection makes the clauses equal, and the domain map is compatible with previously decided domain mappings, move on to another pair of clauses.
+%% If the bijection makes the clauses equal, and the domain map is compatible
+%% with previously decided domain mappings, move on to another pair of clauses.
 
-Given two clauses $c \in \phi$ and $d \in \psi$, \texttt{generateMaps} considers all possible bijections\footnote{Although the number of bijections between two sets of cardinality $n$ is $n!$, this part of the algorithm is unlikely to cause performance issues for two reasons. First, in practice, $n$ is usually at most two or three. Second, due to the manner in which formulas are modified by compilation rules, if any bijection results in a successfully identified recursive relationship, it is almost always the identity bijection.} $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$ and calls \texttt{constructDomainMap}, which then attempts to construct a map $\gamma\colon \Doms(c) \to \Doms(d)$ `consistent' with both $\beta$ and (the as yet partial map) $\rho\colon \Doms(\phi) \pfun \Doms(\psi)$. The \textbf{yield} keyword in \texttt{generateMaps} works as in programming languages such as C\#, JavaScript, and Python, and lazily returns a sequence of values, computing each element of the sequence as needed.
+Given two clauses $c \in \phi$ and $d \in \psi$, \texttt{generateMaps} considers
+all possible bijections\footnote{Although the number of bijections between two
+  sets of cardinality $n$ is $n!$, this part of the algorithm is unlikely to
+  cause performance issues for two reasons. First, in practice, $n$ is usually
+  at most two or three. Second, due to the manner in which formulas are modified
+  by compilation rules, if any bijection results in a successfully identified
+  recursive relationship, it is almost always the identity bijection.}
+$\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$ and calls
+\texttt{constructDomainMap}, which then attempts to construct a map
+$\gamma\colon \Doms(c) \to \Doms(d)$ `consistent' with both $\beta$ and (the as
+yet partial map) $\rho\colon \Doms(\phi) \pfun \Doms(\psi)$. The \textbf{yield}
+keyword in \texttt{generateMaps} works as in programming languages such as C\#,
+JavaScript, and Python, and lazily returns a sequence of values, computing each
+element of the sequence as needed.
 
-Diagrammatically, \texttt{constructDomainMap} attempts to find a $\gamma\colon \Doms(c) \to \Doms(d)$ s.t.
+Diagrammatically, \texttt{constructDomainMap} attempts to find a
+$\gamma\colon \Doms(c) \to \Doms(d)$ s.t.
 \begin{equation} \label{eq:commute}
-\begin{tikzcd}
-  V = \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & \Vars(d) \ar[d, "\delta_d"] \\
-  \Doms(c) \ar[r, dashed, "\gamma"] \ar[d, hookrightarrow] & \Doms(d) \ar[d, hookrightarrow] \\
-  \Doms(\phi) \ar[r, swap, "\rho", "|" marking, outer sep=5pt] & \Doms(\psi).
-\end{tikzcd}
+  \begin{tikzcd}
+    V = \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & \Vars(d) \ar[d, "\delta_d"] \\
+    \Doms(c) \ar[r, dashed, "\gamma"] \ar[d, hookrightarrow] & \Doms(d) \ar[d, hookrightarrow] \\
+    \Doms(\phi) \ar[r, swap, "\rho", "|" marking, outer sep=5pt] & \Doms(\psi).
+  \end{tikzcd}
 \end{equation}
-commutes (and returns \texttt{null} if such a function does not exist). Indeed, for every variable in $V = \Vars(c)$, the function returns \texttt{null} if either the top rectangle from $V$ to $\Doms(d)$ or the outer rectangle from $V$ to $\Doms(\psi)$ fails to commute. These checks also ensure that $\rho \cup \gamma$ is possible on \cref{line:recursion} of the algorithm, i.e., $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
+commutes (and returns \texttt{null} if such a function does not exist). Indeed,
+for every variable in $V = \Vars(c)$, the function returns \texttt{null} if
+either the top rectangle from $V$ to $\Doms(d)$ or the outer rectangle from $V$
+to $\Doms(\psi)$ fails to commute. These checks also ensure that
+$\rho \cup \gamma$ is possible on \cref{line:recursion} of the algorithm, i.e.,
+$\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
 \begin{example} \label{example}
 
-% definitions of formulas and intro
-Let formula $\phi \coloneqq \{\, c_1, c_2 \,\}$ be as in \cref{example:first}, i.e., with
-\[
-c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\})
-\]
-and
-\[
-c_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}).
-\]
-Let formula $\psi \coloneqq \phi[\id, \{\, a \mapsto a', b \mapsto b^\bot \,\}]$ be just like $\phi$ but with different domains. In other words, $\psi = \{\, d_1, d_2 \,\}$, where
-\[
-d_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}),
-\]
-and
-\[
-d_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}).
-\]
-Note that $\#\phi = \#\psi$ and assume that $(\psi, v) \in C(\#\phi)$ for some node $v$. We shall see how \cref{alg:trycache} identifies that the FCG for $\psi$ can be reused for $\phi$ as well.
+  % definitions of formulas and intro
+  Let formula $\phi \coloneqq \{\, c_1, c_2 \,\}$ be as in \cref{example:first},
+  i.e., with
+  \[
+    c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\})
+  \]
+  and
+  \[
+    c_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}).
+  \]
+  Let formula
+  $\psi \coloneqq \phi[\id, \{\, a \mapsto a', b \mapsto b^\bot \,\}]$ be just
+  like $\phi$ but with different domains. In other words,
+  $\psi = \{\, d_1, d_2 \,\}$, where
+  \[
+    d_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}),
+  \]
+  and
+  \[
+    d_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}).
+  \]
+  Note that $\#\phi = \#\psi$ and assume that $(\psi, v) \in C(\#\phi)$ for some
+  node $v$. We shall see how \cref{alg:trycache} identifies that the FCG for
+  $\psi$ can be reused for $\phi$ as well.
 
-Since both formulas are non-empty, the algorithm proceeds with the for-loops on \cref{line:for1,line:for2,line:generateMaps}. Suppose $c = c_1$ and $d = d_1$ get picked. Since both clauses have three variables, in the worst case, function \texttt{generateMaps} would have $3!=6$ bijections to check. Suppose the identity bijection is picked first. Then \texttt{constructDomainMap} is called with the following parameters:
-\begin{itemize}
-\item $V = \{\, X, Y, Z \,\}$,
-\item $\delta_c = \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}$,
-\item $\delta_d = \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}$,
-\item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
-\item $\rho = \emptyset$.
-\end{itemize}
-Since $\delta_c(Y) = \delta_c(Z)$ and $\delta_d(Y) = \delta_d(Z)$, \texttt{constructDomainMap} returns $\gamma = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Thus, \texttt{generateMaps} yields its first pair of maps $(\beta, \gamma)$ to \cref{line:generateMaps}. Furthermore, this pair satisfies $c[\beta, \gamma] = d$. On \cref{line:recursion}, a recursive call to \texttt{identifyRecursion($\{\,c_2\,\}$, $\{\,d_2\,\}$, $\gamma$)} is made.
+  Since both formulas are non-empty, the algorithm proceeds with the for-loops
+  on \cref{line:for1,line:for2,line:generateMaps}. Suppose $c = c_1$ and
+  $d = d_1$ get picked. Since both clauses have three variables, in the worst
+  case, function \texttt{generateMaps} would have $3!=6$ bijections to check.
+  Suppose the identity bijection is picked first. Then
+  \texttt{constructDomainMap} is called with the following parameters:
+  \begin{itemize}
+    \item $V = \{\, X, Y, Z \,\}$,
+    \item $\delta_c = \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}$,
+    \item
+          $\delta_d = \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}$,
+    \item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
+    \item $\rho = \emptyset$.
+  \end{itemize}
+  Since $\delta_c(Y) = \delta_c(Z)$ and $\delta_d(Y) = \delta_d(Z)$,
+  \texttt{constructDomainMap} returns
+  $\gamma = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Thus,
+  \texttt{generateMaps} yields its first pair of maps $(\beta, \gamma)$ to
+  \cref{line:generateMaps}. Furthermore, this pair satisfies
+  $c[\beta, \gamma] = d$. On \cref{line:recursion}, a recursive call to
+  \texttt{identifyRecursion($\{\,c_2\,\}$, $\{\,d_2\,\}$, $\gamma$)} is made.
 
-In this subproblem where both formulas are left with a single clause each, again we have two non-empty formulas with equal hash codes. Thus \texttt{generateMaps} is called with $c = c_2$, $d = d_2$, and $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Suppose \cref{line:bijection} picks the identity bijection gain. Then \texttt{constructDomainMap} is called with the following parameters:
-\begin{itemize}
-\item $V = \{\, X, Y, Z \,\}$,
-\item $\delta_c = \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}$,
-\item $\delta_d = \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}$,
-\item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
-\item $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$.
-\end{itemize}
-Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no new domains in $\Doms(c)$ and $\Doms(d)$, $\gamma$ exists and is equal to $\rho$. Again, the returned pair $(\beta, \gamma)$ satisfies $c[\beta, \gamma] = d$. \Cref{line:recursion} calls \texttt{identifyRecursion($\emptyset$, $\emptyset$, $\rho$)}, which immediately returns $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$ as the final answer. Therefore, one can indeed reuse an FCG for $\psi$ to compute the model count of $\phi$.
+  In this subproblem where both formulas are left with a single clause each,
+  again we have two non-empty formulas with equal hash codes. Thus
+  \texttt{generateMaps} is called with $c = c_2$, $d = d_2$, and
+  $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$. Suppose
+  \cref{line:bijection} picks the identity bijection gain. Then
+  \texttt{constructDomainMap} is called with the following parameters:
+  \begin{itemize}
+    \item $V = \{\, X, Y, Z \,\}$,
+    \item $\delta_c = \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}$,
+    \item $\delta_d = \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}$,
+    \item $\beta = \{\, X \mapsto X, Y \mapsto Y, Z \mapsto Z \,\}$,
+    \item $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$.
+  \end{itemize}
+  Since $\beta$ and $\rho$ commute (as in \cref{eq:commute}), and there are no
+  new domains in $\Doms(c)$ and $\Doms(d)$, $\gamma$ exists and is equal to
+  $\rho$. Again, the returned pair $(\beta, \gamma)$ satisfies
+  $c[\beta, \gamma] = d$. \Cref{line:recursion} calls
+  \texttt{identifyRecursion($\emptyset$, $\emptyset$, $\rho$)}, which
+  immediately returns $\rho = \{\, a \mapsto a', b \mapsto b^\bot \,\}$ as the
+  final answer. Therefore, one can indeed reuse an FCG for $\psi$ to compute the
+  model count of $\phi$.
 \end{example}
 
 \subsection{Compilation as Search}
 
+\todo[inline]{Intersperse algorithms and their descriptions.}
+
+\todo[inline]{Could \texttt{mergeFcgs} be rewritten to work on pairs of graphs
+  and lists?}
+
 % intro
-Given a formula $\phi$, we want to find an FCG (or a circuit) that encodes a way to compute the model count of $\phi$. \textsc{ForcLift} tackles this search problem using a greedy algorithm.\footnote{The algorithm is not described in any paper on \textsc{ForcLift} but can be found in its source code.} In this section, we describe a new search algorithm---a combination of greedy and breadth-first search.
+Given a formula $\phi$, we want to find an FCG (or a circuit) that encodes a way
+to compute the model count of $\phi$. \textsc{ForcLift} tackles this search
+problem using a greedy algorithm.\footnote{The algorithm is not described in any
+  paper on \textsc{ForcLift} but can be found in its source code.} In this
+section, we describe a new search algorithm---a combination of greedy and
+breadth-first search.
 
 % greedy and non-greedy rules
-We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules represent indisputable choices in the compilation process. They are applied to each encountered formula as soon and as many times as possible (in a predefined order). Most rules are greedy, i.e., those that produce a sink node with no leftover formula, those that simplify the formula without changing the FCG, and those that split the formula into parts that can be solved independently. The constraint removal rule described in \cref{sec:cr} is greedy. On the other hand, non-greedy rules signify uncertain choices that we may want to retract. They also correspond to edges in the implicit search tree; thus, the first solution found by the search algorithm is always the one with fewest applications of non-greedy rules. These rules include the $\DR$ and $\Reff$ rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion, independent partial grounding, and shattering.
+We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules
+represent indisputable choices in the compilation process. They are applied to
+each encountered formula as soon and as many times as possible (in a predefined
+order). Most rules are greedy, i.e., those that produce a sink node with no
+leftover formula, those that simplify the formula without changing the FCG, and
+those that split the formula into parts that can be solved independently. The
+constraint removal rule described in \cref{sec:cr} is greedy. On the other hand,
+non-greedy rules signify uncertain choices that we may want to retract. They
+also correspond to edges in the implicit search tree; thus, the first solution
+found by the search algorithm is always the one with fewest applications of
+non-greedy rules. These rules include the $\DR$ and $\Reff$ rules described in
+\cref{sec:dr,sec:ref}, respectively, and some rules from previous work
+\citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion,
+independent partial grounding, and shattering.
 
 % states and actions
-Search can be conceptualised as traversing a directed graph composed of states and actions that lead from one state to the next. We define a \emph{state} as a triple $(G, C, L)$, where $G$ is an FCG (or \texttt{null}), $C$ is a cache, and $L$ is a list of formulas. The actions that can be taken in such a state are applications of compilation rules that remove the first formula from $L$ and potentially add something to $G$, $C$, and $L$. The meaning of $G$, $L$, and the correspondence between the $\star$'s in $G$ and the formulas in $L$ is the same as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
+Search can be conceptualised as traversing a directed graph composed of states
+and actions that lead from one state to the next. We define a \emph{state} as a
+triple $(G, C, L)$, where $G$ is an FCG (or \texttt{null}), $C$ is a cache, and
+$L$ is a list of formulas. The actions that can be taken in such a state are
+applications of compilation rules that remove the first formula from $L$ and
+potentially add something to $G$, $C$, and $L$. The meaning of $G$, $L$, and the
+correspondence between the $\star$'s in $G$ and the formulas in $L$ is the same
+as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
 
 \begin{algorithm}
   \caption{The (main part of the) search algorithm}
   \label{alg:search}
-  \KwIn{a formula $\phi_0$}
-  \KwResult{all found FCGs for $\phi_0$ are in set $S$}
-  $S \gets \emptyset$\;
+  \KwIn{a formula $\phi_0$} \KwResult{all found FCGs for $\phi_0$ are in set
+    $S$} $S \gets \emptyset$\;
   $(G_0, C_0, L_0) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;\label{line:greedy}
-  \lIf{$L_0 = \langle\rangle$}{$S \gets \{\, G_0 \,\}$}
-  \Else{
-    $q \gets \text{a empty queue of states}$\;\label{line:q1}
-    $q.\put{$(G_0, C_0, L_0)$}$\;\label{line:q2}
-    \While{{\bf not} $q.\emptyy{}$\label{line:while}}{
-      \ForEach{state $(G, C, L) \in \applyAllRules{$q.\get{}$}$}{
+  \lIf{$L_0 = \langle\rangle$}{$S \gets \{\, G_0 \,\}$} \Else{ $q \gets \text{a
+      empty queue of states}$\;\label{line:q1} $q.\put{$(G_0, C_0,
+      L_0)$}$\;\label{line:q2} \While{{\bf not}
+      $q.\emptyy{}$\label{line:while}}{ \ForEach{state
+        $(G, C, L) \in \applyAllRules{$q.\get{}$}$}{
         \lIf{$L = \langle\rangle$}{$S \gets S \cup \{\, G \,\}$}
-        \lElse{$q.\put{$(G, C, L)$}$}
-      }
-    }
-  }
+        \lElse{$q.\put{$(G, C, L)$}$} } } }
 \end{algorithm}
 
 \begin{algorithm}
   \caption{The function responsible for applying non-greedy rules.}
   \label{alg:applyallrules}
-  \Fn{\applyAllRules{state $s$}}{
-    $(G, C, L) \gets s$\;
-    $\phi : T \gets L$\tcc*{separate the first formula from the rest}\label{line:separate}
-    $(G', C', L') \gets \text{a copy of } s$\;
-    $S \gets \langle\rangle$\tcc*{direct successors of $s$}
-    \ForEach{non-greedy rule $r$}{
-      \ForEach{$(G'', L'') \in r(\phi)$}{
-        \lIf{$G'' = {\normalfont \texttt{null}}$}{$S \gets S \mdoubleplus \applyAllRules{$(G', C', L'')$}$}
-        \Else{
-          $(V, s', N^+, \tau) \gets G''$\;
-          $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
+  \Fn{\applyAllRules{state $s$}}{ $(G, C, L) \gets s$\;
+    $\phi : T \gets L$\tcc*{separate the first formula from the
+      rest}\label{line:separate} $(G', C', L') \gets \text{a copy of } s$\;
+    \ForEach{non-greedy rule $r$}{ \ForEach{$(G'', L'') \in r(\phi)$}{
+        \lIf{$G'' = {\normalfont \texttt{null}}$}{\KwRet{\applyAllRules{$(G', C', L'' \mdoubleplus T)$}}}\label{line:nullfcg}
+        \Else{ $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
           $(G'', C', L'') \gets \applyGreedyRulesToAllFormulas{$G''$, $C'$, $L''$}$\;
-          \lIf{$G' = {\normalfont \texttt{null}}$}{$S \gets S \mdoubleplus \langle(G'', C', L'' \mdoubleplus T)\rangle$}
-          \lElse{$S \gets S \mdoubleplus \langle(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)\rangle$}
-        }
-      }
-      $(G', C', L') \gets \text{a copy of } s$\;
-    }
-    \Return{$S$}\;
-  }
+          \KwRet{$(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)$}\; } }
+      $(G', C', L') \gets \text{a copy of } s$\; } }
 \end{algorithm}
 
 \begin{algorithm}
@@ -666,31 +812,24 @@ Search can be conceptualised as traversing a directed graph composed of states a
     \end{enumerate*}
   }
   \label{alg:apply}
-  \Fn{\applyGreedyRules{formula $\phi$, cache $C$}}{
-    \ForEach{greedy rule $r$ s.t. $r(\phi) \ne \emptyset$}{
-      $(G, L) \gets \text{any element of } r(\phi)$\;
-      \lIf{$G = {\normalfont \texttt{null}}$}{\Return{\applyGreedyRules{the element of $L$, $C$}}}
-      \Return{\applyGreedyRulesToAllFormulas{$G$, \updateCache{$C$, $\phi$, $G$}, $L$}}\;
-    }
-    \Return{$({\normalfont \texttt{null}}, C, \langle\phi\rangle)$}\;
-  }
+  \Fn{\applyGreedyRules{formula $\phi$, cache $C$}}{ \ForEach{greedy rule $r$
+      s.t. $r(\phi) \ne \emptyset$}{ $(G, L) \gets \text{the (only) element of
+      } r(\phi)$\;
+      \lIf{$G = {\normalfont \texttt{null}}$}{\Return{\applyGreedyRules{the
+            element of $L$, $C$}}} \Return{\applyGreedyRulesToAllFormulas{$G$,
+          \updateCache{$C$, $\phi$, $G$}, $L$}}\; }
+    \Return{$({\normalfont \texttt{null}}, C, \langle\phi\rangle)$}\; }
   \Fn{\applyGreedyRulesToAllFormulas{$(V, s, N^+, \tau)$, cache $C$, list $L$}}{
     \lIf{$L = \langle\rangle$}{\Return{$((V, s, N^+, \tau), C, L)$}}
-    $L' \gets \langle\rangle$; $N^+(s) \gets \langle\rangle$\;
-    \ForEach{formula $\phi \in L$}{
-      $(G', C, L'') \gets \applyGreedyRules{$\phi$, $C$}$\;
+    $L' \gets \langle\rangle$; $N^+(s) \gets \langle\rangle$\; \ForEach{formula
+      $\phi \in L$}{ $(G', C, L'') \gets \applyGreedyRules{$\phi$, $C$}$\;
       $L' \gets L' \mdoubleplus L''$\;
       \lIf{$G' = {\normalfont \texttt{null}}$}{$N^+(s) \gets N^+(s) \mdoubleplus \langle\star\rangle$}
-      \Else{
-        $(V', s', N', \tau') \gets G'$\;
-        $V \gets V \sqcup V'$\;
+      \Else{ $(V', s', N', \tau') \gets G'$\; $V \gets V \sqcup V'$\;
         $N^+ \gets N^+ \sqcup N'$\;
         $N^+(s) \gets N^+(s) \mdoubleplus \langle s' \rangle$\;
-        $\tau \gets \tau \sqcup \tau'$\;
-      }
-    }
-    \Return{$((V, s, N^+, \tau), C, L')$}\;
-  }
+        $\tau \gets \tau \sqcup \tau'$\; } }
+    \Return{$((V, s, N^+, \tau), C, L')$}\; }
 \end{algorithm}
 
 \begin{algorithm}
@@ -699,48 +838,88 @@ Search can be conceptualised as traversing a directed graph composed of states a
   \Fn{\updateCache{cache $C$, formula $\phi$, FCG $(V, s, N^+, \tau)$}}{
     \lIf{$\tau(s) = \textsc{Ref}$}{\Return{$C$}}
     \lIf{$\#\phi \not\in \dom(C)$}{\Return{$C \cup \{\, \#\phi \mapsto (\phi, s) \,\}$}}
-    \lIf{there is no $(\phi', v) \in C(\#\phi)$ s.t. $v = s$}{$C(\#\phi) \gets \langle(\phi, s)\rangle \mdoubleplus C(\#\phi)$}
-    \Return{$C$}\;
-  }
-  \Fn{\mergeFcgs{$G = (V, s, N^+, \tau)$, $G' = (V', s', N', \tau')$, $r = s$}}{
+    \lIf{there is no $(\phi', v) \in C(\#\phi)$ s.t.
+      $v = s$}{$C(\#\phi) \gets \langle(\phi, s)\rangle \mdoubleplus C(\#\phi)$}
+    \Return{$C$}\; } \Fn{\mergeFcgs{$G = (V, s, N^+, \tau)$,
+      $G' = (V', s', N', \tau')$, $r = s$}}{ \lIf{$G = \star$}{\Return{$G'$}}
     \lIf{$\tau(r) = \textsc{Ref}$}{\Return{\normalfont \texttt{null}}}
-    \ForEach{$t \in N^+(r)$}{
-      \If{$t = \star$}{
-        replace $t$ with $s'$ in $N^+(r)$\;
-        \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\;
-      }
+    \ForEach{$t \in N^+(r)$}{ \If{$t = \star$}{ replace $t$ with $s'$ in
+        $N^+(r)$\; \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\; }
       $G'' \gets \mergeFcgs{$G$, $G'$, $t$}$\;
-      \lIf{$G'' \ne {\normalfont \texttt{null}}$}{\Return{$G''$}}
-    }
-    \Return{\normalfont \texttt{null}}\;
-  }
+      \lIf{$G'' \ne {\normalfont \texttt{null}}$}{\Return{$G''$}} }
+    \Return{\normalfont \texttt{null}}\; }
 \end{algorithm}
 
-The search algorithm is described as \cref{alg:search,alg:applyallrules,alg:apply,alg:helpers}, with the main procedure in \cref{alg:search}. Since for most formulas we are able to find several FCGs (of various complexities), the algorithm maintains set $S$ of found solutions. We begin by applying all suitable greedy rules on \cref{line:greedy}. If greedy rules are enough to find a full FCG, the algorithm stops. Otherwise, \cref{line:q1,line:q2} set up a queue for breadth-first search. The algorithm continues to take a state from the queue, call \texttt{applyAllRules} on it, and place the resulting states back on the queue while filtering out full FCGs and adding them to $S$ instead. Since GDR can be applied to almost all formulas, the search is infinite. In our implementation, we stop searching when
+The search algorithm is described as
+\cref{alg:search,alg:applyallrules,alg:apply,alg:helpers}, with the main
+procedure in \cref{alg:search}. Since for most formulas we are able to find
+several FCGs (of various complexities), the algorithm maintains set $S$ of found
+solutions. We begin by applying all suitable greedy rules on \cref{line:greedy}.
+If greedy rules are enough to find a full FCG, the algorithm stops. Otherwise,
+\cref{line:q1,line:q2} set up a queue for breadth-first search. The algorithm
+continues to take a state from the queue, call \texttt{applyAllRules} on it, and
+place the resulting states back on the queue while filtering out full FCGs and
+adding them to $S$ instead. Since GDR can be applied to almost all formulas, the
+search is infinite. In our implementation, we stop searching when
 \begin{itemize}
-\item the desired number of solutions is found,
-\item the search tree reaches a certain height,
-\item or the algorithm times out.
+  \item the desired number of solutions is found,
+  \item the search tree reaches a certain height,
+  \item or the algorithm times out.
 \end{itemize}
 
-% TODO: start here. Describe applyAllRules
+Function \texttt{applyAllRules} (see \cref{alg:applyallrules}) takes a state and
+generates a sequence of new states created by applying one non-greedy rule
+followed by all applicable greedy rules. We assume that the input state contains
+at least one formula (otherwise it would be a complete solution) and that all
+applicable greedy rules have already been applied. The algorithm iterates over
+all non-greedy rules and all pairs of FCGs and lists of formulas generated by
+these rules when applied to $\phi$. If the FCG is \texttt{null}, this means that
+$|L''| = 1$, and $L''$ contains a modified version of $\phi$---in this case, we
+rerun \texttt{applyAllRules} on the same state but with the updated formula.
+Otherwise, we update the cache, call another function to apply greedy rules, and
+merge $(G'', L'')$ with a copy of the input state. In doing so, $\phi$ is
+replaced by $L''$, preserving the implicit bijection between the ordering of the
+list and the structure of $\star$'s in the FCG.
 
-\begin{itemize}
-\item \cref{alg:applyallrules}
-\begin{itemize}
-\item Assumption: greedy rules have already been applied to the initial state $s$.
-\item It returns a list of new states created by applying one non-greedy rule followed by all applicable greedy rules.
-\end{itemize}
-\item \cref{alg:apply}
-\begin{itemize}
-\item Queue $q$ only holds states with at least one uncompiled formula, so \cref{line:separate} never fails.
-\end{itemize}
-\item \cref{alg:helpers}
-\begin{itemize}
-\item \texttt{updCache}: Note that $\Reff$ nodes are not placed in the cache because the relation identified by the compilation rule for $\Reff$ (i.e., \cref{alg:trycache}) is transitive. In other words, instead of calling a function $f(\mathbf{n}) \coloneqq g(\mathbf{m})$ (where $\mathbf{n}$ and $\mathbf{m}$ are integer parameter vectors, and $\mathbf{m}$ is constructed from $\mathbf{n}$), we can always directly call function $g$.
-\item \texttt{mergeFcgs}: Note that the initial (i.e., non-recursive) call to \texttt{mergeFcgs} will never return \texttt{null} because there is going to be at least one $\star$ in $G$, and the function will find it.
-\end{itemize}
-\end{itemize}
+\todo[inline,caption={}]{ Describe the two remaining algorithms:
+  \begin{itemize}
+    \item \cref{alg:apply}
+          \begin{itemize}
+            \item Introduce \cref{alg:apply}
+            \item The first function, \texttt{applyGreedyRules},...
+            \item Note: although greedy rules return a set just like non-greedy
+                  rules, that set contains at most one element.
+            \item The second function, \texttt{applyGreedyRulesToFormulas}, runs
+                  \texttt{applyGreedyRules} on all formulas in $L$,
+                  incorporating the resulting FCGs (with their corresponding
+                  lists of formulas) as direct successors of $s$.
+            \item The usage of \texttt{applyGreedyRulesToFormulas}: the input
+                  FCG $(V, s, N^+, \tau)$ and list of formulas $L$ are always:
+                  \begin{itemize}
+                    \item as generated by a compilation rule (without any
+                          merging or composite applications of other rules
+                          taking place beforehand)
+                    \item the FCG has just one non-$\star$ vertex, $s$, and
+                          $N^+(s)$ contains exactly $|L|$ $\star$'s.
+                  \end{itemize}
+          \end{itemize}
+    \item \cref{alg:helpers}
+          \begin{itemize}
+            \item \texttt{updCache}: Note that $\Reff$ nodes are not placed in
+                  the cache because the relation identified by the compilation
+                  rule for $\Reff$ (i.e., \cref{alg:trycache}) is transitive. In
+                  other words, instead of calling a function
+                  $f(\mathbf{n}) \coloneqq g(\mathbf{m})$ (where $\mathbf{n}$
+                  and $\mathbf{m}$ are integer parameter vectors, and
+                  $\mathbf{m}$ is constructed from $\mathbf{n}$), we can always
+                  directly call function $g$.
+            \item \texttt{mergeFcgs}: Note that the initial (i.e.,
+                  non-recursive) call to \texttt{mergeFcgs} will never return
+                  \texttt{null} because there is going to be at least one
+                  $\star$ in $G$, and the function will find it.
+          \end{itemize}
+  \end{itemize}
+}
 
 \section{Results} % Newly Domain-Liftable Formulas
 
@@ -765,30 +944,57 @@ The search algorithm is described as \cref{alg:search,alg:applyallrules,alg:appl
     \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
     \bottomrule
   \end{tabular}
-  \caption{Here, $m$ is the size of $a$, and $n$ is the size of $b$. All asymptotic complexities are in $\Theta(\cdot)$. This is for unweighted counting. A hyphen means that no solution was found. Assuming all arithmetic operations to take constant time. Maybe a better solution could be found with more search. TODO: explain assumptions for the counts to not be zero. TODO: double check. TODO: transfer the citations to text.}
+  \caption{Here, $m$ is the size of $a$, and $n$ is the size of $b$. All
+    asymptotic complexities are in $\Theta(\cdot)$. This is for unweighted
+    counting. A hyphen means that no solution was found. Assuming all arithmetic
+    operations to take constant time. Maybe a better solution could be found
+    with more search. TODO: explain assumptions for the counts to not be zero.
+    TODO: double check. TODO: transfer the citations to text.}
 \end{table}
 
 \todo[inline,caption={}]{
-\begin{itemize}
-\item \Cref{fig:examplefcg} counts injections and partial injections between two sets.
-\item Explain the algebraic notation that I'm using here (e.g., that $f$ is always the main function)
-\item Explain the importance of comparing domain sizes to 2. FCGs that compare the size of a domain to an integer can be constructed automatically using compilation rules, although $n$ is upper bounded by the maximum number of variables in any clause of the input formula since there is no rule that would introduce new variables.
-\item Mention that it only takes a few seconds to find these solutions. Going beyond depth 6 (or sometimes even completing depth 6) is computationally infeasible with the current implementation, but depth at most 5 can be searched within at most a few seconds.
-\item Combine the tikz and the algebraic notation into one, so I don't need to have two versions. But how? Maybe associate a symbol with each type and only to the types that I use?
-\item the exponential solutions can be computed in quadratic time with dynamic programming!
-\item Can't explain how formulas are translated into (my definition of) clauses without explaining Skolemization, which is out of scope.
-\item Note that in some cases different descriptions of the same problem lead to different solutions (with different complexities).
-\item Maybe we are actually guaranteed that the solution is always polynomial-time. Except... running time could be infinite?
-\item Could also try involutions and other examples from the recent paper on recursion.
-\end{itemize}
+  \begin{itemize}
+    \item \Cref{fig:examplefcg} counts injections and partial injections between
+          two sets.
+    \item Explain the algebraic notation that I'm using here (e.g., that $f$ is
+          always the main function)
+    \item Explain the importance of comparing domain sizes to 2. FCGs that
+          compare the size of a domain to an integer can be constructed
+          automatically using compilation rules, although $n$ is upper bounded
+          by the maximum number of variables in any clause of the input formula
+          since there is no rule that would introduce new variables.
+    \item Mention that it only takes a few seconds to find these solutions.
+          Going beyond depth 6 (or sometimes even completing depth 6) is
+          computationally infeasible with the current implementation, but depth
+          at most 5 can be searched within at most a few seconds.
+    \item Combine the tikz and the algebraic notation into one, so I don't need
+          to have two versions. But how? Maybe associate a symbol with each type
+          and only to the types that I use?
+    \item the exponential solutions can be computed in quadratic time with
+          dynamic programming!
+    \item Can't explain how formulas are translated into (my definition of)
+          clauses without explaining Skolemization, which is out of scope.
+    \item Note that in some cases different descriptions of the same problem
+          lead to different solutions (with different complexities).
+    \item Maybe we are actually guaranteed that the solution is always
+          polynomial-time. Except... running time could be infinite?
+    \item Could also try involutions and other examples from the recent paper on
+          recursion.
+  \end{itemize}
 }
 
-Let $p$ be a predicate of arity two s.t. the first argument is associated with domain $a$, and the second argument is associated with domain $b$ (i.e., $p$ represents a relation between sets $a$ and $b$). Then, to restrict all relations representable by $p$ to just functions from $a$ to $b$, in first-order logic one might write
+Let $p$ be a predicate of arity two s.t. the first argument is associated with
+domain $a$, and the second argument is associated with domain $b$ (i.e., $p$
+represents a relation between sets $a$ and $b$). Then, to restrict all relations
+representable by $p$ to just functions from $a$ to $b$, in first-order logic one
+might write
 \begin{gather}
   \forall X \in a. \forall Y \in b. \forall Z \in b. p(X, Y) \land p(X, Z) \implies Y = Z \label{eq:def1} \\
   \forall X \in a. \exists Y \in b. p(X, Y). \label{eq:def2}
 \end{gather}
-The former says that one element of $a$ can map to at \emph{most} one element of $b$, and the latter says that each element of $a$ must map to at \emph{least} one element of $b$. One might add
+The former says that one element of $a$ can map to at \emph{most} one element of
+$b$, and the latter says that each element of $a$ must map to at \emph{least}
+one element of $b$. One might add
 \begin{equation} \label{eq:injectivity}
   \forall W \in a. \forall X \in a. \forall Y \in b. p(W, Y) \land p(X, Y) \implies W = X
 \end{equation}
@@ -796,46 +1002,67 @@ to restrict $p$ to injections or
 \begin{equation}
   \forall Y \in b. \exists X \in a. p(X, Y)
 \end{equation}
-to ensure surjectivity or remove \cref{eq:def2} to consider partial functions. Lastly, one can replace all occurrences of $b$ with $a$ so as to model endofunctions instead.
+to ensure surjectivity or remove \cref{eq:def2} to consider partial functions.
+Lastly, one can replace all occurrences of $b$ with $a$ so as to model
+endofunctions instead.
 
 \paragraph{Notes.}
 \begin{itemize}
-\item Functions, surjections, and their partial counterparts are/were already liftable. It seems like lifting injectivity (which is a fairly general property) is the main accomplishment. (But this is just the one I noticed. There may be many others as well.)
-\item Here, $[\cdot]$ is the Iverson bracket.
-\item My examples for 1 domain are expressible using 2 variables and counting quantifiers, so they're already known to be liftable.
-\item Recursion is guaranteed to terminate if at least one domain shrinks by at least one. But note that allowing recursive calls with the same domain sizes (e.g., $f(n) = f(n) + \dots$) could be useful because these problematic terms might cancel out.
+  \item Functions, surjections, and their partial counterparts are/were already
+        liftable. It seems like lifting injectivity (which is a fairly general
+        property) is the main accomplishment. (But this is just the one I
+        noticed. There may be many others as well.)
+  \item Here, $[\cdot]$ is the Iverson bracket.
+  \item My examples for 1 domain are expressible using 2 variables and counting
+        quantifiers, so they're already known to be liftable.
+  \item Recursion is guaranteed to terminate if at least one domain shrinks by
+        at least one. But note that allowing recursive calls with the same
+        domain sizes (e.g., $f(n) = f(n) + \dots$) could be useful because these
+        problematic terms might cancel out.
 \end{itemize}
 
 \paragraph{Results.}
 \begin{itemize}
-\item 1d bijections and 1d injections (note that it's the same problem). Depth 3 solution:
-  \begin{align*}
-    f(n) &= \sum_{m=0}^n \binom{n}{m} (-1)^{n-m}g(n, m) \\
-    g(n, m) &= \sum_{l=0}^n \binom{n}{l}[l < 2]g(n-l, m-1) \\
-    &= g(n, m - 1) + ng(n - 1, m - 1),
-  \end{align*}
-  which works with base case $g(n, 0) = 1$.
-\item 1d partial injections. 2 solutions at depth 6, but they're too complicated to check by hand. A contradiction with $X \ne x$ constraints makes things complicated.
-\item 2d bijections. Depth 3:
-  \begin{align*}
-    f(m, n) &= \sum_{l=0}^m \binom{m}{l} [l < 2] (1 - [l < 1])f(m-l, n-1) \\
-    &= mf(m-1, n-1),
-  \end{align*}
-  which works with base cases $f(0, 0) = 1$, $f(0, n) = 0$, $f(m, 0) = 0$.
-\item 2d injections. Depth 2:
-  \begin{align*}
-    f(m, n) &= \sum_{l=0}^m \binom{m}{l}[l<2]f(m-l, n-1) \\
-    &= f(m, n-1) + mf(m-1, n-1),
-  \end{align*}
-  which works with base cases $f(0, 0) = 1$ and $f(m, 0) = 0$.
-\item 2d partial injections, depth 2. Exactly the same circuit as above but with base case $f(m, 0) = 1$.
+  \item 1d bijections and 1d injections (note that it's the same problem). Depth
+        3 solution:
+        \begin{align*}
+          f(n) &= \sum_{m=0}^n \binom{n}{m} (-1)^{n-m}g(n, m) \\
+          g(n, m) &= \sum_{l=0}^n \binom{n}{l}[l < 2]g(n-l, m-1) \\
+               &= g(n, m - 1) + ng(n - 1, m - 1),
+        \end{align*}
+        which works with base case $g(n, 0) = 1$.
+  \item 1d partial injections. 2 solutions at depth 6, but they're too
+        complicated to check by hand. A contradiction with $X \ne x$ constraints
+        makes things complicated.
+  \item 2d bijections. Depth 3:
+        \begin{align*}
+          f(m, n) &= \sum_{l=0}^m \binom{m}{l} [l < 2] (1 - [l < 1])f(m-l, n-1) \\
+                  &= mf(m-1, n-1),
+        \end{align*}
+        which works with base cases $f(0, 0) = 1$, $f(0, n) = 0$, $f(m, 0) = 0$.
+  \item 2d injections. Depth 2:
+        \begin{align*}
+          f(m, n) &= \sum_{l=0}^m \binom{m}{l}[l<2]f(m-l, n-1) \\
+                  &= f(m, n-1) + mf(m-1, n-1),
+        \end{align*}
+        which works with base cases $f(0, 0) = 1$ and $f(m, 0) = 0$.
+  \item 2d partial injections, depth 2. Exactly the same circuit as above but
+        with base case $f(m, 0) = 1$.
 \end{itemize}
 
 \section{Conclusions and Future Work}
 
 \paragraph{Future work.}
 \begin{itemize}
-\item Transform FCGs to definitions of (possibly recursive) functions on integers. Use a computer algebra system to simplify them.
-\item Design an algorithm to infer the necessary base cases. (Note that there can be an infinite amount of them when functions have more than one parameter.)
-\item Observation: -1 (and powers thereof) appear in every solution to a formula if and only if the formula has existential quantification. That's not very smart! By classifying unit propagation as a greedy rule, these powers are pushed to the outer layers of the solution (i.e., `early' in the FCG). It's likely that removing this restriction would enable the algorithm to find asymptotically optimal solutions.
+  \item Transform FCGs to definitions of (possibly recursive) functions on
+        integers. Use a computer algebra system to simplify them.
+  \item Design an algorithm to infer the necessary base cases. (Note that there
+        can be an infinite amount of them when functions have more than one
+        parameter.)
+  \item Observation: -1 (and powers thereof) appear in every solution to a
+        formula if and only if the formula has existential quantification.
+        That's not very smart! By classifying unit propagation as a greedy rule,
+        these powers are pushed to the outer layers of the solution (i.e.,
+        `early' in the FCG). It's likely that removing this restriction would
+        enable the algorithm to find asymptotically optimal solutions.
 \end{itemize}
