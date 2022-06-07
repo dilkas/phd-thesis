@@ -40,7 +40,6 @@ fundamental structures such as injections and bijections.
     \item Introduce Crane and explain that it's modus operandi is very
           different.
     \item Introduce the acronym for GDR
-    \item Rename the DR command to GDR
     \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$,
           variable $X$, and constant $x$. Then use this notation instead of
           using phrases such as `associated with'.
@@ -311,6 +310,7 @@ has a description
         formula.
   \item $\sqcup$ for both sets and functions
   \item injectivity is similar to the all-different constraint
+  \item \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}
 \end{itemize}
 
 \paragraph{Notation.}
@@ -389,18 +389,15 @@ $L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
 
 % Generalising Circuits to Labelled Graphs
 
+% TODO: start here
 \todo[inline,caption={}]{
   \begin{itemize}
-    \item Have a one-star graph instead of null.
     \item We call an FCG full (complete?) if $L = \langle\rangle$ or,
           equivalently, there are no $\star$s in $G$.
-    \item Many $\star$'s, not one. They are counted as nodes (and change the
-          text at the beginning of Section 5.3.1 appropriately).
-    \item Maybe star should be considered a type? I would need to modify the
-          algorithms.
     \item When visualising FCGs, we omit node labels and/or parameters when they
           are immaterial to what is being discussed. Propagate this change to
           figures and their descriptions.
+    \item Where do I mention, e.g., the out-degree of each type?
   \end{itemize}
 }
 
@@ -415,35 +412,28 @@ other vertices in $V$.
 
 Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}.
 To avoid clutter, we leave the parameters implicit and let $\tau$ denote the
-vertex-labelling function that maps each vertex in $V$ to its type. The types
-are mostly as described in previous work
-\citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11} as well as the
-source code of
-\textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}. The
-type for non-tree-like edges (denoted by $\Reff$), while used before, is
-extended to contain the information necessary to support recursive calls. We
-also add three new types:
+vertex-labelling function that maps each vertex in $V$ to its type. For each
+vertex $v \in V$, the length of list $N^+(v)$ (i.e., the out-degree of $v$) is
+determined by its type $\tau(v)$.
+
+Most of the types are as in previous work
+\citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11}. The type for
+non-tree-like edges (denoted by $\Reff$), while used before, is extended to
+contain the information necessary to support recursive calls. We also add three
+new types:
 \begin{itemize}
   \item $\CR$ for constraint removal,
-  \item $\DR$ for GDR,
-  \item and $\star$ as a placeholder to be replaced by...
+  \item $\GDR$ for GDR,
+  \item and $\star$---a type for placeholder nodes to be replaced later during
+        compilation.
 \end{itemize}
-
-% TODO: start here
-one new type for \emph{constraint removal} (denoted by $\CR$) and  For each vertex $v \in V$,
-the length of the list $N^+(v)$ (i.e., the out-degree of $v$) is determined by
-its type $\tau(v)$.
-
-This symbol means that the target of the edge is yet to be determined.
-
-\todo[inline]{Do I need to introduce constraint removal here?}
 
 \begin{figure}[t]
   \centering
   \begin{tikzpicture}[every node/.style={draw,ellipse},edge from
     parent/.style={draw,-latex},sibling distance=2cm,level 6/.style={sibling
       distance=6cm}]
-    \node (dr) {$\DR_{a \gets a \setminus \{\, x \,\}}$} child {node
+    \node (dr) {$\GDR_{a \gets a \setminus \{\, x \,\}}$} child {node
       {$\bigvee_{b^\top \subseteq b}$} child {node[circle] {$\wedge$} child
         {node[circle]
           {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
@@ -467,8 +457,8 @@ This symbol means that the target of the edge is yet to be determined.
 \begin{example}
   The FCG in \cref{fig:examplefcg} has twelve nodes. The source vertex has
   out-degree 1 (i.e., $|N^+(s)| = 1$), label
-  $\DR_{a \gets a \setminus \{\, x \,\}}$, and type $\DR$ (i.e.,
-  $\tau(s) = \DR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for
+  $\GDR_{a \gets a \setminus \{\, x \,\}}$, and type $\GDR$ (i.e.,
+  $\tau(s) = \GDR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for
   an explanation of other node types and how they are to be evaluated.
   \todo[inline]{How does my notation differ from previous work? Does it need
     explaining?}
@@ -478,15 +468,14 @@ This symbol means that the target of the edge is yet to be determined.
   evaluation.}
 
 Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$
-for an FCG that has one vertex with label $T_p$ (i.e., type $T$ and parameter(s)
-$p$) and with $\star$ as the target of all of its outgoing edges. We also write
+for an FCG that has a node with label $T_p$ (i.e., type $T$ and parameter(s)
+$p$) and $\star$'s as all of its direct successors. For instance, as an FCG,
+$\star$ denotes
+$(\{\, s \,\}, s, \{\, s \mapsto \langle\rangle \,\}, \{\, s \mapsto \star \,\})$,
+i.e., an FCG with just one node of type $\star$ and no edges. We also write
 $T_p(v)$ for an FCG with two vertices and an edge between them (and no edges
 incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the
 label of the source.
-
-%% Here, the type of the vertex (e.g., $\Reff$) is `applied' to its direct
-%% successors (e.g., some vertex $v$) like a function and provided with its
-%% parameter(s) (e.g., $\rho$) in the subscript.
 
 \paragraph{Hashing.}
 We use (integer-valued) hash functions to efficiently discard pairs of formulas
@@ -523,8 +512,8 @@ $v$ is an FCG node.
       \node[draw,circle,label={[text=blue]1}] (top) {} child
       {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
         {node[draw,ellipse] (ref) {$\Reff$}} child
-        {node[label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}} } child
-      {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+        {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}} } child
+      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
       \draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
     \end{tikzpicture}
   \end{subfigure}
@@ -533,8 +522,8 @@ $v$ is an FCG node.
     \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
       \node[draw,circle,label={[text=blue]1}] (top) {} child
       {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
-        {node[label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}} } child
-      {node[label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+        {node[draw,circle,label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}} } child
+      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
     \end{tikzpicture}
   \end{subfigure}
   \caption{An FCG (on the left) and its underlying tree (on the right). The
@@ -543,20 +532,22 @@ $v$ is an FCG node.
 \end{figure}
 
 A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs,
-where $G$ is a (potentially \texttt{null}) FCG, and $L$ is a list of formulas
-such that $|L|$ is equal to the number of $\star$'s in $G$. Let the
-\emph{underlying tree} of an FCG $G$ be the induced subgraph of $G$ that omits
-all $\Reff$ nodes (subsequently presented algorithms ensure that it is always a
-tree). Then we can define an implicit bijection between the formulas in $L$ and
-the $\star$'s in $G$ according to the order in which elements of $L$ are listed
-and the pre-order traversal of the underlying tree of $G$. For example, if the
-FCG in \cref{fig:ordering} were to be returned by a compilation rule, its
-corresponding list of formulas $L$ would have two elements. These elements would
-then be implicitly associated with the $\star$'s that have labels `3' and `4'
-next to them, respectively.
+where $G$ is an FCG, and $L$ is a list of formulas such that $|L|$ is equal to
+the number of $\star$'s in $G$. Let the \emph{underlying tree} of an FCG $G$ be
+the induced subgraph of $G$ that omits all $\Reff$ nodes (subsequently presented
+algorithms ensure that it is always a tree). Then we can define an implicit
+bijection between the formulas in $L$ and the $\star$'s in $G$ according to the
+order in which elements of $L$ are listed and the pre-order traversal of the
+underlying tree of $G$. For example, if the FCG in \cref{fig:ordering} were to
+be returned by a compilation rule, its corresponding list of formulas $L$ would
+have two elements. These elements would then be implicitly associated with the
+$\star$'s that have labels `3' and `4' next to them, respectively.
 
 \todo[inline]{if a rule is not applicable to a given formula, it returns an
   empty set and is skipped.}
+
+\todo[inline]{This explanation should be positioned independently of
+  compilation rules.}
 
 Let $\mathcal{D}$ be the set of all domains. Note that this set expands during
 the compilation.
@@ -627,7 +618,7 @@ the remaining formula can be handled efficiently and without the risk of the
 search algorithm running forever at the expense of more stringent preconditions.
 
 \begin{algorithm}
-  \caption{The compilation rule for $\DR$ nodes}
+  \caption{The compilation rule for $\GDR$ nodes}
   \label{alg:domainrecursion}
   \KwIn{formula $\phi$} \KwOut{set $S$} $S \gets \emptyset$\; \ForEach{domain
     $d \in \mathcal{D}$ s.t. there is a $c \in \phi$ and a $v \in \Vars(L_c)$
@@ -641,7 +632,7 @@ search algorithm running forever at the expense of more stringent preconditions.
           $\delta$ to the new set of variables}
         $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;\label{line:generation}
       } }
-    $S \gets S \cup \{\, (\DR_{d \gets d \setminus \{\, x \,\}}, \langle\phi'\rangle) \,\}$\;
+    $S \gets S \cup \{\, (\GDR_{d \gets d \setminus \{\, x \,\}}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
 
@@ -851,7 +842,7 @@ $\rho\colon \Doms(\phi) \to \Doms(\psi)$ becomes total, and all clauses are
 successfully coupled.
 
 %% If the bijection makes the clauses equal, and the domain map is compatible
-%% with previously decided domain mappings, move on to another pair of clauses.
+           %%             with previously decided domain mappings, move on to another pair of clauses.
 
 Given two clauses $c \in \phi$ and $d \in \psi$, \texttt{generateMaps} considers
 all possible bijections\footnote{Although the number of bijections between two
@@ -958,10 +949,13 @@ $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
 \subsection{Compilation as Search}
 
-\todo[inline]{Intersperse algorithms and their descriptions.}
-
-\todo[inline]{Could \texttt{mergeFcgs} be rewritten to work on pairs of graphs
-  and lists?}
+\todo[inline,caption={}]{
+  \begin{itemize}
+    \item Intersperse algorithms and their descriptions.
+    \item Could \texttt{mergeFcgs} be rewritten to work on pairs of graphs and
+          lists?
+  \end{itemize}
+}
 
 % intro
 Given a formula $\phi$, we want to find an FCG (or a circuit) that encodes a way
@@ -982,7 +976,7 @@ constraint removal rule described in \cref{sec:cr} is greedy. On the other hand,
 non-greedy rules signify uncertain choices that we may want to retract. They
 also correspond to edges in the implicit search tree; thus, the first solution
 found by the search algorithm is always the one with fewest applications of
-non-greedy rules. These rules include the $\DR$ and $\Reff$ rules described in
+non-greedy rules. These rules include the $\GDR$ and $\Reff$ rules described in
 \cref{sec:dr,sec:ref}, respectively, and some rules from previous work
 \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion,
 independent partial grounding, and shattering.
@@ -990,12 +984,15 @@ independent partial grounding, and shattering.
 % states and actions
 Search can be conceptualised as traversing a directed graph composed of states
 and actions that lead from one state to the next. We define a \emph{state} as a
-triple $(G, C, L)$, where $G$ is an FCG (or \texttt{null}), $C$ is a cache, and
-$L$ is a list of formulas. The actions that can be taken in such a state are
-applications of compilation rules that remove the first formula from $L$ and
-potentially add something to $G$, $C$, and $L$. The meaning of $G$, $L$, and the
-correspondence between the $\star$'s in $G$ and the formulas in $L$ is the same
-as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
+triple $(G, C, L)$, where $G$ is an FCG, $C$ is a cache, and $L$ is a list of
+formulas. The actions that can be taken in such a state are applications of
+compilation rules that remove the first formula from $L$ and potentially add
+something to $G$, $C$, and $L$. The meaning of $G$, $L$, and the correspondence
+between the $\star$'s in $G$ and the formulas in $L$ is the same as in the
+definition of a compilation rule at the beginning of \cref{sec:rules}.
+
+\todo[inline]{Will need to update this last sentence to point to the new
+  definition.}
 
 \begin{algorithm}
   \caption{The (main part of the) search algorithm}
@@ -1013,13 +1010,13 @@ as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{The function responsible for applying non-greedy rules.}
+  \caption{The function for applying non-greedy rules.}
   \label{alg:applyallrules}
   \Fn{\applyAllRules{state $s$}}{ $(G, C, L) \gets s$\;
     $\phi : T \gets L$\tcc*{separate the first formula from the
       rest}\label{line:separate} $(G', C', L') \gets \text{a copy of } s$\;
     \ForEach{non-greedy rule $r$}{ \ForEach{$(G'', L'') \in r(\phi)$}{
-        \lIf{$G'' = {\normalfont \texttt{null}}$}{\KwRet{\applyAllRules{$(G', C', L'' \mdoubleplus T)$}}}\label{line:nullfcg}
+        \lIf{$G'' = \star$}{\KwRet{\applyAllRules{$(G', C', L'' \mdoubleplus T)$}}}\label{line:nullfcg}
         \Else{ $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
           $(G'', C', L'') \gets \applyGreedyRulesToAllFormulas{$G''$, $C'$, $L''$}$\;
           \KwRet{$(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)$}\; } }
@@ -1037,17 +1034,19 @@ as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
   \label{alg:apply}
   \Fn{\applyGreedyRules{formula $\phi$, cache $C$}}{ \ForEach{greedy rule $r$
       s.t. $r(\phi) \ne \emptyset$}{ $(G, L) \gets \text{the (only) element of
-      } r(\phi)$\;
-      \lIf{$G = {\normalfont \texttt{null}}$}{\Return{\applyGreedyRules{the
-            element of $L$, $C$}}} \Return{\applyGreedyRulesToAllFormulas{$G$,
+      } r(\phi)$\; \lIf{$G = \star$}{\Return{\applyGreedyRules{the element of
+            $L$, $C$}}} \Return{\applyGreedyRulesToAllFormulas{$G$,
           \updateCache{$C$, $\phi$, $G$}, $L$}}\; }
-    \Return{$({\normalfont \texttt{null}}, C, \langle\phi\rangle)$}\; }
+    \Return{$(\star, C, \langle\phi\rangle)$}\; }
   \Fn{\applyGreedyRulesToAllFormulas{$(V, s, N^+, \tau)$, cache $C$, list $L$}}{
     \lIf{$L = \langle\rangle$}{\Return{$((V, s, N^+, \tau), C, L)$}}
     $L' \gets \langle\rangle$; $N^+(s) \gets \langle\rangle$\; \ForEach{formula
       $\phi \in L$}{ $(G', C, L'') \gets \applyGreedyRules{$\phi$, $C$}$\;
       $L' \gets L' \mdoubleplus L''$\;
-      \lIf{$G' = {\normalfont \texttt{null}}$}{$N^+(s) \gets N^+(s) \mdoubleplus \langle\star\rangle$}
+      \uIf{$G' = \star$}{
+        add a new node $t$ to $V$ with $\tau(t) = \star$ and $N^+(t) = \langle\rangle$\;
+        $N^+(s) \gets N^+(s) \mdoubleplus \langle t \rangle$\;
+      }
       \Else{ $(V', s', N', \tau') \gets G'$\; $V \gets V \sqcup V'$\;
         $N^+ \gets N^+ \sqcup N'$\;
         $N^+(s) \gets N^+(s) \mdoubleplus \langle s' \rangle$\;
@@ -1056,8 +1055,8 @@ as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Helper functions for updating a cache and merging FCGs}
-  \label{alg:helpers}
+  \caption{Helper functions for updating a cache and merging
+    FCGs}\label{alg:helpers}
   \Fn{\updateCache{cache $C$, formula $\phi$, FCG $(V, s, N^+, \tau)$}}{
     \lIf{$\tau(s) = \textsc{Ref}$}{\Return{$C$}}
     \lIf{$\#\phi \not\in \dom(C)$}{\Return{$C \cup \{\, \#\phi \mapsto (\phi, s) \,\}$}}
@@ -1066,11 +1065,15 @@ as in the definition of a compilation rule at the beginning of \cref{sec:rules}.
     \Return{$C$}\; } \Fn{\mergeFcgs{$G = (V, s, N^+, \tau)$,
       $G' = (V', s', N', \tau')$, $r = s$}}{ \lIf{$G = \star$}{\Return{$G'$}}
     \lIf{$\tau(r) = \textsc{Ref}$}{\Return{\normalfont \texttt{null}}}
-    \ForEach{$t \in N^+(r)$}{ \If{$t = \star$}{ replace $t$ with $s'$ in
-        $N^+(r)$\; \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\; }
+    \ForEach{$t \in N^+(r)$}{
+      \If{$\tau(t) = \star$}{ replace $t$ with $s'$ in
+        $N^+(r)$\; \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\;
+      }
       $G'' \gets \mergeFcgs{$G$, $G'$, $t$}$\;
-      \lIf{$G'' \ne {\normalfont \texttt{null}}$}{\Return{$G''$}} }
-    \Return{\normalfont \texttt{null}}\; }
+      \lIf{$G'' \ne {\normalfont \texttt{null}}$}{\Return{$G''$}}
+    }
+    \Return{\normalfont \texttt{null}}\;
+  }
 \end{algorithm}
 
 The search algorithm is described as
@@ -1104,45 +1107,44 @@ merge $(G'', L'')$ with a copy of the input state. In doing so, $\phi$ is
 replaced by $L''$, preserving the implicit bijection between the ordering of the
 list and the structure of $\star$'s in the FCG.
 
-\todo[inline,caption={}]{ Describe the two remaining algorithms:
-  \begin{itemize}
-    \item \cref{alg:apply}
-          \begin{itemize}
-            \item Introduce \cref{alg:apply}
-            \item The first function, \texttt{applyGreedyRules},...
-            \item Note: although greedy rules return a set just like non-greedy
-                  rules, that set contains at most one element.
-            \item The second function, \texttt{applyGreedyRulesToFormulas}, runs
-                  \texttt{applyGreedyRules} on all formulas in $L$,
-                  incorporating the resulting FCGs (with their corresponding
-                  lists of formulas) as direct successors of $s$.
-            \item The usage of \texttt{applyGreedyRulesToFormulas}: the input
-                  FCG $(V, s, N^+, \tau)$ and list of formulas $L$ are always:
-                  \begin{itemize}
-                    \item as generated by a compilation rule (without any
-                          merging or composite applications of other rules
-                          taking place beforehand)
-                    \item the FCG has just one non-$\star$ vertex, $s$, and
-                          $N^+(s)$ contains exactly $|L|$ $\star$'s.
-                  \end{itemize}
-          \end{itemize}
-    \item \cref{alg:helpers}
-          \begin{itemize}
-            \item \texttt{updCache}: Note that $\Reff$ nodes are not placed in
-                  the cache because the relation identified by the compilation
-                  rule for $\Reff$ (i.e., \cref{alg:trycache}) is transitive. In
-                  other words, instead of calling a function
-                  $f(\mathbf{n}) \coloneqq g(\mathbf{m})$ (where $\mathbf{n}$
-                  and $\mathbf{m}$ are integer parameter vectors, and
-                  $\mathbf{m}$ is constructed from $\mathbf{n}$), we can always
-                  directly call function $g$.
-            \item \texttt{mergeFcgs}: Note that the initial (i.e.,
-                  non-recursive) call to \texttt{mergeFcgs} will never return
-                  \texttt{null} because there is going to be at least one
-                  $\star$ in $G$, and the function will find it.
-          \end{itemize}
-  \end{itemize}
-}
+\todo[inline]{Describe the two remaining algorithms:}
+\begin{itemize}
+  \item \cref{alg:apply}
+        \begin{itemize}
+          \item Introduce \cref{alg:apply}
+          \item The first function, \texttt{applyGreedyRules},...
+          \item Note: although greedy rules return a set just like non-greedy
+                rules, that set contains at most one element.
+          \item The second function, \texttt{applyGreedyRulesToFormulas}, runs
+                \texttt{applyGreedyRules} on all formulas in $L$, incorporating
+                the resulting FCGs (with their corresponding lists of formulas)
+                as direct successors of $s$.
+          \item The usage of \texttt{applyGreedyRulesToFormulas}: the input FCG
+                $(V, s, N^+, \tau)$ and list of formulas $L$ are always:
+                \begin{itemize}
+                  \item as generated by a compilation rule (without any merging
+                        or composite applications of other rules taking place
+                        beforehand)
+                  \item the FCG has just one non-$\star$ vertex, $s$, and
+                        $N^+(s)$ contains exactly $|L|$ $\star$'s.
+                \end{itemize}
+        \end{itemize}
+  \item \cref{alg:helpers}
+        \begin{itemize}
+          \item \texttt{updCache}: Note that $\Reff$ nodes are not placed in the
+                cache because the relation identified by the compilation rule
+                for $\Reff$ (i.e., \cref{alg:trycache}) is transitive. In other
+                words, instead of calling a function
+                $f(\mathbf{n}) \coloneqq g(\mathbf{m})$ (where $\mathbf{n}$ and
+                $\mathbf{m}$ are integer parameter vectors, and $\mathbf{m}$ is
+                constructed from $\mathbf{n}$), we can always directly call
+                function $g$.
+          \item \texttt{mergeFcgs}: Note that the initial (i.e., non-recursive)
+                call to \texttt{mergeFcgs} will never return \texttt{null}
+                because there is going to be at least one $\star$ in $G$, and
+                the function will find it.
+        \end{itemize}
+\end{itemize}
 
 \section{Results} % Newly Domain-Liftable Formulas
 
