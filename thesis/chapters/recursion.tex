@@ -45,6 +45,13 @@ fundamental structures such as injections and bijections.
           using phrases such as `associated with'.
     \item Maybe have a name for a pair of an FCG and a list of formulas? This
           could be conveniently combined with the definition of full/partial.
+    \item Avoid the word `graph'. Keep the terminology related to circuits the
+          same as about FCGs.
+    \item Try to reduce all sentences to at most 30 words.
+    \item Do I ever interpret a clause as a sentence? I shouldn't do that:
+          sometimes their role is different.
+    \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
+          whenever I use either of them.
   \end{itemize}
 }
 
@@ -389,18 +396,11 @@ $L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
 
 % Generalising Circuits to Labelled Graphs
 
-% TODO: start here
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item We call an FCG full (complete?) if $L = \langle\rangle$ or,
-          equivalently, there are no $\star$s in $G$.
-    \item When visualising FCGs, we omit node labels and/or parameters when they
-          are immaterial to what is being discussed. Propagate this change to
-          figures and their descriptions.
-    \item Where do I mention, e.g., the out-degree of each type?
-  \end{itemize}
-}
+\todo[inline]{We call an FCG (not an FCG, I need to invent some new name) full
+  (complete?) if $L = \langle\rangle$ or, equivalently, there are no $\star$s
+  in $G$.}
 
+\paragraph{From circuits to graphs.}
 A \emph{first-order deterministic decomposable negation normal form
   computational graph} (FCG) is a (weakly connected) directed graph with a
 single source, vertex labels, and ordered outgoing edges.\footnote{Note that
@@ -410,22 +410,23 @@ of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct
 successor function that maps each vertex in $V$ to a \emph{list} that contains
 other vertices in $V$.
 
+\paragraph{Node labels.}
 Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}.
 To avoid clutter, we leave the parameters implicit and let $\tau$ denote the
 vertex-labelling function that maps each vertex in $V$ to its type. For each
 vertex $v \in V$, the length of list $N^+(v)$ (i.e., the out-degree of $v$) is
 determined by its type $\tau(v)$.
 
+\paragraph{Node types.}
 Most of the types are as in previous work
 \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11}. The type for
 non-tree-like edges (denoted by $\Reff$), while used before, is extended to
 contain the information necessary to support recursive calls. We also add three
 new types:
 \begin{itemize}
-  \item $\CR$ for constraint removal,
-  \item $\GDR$ for GDR,
-  \item and $\star$---a type for placeholder nodes to be replaced later during
-        compilation.
+  \item a type for constraint removal denoted by $\CR$,
+  \item a type for GDR denoted by $\GDR$ (both with out-degree one),
+  \item and $\star$---a placeholder type (with out-degree zero) for nodes that are going to be replaced.
 \end{itemize}
 
 \begin{figure}[t]
@@ -448,25 +449,26 @@ new types:
                   {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}} }}}}}};
     \draw[-latex, bend right] (ref) to (dr);
   \end{tikzpicture}
-  \caption{An example FCG constructed by Crane. Node labels are written directly
-    on the nodes. Some parameters are omitted for brevity. Outgoing edges are
-    ordered from left to right.}
-  \label{fig:examplefcg}
+  \caption{An example FCG constructed by Crane. Label
+    $\bigvee_{b^\top \subseteq b}$ denotes set-disjunction, $\land$ denotes
+    conjunction, $1$ denotes a unit clause, and $\bot$ denotes a
+    contradiction---see the work by \citet{DBLP:conf/ijcai/BroeckTMDR11} for the
+    descriptions of these node types.}\label{fig:examplefcg}
 \end{figure}
 
-\begin{example}
-  The FCG in \cref{fig:examplefcg} has twelve nodes. The source vertex has
-  out-degree 1 (i.e., $|N^+(s)| = 1$), label
-  $\GDR_{a \gets a \setminus \{\, x \,\}}$, and type $\GDR$ (i.e.,
-  $\tau(s) = \GDR$). See previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for
-  an explanation of other node types and how they are to be evaluated.
-  \todo[inline]{How does my notation differ from previous work? Does it need
-    explaining?}
-\end{example}
+\paragraph{Drawing an FCG.}
+When drawing FCGs:
+\begin{itemize}
+  \item outgoing edges are ordered from left to right,
+  \item node labels are written directly on the nodes,
+  \item and irrelevant labels and/or parameters are omitted.
+\end{itemize}
+For example, the FCG in \cref{fig:examplefcg} has twelve nodes. The source
+vertex has out-degree 1 (i.e., $|N^+(s)| = 1$), label
+$\GDR_{a \gets a \setminus \{\, x \,\}}$, and type $\GDR$ (i.e.,
+$\tau(s) = \GDR$).
 
-\todo[inline]{Explain how the new types are evaluated. Then have an example
-  evaluation.}
-
+\paragraph{Some notational conventions.}
 Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$
 for an FCG that has a node with label $T_p$ (i.e., type $T$ and parameter(s)
 $p$) and $\star$'s as all of its direct successors. For instance, as an FCG,
@@ -1146,7 +1148,92 @@ list and the structure of $\star$'s in the FCG.
         \end{itemize}
 \end{itemize}
 
-\section{Results} % Newly Domain-Liftable Formulas
+\subsection{How to Interpret an FCG}
+
+When \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} compiles a WFOMC
+instance into a circuit, each gate type encodes an arithmetic operation on its
+inputs and parameters. These operations are then immediately performed while
+traversing the circuit and using domain sizes and weights as the initial inputs.
+With \textsc{Crane}, the evaluation of an FCG is a collection of functions. Each
+function has (some) domain sizes as parameters and may contain recursive calls
+to other functions, including itself. While there may be any number of
+subsidiary functions, there is always one main function that can be called with
+the sizes of the domains of the input formula as arguments. Henceforth, this
+function is always called $f$.
+
+\todo[inline,caption={}]{
+  \begin{itemize}
+    \item Evaluation vs interpretation: fix terminology.
+    \item Refer to previous work for the evaluations/interpretations of other
+          node types and for the definition of groundings. Note that my clause
+          is their c-expression or something like that.
+    \item Finish writing this paragraph. Here we provide an informal
+          description... Formalising this into an algorithm is left for future
+          work. We shall see a more detailed example of evaluation in
+          \cref{sec:results}.
+          \begin{itemize}
+            \item The source node defines $f$.
+            \item $\Reff$ evaluates to a function call. The target of the
+                  outgoing edge then must introduce a new function, the
+                  parameters of which are the sizes of all domains reachable
+                  from it.
+            \item $\GDR$ node does not have a particular evaluation. However, it
+                  is usually the direct successor of a $\Reff$ node.
+            \item $\CR$ nodes have no particular evaluation.
+            \item Obviously, $\star$ has no evaluation because incomplete FCGs
+                  are not meant to be evaluated.
+          \end{itemize}
+    \item Double check that I didn't mix up the $m$s and $n$s, i.e., be
+          consistent with the next section even if both variations are correct.
+  \end{itemize}
+}
+
+\begin{example}
+  Let us use the FCG from \cref{fig:examplefcg} as an example. The input formula
+  has two domains: $a$ and $b$. Thus, the interpretation of the FCG is a
+  function
+  $f\colon \mathbb{N}_{0} \times \mathbb{N}_{0} \to \mathbb{R}_{\ge 0}$. Let
+  $m \coloneqq |a|$, and $n \coloneqq |b|$. The node labelled
+  $\bigvee_{b^{\top} \subseteq b}$ tells us that
+  $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \square$, where $\square$ is the
+  interpretation of the remaining subgraph, and $l$ iterates over all possible
+  sizes of $b^{\top}$. Nodes labelled $\land$ correspond to multiplication.
+  Therefore, we now know that
+  $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \clubsuit \times \spadesuit$, where
+  $\clubsuit$ is the interpretation of the direct successor with label 1, and
+  $\spadesuit$ is the interpretation of the remaining subgraph. Since our focus
+  is on \emph{unweighted} model counting, all unit nodes (i.e., nodes with label
+  1) are interpreted simply as one. Hence, we can fast-forward our construction
+  of $f$ to
+  $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} 1 \times 1 \times 1 \times \diamondsuit \times \heartsuit$,
+  where $\diamondsuit$ is the interpretation of the contradiction (i.e., $\bot$)
+  node, and $\heartsuit$ is the interpretation of the $\Reff$ node.
+
+  A contradiction node with clause $c$ as a parameter is interpreted as one if
+  the clause has groundings and zero otherwise. In this case,
+  $c = (\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})$,
+  which can be read as $\forall X, Y \in b^{\top}\text{,
+  }X \ne Y \implies \bot$, i.e., $\forall X, Y \in b^{\top}\text{, }X = Y$. This
+  latter sentence is true if and only if $|b^{\top}| < 2$. Therefore, we
+  can use the Iverson bracket notation to write $\diamondsuit = [l < 2]$.
+
+  It remains to interpret the $\Reff$ node. Parameter
+  $\{\, a \mapsto a', b \mapsto b^\bot \,\}$ tells us that the evaluation of the
+  $\Reff$ node should be the same as that of the source node, but with domains
+  $a$ and $b$ replaced with $a'$ and $b^{\bot}$, respectively. Domain $a'$ was
+  created by a constraint removal rule applied on $a$, so $|a'| = m - 1$. Now
+  $b^{\bot} = b \setminus b^{\top}$, and $|b^{\top}| = l$, so
+  $|b^{\bot}| = n - l$. Thus, the evaluation of the $\Reff$ node is a recursive
+  call to $f(m - 1, n - l)$. Therefore,
+  \[
+    f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} [l < 2] f(m-1, n-l).
+  \]
+  In order to use this recursive function to compute the model count of the
+  input formula for any domain sizes, one just needs to find the base cases
+  $f(0, n)$ and $f(m, 0)$ for all $m, n \in \mathbb{N}_{0}$.
+\end{example}
+
+\section{Results}\label{sec:results} % Newly Domain-Liftable Formulas
 
 \begin{table}
   \centering
@@ -1237,7 +1324,6 @@ endofunctions instead.
         liftable. It seems like lifting injectivity (which is a fairly general
         property) is the main accomplishment. (But this is just the one I
         noticed. There may be many others as well.)
-  \item Here, $[\cdot]$ is the Iverson bracket.
   \item My examples for 1 domain are expressible using 2 variables and counting
         quantifiers, so they're already known to be liftable.
   \item Recursion is guaranteed to terminate if at least one domain shrinks by
