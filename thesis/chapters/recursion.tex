@@ -52,17 +52,19 @@ fundamental structures such as injections and bijections.
           sometimes their role is different.
     \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
           whenever I use either of them.
+    \item In the introduction, make sure to mention that our focus is unweighted
+          counting, although everything should work with weights as well.
   \end{itemize}
 }
 
 % Definition and scope of the topic: FOMC
 
 \emph{First-order model counting} (FOMC) is the problem of computing the number
-of models of a sentence in first-order logic given the size(s) of its domain(s)
-\citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC (or, rather,
-its \emph{weighted} variant WFOMC) is in probabilistic inference, particularly
-for statistical relational models such as Markov logic networks that define
-probabilities over sets of objects and relations thereof
+of models of a sentence in first-order logic (FOL) given the size(s) of its
+domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC
+(or, rather, its \emph{weighted} variant WFOMC) is in probabilistic inference,
+particularly for statistical relational models such as Markov logic networks
+that define probabilities over sets of objects and relations thereof
 \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
 
 Over slightly more than a decade, research on (W)FOMC advanced on both
@@ -82,7 +84,7 @@ to formulas with up to two variables
 However, none of the publicly available (W)FOMC algorithms can efficiently
 compute functions as simple as a factorial.\footnote{The problem of computing
   the factorial can be described using two variables and counting quantifiers,
-  so it belongs to a fragment of first-order logic which is known to be liftable
+  so it belongs to a fragment of FOL which is known to be liftable
   \citep{DBLP:journals/jair/Kuzelka21}.} We claim that this shortcoming is due
 to the inability of these algorithms to construct recursive solutions.
 
@@ -99,7 +101,7 @@ search for a tractable solution always terminates.
 
 % 1) But their code only conjectures stuff on data. My conjectures are
 % guaranteed always true. 2) everything has to be expressible in $\mathbf{C}^2$,
-% i.e., the two-variable fragment of first-order logic with counting quantifiers
+% i.e., the two-variable fragment of FOL with counting quantifiers
 % on one domain. 3) They only consider P-recursive functions, which means that,
 % e.g., $f(n) = f(n-1)f(n-2)$ would not be allowed.
 
@@ -234,11 +236,11 @@ outlines how the first step can be adapted to an arbitrary directed graph.
 
 \subsection{First-Order Logic}
 
-In this section, we describe a variation of function-free first-order logic with
-equality. For a more complete exposition of first-order logic, see the book by
+In this section, we describe a variation of function-free FOL with
+equality. For a more complete exposition of FOL, see the book by
 \citet{DBLP:books/daglib/0023546}.
 
-In first-order logic, an \emph{atom} (i.e., an atomic formula) is either
+In FOL, an \emph{atom} (i.e., an atomic formula) is either
 $t_1 = t_2$ or $P(t_1, \dots, t_n)$ for some predicate $P$ and terms
 $(t_i)_{i=1}^n$. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. A
 \emph{term} is either a constant or a variable (we also call terms
@@ -251,7 +253,7 @@ Here, $x$ is a variable, $D$ is a domain, and $\phi$ is a formula. A variable
 occurrence is \emph{bound} if it is within the scope of a quantifier for that
 variable, otherwise it is \emph{free}. A formula is a \emph{sentence} if all of
 its variable occurrences are bound.\footnote{In the rest of this chapter, all
-  formulas in first-order logic are assumed to be sentences.}
+  formulas in FOL are assumed to be sentences.}
 
 \subsubsection{How to Interpret a Sentence}
 
@@ -296,15 +298,15 @@ only checked between terms that have the same domain.
         propositional one.
 \end{itemize}
 
-more on first-order logic: \citep{DBLP:books/daglib/0023546}. The MLN paper also
-has a description
+More on FOL: \citep{DBLP:books/daglib/0023546}. The MLN paper also has a
+description.
 
 \subsection{Everything Else}
 
 \paragraph{Things I might need to explain.}
 \begin{itemize}
   \item atom, (positive/negative) literal, constant, predicate, variable,
-        clause, unit clause, first-order logic
+        clause, unit clause
   \item subformula
   \item two parts: compilation and inference (see the slide about workflow:
         before and after).
@@ -361,7 +363,7 @@ Most of the definitions here are adaptations/formalisations of
 A \emph{formula} is a set of clauses. All variables in a clause are implicitly
 universally quantified (but note that variables are never shared among clauses),
 and all clauses in a formula are implicitly linked by conjunction. This way, one
-can read formulas as defined here as sentences in first-order logic.
+can read formulas as defined here as sentences in FOL.
 
 \todo[inline]{Note: we will reuse this several times.}
 \begin{example} \label{example:first} Let $\phi \coloneqq \{\, c_1, c_2 \,\}$ be
@@ -374,7 +376,7 @@ can read formulas as defined here as sentences in first-order logic.
     c_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}),
   \]
   for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then
-  in first-order logic $\phi$ could be read as
+  in FOL $\phi$ could be read as
   \begin{align*}
     (\forall X \in a. \forall Y \in b. \forall Z \in b. Y \ne Z &\implies \neg p(X, Y) \lor \neg p(X, Z)) \land \\
     (\forall X \in a. \forall Y \in b. \forall Z \in a. X \ne Z &\implies \neg p(X, Y) \lor \neg p(Z, Y)).
@@ -432,29 +434,25 @@ new types:
 \begin{figure}[t]
   \centering
   \begin{tikzpicture}[every node/.style={draw,ellipse},edge from
-    parent/.style={draw,-latex},sibling distance=2cm,level 6/.style={sibling
+    parent/.style={draw,-latex},sibling distance=2cm,level 2/.style={sibling
       distance=6cm}]
-    \node (dr) {$\GDR_{a \gets a \setminus \{\, x \,\}}$} child {node
-      {$\bigvee_{b^\top \subseteq b}$} child {node[circle] {$\wedge$} child
-        {node[circle]
-          {$1$}} % _{(\{\, p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\top \,\})}
-        child {node[circle] {$\wedge$} child {node[circle]
-            {$1$}} % _{(\{\, \neg p(x, X) \,\}, \emptyset, \{\, X \mapsto b^\bot \,\})}
-          child {node[circle] {$\wedge$} child {node[circle]
-              {$1$}} % _{(\{\, \neg p(X, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b^\top \,\})}
-            child {node {$\CR_{a \mapsto a'}$} child {node[circle] {$\wedge$}
-                child {node
-                  {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})}$}}
-                child {node (ref)
-                  {$\Reff_{\{\, a \mapsto a', b \mapsto b^\bot \,\}}$}} }}}}}};
+    \node (dr) {$\GDR_{b \gets b \setminus \{\, x \,\}}$} child {node
+      {$\bigvee_{a^\top \subseteq a}$} child {node {$\CR_{b \mapsto b'}$} child
+        {node[circle] {$\wedge$} child {node
+            {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto a^\top, Y \mapsto a^\top \,\})}$}}
+          child {node (ref)
+            {$\Reff_{\{\, a \mapsto a^{\bot}, b \mapsto b' \,\}}$}} }}};
     \draw[-latex, bend right] (ref) to (dr);
   \end{tikzpicture}
   \caption{An example FCG constructed by Crane. Label
-    $\bigvee_{b^\top \subseteq b}$ denotes set-disjunction, $\land$ denotes
-    conjunction, $1$ denotes a unit clause, and $\bot$ denotes a
-    contradiction---see the work by \citet{DBLP:conf/ijcai/BroeckTMDR11} for the
-    descriptions of these node types.}\label{fig:examplefcg}
+    $\bigvee_{a^\top \subseteq a}$ denotes set-disjunction, $\land$ denotes
+    conjunction, and $\bot$ denotes a contradiction---see the work by
+    \citet{DBLP:conf/ijcai/BroeckTMDR11} for the descriptions of these node
+    types.}\label{fig:examplefcg}
 \end{figure}
+
+\todo[inline]{Check every reference to \cref{fig:examplefcg} to make sure
+  they're up-to-date.}
 
 \paragraph{Drawing an FCG.}
 When drawing FCGs:
@@ -1188,7 +1186,10 @@ function is always called $f$.
   \end{itemize}
 }
 
-\begin{example}
+\todo[inline]{Update the example below to the new version of the figure. And
+  simplify the final expression. And explain the importance of simplification.}
+
+\begin{example}\label{example:evaluation}
   Let us use the FCG from \cref{fig:examplefcg} as an example. The input formula
   has two domains: $a$ and $b$. Thus, the interpretation of the FCG is a
   function
@@ -1225,80 +1226,30 @@ function is always called $f$.
   $b^{\bot} = b \setminus b^{\top}$, and $|b^{\top}| = l$, so
   $|b^{\bot}| = n - l$. Thus, the evaluation of the $\Reff$ node is a recursive
   call to $f(m - 1, n - l)$. Therefore,
-  \[
+  \begin{equation}\label{eq:solution}
     f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} [l < 2] f(m-1, n-l).
-  \]
+  \end{equation}
   In order to use this recursive function to compute the model count of the
   input formula for any domain sizes, one just needs to find the base cases
   $f(0, n)$ and $f(m, 0)$ for all $m, n \in \mathbb{N}_{0}$.
 \end{example}
 
-\section{Results}\label{sec:results} % Newly Domain-Liftable Formulas
+\section{Results}\label{sec:results} % i.e., Newly Domain-Liftable Formulas
 
-\begin{table}
-  \centering
-  \begin{tabular}{cccccc}
-    \toprule
-    \multicolumn{3}{c}{Function Class} & \multicolumn{3}{c}{Asymptotic Complexity of Counting} \\
-    Partial & Endo & Class & Best Known & With Circuits & With Graphs \\
-    \midrule
-    \rowcolor{gray!10}\cmark/\xmark & \cmark/\xmark & Functions & $\log m$ & $m$ & $m$ \\
-    \xmark & \xmark & \multirow{4}{*}{Surjections} & $n \log m$ \citet{30049} & ? & ? \\
-    \xmark & \cmark & & $n \log m$ \citet{30049} & ? & ? \\
-    \cmark & \xmark & & \multicolumn{3}{c}{Same as injections from $b$ to $a$} \\
-    \cmark & \cmark & & \multicolumn{3}{c}{Same as endo-injections} \\
-    \rowcolor{gray!10}\xmark & \xmark & & $\log m$ & - & $mn$ \\
-    \rowcolor{gray!10}\xmark & \cmark & & $\log m$ & - & $m^3$ \\
-    \rowcolor{gray!10}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & - & $n^2$ \\
-    \rowcolor{gray!10}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & - & - \\
-    \xmark & \xmark & \multirow{3}{*}{Bijections} & $\log m$ & - & $m$ \\
-    \xmark & \cmark & & \multicolumn{3}{c}{\multirow{2}{*}{Same as (partial) (endo-)injections}} \\
-    \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
-    \bottomrule
-  \end{tabular}
-  \caption{Here, $m$ is the size of $a$, and $n$ is the size of $b$. All
-    asymptotic complexities are in $\Theta(\cdot)$. This is for unweighted
-    counting. A hyphen means that no solution was found. Assuming all arithmetic
-    operations to take constant time. Maybe a better solution could be found
-    with more search. TODO: explain assumptions for the counts to not be zero.
-    TODO: double check. TODO: transfer the citations to text.}
-\end{table}
+In this section, we compare \textsc{Crane} and \textsc{ForcLift}
+\citep{DBLP:conf/ijcai/BroeckTMDR11} on their ability to count various kinds of
+functions. (Other WFOMC algorithms such as \textsc{L2C}
+\citep{DBLP:conf/kr/KazemiP16} and probabilistic theorem proving
+\citep{DBLP:journals/cacm/GogateD16} are unable to solve any of the instances
+that \textsc{ForcLift} fails on.) We begin with a description of how such
+functions can be described using FOL\@. \textsc{ForcLift} then translates these
+descriptions to formulas as we defined them back in ??.
 
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item \Cref{fig:examplefcg} counts injections and partial injections between
-          two sets.
-    \item Explain the algebraic notation that I'm using here (e.g., that $f$ is
-          always the main function)
-    \item Explain the importance of comparing domain sizes to 2. FCGs that
-          compare the size of a domain to an integer can be constructed
-          automatically using compilation rules, although $n$ is upper bounded
-          by the maximum number of variables in any clause of the input formula
-          since there is no rule that would introduce new variables.
-    \item Mention that it only takes a few seconds to find these solutions.
-          Going beyond depth 6 (or sometimes even completing depth 6) is
-          computationally infeasible with the current implementation, but depth
-          at most 5 can be searched within at most a few seconds.
-    \item Combine the tikz and the algebraic notation into one, so I don't need
-          to have two versions. But how? Maybe associate a symbol with each type
-          and only to the types that I use?
-    \item the exponential solutions can be computed in quadratic time with
-          dynamic programming!
-    \item Can't explain how formulas are translated into (my definition of)
-          clauses without explaining Skolemization, which is out of scope.
-    \item Note that in some cases different descriptions of the same problem
-          lead to different solutions (with different complexities).
-    \item Maybe we are actually guaranteed that the solution is always
-          polynomial-time. Except... running time could be infinite?
-    \item Could also try involutions and other examples from the recent paper on
-          recursion.
-  \end{itemize}
-}
-
-Let $p$ be a predicate of arity two s.t. the first argument is associated with
+% Describe what kind of instances we're investigating
+Let $p$ be a predicate of arity two s.t.\ the first argument is associated with
 domain $a$, and the second argument is associated with domain $b$ (i.e., $p$
 represents a relation between sets $a$ and $b$). Then, to restrict all relations
-representable by $p$ to just functions from $a$ to $b$, in first-order logic one
+representable by $p$ to just functions from $a$ to $b$, in FOL one
 might write
 \begin{gather}
   \forall X \in a. \forall Y \in b. \forall Z \in b. p(X, Y) \land p(X, Z) \implies Y = Z \label{eq:def1} \\
@@ -1316,9 +1267,117 @@ to restrict $p$ to injections or
 \end{equation}
 to ensure surjectivity or remove \cref{eq:def2} to consider partial functions.
 Lastly, one can replace all occurrences of $b$ with $a$ so as to model
-endofunctions instead.
+endofunctions (i.e., functions with the same domain and codomain) instead. In
+our experiments, we consider all sixteen combinations of these properties, i.e.,
+injectivity, surjectivity, partiality, and endo-.
 
-\paragraph{Notes.}
+% the process: both for running algorithms and for determining complexities
+We run \textsc{Crane} until the search tree reaches height 6 and examine the
+first (i.e., shallowest) five solutions.\footnote{Hence, it is possible that
+  better solutions could be found with more search.} If successful, both
+algorithms generate a circuit or an FCG, which is then manually converted into
+definitions of functions. When assessing the complexity of each such definition,
+we assume that:
+\begin{itemize}
+  \item computing $\binom{n}{k}$ takes $\Theta(nk)$ time,
+  \item and techniques such as dynamic programming or memoization are used to
+        avoid recomputing the same binomial coefficient or function call
+        multiple times.
+\end{itemize}
+
+\begin{table}[t]
+  \centering
+  \begin{tabular}{cccccc}
+    \toprule
+    \multicolumn{3}{c}{Function Class} & \multicolumn{3}{c}{Asymptotic Complexity of Counting} \\
+    Partial & Endo- & Class & Best Known & With \textsc{ForcLift} & With \textsc{Crane} \\
+    \midrule
+    \rowcolor{gray!10}\cmark/\xmark & \cmark/\xmark & Functions & $\log m$ & $m$ & $m$ \\
+    \xmark & \xmark & \multirow{4}{*}{Surjections} & $n \log m$ & $m^{3}+n^{3}$ & $m^{3}+n^{3}$ \\
+    \xmark & \cmark & & $m \log m$ & $m^{3}$ & $m^{3}$ \\
+    \cmark & \xmark & & \multicolumn{3}{c}{Same as injections from $b$ to $a$} \\
+    \cmark & \cmark & & \multicolumn{3}{c}{Same as endo-injections} \\
+    \rowcolor{gray!10}\xmark & \xmark & & $m$ & - & $mn$ \\
+    \rowcolor{gray!10}\xmark & \cmark & & $m$ & - & $m^3$ \\
+    \rowcolor{gray!10}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & - & $mn$ \\
+    \rowcolor{gray!10}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & - & - \\
+    \xmark & \xmark & \multirow{3}{*}{Bijections} & $m$ & - & $m$ \\
+    \xmark & \cmark & & \multicolumn{3}{c}{\multirow{2}{*}{Same as (partial) (endo-)injections}} \\
+    \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
+    \bottomrule
+  \end{tabular}
+  \caption{The worst-case complexity of counting various types of functions.
+    Here, $m$ is the size of domain $a$, and $n$ is the size of domain $b$. All
+    asymptotic complexities are in $\Theta(\cdot)$. A hyphen means that no
+    solution was found.}\label{tbl:results}
+\end{table}
+
+The results are summarised in \cref{tbl:results}. The best-known asymptotic
+complexity for computing total surjections is by \citet{30049}. All other
+best-known complexity results are inferred from the formulas and programs on the
+on-line encyclopedia of integer sequences \citep{oeis}. On instances that could
+already be solved by \textsc{ForcLift}, the two algorithms perform equally well.
+However, \textsc{Crane} is also able to solve all but one instances that
+\textsc{ForcLift} fails on in at most cubic time.
+
+Let us examine the case of counting (total, non-endomorphic) injections more
+closely. The FCG from \cref{fig:examplefcg,example:evaluation} counts injections
+and is responsible for the first $mn$ entry in the table.\footnote{A very
+  similar solution works for partial injections as well.} For a complete
+solution, \cref{eq:solution} must be combined with the following base cases:
+$f(0, 0) = 1$, and $f(m, 0) = 0$ for all $m > 0$. Finally, note that $f(m, n)$
+can be evaluated in $\Theta(mn)$ time (for any $m, n \in \mathbb{N}_{0}$) by a
+dynamic programming algorithm that computes $f(i, j)$ for all $i = 0, \dots, m$
+and $j = 0, \dots, n$.
+
+\todo[inline]{Both in the caption of the figure and here, mention that it's a
+  bit of a simplification that discards nodes whose only arithmetic effect is
+  multiplication by one. Some of these nodes play an important role in WFOMC
+  while others are dispensable nodes that result from the interaction between
+  compilation rules and the way in which \textsc{ForcLift} handles existential
+  quantifiers.}
+
+\todo[inline]{Have a concluding paragraph that describes the importance of these
+  results. For example, that injectivity is now liftable and that my
+  experimental results are far from conclusive in two ways: further search could
+  reveal other solutions (explicitly describe the potential solution for the
+  unsolved case that uses GDR in an unusual way), and who knows what kind of
+  instances might also have become liftable yet remain undiscovered.}
+
+  % \item The complexities assume that arithmetic operations on number such as
+  %       addition and multiplication take constant time.
+  % \item In some cases (e.g., when counting injections from... to...), we might
+  %       immediately recognize that the answer must be zero. Whether such cases
+  %       can be handled efficiently or not by our approach depends on the
+  %       definitions of functions and the order of evaluation. (We still get the
+  %       right answer, though.)
+  % \item All complexity results are for the worst case. In particular, optimal
+  %       best-case complexity is usually $\Theta(1)$ (see above for why).
+
+% Other results
+% \begin{itemize}
+%   \item 1d bijections and 1d injections (note that it's the same problem). Depth
+%         3 solution:
+%         \begin{align*}
+%           f(n) &= \sum_{m=0}^n \binom{n}{m} (-1)^{n-m}g(n, m) \\
+%           g(n, m) &= \sum_{l=0}^n \binom{n}{l}[l < 2]g(n-l, m-1) \\
+%                &= g(n, m - 1) + ng(n - 1, m - 1),
+%         \end{align*}
+%         which works with base case $g(n, 0) = 1$.
+%   \item 1d partial injections. 2 solutions at depth 6, but they're too
+%         complicated to check by hand. A contradiction with $X \ne x$ constraints
+%         makes things complicated.
+%   \item 2d bijections. Depth 3:
+%         \begin{align*}
+%           f(m, n) &= \sum_{l=0}^m \binom{m}{l} [l < 2] (1 - [l < 1])f(m-l, n-1) \\
+%                   &= mf(m-1, n-1),
+%         \end{align*}
+%         which works with base cases $f(0, 0) = 1$, $f(0, n) = 0$, $f(m, 0) = 0$.
+%   \item 2d partial injections, depth 2. Exactly the same circuit as for injections but with base case $f(m, 0) = 1$.
+% \end{itemize}
+
+\section{Discussion}
+
 \begin{itemize}
   \item Functions, surjections, and their partial counterparts are/were already
         liftable. It seems like lifting injectivity (which is a fairly general
@@ -1330,35 +1389,18 @@ endofunctions instead.
         at least one. But note that allowing recursive calls with the same
         domain sizes (e.g., $f(n) = f(n) + \dots$) could be useful because these
         problematic terms might cancel out.
-\end{itemize}
-
-\paragraph{Results.}
-\begin{itemize}
-  \item 1d bijections and 1d injections (note that it's the same problem). Depth
-        3 solution:
-        \begin{align*}
-          f(n) &= \sum_{m=0}^n \binom{n}{m} (-1)^{n-m}g(n, m) \\
-          g(n, m) &= \sum_{l=0}^n \binom{n}{l}[l < 2]g(n-l, m-1) \\
-               &= g(n, m - 1) + ng(n - 1, m - 1),
-        \end{align*}
-        which works with base case $g(n, 0) = 1$.
-  \item 1d partial injections. 2 solutions at depth 6, but they're too
-        complicated to check by hand. A contradiction with $X \ne x$ constraints
-        makes things complicated.
-  \item 2d bijections. Depth 3:
-        \begin{align*}
-          f(m, n) &= \sum_{l=0}^m \binom{m}{l} [l < 2] (1 - [l < 1])f(m-l, n-1) \\
-                  &= mf(m-1, n-1),
-        \end{align*}
-        which works with base cases $f(0, 0) = 1$, $f(0, n) = 0$, $f(m, 0) = 0$.
-  \item 2d injections. Depth 2:
-        \begin{align*}
-          f(m, n) &= \sum_{l=0}^m \binom{m}{l}[l<2]f(m-l, n-1) \\
-                  &= f(m, n-1) + mf(m-1, n-1),
-        \end{align*}
-        which works with base cases $f(0, 0) = 1$ and $f(m, 0) = 0$.
-  \item 2d partial injections, depth 2. Exactly the same circuit as above but
-        with base case $f(m, 0) = 1$.
+  \item Explain the importance of comparing domain sizes to 2. FCGs that compare
+        the size of a domain to an integer can be constructed automatically
+        using compilation rules, although $n$ is upper bounded by the maximum
+        number of variables in any clause of the input formula since there is no
+        rule that would introduce new variables.
+  \item Mention that it only takes a few seconds to find these solutions. Going
+        beyond depth 6 (or sometimes even completing depth 6) is computationally
+        infeasible with the current implementation, but depth at most 5 can be
+        searched within at most a few seconds.
+  \item Note that in some cases different descriptions of the same problem lead
+        to different solutions (with different complexities).
+  \item Explain why these solutions are always computable in polynomial time.
 \end{itemize}
 
 \section{Conclusions and Future Work}
