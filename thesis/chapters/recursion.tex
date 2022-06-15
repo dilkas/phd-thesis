@@ -3,7 +3,7 @@
 
 \SetKwFunction{applyAllRules}{applyAllRules}
 \SetKwFunction{applyGreedyRules}{applyGreedyRules}
-\SetKwFunction{applyGreedyRulesToAllFormulas}{applyGreedyRulesToFormulas}
+\SetKwFunction{applyGreedyRulesToFormulas}{applyGreedyRulesToFormulas}
 
 \SetKwFunction{emptyy}{empty}
 \SetKwFunction{get}{get}
@@ -32,7 +32,6 @@ with new compilation rules and an algorithm to check whether a recursive call is
 feasible. These improvements allow us to find efficient solutions to counting
 fundamental structures such as injections and bijections.
 
-\clearpage
 \section{Introduction}
 
 \todo[inline,caption={}]{
@@ -43,17 +42,14 @@ fundamental structures such as injections and bijections.
     \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$,
           variable $X$, and constant $x$. Then use this notation instead of
           using phrases such as `associated with'.
-    \item Maybe have a name for a pair of an FCG and a list of formulas? This
-          could be conveniently combined with the definition of full/partial.
-    \item Avoid the word `graph'. Keep the terminology related to circuits the
-          same as about FCGs.
-    \item Try to reduce all sentences to at most 30 words.
+    \item Avoid the word `graph'.
     \item Do I ever interpret a clause as a sentence? I shouldn't do that:
           sometimes their role is different.
     \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
           whenever I use either of them.
     \item In the introduction, make sure to mention that our focus is unweighted
           counting, although everything should work with weights as well.
+    \item Vertex or node?
   \end{itemize}
 }
 
@@ -139,8 +135,6 @@ search for a tractable solution always terminates.
 \end{figure}
 
 \todo[inline]{Informally introduce what a compilation rule is.}
-
-\todo[inline]{Vertex or node?}
 
 In this work, we show how new tractable solutions can be found by dispensing
 with these restrictions. With additional compilation rules and an algorithm for
@@ -306,20 +300,15 @@ description.
 \paragraph{Things I might need to explain.}
 \begin{itemize}
   \item atom, (positive/negative) literal, constant, predicate, variable,
-        clause, unit clause
-  \item subformula
+        clause, unit clause, subformula
+  \item \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}
+  \begin{itemize}
   \item two parts: compilation and inference (see the slide about workflow:
         before and after).
-  \item During inference, there is a domain size map
-        $\size\colon \mathcal{D} \to \mathbb{N}_0$.
-  \item My formalisation of constraints is more restrictive than the original
-        (e.g., in the thesis).
   \item \textsc{Crane/ForcLift} works by always having a formula as input and
         adding nodes to the circuit/FCG that constitute the solution the that
         formula.
-  \item $\sqcup$ for both sets and functions
-  \item injectivity is similar to the all-different constraint
-  \item \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}
+  \end{itemize}
 \end{itemize}
 
 \paragraph{Notation.}
@@ -343,6 +332,9 @@ Most of the definitions here are adaptations/formalisations of
   An \emph{(inequality) constraint} is a pair $(a, b)$, where $a$ is a variable,
   and $b$ is either a variable or a constant.
 \end{definition}
+
+\todo[inline]{NOTE: My definition of a constraint is more restrictive than the
+  original (e.g., in the thesis).}
 
 \todo[inline]{V: It might be worth emphasising that you are introducing new
   notation in new concepts to provide a metatheory to the existing literature on
@@ -397,10 +389,6 @@ $L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
 \section{Methods}
 
 % Generalising Circuits to Labelled Graphs
-
-\todo[inline]{We call an FCG (not an FCG, I need to invent some new name) full
-  (complete?) if $L = \langle\rangle$ or, equivalently, there are no $\star$s
-  in $G$.}
 
 \paragraph{From circuits to graphs.}
 A \emph{first-order deterministic decomposable negation normal form
@@ -477,6 +465,60 @@ $T_p(v)$ for an FCG with two vertices and an edge between them (and no edges
 incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the
 label of the source.
 
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
+      \node[draw,circle,label={[text=blue]1}] (top) {} child
+      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
+        {node[draw,ellipse] (ref) {$\Reff$}} child
+        {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}} } child
+      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+      \draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
+    \end{tikzpicture}
+    \caption{An example FCG}\label{fig:smallexample1}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
+      \node[draw,circle,label={[text=blue]1}] (top) {} child
+      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
+        {node[draw,circle,label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}} } child
+      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+    \end{tikzpicture}
+    \caption{The underlying tree of \cref{fig:smallexample1}}\label{fig:smallexample2}
+  \end{subfigure}
+  \caption{An FCG and its underlying tree. The integers in blue denote the
+    pre-order traversal of the underlying tree.}
+  \label{fig:ordering}
+\end{figure}
+
+\todo[inline,caption={}]{
+  \begin{itemize}
+    \item Make sure I'm using the word `full' (also `partial') everywhere and
+          that I'm not using the word `solution' instead of `chip'.
+  \end{itemize}
+}
+
+\paragraph{Connecting FCGs with formulas.} We introduce a structure that
+represents a solution to a FOMC problem while it is still being built. A
+\emph{chip} is a pair $(G, L)$, where $G$ is an FCG, and $L$ is a list of
+formulas, such that $|L|$ is equal to the number of $\star$'s in $G$. The
+intuition behind this definition is that $L$ contains formulas that still need
+to be compiled. Once a formula is compiled, it replaced one of the $\star$'s in
+$G$. We say that a chip is \emph{full} if $L = \langle \rangle$ or,
+equivalently, there are no $\star$'s in $G$. Let the \emph{underlying tree} of
+$G$ be the induced subgraph of $G$ that omits all $\Reff$
+nodes.\footnote{Subsequently presented algorithms ensure that the underlying
+  tree is guaranteed to be a tree.} Then we can define an implicit bijection
+between the formulas in $L$ and the $\star$'s in $G$ according to the order in
+which elements of $L$ are listed and the pre-order traversal of the underlying
+tree of $G$. For example, if $G$ is as in \cref{fig:smallexample1} (with its
+underlying tree in \cref{fig:smallexample2}), then $|L| = 2$. Moreover, the
+first element of $L$ is associated with the $\star$ labelled 3, and the second
+with the one labelled 4.
+
 \paragraph{Hashing.}
 We use (integer-valued) hash functions to efficiently discard pairs of formulas
 that are too different for recursion to be established. The hash code of a
@@ -502,57 +544,20 @@ $v$ is an FCG node.
 
 \todo[inline]{Be clear about how nodes relate to formulas.}
 
-\subsection{New Compilation Rules} \label{sec:rules}
+\subsection{New Compilation Rules}\label{sec:rules}
 
-\begin{figure}
-  \centering
-  \begin{subfigure}{0.49\textwidth}
-    \centering
-    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
-      \node[draw,circle,label={[text=blue]1}] (top) {} child
-      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
-        {node[draw,ellipse] (ref) {$\Reff$}} child
-        {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}} } child
-      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
-      \draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
-    \end{tikzpicture}
-  \end{subfigure}
-  \begin{subfigure}{0.49\textwidth}
-    \centering
-    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
-      \node[draw,circle,label={[text=blue]1}] (top) {} child
-      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
-        {node[draw,circle,label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}} } child
-      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
-    \end{tikzpicture}
-  \end{subfigure}
-  \caption{An FCG (on the left) and its underlying tree (on the right). The
-    integers in blue denote the pre-order traversal of the underlying tree.}
-  \label{fig:ordering}
-\end{figure}
-
-A \emph{(compilation) rule} takes a formula and returns a set of $(G, L)$ pairs,
-where $G$ is an FCG, and $L$ is a list of formulas such that $|L|$ is equal to
-the number of $\star$'s in $G$. Let the \emph{underlying tree} of an FCG $G$ be
-the induced subgraph of $G$ that omits all $\Reff$ nodes (subsequently presented
-algorithms ensure that it is always a tree). Then we can define an implicit
-bijection between the formulas in $L$ and the $\star$'s in $G$ according to the
-order in which elements of $L$ are listed and the pre-order traversal of the
-underlying tree of $G$. For example, if the FCG in \cref{fig:ordering} were to
-be returned by a compilation rule, its corresponding list of formulas $L$ would
-have two elements. These elements would then be implicitly associated with the
-$\star$'s that have labels `3' and `4' next to them, respectively.
-
-\todo[inline]{if a rule is not applicable to a given formula, it returns an
-  empty set and is skipped.}
-
-\todo[inline]{This explanation should be positioned independently of
-  compilation rules.}
+A \emph{(compilation) rule} takes a formula and returns a set of chips. The
+cardinality of this set is the number of different ways in which the rule can be
+applied to the input formula. While \textsc{ForcLift}
+\citep{DBLP:conf/ijcai/BroeckTMDR11} heuristically chooses one of them, in an
+attempt to not miss a solution, \textsc{Crane} returns them all. In particular,
+if a rule returns an empty set, then that rule is not applicable to the formula,
+and the algorithm continues with the next rule.
 
 Let $\mathcal{D}$ be the set of all domains. Note that this set expands during
 the compilation.
 
-\subsubsection{Generalised Domain Recursion} \label{sec:dr}
+\subsubsection{Generalised Domain Recursion}\label{sec:dr}
 
 \paragraph{Notation.}
 Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$
@@ -618,20 +623,20 @@ the remaining formula can be handled efficiently and without the risk of the
 search algorithm running forever at the expense of more stringent preconditions.
 
 \begin{algorithm}
-  \caption{The compilation rule for $\GDR$ nodes}
-  \label{alg:domainrecursion}
-  \KwIn{formula $\phi$} \KwOut{set $S$} $S \gets \emptyset$\; \ForEach{domain
-    $d \in \mathcal{D}$ s.t. there is a $c \in \phi$ and a $v \in \Vars(L_c)$
-    s.t. $\delta_c(v) = d$\label{line:condition}}{ $\phi' \gets \emptyset$\;
-    $x \gets \text{a new constant associated with domain } d$\; \ForEach{clause
-      $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
-      $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\; \ForEach{subset
-        $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and}
-        $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant
-        } y \,\} = \emptyset$\label{line:conditions}}{ \tcc{$\delta'$ restricts
-          $\delta$ to the new set of variables}
+  \caption{The compilation rule for $\GDR$ nodes}\label{alg:domainrecursion}
+  \KwIn{formula $\phi$}
+  \KwOut{set of chips $S$}
+  $S \gets \emptyset$\;
+  \ForEach{domain $d \in \mathcal{D}$ s.t.\ there is a $c \in \phi$ and a $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$\label{line:condition}}{
+    $\phi' \gets \emptyset$\;
+    $x \gets \text{a new constant associated with domain } d$\;
+    \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
+      $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\;
+      \ForEach{subset $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and} $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant} y \,\} = \emptyset$\label{line:conditions}}{
+        \tcc{$\delta'$ restricts $\delta$ to the new set of variables}
         $\phi' \gets \phi' \cup \{\, (L[x/W], C[x/W] \cup \{\, (v, x) \mid (v \in V \setminus W) \,\}, \delta') \,\}$\;\label{line:generation}
-      } }
+      }
+    }
     $S \gets S \cup \{\, (\GDR_{d \gets d \setminus \{\, x \,\}}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
@@ -653,8 +658,6 @@ constraints). Without such variables, GDR would have no effect on the formula.
   of $\phi$. Suppose \cref{line:forclause} picks $c = c_1$ as the first clause.
   Then, set $V$ is constructed to contain all variables with domain $d = a$ that
   occur in the literals of clause $c$. In this case, $V = \{\, X \,\}$.
-
-  \todo[inline]{What does it mean to generate a clause?}
 
   \Cref{line:conditions} iterates over all subsets $W \subseteq V$ of variables
   that can be replaced by a constant without resulting in formulas that are
@@ -696,21 +699,20 @@ constraints). Without such variables, GDR would have no effect on the formula.
 \subsubsection{Constraint Removal} \label{sec:cr}
 
 \begin{algorithm}
-  \caption{The compilation rule for $\CR$ nodes}
-  \label{alg:constraintremoval}
-  \KwIn{formula $\phi$, set of domains $\mathcal{D}$} \KwOut{set $S$}
-  $S \gets \emptyset$\; \ForEach{domain $d \in \mathcal{D}$ and element
-    $x \in d$ s.t. $x$ does not occur in any literal of any clause of $\phi$
-    {\bf and} for each clause $c = (L, C, \delta_c) \in \phi$ and variable
-    $v \in \Vars(c)$, either $\delta_c(v) \ne d$ or
-    $(v, x) \in C$\label{line:crconditions}}{ add a new domain $d'$ to
-    $\mathcal{D}$\; $\phi' \gets \emptyset$\; \ForEach{clause
-      $(L, C, \delta) \in \phi$}{
+  \caption{The compilation rule for $\CR$ nodes}\label{alg:constraintremoval}
+  \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
+  \KwOut{set of chips $S$}
+  $S \gets \emptyset$\;
+  \ForEach{domain $d \in \mathcal{D}$ and element $x \in d$ s.t. $x$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $c = (L, C, \delta_c) \in \phi$ and variable $v \in \Vars(c)$, either $\delta_c(v) \ne d$ or $(v, x) \in C$\label{line:crconditions}}{
+    add a new domain $d'$ to $\mathcal{D}$\;
+    $\phi' \gets \emptyset$\;
+    \ForEach{clause $(L, C, \delta) \in \phi$}{
       $C' \gets \{\, (a, b) \in C \mid b \ne x \,\}$\;\label{line:constraintremoval}
-      \nosemic$\delta' \gets v \mapsto \begin{cases} d' & \text{if
-        } \delta(v) = d\\ \delta(v) & \text{otherwise;} \end{cases}$\;\label{line:newdelta}
-      $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\; }
-    $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\; }
+      \nosemic$\delta' \gets v \mapsto \begin{cases} d' & \text{if} \delta(v) = d\\ \delta(v) & \text{otherwise;} \end{cases}$\;\label{line:newdelta}
+      $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
+    }
+    $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\;
+  }
 \end{algorithm}
 
 Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for
@@ -741,9 +743,7 @@ $\delta'$ that replaces $d$ with $d'$ (on \cref{line:newdelta}).
   \end{align*}
 \end{example}
 
-\subsubsection{Identifying Opportunities for Recursion} \label{sec:ref}
-
-% Notation
+\subsubsection{Identifying Opportunities for Recursion}\label{sec:ref}
 
 \paragraph{Notation.}
 First, for partial functions $\alpha, \beta\colon A \pfun B$ s.t.
@@ -783,40 +783,45 @@ is as in \cref{example:first}, then
 \begin{algorithm}
   \caption{The compilation rule for $\Reff$ nodes}
   \label{alg:trycache}
-  \KwIn{formula $\phi$, cache $C$} \KwOut{a set}
+  \KwIn{formula $\phi$, cache $C$}
+  \KwOut{a set of chips}
 
   \ForAll{pairs of formulas and vertices $(\psi, v) \in C(\#\phi)$}{
     $\rho \gets \identifyRecursion{$\phi$, $\psi$}$\;
     \lIf{$\rho \ne {\normalfont \texttt{null}}$}{\Return{$\{\, (\Reff_\rho(v), \langle\rangle) \,\}$}}
-  } \Return{$\emptyset$}\;
+  }
+  \Return{$\emptyset$}\;
 
-  \Fn{\identifyRecursion{formula $\phi$, formula $\psi$, map
-      $\rho = \emptyset$}}{ \lIf{$|\phi| \ne |\psi|$ {\bf or}
-      $\#\phi \ne \#\psi$}{\Return{\normalfont \texttt{null}}}
-    \lIf{$\phi = \emptyset$}{\Return{$\rho$}} \ForEach{clause
-      $c \in \phi$\label{line:for1}}{ \ForEach{clause $d \in \psi$ s.t.
-        $\#d=\#c$\label{line:for2}}{
-        \ForAll{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t.
-          $c[\beta, \gamma] = d$\label{line:generateMaps}}{
-          $\rho' \gets \identifyRecursion{$\phi \setminus \{\, c \,\}$, $\psi
-            \setminus \{\, d \,\}$, $\rho \cup \gamma$}$\;\label{line:recursion}
-          \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}} } }
-      \Return{\normalfont \texttt{null}}\; } }
+  \Fn{\identifyRecursion{formula $\phi$, formula $\psi$, map $\rho = \emptyset$}}{
+    \lIf{$|\phi| \ne |\psi|$ {\bf or} $\#\phi \ne \#\psi$}{\Return{\normalfont\texttt{null}}}
+    \lIf{$\phi = \emptyset$}{\Return{$\rho$}}
+    \ForEach{clause $c \in \phi$\label{line:for1}}{
+      \ForEach{clause $d \in \psi$ s.t. $\#d=\#c$\label{line:for2}}{
+        \ForAll{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t. $c[\beta, \gamma] = d$\label{line:generateMaps}}{
+          $\rho' \gets \identifyRecursion{$\phi\setminus\{\, c \,\}$, $\psi\setminus\{\, d \,\}$, $\rho\cup\gamma$}$\;\label{line:recursion}
+          \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}}
+        }
+      }
+      \Return{\normalfont\texttt{null}}\;
+    }
+  }
 
-  \Fn{\generateMaps{clause $c$, clause $d$, map $\rho$}}{ \ForEach{bijection
-      $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$\label{line:bijection}}{
+  \Fn{\generateMaps{clause $c$, clause $d$, map $\rho$}}{
+    \ForEach{bijection $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$\label{line:bijection}}{
       $\gamma \gets \constructDomainMap{$\Vars(c)$, $\delta_c$, $\delta_d$, $\beta$, $\rho$}$\;
       \lIf{$\gamma \ne {\normalfont \texttt{null}}$}{\KwRet{$(\beta, \gamma)$}}
-    } }
+    }
+  }
 
-  \Fn{\constructDomainMap{set of variables $V$, maps $\delta_c$, $\delta_d$,
-      $\beta$, $\rho$}}{ $\gamma \gets \emptyset$\; \ForEach{variable
-      $v \in V$}{ \lIf{$\delta_c(v) \in \dom(\rho)$ {\bf and}
-        $\rho(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont
-          \texttt{null}}}
+  \Fn{\constructDomainMap{set of variables $V$, maps $\delta_c$, $\delta_d$, $\beta$, $\rho$}}{
+    $\gamma \gets \emptyset$\;
+    \ForEach{variable $v \in V$}{
+      \lIf{$\delta_c(v) \in \dom(\rho)$ {\bf and} $\rho(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont\texttt{null}}}
       \lIf{$\delta_c(v) \not\in \dom(\gamma)$}{$\gamma \gets \gamma \cup \{\, \delta_c(v) \mapsto \delta_d(\beta(v)) \,\}$}
-      \lElseIf{$\gamma(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont
-          \texttt{null}}} } \Return{$\gamma$}\; }
+      \lElseIf{$\gamma(\delta_c(v)) \ne \delta_d(\beta(v))$}{\Return{\normalfont\texttt{null}}}
+    }
+    \Return{$\gamma$}\;
+  }
 \end{algorithm}
 
 % Cache $C$ is used to partition all previously-encountered formulas based on
@@ -875,7 +880,7 @@ to $\Doms(\psi)$ fails to commute. These checks also ensure that
 $\rho \cup \gamma$ is possible on \cref{line:recursion} of the algorithm, i.e.,
 $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
-\begin{example} \label{example}
+\begin{example}\label{example}
 
   % definitions of formulas and intro
   Let formula $\phi \coloneqq \{\, c_1, c_2 \,\}$ be as in \cref{example:first},
@@ -949,78 +954,76 @@ $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
 \subsection{Compilation as Search}
 
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item Intersperse algorithms and their descriptions.
-    \item Could \texttt{mergeFcgs} be rewritten to work on pairs of graphs and
-          lists?
-  \end{itemize}
-}
+\todo[inline]{Update the text to use the term `chip' where appropriate.}
 
 % intro
 Given a formula $\phi$, we want to find an FCG (or a circuit) that encodes a way
-to compute the model count of $\phi$. \textsc{ForcLift} tackles this search
-problem using a greedy algorithm.\footnote{The algorithm is not described in any
-  paper on \textsc{ForcLift} but can be found in its source code.} In this
-section, we describe a new search algorithm---a combination of greedy and
-breadth-first search.
+to compute the model count of $\phi$. \textsc{ForcLift}
+\citep{DBLP:conf/ijcai/BroeckTMDR11} tackles this search problem using a greedy
+algorithm.\footnote{The algorithm is not described in any paper on
+  \textsc{ForcLift} but can be found in its source code.} In this section, we
+describe a new search algorithm---a combination of greedy and breadth-first
+search.
 
 % greedy and non-greedy rules
-We split all rules into \emph{greedy} and \emph{non-greedy}. Greedy rules
-represent indisputable choices in the compilation process. They are applied to
-each encountered formula as soon and as many times as possible (in a predefined
-order). Most rules are greedy, i.e., those that produce a sink node with no
-leftover formula, those that simplify the formula without changing the FCG, and
-those that split the formula into parts that can be solved independently. The
-constraint removal rule described in \cref{sec:cr} is greedy. On the other hand,
-non-greedy rules signify uncertain choices that we may want to retract. They
-also correspond to edges in the implicit search tree; thus, the first solution
-found by the search algorithm is always the one with fewest applications of
-non-greedy rules. These rules include the $\GDR$ and $\Reff$ rules described in
-\cref{sec:dr,sec:ref}, respectively, and some rules from previous work
-\citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion,
-independent partial grounding, and shattering.
+We split all compilation rules into \emph{greedy} and \emph{non-greedy}. Greedy
+rules represent indisputable choices in the compilation process. They are
+applied to each encountered formula as soon and as many times as possible (in a
+predefined order). Most rules are greedy, i.e., those that produce a sink node
+with no leftover formula, those that simplify the formula without changing the
+FCG, and those that split the formula into parts that can be solved
+independently. The constraint removal rule described in \cref{sec:cr} is greedy.
+On the other hand, non-greedy rules signify uncertain choices that we may want
+to retract. They also correspond to edges in the implicit search tree; thus, the
+first solution found by the search algorithm is always the one with fewest
+applications of non-greedy rules. These rules include the $\GDR$ and $\Reff$
+rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from
+previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting,
+inclusion-exclusion, independent partial grounding, and shattering.
 
 % states and actions
 Search can be conceptualised as traversing a directed graph composed of states
 and actions that lead from one state to the next. We define a \emph{state} as a
-triple $(G, C, L)$, where $G$ is an FCG, $C$ is a cache, and $L$ is a list of
-formulas. The actions that can be taken in such a state are applications of
-compilation rules that remove the first formula from $L$ and potentially add
-something to $G$, $C$, and $L$. The meaning of $G$, $L$, and the correspondence
-between the $\star$'s in $G$ and the formulas in $L$ is the same as in the
-definition of a compilation rule at the beginning of \cref{sec:rules}.
-
-\todo[inline]{Will need to update this last sentence to point to the new
-  definition.}
+triple $(G, L, C)$, where $(G, L)$ is a chip, and $C$ is a cache. The actions
+that can be taken in such a state are applications of compilation rules that
+remove the first formula from $L$ and potentially add something to $G$, $L$, and
+$C$.
 
 \begin{algorithm}
-  \caption{The (main part of the) search algorithm}
-  \label{alg:search}
-  \KwIn{a formula $\phi_0$} \KwResult{all found FCGs for $\phi_0$ are in set
-    $S$} $S \gets \emptyset$\;
-  $(G_0, C_0, L_0) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;\label{line:greedy}
-  \lIf{$L_0 = \langle\rangle$}{$S \gets \{\, G_0 \,\}$} \Else{ $q \gets \text{a
-      empty queue of states}$\;\label{line:q1} $q.\put{$(G_0, C_0,
-      L_0)$}$\;\label{line:q2} \While{{\bf not}
-      $q.\emptyy{}$\label{line:while}}{ \ForEach{state
-        $(G, C, L) \in \applyAllRules{$q.\get{}$}$}{
+  \caption{The (main part of the) search algorithm}\label{alg:search}
+  \KwIn{a formula $\phi_0$}
+  \KwResult{all found FCGs for $\phi_0$ are in set $S$} $S \gets \emptyset$\;
+  $(G_0, L_0, C_{0}) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;\label{line:greedy}
+  \lIf{$L_0 = \langle\rangle$}{$S \gets \{\, G_0 \,\}$}
+  \Else{
+    $q \gets \text{a empty queue of states}$\;\label{line:q1}
+    $q.\put{$ (G_0, L_0, C_0) $}$\;\label{line:q2}
+    \While{{\bf not} $q.\emptyy{}$\label{line:while}}{
+      \ForEach{state $(G, L, C) \in \applyAllRules{$q.\get{}$}$}{
         \lIf{$L = \langle\rangle$}{$S \gets S \cup \{\, G \,\}$}
-        \lElse{$q.\put{$(G, C, L)$}$} } } }
+        \lElse{$q.\put{$ (G, L, C) $}$}
+      }
+    }
+  }
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{The function for applying non-greedy rules.}
-  \label{alg:applyallrules}
-  \Fn{\applyAllRules{state $s$}}{ $(G, C, L) \gets s$\;
-    $\phi : T \gets L$\tcc*{separate the first formula from the
-      rest}\label{line:separate} $(G', C', L') \gets \text{a copy of } s$\;
-    \ForEach{non-greedy rule $r$}{ \ForEach{$(G'', L'') \in r(\phi)$}{
-        \lIf{$G'' = \star$}{\KwRet{\applyAllRules{$(G', C', L'' \mdoubleplus T)$}}}\label{line:nullfcg}
-        \Else{ $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
-          $(G'', C', L'') \gets \applyGreedyRulesToAllFormulas{$G''$, $C'$, $L''$}$\;
-          \KwRet{$(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)$}\; } }
-      $(G', C', L') \gets \text{a copy of } s$\; } }
+  \caption{The function for applying non-greedy rules.}\label{alg:applyallrules}
+  \Fn{\applyAllRules{state $s = (G, L, C)$}}{
+    $(G', L', C') \gets \text{a copy of } s$\;
+    $\phi : T \gets L$\tcc*{separate the first formula from the rest}\label{line:separate}
+    \ForEach{non-greedy rule $r$}{
+      \ForEach{chip $(G'', L'') \in r(\phi)$}{
+        \lIf{$G'' = \star$}{\KwRet{\applyAllRules{$(G', L'' \mdoubleplus T, C')$}}}\label{line:nullfcg}
+        \Else{
+          $C' \gets \updateCache{$C'$, $\phi$, $G''$}$\;
+          $(G'', L'', C') \gets \applyGreedyRulesToFormulas{$G''$, $L''$, $C'$}$\;
+          \KwRet{$(\mergeFcgs{$G'$, $G''$}, C', L'' \mdoubleplus T)$}\;
+        }
+      }
+      $(G', L', C') \gets \text{a copy of } s$\;
+    }
+  }
 \end{algorithm}
 
 \begin{algorithm}
@@ -1030,28 +1033,30 @@ definition of a compilation rule at the beginning of \cref{sec:rules}.
     \item a single formula and
     \item all uncompiled formulas in a state.
     \end{enumerate*}
+  }\label{alg:apply}
+
+  \Fn{\applyGreedyRules{formula $\phi$, cache $C$}}{
+    \ForEach{greedy rule $r$ s.t. $r(\phi) \ne \emptyset$}{
+      $(G, L) \gets \text{the only chip in } r(\phi)$\;
+      \lIf{$G = \star$}{\Return{\applyGreedyRules{the formula in $L$, $C$}}}
+      \Return{\applyGreedyRulesToFormulas{$G$, $L$, \updateCache{$C$, $\phi$, $G$}}}\;\label{line:callgreedy}
+    }
+    \Return{$(\star, \langle\phi\rangle, C)$}\;
   }
-  \label{alg:apply}
-  \Fn{\applyGreedyRules{formula $\phi$, cache $C$}}{ \ForEach{greedy rule $r$
-      s.t. $r(\phi) \ne \emptyset$}{ $(G, L) \gets \text{the (only) element of
-      } r(\phi)$\; \lIf{$G = \star$}{\Return{\applyGreedyRules{the element of
-            $L$, $C$}}} \Return{\applyGreedyRulesToAllFormulas{$G$,
-          \updateCache{$C$, $\phi$, $G$}, $L$}}\; }
-    \Return{$(\star, C, \langle\phi\rangle)$}\; }
-  \Fn{\applyGreedyRulesToAllFormulas{$(V, s, N^+, \tau)$, cache $C$, list $L$}}{
-    \lIf{$L = \langle\rangle$}{\Return{$((V, s, N^+, \tau), C, L)$}}
-    $L' \gets \langle\rangle$; $N^+(s) \gets \langle\rangle$\; \ForEach{formula
-      $\phi \in L$}{ $(G', C, L'') \gets \applyGreedyRules{$\phi$, $C$}$\;
+
+  \Fn{\applyGreedyRulesToFormulas{$(V, s, N^+, \tau)$, list $L$, cache $C$}}{
+    \lIf{$L = \langle\rangle$}{\Return{$((V, s, N^+, \tau), L, C)$}}
+    $L' \gets \langle\rangle$\;
+    \ForEach{formula $\phi \in L$}{
+      $(G', L'', C) \gets \applyGreedyRules{$\phi$, $C$}$\;
       $L' \gets L' \mdoubleplus L''$\;
-      \uIf{$G' = \star$}{
-        add a new node $t$ to $V$ with $\tau(t) = \star$ and $N^+(t) = \langle\rangle$\;
-        $N^+(s) \gets N^+(s) \mdoubleplus \langle t \rangle$\;
+      \If{$G' = (V', s', N', \tau') \ne \star$}{
+        $(V, N^{+}, \tau) \gets (V \cup V', N^{+} \cup N', \tau \cup \tau')$\;\label{line:cup}
+        replace the corresponding $\star$ in $N^{+}(s)$ with $s'$\;
       }
-      \Else{ $(V', s', N', \tau') \gets G'$\; $V \gets V \sqcup V'$\;
-        $N^+ \gets N^+ \sqcup N'$\;
-        $N^+(s) \gets N^+(s) \mdoubleplus \langle s' \rangle$\;
-        $\tau \gets \tau \sqcup \tau'$\; } }
-    \Return{$((V, s, N^+, \tau), C, L')$}\; }
+    }
+    \Return{$((V, s, N^+, \tau), L', C)$}\;
+  }
 \end{algorithm}
 
 \begin{algorithm}
@@ -1060,19 +1065,22 @@ definition of a compilation rule at the beginning of \cref{sec:rules}.
   \Fn{\updateCache{cache $C$, formula $\phi$, FCG $(V, s, N^+, \tau)$}}{
     \lIf{$\tau(s) = \textsc{Ref}$}{\Return{$C$}}
     \lIf{$\#\phi \not\in \dom(C)$}{\Return{$C \cup \{\, \#\phi \mapsto (\phi, s) \,\}$}}
-    \lIf{there is no $(\phi', v) \in C(\#\phi)$ s.t.
-      $v = s$}{$C(\#\phi) \gets \langle(\phi, s)\rangle \mdoubleplus C(\#\phi)$}
-    \Return{$C$}\; } \Fn{\mergeFcgs{$G = (V, s, N^+, \tau)$,
-      $G' = (V', s', N', \tau')$, $r = s$}}{ \lIf{$G = \star$}{\Return{$G'$}}
-    \lIf{$\tau(r) = \textsc{Ref}$}{\Return{\normalfont \texttt{null}}}
+    \lIf{there is no $(\phi', v) \in C(\#\phi)$ s.t. $v = s$}{$C(\#\phi) \gets \langle(\phi, s)\rangle \mdoubleplus C(\#\phi)$}
+    \Return{$C$}\;
+  }
+
+  \Fn{\mergeFcgs{$G = (V, s, N^+, \tau)$, $G' = (V', s', N', \tau')$, $r = s$}}{
+    \lIf{$G = \star$}{\Return{$G'$}}
+    \lIf{$\tau(r) = \textsc{Ref}$}{\Return{\normalfont\texttt{null}}}
     \ForEach{$t \in N^+(r)$}{
-      \If{$\tau(t) = \star$}{ replace $t$ with $s'$ in
-        $N^+(r)$\; \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\;
+      \If{$\tau(t) = \star$}{
+        replace $t$ with $s'$ in $N^+(r)$\;
+        \Return{$(V \cup V', s, N^+ \cup N', \tau \cup \tau')$}\;
       }
       $G'' \gets \mergeFcgs{$G$, $G'$, $t$}$\;
       \lIf{$G'' \ne {\normalfont \texttt{null}}$}{\Return{$G''$}}
     }
-    \Return{\normalfont \texttt{null}}\;
+    \Return{\normalfont\texttt{null}}\;
   }
 \end{algorithm}
 
@@ -1105,46 +1113,55 @@ rerun \texttt{applyAllRules} on the same state but with the updated formula.
 Otherwise, we update the cache, call another function to apply greedy rules, and
 merge $(G'', L'')$ with a copy of the input state. In doing so, $\phi$ is
 replaced by $L''$, preserving the implicit bijection between the ordering of the
-list and the structure of $\star$'s in the FCG.
+list and the structure of $\star$'s in the FCG\@.
 
-\todo[inline]{Describe the two remaining algorithms:}
-\begin{itemize}
-  \item \cref{alg:apply}
-        \begin{itemize}
-          \item Introduce \cref{alg:apply}
-          \item The first function, \texttt{applyGreedyRules},...
-          \item Note: although greedy rules return a set just like non-greedy
-                rules, that set contains at most one element.
-          \item The second function, \texttt{applyGreedyRulesToFormulas}, runs
-                \texttt{applyGreedyRules} on all formulas in $L$, incorporating
-                the resulting FCGs (with their corresponding lists of formulas)
-                as direct successors of $s$.
-          \item The usage of \texttt{applyGreedyRulesToFormulas}: the input FCG
-                $(V, s, N^+, \tau)$ and list of formulas $L$ are always:
-                \begin{itemize}
-                  \item as generated by a compilation rule (without any merging
-                        or composite applications of other rules taking place
-                        beforehand)
-                  \item the FCG has just one non-$\star$ vertex, $s$, and
-                        $N^+(s)$ contains exactly $|L|$ $\star$'s.
-                \end{itemize}
-        \end{itemize}
-  \item \cref{alg:helpers}
-        \begin{itemize}
-          \item \texttt{updCache}: Note that $\Reff$ nodes are not placed in the
-                cache because the relation identified by the compilation rule
-                for $\Reff$ (i.e., \cref{alg:trycache}) is transitive. In other
-                words, instead of calling a function
-                $f(\mathbf{n}) \coloneqq g(\mathbf{m})$ (where $\mathbf{n}$ and
-                $\mathbf{m}$ are integer parameter vectors, and $\mathbf{m}$ is
-                constructed from $\mathbf{n}$), we can always directly call
-                function $g$.
-          \item \texttt{mergeFcgs}: Note that the initial (i.e., non-recursive)
-                call to \texttt{mergeFcgs} will never return \texttt{null}
-                because there is going to be at least one $\star$ in $G$, and
-                the function will find it.
-        \end{itemize}
-\end{itemize}
+\Cref{alg:apply} defines two functions that work together to handle the
+application of greedy rules. Function \texttt{applyGreedyRules} takes a formula
+and returns the maximal chip that can be constructed by the application of
+greedy rules (and updates the cache whenever the application of a rule results
+in a new node). The implementation of this function is simplified by three
+assumptions about greedy rules. First, we assume that greedy rules can be
+applied in any order. Second, we assume that the set of chips returned by a
+greedy rule has at most one element. Third, if a rule returns an empty FCG,
+i.e., $G = \star$, then $L$ has exactly one formula, i.e., the rule simply
+transforms the input formula. In such a case, we continue the application of
+greedy rules to the new formula. Otherwise, \cref{line:callgreedy} updates the
+cache and calls the second function in \cref{alg:apply},
+\texttt{applyGreedyRulesToFormulas}, on the new chip $(G, L)$ that has $|L|$ new
+formulas that could benefit from greedy rules. Finally, if none of the greedy
+rules are applicable, \texttt{applyGreedyRules} returns the same formula $\phi$
+formatted as a state. Function \texttt{applyGreedyRulesToFormulas} takes a state
+and updates it by running \texttt{applyGreedyRules} on all formulas in $L$ and
+incorporating the resulting chips as direct successors of the source node $s$.
+Hence, we assume that the input FCG (which comes directly from applying a single
+greedy rule) has just one non-$\star$ vertex, $s$, and $N^+(s)$ contains exactly
+$|L|$ $\star$'s.
+
+% If the chip is complete, return the state as-is.
+% Otherwise, we apply greedy rules to the formulas in $L$, incorporating each
+% resulting state into the input state.
+% In particular, we replace the formulas in $L$ with the formulas returned by
+% greedy rules. Furthermore, each FCG returned by \texttt{applyGreedyRules} is
+% connected to the input FCG by drawing an edge from $s$ to $s'$ and copying over
+% all nodes, edges, and labels.
+
+Finally, \cref{alg:helpers} describes two helper functions: \texttt{updCache}
+for updating the cache and \texttt{mergeFcgs} for merging two FCGs. Note that
+$\Reff$ nodes are not placed in the cache because the relation identified by the
+compilation rule for $\Reff$ (see \cref{alg:trycache}) is transitive. In other
+words, instead of calling a function $f(\mathbf{n}) \coloneqq g(\mathbf{m})$
+(where $\mathbf{n}$ and $\mathbf{m}$ are integer parameter vectors, and
+$\mathbf{m}$ is constructed from $\mathbf{n}$), we can always directly call
+function $g$. Function \texttt{mergeFcgs} finds a $\star$ in $G$ and replaces it
+with $G'$. Note that the order in which the nodes of $G$ are visited must be the
+pre-order traversal of the underlying tree of $G$. Hence, the algorithm skips
+$\Reff$ nodes and, for each directed edge, considers the source before
+considering the target. Parameter $r$, initially set to the source of $G$, keeps
+track of the root of the subtree that needs to be explored. Recursive calls
+return \texttt{null} if there are no $\star$'s in the subtree rooted at $r$.
+However, we only call \texttt{mergeFcgs} with $G$'s that have at least one
+$\star$, so the return value of the initial call to the function is never
+\texttt{null}.
 
 \subsection{How to Interpret an FCG}
 
@@ -1234,7 +1251,7 @@ function is always called $f$.
   $f(0, n)$ and $f(m, 0)$ for all $m, n \in \mathbb{N}_{0}$.
 \end{example}
 
-\section{Results}\label{sec:results} % i.e., Newly Domain-Liftable Formulas
+\section{Empirical Results}\label{sec:results} % Newly Domain-Liftable Formulas
 
 In this section, we compare \textsc{Crane} and \textsc{ForcLift}
 \citep{DBLP:conf/ijcai/BroeckTMDR11} on their ability to count various kinds of
@@ -1252,19 +1269,19 @@ represents a relation between sets $a$ and $b$). Then, to restrict all relations
 representable by $p$ to just functions from $a$ to $b$, in FOL one
 might write
 \begin{gather}
-  \forall X \in a. \forall Y \in b. \forall Z \in b. p(X, Y) \land p(X, Z) \implies Y = Z \label{eq:def1} \\
+  \forall X \in a. \forall Y \in b. \forall Z \in b. p(X, Y) \land p(X, Z) \implies Y = Z\nonumber \\
   \forall X \in a. \exists Y \in b. p(X, Y). \label{eq:def2}
 \end{gather}
 The former says that one element of $a$ can map to at \emph{most} one element of
 $b$, and the latter says that each element of $a$ must map to at \emph{least}
 one element of $b$. One might add
-\begin{equation} \label{eq:injectivity}
+\[
   \forall W \in a. \forall X \in a. \forall Y \in b. p(W, Y) \land p(X, Y) \implies W = X
-\end{equation}
+\]
 to restrict $p$ to injections or
-\begin{equation}
+\[
   \forall Y \in b. \exists X \in a. p(X, Y)
-\end{equation}
+\]
 to ensure surjectivity or remove \cref{eq:def2} to consider partial functions.
 Lastly, one can replace all occurrences of $b$ with $a$ so as to model
 endofunctions (i.e., functions with the same domain and codomain) instead. In
