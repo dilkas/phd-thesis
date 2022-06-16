@@ -17,8 +17,64 @@
 
 \chapter{Recursive Solutions to FOMC}\label{chapter:wfomc}
 
-% TODO (V): Some version of this could become the introduction to the chapter
-\paragraph{Abstract.}
+\section{Introduction}
+
+\paragraph{References.}
+\begin{enumerate}
+  \item \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11}
+  \item probabilistic theorem proving (Alchemy) \citep{DBLP:journals/cacm/GogateD16}
+  \item L2C \citep{DBLP:conf/kr/KazemiP16}
+  \item new liftable classes \citep{DBLP:conf/kr/BremenK21}
+  \item new liftable classes \citep{DBLP:conf/nips/KazemiKBP16}
+  \item new liftable classes \citep{DBLP:conf/lics/KuusistoL18}
+  \item new liftable classes \citep{DBLP:journals/jair/Kuzelka21}
+  \item two variable fragment \citep{DBLP:conf/uai/BremenK21}
+  \item two variable fragment (closed formula) \citep{DBLP:journals/corr/abs-2110-05992}
+  \item recursion \citep{DBLP:conf/ilp/BarvinekB0ZK21}
+  \item domain recursion and completeness \citep{DBLP:conf/nips/Broeck11}
+  \item first-order logic \citep{DBLP:books/daglib/0023546}
+  \item thesis \citep{DBLP:phd/basesearch/VandenBroeck13}
+  \item StackExchange \citep{30049}
+  \item OEIS \citep{oeis}
+  \item lifted probabilistic inference \citep{DBLP:conf/ijcai/BrazAR05}
+  \item lifted probabilistic inference \citep{DBLP:conf/uai/BrazO17}
+  \item lifted probabilistic inference \citep{DBLP:conf/aaai/KazemiP14}
+  \item lifted probabilistic inference \citep{DBLP:conf/ecai/Kersting12}
+  \item lifted probabilistic inference \citep{DBLP:conf/nips/JhaGMS10}
+  \item lifted variable elimination \citep{DBLP:conf/aistats/TaghipourFBDB13}
+  \item lifted graphical models \citep{DBLP:journals/ml/KimmigMG15}
+  \item probabilistic logic programming \citep{DBLP:journals/ml/RaedtK15}
+  \item statistical relational artificial intelligence \citep{DBLP:series/synthesis/2016Raedt}
+  \item probabilistic databases \citep{DBLP:journals/pvldb/GatterbauerS15}
+  \item probabilistic databases \citep{DBLP:journals/debu/GribkoffSB14}
+  \item complexity \citep{DBLP:conf/pods/BeameBGS15}
+  \item approximate ForcLift \citep{DBLP:conf/uai/BroeckCD12}
+  \item \textsc{ApproxMC3} \citep{DBLP:conf/ijcai/BremenK20}
+  \item learning MLNs \citep{DBLP:journals/ml/HaarenBMD16}
+\end{enumerate}
+
+% In a way, we're dividing the idea of domain recursion between the IDR and the
+% Ref nodes, thus also generalising it.
+
+\todo[inline,caption={}]{
+  \begin{itemize}
+    \item Emphasise exactness
+    \item Introduce Crane and explain that it's modus operandi is very
+          different.
+    \item Introduce the acronym for GDR
+    \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$,
+          variable $X$, and constant $x$. Then use this notation instead of
+          using phrases such as `associated with'.
+    \item Do I ever interpret a clause as a sentence? I shouldn't do that:
+          sometimes their role is different.
+    \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
+          whenever I use either of them.
+    \item In the introduction, make sure to mention that our focus is unweighted
+          counting, although everything should work with weights as well.
+    \item NOTE: Alchemy is both exact and approximate.
+  \end{itemize}
+}
+
 First-order model counting (FOMC) is a \#\P-complete computational problem that
 asks to count the models of a sentence in first-order logic. Despite being
 around for more than a decade, practical FOMC algorithms are still unable to
@@ -27,31 +83,11 @@ FOMC algorithms are severely limited by their inability to express arbitrary
 recursive computations. To enable arbitrary recursion, we relax the restrictions
 that typically accompany domain recursion and generalise circuits used to
 express a solution to an FOMC problem to graphs that may contain cycles. To this
-end, we enhance the most well-established (weighted) FOMC algorithm ForcLift
-with new compilation rules and an algorithm to check whether a recursive call is
-feasible. These improvements allow us to find efficient solutions to counting
-fundamental structures such as injections and bijections.
-
-\section{Introduction}
-
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item Introduce Crane and explain that it's modus operandi is very
-          different.
-    \item Introduce the acronym for GDR
-    \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$,
-          variable $X$, and constant $x$. Then use this notation instead of
-          using phrases such as `associated with'.
-    \item Avoid the word `graph'.
-    \item Do I ever interpret a clause as a sentence? I shouldn't do that:
-          sometimes their role is different.
-    \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
-          whenever I use either of them.
-    \item In the introduction, make sure to mention that our focus is unweighted
-          counting, although everything should work with weights as well.
-    \item Vertex or node?
-  \end{itemize}
-}
+end, we enhance the most well-established (weighted) FOMC algorithm
+\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation
+rules and an algorithm to check whether a recursive call is feasible. These
+improvements allow us to find efficient solutions to counting fundamental
+structures such as injections and bijections.
 
 % Definition and scope of the topic: FOMC
 
@@ -64,12 +100,12 @@ that define probabilities over sets of objects and relations thereof
 \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
 
 Over slightly more than a decade, research on (W)FOMC advanced on both
-theoretical and empirical fronts. Several WFOMC algorithms such as ForcLift
-\citep{DBLP:conf/ijcai/BroeckTMDR11}, probabilistic theorem proving
-\citep{DBLP:journals/cacm/GogateD16}, and L2C \citep{DBLP:conf/kr/KazemiP16}
-were developed. More and more classes of formulas were shown to be
-\emph{liftable}, i.e., solvable in polynomial time with respect to the size(s)
-of the domain(s)
+theoretical and empirical fronts. Several WFOMC algorithms such as
+\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11}, probabilistic theorem
+proving \citep{DBLP:journals/cacm/GogateD16}, and \textsc{L2C}
+\citep{DBLP:conf/kr/KazemiP16} were developed. More and more classes of formulas
+were shown to be \emph{liftable}, i.e., solvable in polynomial time with respect
+to the size(s) of the domain(s)
 \citep{DBLP:conf/kr/BremenK21,DBLP:conf/nips/KazemiKBP16,DBLP:conf/lics/KuusistoL18,DBLP:journals/jair/Kuzelka21}.
 Much of the researchers' attention was devoted to developing efficient solutions
 to formulas with up to two variables
@@ -138,7 +174,7 @@ search for a tractable solution always terminates.
 
 In this work, we show how new tractable solutions can be found by dispensing
 with these restrictions. With additional compilation rules and an algorithm for
-checking whether a `recursive call' is possible, ForcLift
+checking whether a `recursive call' is possible, \textsc{ForcLift}
 \citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be able to construct
 recursive functions that efficiently solve counting problems that used to be
 beyond its reach. The main conceptual difference from the original algorithm is
@@ -205,26 +241,13 @@ compared to the broader goal of expanding the capabilities of (W)FOMC to new
 classes of instances.
 
 %% \begin{itemize}
-           %%      \item open questions:
-           %%            \begin{itemize}
-           %%      \item what kind of sequences are computable in this way?
-           %%      \item would using a different logic extend the capabilities
-           %%            of FOMC even further?
-           %%    \end{itemize}
-           %%    \end{itemize}
-
-\subsection{Notes}
-
-In a way, we're dividing the idea of domain recursion between the IDR and the
-Ref nodes, thus also generalising it.
-
-[Insert motivation for smoothing from Section 3.4. of the ForcLift paper.]
-Originally, smoothing was (and still is) a two-step process. First, atoms that
-are still accounted for in the circuit are propagated upwards. Then, at vertices
-of certain types, missing atoms are detected and additional sinks are created to
-account for them. If left unchanged, the first step of this process would result
-in an infinite loop whenever a cycle is encountered. \Cref{alg:smoothing}
-outlines how the first step can be adapted to an arbitrary directed graph.
+%%   \item open questions:
+%%   \begin{itemize}
+%%     \item what kind of sequences are computable in this way?
+%%     \item would using a different logic extend the capabilities
+%%     of FOMC even further?
+%%   \end{itemize}
+%% \end{itemize}
 
 \section{Preliminaries}
 
@@ -333,13 +356,14 @@ Most of the definitions here are adaptations/formalisations of
   and $b$ is either a variable or a constant.
 \end{definition}
 
-\todo[inline]{NOTE: My definition of a constraint is more restrictive than the
-  original (e.g., in the thesis).}
+Our definition of a constraint is stricter than that of
+\citet{DBLP:conf/ijcai/BroeckTMDR11}. In particular, the mapping from variables
+to domains is moved to the definition of a clause (\cref{def:clause}).
 
 \todo[inline]{V: It might be worth emphasising that you are introducing new
   notation in new concepts to provide a metatheory to the existing literature on
   listed reasoning.}
-\begin{definition}
+\begin{definition} \label{def:clause}
   A \emph{clause} is a triple $c = (L, C, \delta_c)$, where $L$ is a set of
   literals, $C$ is a set of constraints, and $\delta_c$ is a function that maps
   all variables in $c$ to their domains such that (s.t.) if $(x, y) \in C$ for
@@ -393,18 +417,18 @@ $L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
 \paragraph{From circuits to graphs.}
 A \emph{first-order deterministic decomposable negation normal form
   computational graph} (FCG) is a (weakly connected) directed graph with a
-single source, vertex labels, and ordered outgoing edges.\footnote{Note that
+single source, node labels, and ordered outgoing edges.\footnote{Note that
   imposing an ordering on outgoing edges is just a limited version of edge
   labelling.} We denote an FCG as $G = (V, s, N^+, \tau)$, where $V$ is the set
-of vertices, and $s \in V$ is the unique source. Also, $N^+$ is the direct
-successor function that maps each vertex in $V$ to a \emph{list} that contains
-other vertices in $V$.
+of nodes, and $s \in V$ is the unique source. Also, $N^+$ is the direct
+successor function that maps each node in $V$ to a \emph{list} that contains
+other nodes in $V$.
 
 \paragraph{Node labels.}
-Vertex labels consist of two parts: the \emph{type} and the \emph{parameters}.
+Node labels consist of two parts: the \emph{type} and the \emph{parameters}.
 To avoid clutter, we leave the parameters implicit and let $\tau$ denote the
-vertex-labelling function that maps each vertex in $V$ to its type. For each
-vertex $v \in V$, the length of list $N^+(v)$ (i.e., the out-degree of $v$) is
+node-labelling function that maps each node in $V$ to its type. For each
+node $v \in V$, the length of list $N^+(v)$ (i.e., the out-degree of $v$) is
 determined by its type $\tau(v)$.
 
 \paragraph{Node types.}
@@ -450,7 +474,7 @@ When drawing FCGs:
   \item and irrelevant labels and/or parameters are omitted.
 \end{itemize}
 For example, the FCG in \cref{fig:examplefcg} has twelve nodes. The source
-vertex has out-degree 1 (i.e., $|N^+(s)| = 1$), label
+node has out-degree 1 (i.e., $|N^+(s)| = 1$), label
 $\GDR_{a \gets a \setminus \{\, x \,\}}$, and type $\GDR$ (i.e.,
 $\tau(s) = \GDR$).
 
@@ -461,7 +485,7 @@ $p$) and $\star$'s as all of its direct successors. For instance, as an FCG,
 $\star$ denotes
 $(\{\, s \,\}, s, \{\, s \mapsto \langle\rangle \,\}, \{\, s \mapsto \star \,\})$,
 i.e., an FCG with just one node of type $\star$ and no edges. We also write
-$T_p(v)$ for an FCG with two vertices and an edge between them (and no edges
+$T_p(v)$ for an FCG with two nodes and an edge between them (and no edges
 incident with $\star$). Here, $v$ is the target of the edge, and $T_p$ is the
 label of the source.
 
@@ -536,7 +560,7 @@ this subcircuit, one would draw an edge that creates an undirected (but not a
 directed) cycle (see \cref{fig:before}). Now, to facilitate recursion, we extend
 the caching scheme to include formulas that have been encountered but not fully
 compiled yet. Hence, the same procedure can now create directed cycles in the
-graph. Formally, we define a \emph{cache} to be a map from integers (e.g., hash
+FCG\@. Formally, we define a \emph{cache} to be a map from integers (e.g., hash
 codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and
 $v$ is an FCG node.
 
@@ -786,7 +810,7 @@ is as in \cref{example:first}, then
   \KwIn{formula $\phi$, cache $C$}
   \KwOut{a set of chips}
 
-  \ForAll{pairs of formulas and vertices $(\psi, v) \in C(\#\phi)$}{
+  \ForAll{pairs of formulas and nodes $(\psi, v) \in C(\#\phi)$}{
     $\rho \gets \identifyRecursion{$\phi$, $\psi$}$\;
     \lIf{$\rho \ne {\normalfont \texttt{null}}$}{\Return{$\{\, (\Reff_\rho(v), \langle\rangle) \,\}$}}
   }
@@ -1134,7 +1158,7 @@ formatted as a state. Function \texttt{applyGreedyRulesToFormulas} takes a state
 and updates it by running \texttt{applyGreedyRules} on all formulas in $L$ and
 incorporating the resulting chips as direct successors of the source node $s$.
 Hence, we assume that the input FCG (which comes directly from applying a single
-greedy rule) has just one non-$\star$ vertex, $s$, and $N^+(s)$ contains exactly
+greedy rule) has just one non-$\star$ node, $s$, and $N^+(s)$ contains exactly
 $|L|$ $\star$'s.
 
 % If the chip is complete, return the state as-is.
