@@ -53,7 +53,7 @@
   \item learning MLNs \citep{DBLP:journals/ml/HaarenBMD16}
 \end{enumerate}
 
-% In a way, we're dividing the idea of domain recursion between the IDR and the
+% In a way, we're dividing the idea of domain recursion between the GDR and the
 % Ref nodes, thus also generalising it.
 
 \todo[inline,caption={}]{
@@ -72,6 +72,16 @@
     \item In the introduction, make sure to mention that our focus is unweighted
           counting, although everything should work with weights as well.
     \item NOTE: Alchemy is both exact and approximate.
+    \item Explain
+          \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}
+          \begin{itemize}
+            \item two parts: compilation and inference (see the slide about
+                  workflow: before and after).
+            \item \textsc{Crane/ForcLift} works by always having a formula as
+                  input and adding nodes to the circuit/FCG that constitute the
+                  solution the that formula.
+          \end{itemize}
+    \item Minimise the number of references to the \textsc{ForcLift} paper.
   \end{itemize}
 }
 
@@ -251,139 +261,50 @@ classes of instances.
 
 \section{Preliminaries}
 
-\subsection{First-Order Logic}
+In this section, we describe our format for FOMC instances, which is heavily
+based on the format used internally by \textsc{ForcLift}, some aspects of which
+are described in the corresponding paper \citep{DBLP:conf/ijcai/BroeckTMDR11}.
+\textsc{ForcLift} is able to translate sentences in a variation of function-free
+FOL with equality to this internal format.
 
-In this section, we describe a variation of function-free FOL with
-equality. For a more complete exposition of FOL, see the book by
-\citet{DBLP:books/daglib/0023546}.
+An \emph{atom} is $p(t_1, \dots, t_n)$ for some predicate $p$ and terms
+$t_{1}, \dots, t_{n}$. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $p$. A
+\emph{term} is either a constant or a variable. A \emph{literal} is either an
+atom or the negation of an atom (denoted by $\neg p(t_1, \dots, t_n)$). Let
+$\mathcal{D}$ be the set of all domains; note that this set expands during
+compilation.
 
-In FOL, an \emph{atom} (i.e., an atomic formula) is either
-$t_1 = t_2$ or $P(t_1, \dots, t_n)$ for some predicate $P$ and terms
-$(t_i)_{i=1}^n$. Here, $n \in \mathbb{N}_0$ is the \emph{arity} of $P$. A
-\emph{term} is either a constant or a variable (we also call terms
-\emph{arguments}). An atom is \emph{ground} if all of its terms are constants.
-
-A \emph{formula} is a well-formed expression that connects atoms using the
-previously described logical operators as well as universal
-($\forall x \in D. \phi$) and existential ($\exists x \in D. \phi$) quantifiers.
-Here, $x$ is a variable, $D$ is a domain, and $\phi$ is a formula. A variable
-occurrence is \emph{bound} if it is within the scope of a quantifier for that
-variable, otherwise it is \emph{free}. A formula is a \emph{sentence} if all of
-its variable occurrences are bound.\footnote{In the rest of this chapter, all
-  formulas in FOL are assumed to be sentences.}
-
-\subsubsection{How to Interpret a Sentence}
-
-Let $\phi$ be a sentence. Since each variable in $\phi$ is introduced by a
-quantifier, each variable is linked to a unique domain. As is done implicitly in
-previous work \citep{DBLP:phd/basesearch/VandenBroeck13}, we make the following
-assumption.
-
-\begin{assumption}
-  Each constant can be mapped to a domain, and each $n$-ary predicate can be
-  mapped to a sequence of $n$ domains such that:
-  \begin{enumerate}
-    \item ...
-    \item ...
-  \end{enumerate}
-\end{assumption}
-
-First, we assume that each $n$-ary predicate can be associated with a sequence
-of $n$ domains, one for each of its terms. Second, we assume that each constant
-can be similarly linked to a unique domain. Third, we assume that equality is
-only checked between terms that have the same domain.
-
-\todo[inline]{Describe this more formally. Maybe just two rules: whenever two
-  terms are compared, they have the same domain, the domain of a term is always
-  the same as the $k$-th domain of the predicate.}
-
-\begin{itemize}
-  \item Interpretation
-        \begin{itemize}
-          \item domains as sets
-          \item constants as specific elements of domains (different constant
-                names $\implies$ different elements). If the domain is not big
-                enough, then the formula is unsat.)
-          \item variables (indicated during quantification)
-          \item Variables are always uppercase, constants are always lowercase.
-          \item predicates are interpreted as relations
-        \end{itemize}
-  \item models are defined very differently: all combinations of relations that
-        satisfy the sentence.
-  \item (multiple) (finite) domains (of discourse). This makes, e.g.,
-        satisfiability decidable and a FO formula can always be expanded to a
-        propositional one.
-\end{itemize}
-
-More on FOL: \citep{DBLP:books/daglib/0023546}. The MLN paper also has a
-description.
-
-\subsection{Everything Else}
-
-\paragraph{Things I might need to explain.}
-\begin{itemize}
-  \item atom, (positive/negative) literal, constant, predicate, variable,
-        clause, unit clause, subformula
-  \item \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}
-  \begin{itemize}
-  \item two parts: compilation and inference (see the slide about workflow:
-        before and after).
-  \item \textsc{Crane/ForcLift} works by always having a formula as input and
-        adding nodes to the circuit/FCG that constitute the solution the that
-        formula.
-  \end{itemize}
-\end{itemize}
-
-\paragraph{Notation.}
-\begin{itemize}
-  \item We write $\to$ for functions, $\pfun$ for partial functions,
-        $\twoheadrightarrowtail$ for bijections, and $\hookrightarrow$ for set
-        inclusion. Let $\id$ denote the identity function (on any domain). For
-        any function $f$, let $\Imm f$ be the image of $f$.
-\end{itemize}
-
-Most of the definitions here are adaptations/formalisations of
-\citep{DBLP:conf/ijcai/BroeckTMDR11} and the corresponding code.
-
-\begin{definition}
-  A \emph{domain} is a symbol for a finite set.\footnote{In the context of
-    functions, the domain of a function $f$ retains its usual meaning and is
-    denoted $\dom(f)$.}
-\end{definition}
-
-\begin{definition}
+\begin{definition}[Constraint]\label{def:constraint}
   An \emph{(inequality) constraint} is a pair $(a, b)$, where $a$ is a variable,
   and $b$ is either a variable or a constant.
 \end{definition}
 
-Our definition of a constraint is stricter than that of
-\citet{DBLP:conf/ijcai/BroeckTMDR11}. In particular, the mapping from variables
-to domains is moved to the definition of a clause (\cref{def:clause}).
-
-\todo[inline]{V: It might be worth emphasising that you are introducing new
-  notation in new concepts to provide a metatheory to the existing literature on
-  listed reasoning.}
-\begin{definition} \label{def:clause}
-  A \emph{clause} is a triple $c = (L, C, \delta_c)$, where $L$ is a set of
-  literals, $C$ is a set of constraints, and $\delta_c$ is a function that maps
-  all variables in $c$ to their domains such that (s.t.) if $(x, y) \in C$ for
-  some variables $x$ and $y$, then $\delta_c(x) = \delta_c(y)$. Note that for
-  convenience sometimes we write $\delta_c$ for the domain map of $c$ without
-  unpacking $c$ into its three constituents.
-
-  Also, let $\Vars$ be a function that maps clauses and sets of literals and
-  inequalities to the set of variables contained within. In particular,
-  $\Vars(c) \coloneqq \Vars(L) \cup \Vars(C)$.
+\begin{definition}[Clause]\label{def:clause}
+  A \emph{clause}\footnote{\citet{DBLP:conf/ijcai/BroeckTMDR11} refer to clauses
+    as c-clauses.} is a triple $c = (L, C, \delta_c)$, where $L$ is a set of
+  literals, $C$ is a set of constraints, and $\delta_c$ is the domain map of
+  $c$. Let $\Vars$ be the function that maps clauses and sets of either literals
+  or constraints to the set of variables contained within. In particular,
+  $\Vars(c) \coloneqq \Vars(L) \cup \Vars(C)$. \emph{Domain map}
+  $\delta_{c}\colon \Vars(c) \to \mathcal{D}$ is a function that maps all
+  variables in $c$ to their domains such that (s.t.) if $(X, Y) \in C$ for some
+  variables $X$ and $Y$, then $\delta_c(X) = \delta_c(Y)$. For convenience, we
+  sometimes write $\delta_c$ for the domain map of $c$ without unpacking $c$
+  into its three constituents.
 \end{definition}
 
-A \emph{formula} is a set of clauses. All variables in a clause are implicitly
-universally quantified (but note that variables are never shared among clauses),
-and all clauses in a formula are implicitly linked by conjunction. This way, one
-can read formulas as defined here as sentences in FOL.
+Similarly to variables in \cref{def:clause}, all constants are (implicitly)
+mapped to domains, and each $n$-ary predicate is implicitly mapped to a sequence
+of $n$ domains.
 
-\todo[inline]{Note: we will reuse this several times.}
-\begin{example} \label{example:first} Let $\phi \coloneqq \{\, c_1, c_2 \,\}$ be
-  a formula, where
+\begin{definition}[Formula]\label{def:formula}
+  A \emph{formula} (called a c-theory by \citet{DBLP:conf/ijcai/BroeckTMDR11})
+  is a set of clauses such that all constraints and atoms `type check' with
+  respect to domains.
+\end{definition}
+
+\begin{example}\label{example:first}
+  Let $\phi \coloneqq \{\, c_1, c_2 \,\}$ be a formula, where
   \[
     c_1 \coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}),
   \]
@@ -391,20 +312,59 @@ can read formulas as defined here as sentences in FOL.
   \[
     c_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}),
   \]
-  for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then
-  in FOL $\phi$ could be read as
-  \begin{align*}
-    (\forall X \in a. \forall Y \in b. \forall Z \in b. Y \ne Z &\implies \neg p(X, Y) \lor \neg p(X, Z)) \land \\
-    (\forall X \in a. \forall Y \in b. \forall Z \in a. X \ne Z &\implies \neg p(X, Y) \lor \neg p(Z, Y)).
-  \end{align*}
+  for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then $\Vars(\{\, (Y, Z) \,\}) = \{\, Y, Z \,\}$ and $\Vars(c_{1}) = \Vars(c_{2}) = \{\, X, Y, Z \,\}$. Based on the domain maps of $c_{1}$ and $c_{2}$, we can infer that $p$ is associated with domains $a$ and $b$ (in that order). All variables (in both clauses) that occur as the first argument to $p$ are in $a$, and likewise all variables that occur as the second argument to $p$ are in $b$. Therefore, $\phi$ `type checks' as a valid formula.
 \end{example}
+
+There are two major differences between
+\cref{def:constraint,def:clause,def:formula} and the corresponding concepts
+introduced by \citet{DBLP:conf/ijcai/BroeckTMDR11}. First, we decouple
+variable-to-domain assignments from constraints and move them to a separate
+function $\delta_{c}$ in \cref{def:clause}. Formalising these assignments as a
+function unveils the (previously implicit) assumption that each variable must be
+assigned to a domain. Second, while \citet{DBLP:conf/ijcai/BroeckTMDR11} allow
+for equality constraints and constraints of the form $X \not\in d$ for some
+variable $X$ and domain $d$, we exclude such constraints simply because they are
+not needed.
+
+One can read a formula as in \cref{def:formula} as a sentence in a FOL\@.
+All variables in a
+clause are implicitly universally quantified (but note that variables are never
+shared among clauses), and all clauses in a formula are implicitly linked by
+conjunction. Thus, we can read formula $\phi$ from \cref{example:first} as
+\begin{align*}
+  (\forall X \in a\text{. }\forall Y \in b\text{. }\forall Z \in b\text{. }Y \ne Z &\implies \neg p(X, Y) \lor \neg p(X, Z)) \land \\
+  (\forall X \in a\text{. }\forall Y \in b\text{. }\forall Z \in a\text{. }X \ne Z &\implies \neg p(X, Y) \lor \neg p(Z, Y)).
+\end{align*}
+
+Once domains are mapped to finite sets and constants to specific (and different)
+elements in those sets, a formula can be viewed as a set of conditions that the
+predicates (interpreted as relations) have to satisfy.\footnote{If some domain
+  is not big enough to contain all of its constants, the formula is
+  unsatisfiable.} Hence, FOMC is the problem of counting the number of
+combinations of relations that satisfy these conditions.
+
+\begin{example}
+  Let $\phi$ be as in \cref{example:first} and let $|a| = |b| = 2$. There are
+  $2^{2 \times 2} = 16$ possible relations between $a$ and $b$. Let us count how
+  many of them satisfy the conditions imposed on predicate $p$. The empty
+  relation does. All four relations of cardinality one do too. Finally, there
+  are two relations of cardinality two that satisfy the conditions as well.
+  Thus, the FOMC of $\phi$ (when $|a| = |b| = 2$) is seven. Incidentally, the
+  FOMC of $\phi$ counts partial injections.
+\end{example}
+
+\paragraph{Notation for functions.}
+We write $\to$ for functions, $\pfun$ for partial functions,
+$\twoheadrightarrowtail$ for bijections, and $\hookrightarrow$ for set
+inclusion. Let $\id$ denote the identity function (on any domain). For any
+function $f$, let $\dom(f)$ be its domain, and $\Imm f$ be its image.
 
 \paragraph{Notation for lists.}
 Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list
 with one element $x$, respectively. We write $\in$ for (in-order) enumeration,
 $\mdoubleplus$ for concatenation, and $|\cdot|$ for the length of a list. Let
-$h : t$ denote a list with first element (a.k.a. head) $h$ and remaining list
-(a.k.a. tail) $t$. We also use list comprehensions written equivalently to set
+$h : t$ denote a list with first element (i.e., head) $h$ and remaining list
+(i.e., tail) $t$. We also use list comprehensions written equivalently to set
 comprehensions. For example, let $L \coloneqq \langle 1 \rangle$ and
 $M \coloneqq \langle 2 \rangle$ be two lists. Then
 $M = \langle 2x \mid x \in L \rangle$,
@@ -577,9 +537,6 @@ applied to the input formula. While \textsc{ForcLift}
 attempt to not miss a solution, \textsc{Crane} returns them all. In particular,
 if a rule returns an empty set, then that rule is not applicable to the formula,
 and the algorithm continues with the next rule.
-
-Let $\mathcal{D}$ be the set of all domains. Note that this set expands during
-the compilation.
 
 \subsubsection{Generalised Domain Recursion}\label{sec:dr}
 
@@ -1287,8 +1244,8 @@ functions can be described using FOL\@. \textsc{ForcLift} then translates these
 descriptions to formulas as we defined them back in ??.
 
 % Describe what kind of instances we're investigating
-Let $p$ be a predicate of arity two s.t.\ the first argument is associated with
-domain $a$, and the second argument is associated with domain $b$ (i.e., $p$
+Let $p$ be a predicate of arity two s.t.\ its first term is associated with
+domain $a$, and the second term is associated with domain $b$ (i.e., $p$
 represents a relation between sets $a$ and $b$). Then, to restrict all relations
 representable by $p$ to just functions from $a$ to $b$, in FOL one
 might write
@@ -1455,8 +1412,11 @@ and $j = 0, \dots, n$.
         parameter.)
   \item Observation: -1 (and powers thereof) appear in every solution to a
         formula if and only if the formula has existential quantification.
-        That's not very smart! By classifying unit propagation as a greedy rule,
-        these powers are pushed to the outer layers of the solution (i.e.,
-        `early' in the FCG). It's likely that removing this restriction would
-        enable the algorithm to find asymptotically optimal solutions.
+        That's not very smart!
 \end{itemize}
+
+% By classifying unit propagation (but we don't mention unit propagation by
+% name) as a greedy rule, these powers are pushed to the outer layers of the
+% solution (i.e., `early' in the FCG). It's likely that removing this
+% restriction would enable the algorithm to find asymptotically optimal
+% solutions.
