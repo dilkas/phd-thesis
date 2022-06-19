@@ -62,9 +62,6 @@
     \item Introduce Crane and explain that it's modus operandi is very
           different.
     \item Introduce the acronym for GDR
-    \item Explain what we mean by $X \in d$ and $x \in d$ for domain $d$,
-          variable $X$, and constant $x$. Then use this notation instead of
-          using phrases such as `associated with'.
     \item Do I ever interpret a clause as a sentence? I shouldn't do that:
           sometimes their role is different.
     \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
@@ -82,6 +79,8 @@
                   solution the that formula.
           \end{itemize}
     \item Minimise the number of references to the \textsc{ForcLift} paper.
+    \item Make sure I'm using the word `full' (also `partial') everywhere and
+          that I'm not using the word `solution' instead of `chip'.
   \end{itemize}
 }
 
@@ -159,8 +158,7 @@ search for a tractable solution always terminates.
         {node[draw,ellipse] (a) {$\phi(n)$}} } ; \draw[-{Latex[length=2mm]}] (a)
       -- (b);
     \end{tikzpicture}
-    \caption{Before}
-    \label{fig:before}
+    \caption{Before}\label{fig:before}
   \end{subfigure}
   \begin{subfigure}{0.49\textwidth}
     \centering
@@ -174,8 +172,7 @@ search for a tractable solution always terminates.
       (d); \draw[-{Latex[length=2mm]}] (c) to [bend left=45] node
       [midway,xshift=-30] () {$n \mapsto n-1$} (a);
     \end{tikzpicture}
-    \caption{After}
-    \label{fig:after}
+    \caption{After}\label{fig:after}
   \end{subfigure}
   \caption{Non-tree-like edges in first-order knowledge compilation}
 \end{figure}
@@ -295,7 +292,9 @@ compilation.
 
 Similarly to variables in \cref{def:clause}, all constants are (implicitly)
 mapped to domains, and each $n$-ary predicate is implicitly mapped to a sequence
-of $n$ domains.
+of $n$ domains. For constant $x$, predicate $p$, and domains $a$ and $b$, we
+write, e.g., $x \in a$ and $p \in a \times b$ to denote that $x$ is associated
+with $a$, and $p$ is associated with $a$ and $b$ (in that order).
 
 \begin{definition}[Formula]\label{def:formula}
   A \emph{formula} (called a c-theory by \citet{DBLP:conf/ijcai/BroeckTMDR11})
@@ -312,7 +311,13 @@ of $n$ domains.
   \[
     c_2 \coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}),
   \]
-  for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then $\Vars(\{\, (Y, Z) \,\}) = \{\, Y, Z \,\}$ and $\Vars(c_{1}) = \Vars(c_{2}) = \{\, X, Y, Z \,\}$. Based on the domain maps of $c_{1}$ and $c_{2}$, we can infer that $p$ is associated with domains $a$ and $b$ (in that order). All variables (in both clauses) that occur as the first argument to $p$ are in $a$, and likewise all variables that occur as the second argument to $p$ are in $b$. Therefore, $\phi$ `type checks' as a valid formula.
+  for some predicate $p$, variables $X$, $Y$, $Z$, and domains $a$ and $b$. Then
+  $\Vars(\{\, (Y, Z) \,\}) = \{\, Y, Z \,\}$ and
+  $\Vars(c_{1}) = \Vars(c_{2}) = \{\, X, Y, Z \,\}$. Based on the domain maps of
+  $c_{1}$ and $c_{2}$, we can infer that $p \in a \times b$. All variables (in
+  both clauses) that occur as the first argument to $p$ are in $a$, and likewise
+  all variables that occur as the second argument to $p$ are in $b$. Therefore,
+  $\phi$ `type checks' as a valid formula.
 \end{example}
 
 There are two major differences between
@@ -372,9 +377,9 @@ $L \mdoubleplus M = 1 : \langle 2 \rangle$, and $|M| = 1$.
 
 \section{Methods}
 
-% Generalising Circuits to Labelled Graphs
+\todo[inline]{Write an intro to this section.}
 
-\paragraph{From circuits to graphs.}
+% From circuits to graphs.
 A \emph{first-order deterministic decomposable negation normal form
   computational graph} (FCG) is a (weakly connected) directed graph with a
 single source, node labels, and ordered outgoing edges.\footnote{Note that
@@ -474,16 +479,8 @@ label of the source.
     \caption{The underlying tree of \cref{fig:smallexample1}}\label{fig:smallexample2}
   \end{subfigure}
   \caption{An FCG and its underlying tree. The integers in blue denote the
-    pre-order traversal of the underlying tree.}
-  \label{fig:ordering}
+    pre-order traversal of the underlying tree.}\label{fig:ordering}
 \end{figure}
-
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item Make sure I'm using the word `full' (also `partial') everywhere and
-          that I'm not using the word `solution' instead of `chip'.
-  \end{itemize}
-}
 
 \paragraph{Connecting FCGs with formulas.} We introduce a structure that
 represents a solution to a FOMC problem while it is still being built. A
@@ -610,7 +607,7 @@ search algorithm running forever at the expense of more stringent preconditions.
   $S \gets \emptyset$\;
   \ForEach{domain $d \in \mathcal{D}$ s.t.\ there is a $c \in \phi$ and a $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$\label{line:condition}}{
     $\phi' \gets \emptyset$\;
-    $x \gets \text{a new constant associated with domain } d$\;
+    $x \gets \text{a new constant in domain } d$\;
     \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
       $V \gets \{\, v \in \Vars(L) \mid \delta(v) = d \,\}$\;
       \ForEach{subset $W \subseteq V$ s.t. $W^2 \cap C = \emptyset$ {\bf and} $W \cap \{\, v \in \Vars(C) \mid (v, y) \in C \text{ for some constant} y \,\} = \emptyset$\label{line:conditions}}{
@@ -935,16 +932,13 @@ $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
 \subsection{Compilation as Search}
 
-\todo[inline]{Update the text to use the term `chip' where appropriate.}
-
 % intro
-Given a formula $\phi$, we want to find an FCG (or a circuit) that encodes a way
-to compute the model count of $\phi$. \textsc{ForcLift}
-\citep{DBLP:conf/ijcai/BroeckTMDR11} tackles this search problem using a greedy
-algorithm.\footnote{The algorithm is not described in any paper on
-  \textsc{ForcLift} but can be found in its source code.} In this section, we
-describe a new search algorithm---a combination of greedy and breadth-first
-search.
+Given a formula $\phi$, we want to find an FCG that encodes a way to compute the
+model count of $\phi$. While \textsc{ForcLift}
+\citep{DBLP:conf/ijcai/BroeckTMDR11} uses greedy search\footnote{The algorithm
+  is not described in any paper on \textsc{ForcLift} but can be found in its
+  source code.}, \textsc{Crane} has a new search algorithm---a combination of
+greedy and breadth-first search.
 
 % greedy and non-greedy rules
 We split all compilation rules into \emph{greedy} and \emph{non-greedy}. Greedy
@@ -956,11 +950,11 @@ FCG, and those that split the formula into parts that can be solved
 independently. The constraint removal rule described in \cref{sec:cr} is greedy.
 On the other hand, non-greedy rules signify uncertain choices that we may want
 to retract. They also correspond to edges in the implicit search tree; thus, the
-first solution found by the search algorithm is always the one with fewest
-applications of non-greedy rules. These rules include the $\GDR$ and $\Reff$
-rules described in \cref{sec:dr,sec:ref}, respectively, and some rules from
-previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting,
-inclusion-exclusion, independent partial grounding, and shattering.
+first solution found by the search algorithm always has the fewest applications
+of non-greedy rules. These rules include the $\GDR$ and $\Reff$ rules described
+in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work
+\citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion,
+independent partial grounding, and shattering.
 
 % states and actions
 Search can be conceptualised as traversing a directed graph composed of states
@@ -1069,18 +1063,22 @@ The search algorithm is described as
 \cref{alg:search,alg:applyallrules,alg:apply,alg:helpers}, with the main
 procedure in \cref{alg:search}. Since for most formulas we are able to find
 several FCGs (of various complexities), the algorithm maintains set $S$ of found
-solutions. We begin by applying all suitable greedy rules on \cref{line:greedy}.
-If greedy rules are enough to find a full FCG, the algorithm stops. Otherwise,
-\cref{line:q1,line:q2} set up a queue for breadth-first search. The algorithm
-continues to take a state from the queue, call \texttt{applyAllRules} on it, and
-place the resulting states back on the queue while filtering out full FCGs and
-adding them to $S$ instead. Since GDR can be applied to almost all formulas, the
-search is infinite. In our implementation, we stop searching when
+solutions, i.e., complete FCGs. We begin by applying all suitable greedy rules
+on \cref{line:greedy}. If greedy rules are enough to find a full FCG, the
+algorithm stops. Otherwise, \cref{line:q1,line:q2} set up a queue for
+breadth-first search. The algorithm continues to take a state from the queue,
+call \texttt{applyAllRules} on it, and place the resulting states back on the
+queue while filtering out full FCGs and adding them to $S$ instead. Since GDR
+can be applied to almost all formulas, the search is infinite. In our
+implementation, we stop searching when one of the following conditions is
+satisfied:
 \begin{itemize}
   \item the desired number of solutions is found,
   \item the search tree reaches a certain height,
   \item or the algorithm times out.
 \end{itemize}
+
+\todo[inline]{Aren't I supposed to get rid of \texttt{null}s?}
 
 Function \texttt{applyAllRules} (see \cref{alg:applyallrules}) takes a state and
 generates a sequence of new states created by applying one non-greedy rule
@@ -1150,44 +1148,41 @@ When \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} compiles a WFOMC
 instance into a circuit, each gate type encodes an arithmetic operation on its
 inputs and parameters. These operations are then immediately performed while
 traversing the circuit and using domain sizes and weights as the initial inputs.
-With \textsc{Crane}, the evaluation of an FCG is a collection of functions. Each
-function has (some) domain sizes as parameters and may contain recursive calls
-to other functions, including itself. While there may be any number of
+With \textsc{Crane}, the interpretation of an FCG is a collection of functions.
+Each function has (some) domain sizes as parameters and may contain recursive
+calls to other functions, including itself. While there may be any number of
 subsidiary functions, there is always one main function that can be called with
 the sizes of the domains of the input formula as arguments. Henceforth, this
 function is always called $f$.
 
 \todo[inline,caption={}]{
   \begin{itemize}
-    \item Evaluation vs interpretation: fix terminology.
-    \item Refer to previous work for the evaluations/interpretations of other
-          node types and for the definition of groundings. Note that my clause
-          is their c-expression or something like that.
+    \item Refer to previous work for the interpretations of other
+          node types and for the definition of groundings.
     \item Finish writing this paragraph. Here we provide an informal
           description... Formalising this into an algorithm is left for future
-          work. We shall see a more detailed example of evaluation in
+          work.
           \cref{sec:results}.
           \begin{itemize}
             \item The source node defines $f$.
-            \item $\Reff$ evaluates to a function call. The target of the
+            \item $\Reff$ is interpreted as a function call. The target of the
                   outgoing edge then must introduce a new function, the
                   parameters of which are the sizes of all domains reachable
                   from it.
-            \item $\GDR$ node does not have a particular evaluation. However, it
-                  is usually the direct successor of a $\Reff$ node.
-            \item $\CR$ nodes have no particular evaluation.
-            \item Obviously, $\star$ has no evaluation because incomplete FCGs
-                  are not meant to be evaluated.
+            \item $\GDR$ node does not contribute anything to the definitions of
+                  functions.
+            \item Same with $\CR$ nodes.
+            \item Obviously, $\star$ has no interpretation because incomplete
+                  FCGs are not meant to be interpreted.
           \end{itemize}
     \item Double check that I didn't mix up the $m$s and $n$s, i.e., be
           consistent with the next section even if both variations are correct.
+    \item Do I ever show the input formula? Maybe rephrase this to count partial
+          injections instead?
   \end{itemize}
 }
 
-\todo[inline]{Update the example below to the new version of the figure. And
-  simplify the final expression. And explain the importance of simplification.}
-
-\begin{example}\label{example:evaluation}
+\begin{example}\label{example:interpretation}
   Let us use the FCG from \cref{fig:examplefcg} as an example. The input formula
   has two domains: $a$ and $b$. Thus, the interpretation of the FCG is a
   function
@@ -1197,35 +1192,29 @@ function is always called $f$.
   $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \square$, where $\square$ is the
   interpretation of the remaining subgraph, and $l$ iterates over all possible
   sizes of $b^{\top}$. Nodes labelled $\land$ correspond to multiplication.
-  Therefore, we now know that
-  $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \clubsuit \times \spadesuit$, where
-  $\clubsuit$ is the interpretation of the direct successor with label 1, and
-  $\spadesuit$ is the interpretation of the remaining subgraph. Since our focus
-  is on \emph{unweighted} model counting, all unit nodes (i.e., nodes with label
-  1) are interpreted simply as one. Hence, we can fast-forward our construction
-  of $f$ to
-  $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} 1 \times 1 \times 1 \times \diamondsuit \times \heartsuit$,
+  Therefore,
+  $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \diamondsuit \times \heartsuit$,
   where $\diamondsuit$ is the interpretation of the contradiction (i.e., $\bot$)
   node, and $\heartsuit$ is the interpretation of the $\Reff$ node.
 
   A contradiction node with clause $c$ as a parameter is interpreted as one if
   the clause has groundings and zero otherwise. In this case,
   $c = (\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})$,
-  which can be read as $\forall X, Y \in b^{\top}\text{,
-  }X \ne Y \implies \bot$, i.e., $\forall X, Y \in b^{\top}\text{, }X = Y$. This
+  which can be read as $\forall X, Y \in b^{\top}\text{, }X \ne Y \implies \bot$,
+  i.e., $\forall X, Y \in b^{\top}\text{, }X = Y$. This
   latter sentence is true if and only if $|b^{\top}| < 2$. Therefore, we
   can use the Iverson bracket notation to write $\diamondsuit = [l < 2]$.
 
   It remains to interpret the $\Reff$ node. Parameter
-  $\{\, a \mapsto a', b \mapsto b^\bot \,\}$ tells us that the evaluation of the
-  $\Reff$ node should be the same as that of the source node, but with domains
-  $a$ and $b$ replaced with $a'$ and $b^{\bot}$, respectively. Domain $a'$ was
-  created by a constraint removal rule applied on $a$, so $|a'| = m - 1$. Now
-  $b^{\bot} = b \setminus b^{\top}$, and $|b^{\top}| = l$, so
-  $|b^{\bot}| = n - l$. Thus, the evaluation of the $\Reff$ node is a recursive
-  call to $f(m - 1, n - l)$. Therefore,
+  $\{\, a \mapsto a', b \mapsto b^\bot \,\}$ tells us that the interpretation of
+  the $\Reff$ node should be the same as that of the source node, but with
+  domains $a$ and $b$ replaced with $a'$ and $b^{\bot}$, respectively. Domain
+  $a'$ was created by a constraint removal rule applied on $a$, so
+  $|a'| = m - 1$. Now $b^{\bot} = b \setminus b^{\top}$, and $|b^{\top}| = l$,
+  so $|b^{\bot}| = n - l$. Thus, the interpretation of the $\Reff$ node is a
+  recursive call to $f(m - 1, n - l)$. Therefore,
   \begin{equation}\label{eq:solution}
-    f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} [l < 2] f(m-1, n-l).
+    f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} [l < 2] f(m-1, n-l) = f(m-1, n) + n f(m-1, n-1).
   \end{equation}
   In order to use this recursive function to compute the model count of the
   input formula for any domain sizes, one just needs to find the base cases
@@ -1244,11 +1233,8 @@ functions can be described using FOL\@. \textsc{ForcLift} then translates these
 descriptions to formulas as we defined them back in ??.
 
 % Describe what kind of instances we're investigating
-Let $p$ be a predicate of arity two s.t.\ its first term is associated with
-domain $a$, and the second term is associated with domain $b$ (i.e., $p$
-represents a relation between sets $a$ and $b$). Then, to restrict all relations
-representable by $p$ to just functions from $a$ to $b$, in FOL one
-might write
+Let $p \in a \times b$ be a predicate. Then, to restrict all relations
+representable by $p$ to just functions from $a$ to $b$, in FOL one might write
 \begin{gather}
   \forall X \in a. \forall Y \in b. \forall Z \in b. p(X, Y) \land p(X, Z) \implies Y = Z\nonumber \\
   \forall X \in a. \exists Y \in b. p(X, Y). \label{eq:def2}
@@ -1307,7 +1293,7 @@ we assume that:
   \caption{The worst-case complexity of counting various types of functions.
     Here, $m$ is the size of domain $a$, and $n$ is the size of domain $b$. All
     asymptotic complexities are in $\Theta(\cdot)$. A hyphen means that no
-    solution was found.}\label{tbl:results}
+    complete solution was found.}\label{tbl:results}
 \end{table}
 
 The results are summarised in \cref{tbl:results}. The best-known asymptotic
@@ -1319,9 +1305,9 @@ However, \textsc{Crane} is also able to solve all but one instances that
 \textsc{ForcLift} fails on in at most cubic time.
 
 Let us examine the case of counting (total, non-endomorphic) injections more
-closely. The FCG from \cref{fig:examplefcg,example:evaluation} counts injections
-and is responsible for the first $mn$ entry in the table.\footnote{A very
-  similar solution works for partial injections as well.} For a complete
+closely. The FCG from \cref{fig:examplefcg,example:interpretation} counts
+injections and is responsible for the first $mn$ entry in the table.\footnote{A
+  very similar solution works for partial injections as well.} For a complete
 solution, \cref{eq:solution} must be combined with the following base cases:
 $f(0, 0) = 1$, and $f(m, 0) = 0$ for all $m > 0$. Finally, note that $f(m, n)$
 can be evaluated in $\Theta(mn)$ time (for any $m, n \in \mathbb{N}_{0}$) by a
