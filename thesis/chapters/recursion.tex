@@ -81,6 +81,8 @@
     \item Minimise the number of references to the \textsc{ForcLift} paper.
     \item Make sure I'm using the word `full' (also `partial') everywhere and
           that I'm not using the word `solution' instead of `chip'.
+    \item Introduction: explain interpretation of an FCG, i.e., what we mean by
+          `encodes' and `for'.
   \end{itemize}
 }
 
@@ -521,10 +523,6 @@ FCG\@. Formally, we define a \emph{cache} to be a map from integers (e.g., hash
 codes) to sets of pairs of the form $(\phi, v)$, where $\phi$ is a formula, and
 $v$ is an FCG node.
 
-\todo[inline]{Clearly explain what we mean by `encodes' and `for'.}
-
-\todo[inline]{Be clear about how nodes relate to formulas.}
-
 \subsection{New Compilation Rules}\label{sec:rules}
 
 A \emph{(compilation) rule} takes a formula and returns a set of chips. The
@@ -536,6 +534,19 @@ if a rule returns an empty set, then that rule is not applicable to the formula,
 and the algorithm continues with the next rule.
 
 \subsubsection{Generalised Domain Recursion}\label{sec:dr}
+% 1. Note that the total number of such possibilities is not necessarily
+% exponential: some combinations produce clearly unsatisfiable formulas that can
+% be immediately discarded.
+% 2. We can combine all of these possibilities into a single formula equivalent
+% to the original one.
+% 3. \begin{itemize}
+%   \item the formula is shattered,
+%   \item the formula has no independent subformulas,
+%   \item and there exists a root binding class.
+% \end{itemize}
+% 4. During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be
+% computed independently. Note that the WMC of $x$ is independent of the size of
+% $D$---this further simplifies the matters.
 
 \paragraph{Notation.}
 Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$
@@ -543,69 +554,42 @@ either a variable or a constant. We write $S[x/V]$ to denote $S$ with all
 occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if
   $(v, w)$ is a two-variable constraint, substituting a constant $c$ for $v$
   would result in $(c, w)$, which would have to be rewritten as $(w, c)$ to fit
-  the definition of a constraint.} \todo[inline]{Short example?}
+  the definition of a constraint.}
 
-\todo[inline,caption={}]{Feedback for the paragraph below:
-  \begin{itemize}
-    \item introduce the algo in the first sentence: The Domain recursion
-          algorithm (Van den Broeck, 2011) takes as input a formula and outputs
-          a formula, which is formed by the following process.
-    \item omit the power-of-two stuff
-    \item should not refer to intermediary formula as the resulting formula.
-          what you could do is describe the algorithms in two steps: As an
-          preliminary/intermediate step DR .... , Then you can refer to it as
-          `the intermediate step results in ....'
-    \item clarify `original rule'
-    \item explain DR before GDR
-  \end{itemize}
-}
-
-\todo[inline,caption={}]{After a description of the algorithm, compare with the
-  original \citep{DBLP:conf/nips/Broeck11}. Invite the reader to look up the
-  original paper for more details. The original rule for domain recursion by
-  \citet{DBLP:conf/nips/Broeck11} requires three conditions to be satisfied:
-  \begin{itemize}
-    \item the formula is shattered,
-    \item the formula has no independent subformulas,
-    \item and there exists a root binding class.
-  \end{itemize}
-  Domain recursion by \citet{DBLP:conf/nips/Broeck11} then splits the...
-
-  \begin{itemize}
-    \item They create three sets of clauses instead of just one. They are
-          independent and their conjunction is decomposable.
-          \begin{itemize}
-            \item the part with only variables $v$
-            \item the part with only constants $x$
-            \item the part with both constants and variables $r$
-          \end{itemize}
-    \item During evaluation, $v$ is ignored, and the WMCs of $x$ and $r$ can be
-          computed independently. Note that the WMC of $x$ is independent of the
-          size of $D$---this further simplifies the matters.
-  \end{itemize}
-}
-
-The main idea of domain recursion (both the original version by
+% Main idea
+The main idea behind domain recursion (both the original version by
 \citet{DBLP:conf/nips/Broeck11} and the one presented here) is as follows. Let
-$d \in \mathcal{D}$ be a domain. Assuming that $d \ne \emptyset$, it can be
-partitioned into a singleton set (say, $\{\, x \,\}$) and a set of cardinality
-$|d| - 1$. Then, for every variable $X$ associated with domain $d$ that occurs
-in a literal, we want to investigate two possibilities: $X = x$ and $X \ne x$.
-Note that the total number of such possibilities is not necessarily a power of
-two: some combinations produce clearly unsatisfiable formulas that can be
-immediately discarded. We can combine all of these possibilities into a single
-formula equivalent to the original one. The differences between domain recursion
-and GDR are in the preconditions for the rule to be applicable and in how the
-resulting formula (or parts thereof) are handled. The original rule ensures that
-the remaining formula can be handled efficiently and without the risk of the
-search algorithm running forever at the expense of more stringent preconditions.
+$d \in \mathcal{D}$ be a domain. Assuming that $d \ne \emptyset$, pick some
+$x \in d$. Then, for every variable $X$ associated with domain $d$ that occurs
+in a literal, consider two possibilities: $X = x$ and $X \ne x$.
+
+\begin{example}\label{example:dr}
+  Consider formula $\phi$ that consists of a single clause
+  \[
+    (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}).
+  \]
+  Then we can introduce constant $x \in a$ and rewrite $\phi$ as $\phi' = \{\, c_{1}, c_{2} \,\}$, where
+  \begin{align*}
+    c_{1} &= (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Y, Z) \,\}, \{\, Y \mapsto b, Z \mapsto b \,\}), \\
+    c_{2} &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (X, x), (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b, Z \mapsto b \,\}),
+  \end{align*}
+  and $a' = a \setminus \{\, x \,\}$.
+\end{example}
+
+% Original domain recursion
+\citet{DBLP:conf/nips/Broeck11} imposes stringent preconditions on the input
+formula to ensure that the expanded version of the formula (as in
+\cref{example:dr}) can be handled efficiently. The clauses in this expanded
+formula are then partitioned into three parts based on whether the transformation
+introduced constants or constraints or both. The aforementioned conditions
+ensure that these parts can be treated independently.
 
 \begin{algorithm}
   \caption{The compilation rule for $\GDR$ nodes}\label{alg:domainrecursion}
   \KwIn{formula $\phi$}
   \KwOut{set of chips $S$}
   $S \gets \emptyset$\;
-  \ForEach{domain $d \in \mathcal{D}$ s.t.\ there is a $c \in \phi$ and a $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$\label{line:condition}}{
+  \ForEach{domain $d \in \mathcal{D}$ s.t.\ there is $c \in \phi$ and $v \in \Vars(L_c)$ s.t. $\delta_c(v) = d$\label{line:condition}}{
     $\phi' \gets \emptyset$\;
     $x \gets \text{a new constant in domain } d$\;
     \ForEach{clause $c = (L, C, \delta) \in \phi$\label{line:forclause}}{
@@ -619,11 +603,18 @@ search algorithm running forever at the expense of more stringent preconditions.
   }
 \end{algorithm}
 
-The algorithm for GDR is summarised as \cref{alg:domainrecursion}, and it
-features only one precondition. Namely, \cref{line:condition} says that for GDR
-to be applicable on domain $d \in \mathcal{D}$, there must be at least one
-variable with domain $d$ that is featured in a literal (and not just in
-constraints). Without such variables, GDR would have no effect on the formula.
+% Description of GDR, in contrast to DR
+In contrast, GDR has only one precondition: for GDR to be applicable on domain
+$d \in \mathcal{D}$, there must be at least one variable with domain $d$ that is
+featured in a literal (and not just in constraints). Without such variables, GDR
+would have no effect on the formula. GDR is also simpler in that the expanded
+formula is left as-is to be handled by other compilation rules. Typically, after
+a few more rules are applied, a combination of $\CR$ and $\Reff$ nodes
+introduces a loop back to the $\GDR$ node, thus completing the definition of a
+recursive function. The GDR compilation rule is summarised as
+\cref{alg:domainrecursion} and explained in more detail using the example below.
+
+\todo[inline]{Connect this example to \cref{example:first}.}
 
 \begin{example}
   Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
@@ -631,11 +622,11 @@ constraints). Without such variables, GDR would have no effect on the formula.
     c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
     c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
   \end{align*}
-  While domain recursion is possible on both domains, here we illustrate how it
-  works on $a$. Having chosen a domain, the algorithm iterates over the clauses
-  of $\phi$. Suppose \cref{line:forclause} picks $c = c_1$ as the first clause.
-  Then, set $V$ is constructed to contain all variables with domain $d = a$ that
-  occur in the literals of clause $c$. In this case, $V = \{\, X \,\}$.
+  While GDR is possible on both domains, here we illustrate how it works on $a$.
+  Having chosen a domain, the algorithm iterates over the clauses of $\phi$.
+  Suppose \cref{line:forclause} picks $c = c_1$ as the first clause. Then, set
+  $V$ is constructed to contain all variables with domain $d = a$ that occur in
+  the literals of clause $c$. In this case, $V = \{\, X \,\}$.
 
   \Cref{line:conditions} iterates over all subsets $W \subseteq V$ of variables
   that can be replaced by a constant without resulting in formulas that are
