@@ -1144,28 +1144,22 @@ Each function has (some) domain sizes as parameters and may contain recursive
 calls to other functions, including itself. While there may be any number of
 subsidiary functions, there is always one main function that can be called with
 the sizes of the domains of the input formula as arguments. Henceforth, this
-function is always called $f$.
+function is always called $f$, and it is defined by the source node.
+
+The interpretation of a node is decided by its type. Here we describe the
+interpretations of new (or significantly changed) types and refer the reader to
+previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for information on other
+types. Both $\CR$ and $\GDR$ node do not contribute anything to the definitions
+of functions---the interpretation of such a node is simply the interpretation of
+its only direct successor. Obviously, $\star$ nodes also have no interpretation,
+although for a different reason: incomplete FCGs are not meant to be
+interpreted. The interpretation of a $\Reff$ node is a function call. The direct
+successor of the $\Reff$ node (say, $v$) then must introduce a function. The
+parameters of this function are the sizes of all domains used by nodes reachable
+from $v$.
 
 \todo[inline,caption={}]{
   \begin{itemize}
-    \item Refer to previous work for the interpretations of other
-          node types and for the definition of groundings.
-    \item Finish writing this paragraph. Here we provide an informal
-          description... Formalising this into an algorithm is left for future
-          work.
-          \cref{sec:results}.
-          \begin{itemize}
-            \item The source node defines $f$.
-            \item $\Reff$ is interpreted as a function call. The target of the
-                  outgoing edge then must introduce a new function, the
-                  parameters of which are the sizes of all domains reachable
-                  from it.
-            \item $\GDR$ node does not contribute anything to the definitions of
-                  functions.
-            \item Same with $\CR$ nodes.
-            \item Obviously, $\star$ has no interpretation because incomplete
-                  FCGs are not meant to be interpreted.
-          \end{itemize}
     \item Double check that I didn't mix up the $m$s and $n$s, i.e., be
           consistent with the next section even if both variations are correct.
     \item Do I ever show the input formula? Maybe rephrase this to count partial
