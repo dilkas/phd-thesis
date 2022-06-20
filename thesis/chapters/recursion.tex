@@ -19,42 +19,90 @@
 
 \section{Introduction}
 
-\paragraph{References.}
-\begin{enumerate}
-  \item \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11}
-  \item probabilistic theorem proving (Alchemy) \citep{DBLP:journals/cacm/GogateD16}
-  \item L2C \citep{DBLP:conf/kr/KazemiP16}
-  \item new liftable classes \citep{DBLP:conf/kr/BremenK21}
-  \item new liftable classes \citep{DBLP:conf/nips/KazemiKBP16}
-  \item new liftable classes \citep{DBLP:conf/lics/KuusistoL18}
-  \item new liftable classes \citep{DBLP:journals/jair/Kuzelka21}
-  \item two variable fragment \citep{DBLP:conf/uai/BremenK21}
-  \item two variable fragment (closed formula) \citep{DBLP:journals/corr/abs-2110-05992}
-  \item recursion \citep{DBLP:conf/ilp/BarvinekB0ZK21}
-  \item domain recursion and completeness \citep{DBLP:conf/nips/Broeck11}
-  \item first-order logic \citep{DBLP:books/daglib/0023546}
-  \item thesis \citep{DBLP:phd/basesearch/VandenBroeck13}
-  \item StackExchange \citep{30049}
-  \item OEIS \citep{oeis}
-  \item lifted probabilistic inference \citep{DBLP:conf/ijcai/BrazAR05}
-  \item lifted probabilistic inference \citep{DBLP:conf/uai/BrazO17}
-  \item lifted probabilistic inference \citep{DBLP:conf/aaai/KazemiP14}
-  \item lifted probabilistic inference \citep{DBLP:conf/ecai/Kersting12}
-  \item lifted probabilistic inference \citep{DBLP:conf/nips/JhaGMS10}
-  \item lifted variable elimination \citep{DBLP:conf/aistats/TaghipourFBDB13}
-  \item lifted graphical models \citep{DBLP:journals/ml/KimmigMG15}
-  \item probabilistic logic programming \citep{DBLP:journals/ml/RaedtK15}
-  \item statistical relational artificial intelligence \citep{DBLP:series/synthesis/2016Raedt}
-  \item probabilistic databases \citep{DBLP:journals/pvldb/GatterbauerS15}
-  \item probabilistic databases \citep{DBLP:journals/debu/GribkoffSB14}
-  \item complexity \citep{DBLP:conf/pods/BeameBGS15}
-  \item approximate ForcLift \citep{DBLP:conf/uai/BroeckCD12}
-  \item \textsc{ApproxMC3} \citep{DBLP:conf/ijcai/BremenK20}
-  \item learning MLNs \citep{DBLP:journals/ml/HaarenBMD16}
-\end{enumerate}
+% 1. What is the problem?
 
-% In a way, we're dividing the idea of domain recursion between the GDR and the
-% Ref nodes, thus also generalising it.
+\begin{itemize}
+  \item \citet{DBLP:conf/ijcai/BroeckTMDR11} introduce weighted first-order
+        model counting (WFOMC) by extending a formula $\phi$ in first-order
+        logic with (pairs of) weights on predicates and asking for the weighted
+        sum of all of the models of $\phi$.
+\end{itemize}
+
+% 2. Why is it interesting and important?
+
+\begin{itemize}
+  \item lifted probabilistic inference (overview)
+        \citep{DBLP:conf/ecai/Kersting12}
+  \item predecessors in lifted probabilistic inference
+  \begin{itemize}
+    \item first-order variable elimination (the last citation is not a
+          predecessor)
+          \citep{DBLP:conf/ijcai/BrazAR05,DBLP:conf/aaai/MilchZKHK08,DBLP:journals/jair/TaghipourFDB13}
+    \item lifted AND/OR search \citep{DBLP:conf/aaai/GogateD10}
+    \item and a variety of other approaches
+          \citep{DBLP:conf/uai/BrazO17,DBLP:conf/nips/JhaGMS10,DBLP:journals/ijar/RiguzziBZCL17}
+  \end{itemize}
+  \item relevant representations
+  \begin{itemize}
+    \item probabilistic programming languages
+          \citep{DBLP:journals/ml/RaedtK15,DBLP:journals/ijar/RiguzziBZCL17}
+    \item Markov logic networks \citep{DBLP:journals/ml/RichardsonD06}
+    \item and other lifted graphical models \citep{DBLP:journals/ml/KimmigMG15}
+  \end{itemize}
+  \item probabilistic databases (WFOMC inspires PDB-specific methods and lifted
+        inference evolves independently in the PDB community)
+        \citep{DBLP:journals/pvldb/GatterbauerS15,DBLP:journals/debu/GribkoffSB14}
+  \item the field of statistical relational artificial intelligence more
+        generally \citep{DBLP:series/synthesis/2016Raedt}
+\end{itemize}
+
+% 3. Why is it hard? (E.g., why do naive approaches fail?)
+
+\todo[inline]{use some other (non-slanted) font for names of fragments}
+
+\begin{itemize}
+  \item all formulas with up to two variables (i.e., those in $FO^{2}$) are
+        known to be domain-liftable \citep{DBLP:conf/nips/Broeck11}
+  \item there exists a formula with three variables (i.e., in $FO^{3}$) for
+        which FOMC is $\#\P_{1}$-complete \citep{DBLP:conf/pods/BeameBGS15}
+\end{itemize}
+
+% 4. Why hasn't it been solved before? (Or, what's wrong with previous proposed
+% solutions? How does mine differ?)
+
+\begin{itemize}
+  \item focus on specific fragments of logic
+        \begin{itemize}
+          \item $FO^{2}$ (a faster result than the proof by Beame
+                et al.) \citep{DBLP:conf/uai/BremenK21}
+          \item new liftable classes using domain recursion ($S^{2}FO^{2}$ and
+                $S^{2}RU$) \citep{DBLP:conf/nips/KazemiKBP16}
+          \item new liftable classes ($U_{1}$, less significant than counting
+                quantifiers) \citep{DBLP:conf/lics/KuusistoL18}
+          \item $C^{2}$: two variable fragment with counting quantifiers
+                \citep{DBLP:journals/jair/Kuzelka21,DBLP:journals/corr/abs-2110-05992}
+          \item tree axioms (extension of the two variable fragment)
+                \citep{DBLP:conf/kr/BremenK21}
+        \end{itemize}
+  \item implemented algorithms
+        \begin{itemize}
+          \item \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11}
+          \item approximate ForcLift \citep{DBLP:conf/uai/BroeckCD12}
+          \item \textsc{L2C} \citep{DBLP:conf/kr/KazemiP16}
+          \item probabilistic theorem proving (Alchemy) (both exact and
+                approximate) \citep{DBLP:journals/cacm/GogateD16}
+          \item \textsc{ApproxMC3} \citep{DBLP:conf/ijcai/BremenK20}
+        \end{itemize}
+\end{itemize}
+
+% 5. What are the key components of my approach and results? Also include any
+% specific limitations.
+% TODO: start here. Decide on what I want to mention about each paper and in what order.
+
+\begin{itemize}
+  \item domain recursion \citep{DBLP:conf/nips/Broeck11}
+  \item recursion \citep{DBLP:conf/ilp/BarvinekB0ZK21}
+\end{itemize}
 
 \todo[inline,caption={}]{
   \begin{itemize}
@@ -62,15 +110,12 @@
     \item Introduce Crane and explain that it's modus operandi is very
           different.
     \item Introduce the acronym for GDR
-    \item Do I ever interpret a clause as a sentence? I shouldn't do that:
-          sometimes their role is different.
     \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
           whenever I use either of them.
     \item In the introduction, make sure to mention that our focus is unweighted
           counting, although everything should work with weights as well.
-    \item NOTE: Alchemy is both exact and approximate.
     \item Explain
-          \textsc{ForcLift}\footnote{\url{https://dtai.cs.kuleuven.be/drupal/wfomc}}
+          \textsc{ForcLift}
           \begin{itemize}
             \item two parts: compilation and inference (see the slide about
                   workflow: before and after).
@@ -928,8 +973,8 @@ Given a formula $\phi$, we want to find an FCG that encodes a way to compute the
 model count of $\phi$. While \textsc{ForcLift}
 \citep{DBLP:conf/ijcai/BroeckTMDR11} uses greedy search\footnote{The algorithm
   is not described in any paper on \textsc{ForcLift} but can be found in its
-  source code.}, \textsc{Crane} has a new search algorithm---a combination of
-greedy and breadth-first search.
+  source code at \url{https://dtai.cs.kuleuven.be/drupal/wfomc}}, \textsc{Crane}
+has a new search algorithm---a combination of greedy and breadth-first search.
 
 % greedy and non-greedy rules
 We split all compilation rules into \emph{greedy} and \emph{non-greedy}. Greedy
