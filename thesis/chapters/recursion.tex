@@ -19,6 +19,36 @@
 
 \section{Introduction}
 
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
+        sides=3},edge from parent/.style={draw,-{Latex[length=2mm]}}]
+      \node[draw,circle] {} child {node[draw,ellipse] (b) {$\phi(n)$} child
+        {node[draw,triangle] {}} } child {node[draw,circle] {} child
+        {node[draw,ellipse] (a) {$\phi(n)$}} } ; \draw[-{Latex[length=2mm]}] (a)
+      -- (b);
+    \end{tikzpicture}
+    \caption{Before}\label{fig:before}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
+        sides=3}]
+      \node[draw,ellipse] (a) at (0, 0) {$\phi(n)$}; \node[draw,ellipse] (b) at
+      (0, -2) {$\psi(n-1)$}; \node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
+      \node[draw,triangle] (d) at (1, -4) {}; \draw[-{Latex[length=2mm]}] (a) --
+      (b) node [midway,xshift=50] {Domain recursion};
+      \draw[-{Latex[length=2mm]}] (b) -- (c); \draw[-{Latex[length=2mm]}] (b) --
+      (d); \draw[-{Latex[length=2mm]}] (c) to [bend left=45] node
+      [midway,xshift=-30] () {$n \mapsto n-1$} (a);
+    \end{tikzpicture}
+    \caption{After}\label{fig:after}
+  \end{subfigure}
+  \caption{Non-tree-like edges in first-order knowledge compilation. TODO: move
+    this to a better location.}
+\end{figure}
+
 % 1. What is the problem?
 
 \begin{itemize}
@@ -26,11 +56,20 @@
         model counting (WFOMC) by extending a formula $\phi$ in first-order
         logic with (pairs of) weights on predicates and asking for the weighted
         sum of all of the models of $\phi$.
+  \item mention `symmetric'
+  \item \emph{First-order model counting} (FOMC) is the problem of computing the
+        number of models of a sentence in first-order logic (FOL) given the
+        size(s) of its domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}.
 \end{itemize}
 
 % 2. Why is it interesting and important?
 
 \begin{itemize}
+  \item The main application of FOMC (or, rather, its \emph{weighted} variant
+        WFOMC) is in probabilistic inference, particularly for statistical
+        relational models such as Markov logic networks that define
+        probabilities over sets of objects and relations thereof
+        \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
   \item lifted probabilistic inference (overview)
         \citep{DBLP:conf/ecai/Kersting12}
   \item predecessors in lifted probabilistic inference
@@ -58,12 +97,10 @@
 
 % 3. Why is it hard? (E.g., why do naive approaches fail?)
 
-\todo[inline]{use some other (non-slanted) font for names of fragments}
-
 \begin{itemize}
-  \item all formulas with up to two variables (i.e., those in $FO^{2}$) are
+  \item all formulas with up to two variables (i.e., those in \FOtwo{}) are
         known to be domain-liftable \citep{DBLP:conf/nips/Broeck11}
-  \item there exists a formula with three variables (i.e., in $FO^{3}$) for
+  \item there exists a formula with three variables (i.e., in \FOthree{}) for
         which FOMC is $\#\P_{1}$-complete \citep{DBLP:conf/pods/BeameBGS15}
 \end{itemize}
 
@@ -71,15 +108,26 @@
 % solutions? How does mine differ?)
 
 \begin{itemize}
+  \item Over slightly more than a decade, research on (W)FOMC advanced on both
+        theoretical and empirical fronts. Several WFOMC algorithms such as
+        \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11}, probabilistic
+        theorem proving \citep{DBLP:journals/cacm/GogateD16}, and \textsc{L2C}
+        \citep{DBLP:conf/kr/KazemiP16} were developed. More and more classes of
+        formulas were shown to be \emph{liftable}, i.e., solvable in polynomial
+        time with respect to the size(s) of the domain(s)
+        \citep{DBLP:conf/kr/BremenK21,DBLP:conf/nips/KazemiKBP16,DBLP:conf/lics/KuusistoL18,DBLP:journals/jair/Kuzelka21}.
+        Much of the researchers' attention was devoted to developing efficient
+        solutions to formulas with up to two variables
+        \citep{DBLP:conf/uai/BremenK21,DBLP:journals/corr/abs-2110-05992}.
   \item focus on specific fragments of logic
         \begin{itemize}
-          \item $FO^{2}$ (a faster result than the proof by Beame
+          \item \FOtwo{} (a faster result than the proof by Beame
                 et al.) \citep{DBLP:conf/uai/BremenK21}
-          \item new liftable classes using domain recursion ($S^{2}FO^{2}$ and
-                $S^{2}RU$) \citep{DBLP:conf/nips/KazemiKBP16}
-          \item new liftable classes ($U_{1}$, less significant than counting
+          \item new liftable classes using domain recursion (\SFO{} and
+                \SRU{}) \citep{DBLP:conf/nips/KazemiKBP16}
+          \item new liftable classes (\Uone{}, less significant than counting
                 quantifiers) \citep{DBLP:conf/lics/KuusistoL18}
-          \item $C^{2}$: two variable fragment with counting quantifiers
+          \item \Ctwo{}: two variable fragment with counting quantifiers
                 \citep{DBLP:journals/jair/Kuzelka21,DBLP:journals/corr/abs-2110-05992}
           \item tree axioms (extension of the two variable fragment)
                 \citep{DBLP:conf/kr/BremenK21}
@@ -93,217 +141,101 @@
                 approximate) \citep{DBLP:journals/cacm/GogateD16}
           \item \textsc{ApproxMC3} \citep{DBLP:conf/ijcai/BremenK20}
         \end{itemize}
+  \item However, none of the publicly available (W)FOMC algorithms can
+        efficiently compute functions as simple as a factorial.\footnote{The
+        problem of computing the factorial can be described using two variables
+        and counting quantifiers, so it belongs to a fragment of FOL which is
+        known to be liftable \citep{DBLP:journals/jair/Kuzelka21}.} We claim
+        that this shortcoming is due to the inability of these algorithms to
+        construct recursive solutions.
+  \item The topic of recursion in the context of WFOMC has been studied before
+        but in very limited ways. \Citet{DBLP:conf/ilp/BarvinekB0ZK21} use WFOMC
+        to generate numerical data which is then used to conjecture recurrence
+        relations that explain that data. \Citet{DBLP:conf/nips/Broeck11}
+        introduced the idea of \emph{domain recursion}. Intuitively, domain
+        recursion partitions a domain of size $n$ into a single explicitly named
+        constant and the remaining domain of size $n-1$. However, many stringent
+        conditions are enforced to ensure that the search for a tractable
+        solution always terminates.
+        \begin{itemize}
+          \item But their code only conjectures stuff on data. My conjectures
+                are guaranteed always true.
+          \item everything has to be expressible in \Ctwo{}, i.e., the
+                two-variable fragment of FOL with counting quantifiers on one
+                domain.
+          \item They only consider P-recursive functions, which means that,
+                e.g., $f(n) = f(n-1)f(n-2)$ would not be allowed.
+        \end{itemize}
 \end{itemize}
 
 % 5. What are the key components of my approach and results? Also include any
 % specific limitations.
-% TODO: start here. Decide on what I want to mention about each paper and in what order.
 
 \begin{itemize}
+  \item In this work, we show how new tractable solutions can be found by
+        dispensing with these restrictions. With additional compilation rules
+        and an algorithm for checking whether a `recursive call' is possible,
+        \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be
+        able to construct recursive functions that efficiently solve counting
+        problems that used to be beyond its reach. The main conceptual
+        difference from the original algorithm is that the input formula is now
+        compiled to a labelled directed graph rather than a circuit (i.e.,
+        cycles are allowed). This idea is illustrated in \cref{fig:after}.
+        Suppose the original formula $\phi$ depended on a domain of size
+        $n \in \mathbb{N}$. Domain recursion transforms $\phi$ into a different
+        formula $\psi$ that depends on a domain of size $n-1$. After some number
+        of subsequent transformations, the algorithm identifies that a solution
+        to $\psi$ can be constructed in part by finding a solution to a version
+        of $\phi$ where the domain of size $n$ is replaced by a domain of size
+        $n-1$. Recognising $\phi$ from before, we can add a cycle-forming edge
+        to the graph, which can be interpreted as function $f$ relying on
+        $f(n-1)$ to compute $f(n)$.
+  \item Introduce \textsc{Crane} as a new exact algorithm for (W)FOMC and
+        explain how it works
+  \item informally introduce what a compilation rule is
+  \item cycles, generalised domain recursion, some more compilation rules and a
+        new search algorithm
+  \item Our focus is unweighted counting, although everything should work with
+        weights as well.
+  \item (just like \textsc{ForcLift}) two parts: compilation and inference (see
+        the slide about workflow: before and after).
+  \item \textsc{Crane/ForcLift} works by always having a formula as input and
+        adding nodes to the circuit/FCG that constitute the solution the that
+        formula.
+  \item Workflow before
+  \begin{itemize}
+    \item Compile the formula to a circuit
+    \item Evaluate it to get the answer
+  \end{itemize}
+  \item Workflow after
+  \begin{itemize}
+    \item Compile the formula to a graph
+    \item Extract the definitions of functions
+    \item Simplify
+    \item Supplement with base cases
+    \item Evaluate to get the answer
+  \end{itemize}
+  \item Three `new' compilation rules (generalised domain recursion (introduce
+        the acronym), constraint removal, and the thing that finds loops
+        (identifying possibilities for recursion)) and a novel compilation
+        algorithm (a hybrid of greedy and breadth-first search).
+  \item What we do with the compilation result is different
   \item domain recursion \citep{DBLP:conf/nips/Broeck11}
   \item recursion \citep{DBLP:conf/ilp/BarvinekB0ZK21}
+  \item evaluation/interpretation: algebraic simplification, dynamic programming
+  \item limitation: function extraction and simplification need to be automated,
+        same for finding base cases
 \end{itemize}
+
+\section{Preliminaries}
 
 \todo[inline,caption={}]{
   \begin{itemize}
-    \item Emphasise exactness
-    \item Introduce Crane and explain that it's modus operandi is very
-          different.
-    \item Introduce the acronym for GDR
-    \item Make sure to mention how $b^{\bot}$ is created alongside $b^{\top}$
-          whenever I use either of them.
-    \item In the introduction, make sure to mention that our focus is unweighted
-          counting, although everything should work with weights as well.
-    \item Explain
-          \textsc{ForcLift}
-          \begin{itemize}
-            \item two parts: compilation and inference (see the slide about
-                  workflow: before and after).
-            \item \textsc{Crane/ForcLift} works by always having a formula as
-                  input and adding nodes to the circuit/FCG that constitute the
-                  solution the that formula.
-          \end{itemize}
     \item Minimise the number of references to the \textsc{ForcLift} paper.
     \item Make sure I'm using the word `full' (also `partial') everywhere and
           that I'm not using the word `solution' instead of `chip'.
-    \item Introduction: explain interpretation of an FCG, i.e., what we mean by
-          `encodes' and `for'.
   \end{itemize}
 }
-
-First-order model counting (FOMC) is a \#\P-complete computational problem that
-asks to count the models of a sentence in first-order logic. Despite being
-around for more than a decade, practical FOMC algorithms are still unable to
-compute functions as simple as a factorial. We argue that the capabilities of
-FOMC algorithms are severely limited by their inability to express arbitrary
-recursive computations. To enable arbitrary recursion, we relax the restrictions
-that typically accompany domain recursion and generalise circuits used to
-express a solution to an FOMC problem to graphs that may contain cycles. To this
-end, we enhance the most well-established (weighted) FOMC algorithm
-\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation
-rules and an algorithm to check whether a recursive call is feasible. These
-improvements allow us to find efficient solutions to counting fundamental
-structures such as injections and bijections.
-
-% Definition and scope of the topic: FOMC
-
-\emph{First-order model counting} (FOMC) is the problem of computing the number
-of models of a sentence in first-order logic (FOL) given the size(s) of its
-domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. The main application of FOMC
-(or, rather, its \emph{weighted} variant WFOMC) is in probabilistic inference,
-particularly for statistical relational models such as Markov logic networks
-that define probabilities over sets of objects and relations thereof
-\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
-
-Over slightly more than a decade, research on (W)FOMC advanced on both
-theoretical and empirical fronts. Several WFOMC algorithms such as
-\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11}, probabilistic theorem
-proving \citep{DBLP:journals/cacm/GogateD16}, and \textsc{L2C}
-\citep{DBLP:conf/kr/KazemiP16} were developed. More and more classes of formulas
-were shown to be \emph{liftable}, i.e., solvable in polynomial time with respect
-to the size(s) of the domain(s)
-\citep{DBLP:conf/kr/BremenK21,DBLP:conf/nips/KazemiKBP16,DBLP:conf/lics/KuusistoL18,DBLP:journals/jair/Kuzelka21}.
-Much of the researchers' attention was devoted to developing efficient solutions
-to formulas with up to two variables
-\citep{DBLP:conf/uai/BremenK21,DBLP:journals/corr/abs-2110-05992}.
-
-% The problem you are to focus on the topic: recursion
-
-However, none of the publicly available (W)FOMC algorithms can efficiently
-compute functions as simple as a factorial.\footnote{The problem of computing
-  the factorial can be described using two variables and counting quantifiers,
-  so it belongs to a fragment of FOL which is known to be liftable
-  \citep{DBLP:journals/jair/Kuzelka21}.} We claim that this shortcoming is due
-to the inability of these algorithms to construct recursive solutions.
-
-% If the problem was faced before, describe the state of the art.
-
-The topic of recursion in the context of WFOMC has been studied before but in
-very limited ways. \Citet{DBLP:conf/ilp/BarvinekB0ZK21} use WFOMC to generate
-numerical data which is then used to conjecture recurrence relations that
-explain that data. \Citet{DBLP:conf/nips/Broeck11} introduced the idea of
-\emph{domain recursion}. Intuitively, domain recursion partitions a domain of
-size $n$ into a single explicitly named constant and the remaining domain of
-size $n-1$. However, many stringent conditions are enforced to ensure that the
-search for a tractable solution always terminates.
-
-% 1) But their code only conjectures stuff on data. My conjectures are
-% guaranteed always true. 2) everything has to be expressible in $\mathbf{C}^2$,
-% i.e., the two-variable fragment of FOL with counting quantifiers
-% on one domain. 3) They only consider P-recursive functions, which means that,
-% e.g., $f(n) = f(n-1)f(n-2)$ would not be allowed.
-
-% Discuss the methods and novel techniques to be employed
-
-\begin{figure}
-  \centering
-  \begin{subfigure}{0.49\textwidth}
-    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
-        sides=3},edge from parent/.style={draw,-{Latex[length=2mm]}}]
-      \node[draw,circle] {} child {node[draw,ellipse] (b) {$\phi(n)$} child
-        {node[draw,triangle] {}} } child {node[draw,circle] {} child
-        {node[draw,ellipse] (a) {$\phi(n)$}} } ; \draw[-{Latex[length=2mm]}] (a)
-      -- (b);
-    \end{tikzpicture}
-    \caption{Before}\label{fig:before}
-  \end{subfigure}
-  \begin{subfigure}{0.49\textwidth}
-    \centering
-    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
-        sides=3}]
-      \node[draw,ellipse] (a) at (0, 0) {$\phi(n)$}; \node[draw,ellipse] (b) at
-      (0, -2) {$\psi(n-1)$}; \node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
-      \node[draw,triangle] (d) at (1, -4) {}; \draw[-{Latex[length=2mm]}] (a) --
-      (b) node [midway,xshift=50] {Domain recursion};
-      \draw[-{Latex[length=2mm]}] (b) -- (c); \draw[-{Latex[length=2mm]}] (b) --
-      (d); \draw[-{Latex[length=2mm]}] (c) to [bend left=45] node
-      [midway,xshift=-30] () {$n \mapsto n-1$} (a);
-    \end{tikzpicture}
-    \caption{After}\label{fig:after}
-  \end{subfigure}
-  \caption{Non-tree-like edges in first-order knowledge compilation}
-\end{figure}
-
-\todo[inline]{Informally introduce what a compilation rule is.}
-
-In this work, we show how new tractable solutions can be found by dispensing
-with these restrictions. With additional compilation rules and an algorithm for
-checking whether a `recursive call' is possible, \textsc{ForcLift}
-\citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be able to construct
-recursive functions that efficiently solve counting problems that used to be
-beyond its reach. The main conceptual difference from the original algorithm is
-that the input formula is now compiled to a labelled directed graph rather than
-a circuit (i.e., cycles are allowed). This idea is illustrated in
-\cref{fig:after}. Suppose the original formula $\phi$ depended on a domain of
-size $n \in \mathbb{N}$. Domain recursion transforms $\phi$ into a different
-formula $\psi$ that depends on a domain of size $n-1$. After some number of
-subsequent transformations, the algorithm identifies that a solution to $\psi$
-can be constructed in part by finding a solution to a version of $\phi$ where
-the domain of size $n$ is replaced by a domain of size $n-1$. Recognising $\phi$
-from before, we can add a cycle-forming edge to the graph, which can be
-interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
-
-%% \begin{itemize}
-           %%      \item one can then extract the (potentially recursive)
-           %%      definitions of functions from the graph
-           %%      \item simplify the algebraic expressions, e.g.:
-           %%            \begin{itemize}
-           %%      \item adding and subtracting the same thing
-           %%      \item $\sum_{i=0}^n[i < 2]f(i) = f(0) + f(1)$
-           %%    \end{itemize}
-           %%      \item evaluate the functions
-           %%      \item definition of an FCG
-           %%      \item maybe example of an FCG for injections
-           %%      \item new compilation rules
-           %%            \begin{itemize}
-           %%      \item (generalised) domain recursion (via example)
-           %%      \item constraint removal (via example)
-           %%      \item recursion checking algorithm (sketch it)
-           %%    \end{itemize}
-           %%      \item combining BFS and greedy search
-           %%      \item smoothing needs to be adapted so as to not get stuck in
-           %%      an infinite loop
-           %%      \item dynamic programming may be necessary to compute in
-           %%      polynomial time
-           %%    \end{itemize}
-
-           %    Highlights of the results obtained
-
-In our experiments, we consider variations of the function-counting problem.
-These functions vary in:
-\begin{itemize}
-  \item whether they are full or partial,
-  \item whether they are injective/surjective/bijective or not,
-  \item and whether the domain and the codomain are the same.
-\end{itemize}
-Many versions of this problem were previously unsolvable by any available
-(W)FOMC algorithm, whereas we can find recursive solutions (that can be
-evaluated in polynomial time) to all except one of these problems.
-
-% Possible future enhancements and further work in progress
-
-Further work is necessary to fully automate this new way of computing the
-(W)FOMC of a formula. Crane produces a graph which then needs to be transformed
-to definitions of (potentially recursive) functions. In some cases, it is
-necessary to simplify the algebraic expressions in these definitions (e.g.,
-reducing $x-x$ to zero for some expression $x$). Most importantly, the algorithm
-only gives us the recursive calls but not the base cases. What makes the problem
-of finding these base cases non-trivial is that the number of base cases is not
-constant for functions of arity greater than one (i.e., formulas that mention
-more than one domain). Nonetheless, these remaining challenges are minuscule
-compared to the broader goal of expanding the capabilities of (W)FOMC to new
-classes of instances.
-
-%% \begin{itemize}
-%%   \item open questions:
-%%   \begin{itemize}
-%%     \item what kind of sequences are computable in this way?
-%%     \item would using a different logic extend the capabilities
-%%     of FOMC even further?
-%%   \end{itemize}
-%% \end{itemize}
-
-\section{Preliminaries}
 
 In this section, we describe our format for FOMC instances, which is heavily
 based on the format used internally by \textsc{ForcLift}, some aspects of which
@@ -452,7 +384,8 @@ new types:
 \begin{itemize}
   \item a type for constraint removal denoted by $\CR$,
   \item a type for GDR denoted by $\GDR$ (both with out-degree one),
-  \item and $\star$---a placeholder type (with out-degree zero) for nodes that are going to be replaced.
+  \item and $\star$---a placeholder type (with out-degree zero) for nodes that
+        are going to be replaced.
 \end{itemize}
 
 \begin{figure}[t]
@@ -1209,6 +1142,8 @@ from $v$.
           consistent with the next section even if both variations are correct.
     \item Do I ever show the input formula? Maybe rephrase this to count partial
           injections instead?
+    \item In the example below, make sure to mention that $b^{\bot}$ is created
+          alongside $b^{\top}$.
   \end{itemize}
 }
 
@@ -1426,13 +1361,33 @@ and $j = 0, \dots, n$.
   \item Design an algorithm to infer the necessary base cases. (Note that there
         can be an infinite amount of them when functions have more than one
         parameter.)
-  \item Observation: -1 (and powers thereof) appear in every solution to a
-        formula if and only if the formula has existential quantification.
-        That's not very smart!
+  \item open questions:
+  \begin{itemize}
+    \item what kind of sequences are computable in this way?
+    \item would using a different logic extend the capabilities
+    of FOMC even further?
+  \end{itemize}
+  \item In our experiments, we consider variations of the function-counting
+        problem. These functions vary in:
+        \begin{itemize}
+          \item whether they are full or partial,
+          \item whether they are injective/surjective/bijective or not,
+          \item and whether the domain and the codomain are the same.
+        \end{itemize}
+        Many versions of this problem were previously unsolvable by any
+        available (W)FOMC algorithm, whereas we can find recursive solutions
+        (that can be evaluated in polynomial time) to all except one of these
+        problems.
+  \item Further work is necessary to fully automate this new way of computing
+        the (W)FOMC of a formula. Crane produces a graph which then needs to be
+        transformed to definitions of (potentially recursive) functions. In some
+        cases, it is necessary to simplify the algebraic expressions in these
+        definitions (e.g., reducing $x-x$ to zero for some expression $x$). Most
+        importantly, the algorithm only gives us the recursive calls but not the
+        base cases. What makes the problem of finding these base cases
+        non-trivial is that the number of base cases is not constant for
+        functions of arity greater than one (i.e., formulas that mention more
+        than one domain). Nonetheless, these remaining challenges are minuscule
+        compared to the broader goal of expanding the capabilities of (W)FOMC to
+        new classes of instances.
 \end{itemize}
-
-% By classifying unit propagation (but we don't mention unit propagation by
-% name) as a greedy rule, these powers are pushed to the outer layers of the
-% solution (i.e., `early' in the FCG). It's likely that removing this
-% restriction would enable the algorithm to find asymptotically optimal
-% solutions.
