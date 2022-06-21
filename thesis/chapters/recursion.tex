@@ -50,44 +50,31 @@
 \end{figure}
 
 % 1. What is the problem?
-
-\begin{itemize}
-  \item \citet{DBLP:conf/ijcai/BroeckTMDR11} introduce weighted first-order
-        model counting (WFOMC) by extending a formula $\phi$ in first-order
-        logic with (pairs of) weights on predicates and asking for the weighted
-        sum of all of the models of $\phi$.
-  \item mention `symmetric'
-  \item \emph{First-order model counting} (FOMC) is the problem of computing the
-        number of models of a sentence in first-order logic (FOL) given the
-        size(s) of its domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}.
-\end{itemize}
-
 % 2. Why is it interesting and important?
+% 1) the latest first-order variable elimination algorithm \citep{DBLP:journals/jair/TaghipourFDB13}
+% 2) other approaches to lifted inference  \citep{DBLP:conf/uai/BrazO17,DBLP:conf/nips/JhaGMS10,DBLP:journals/ijar/RiguzziBZCL17}
+% 3) Unlike most early algorithms for lifted inference that were adaptations of probabilistic inference algorithms such as AND/OR search \citep{DBLP:conf/aaai/GogateD10} and variable elimination \citep{DBLP:conf/ijcai/BrazAR05,DBLP:conf/aaai/MilchZKHK08}, WFOMC is an approach grounded in logic.
+
+\emph{First-order model counting} (FOMC) is the problem of computing the number
+of models of a sentence in first-order logic (FOL) given the size(s) of its
+domain(s) \citep{DBLP:conf/ijcai/BroeckTMDR11}. \emph{Symmetric weighted FOMC}
+(WFOMC) extends FOMC with (pairs of) weights on predicates and asks for a
+weighted sum across all models instead. WFOMC emerged as the dominant approach
+to lifted probabilistic inference---a kind of probabilistic inference capable of
+reasoning about sets of objects \citep{DBLP:conf/ecai/Kersting12}.
+
+Lifted inference works on probabilistic programming languages
+\citep{DBLP:journals/ml/RaedtK15,DBLP:journals/ijar/RiguzziBZCL17}, Markov logic
+networks \citep{DBLP:journals/ml/RichardsonD06}, and other lifted graphical
+models \citep{DBLP:journals/ml/KimmigMG15} to compute the desired probability
+without having to...
 
 \begin{itemize}
-  \item The main application of FOMC (or, rather, its \emph{weighted} variant
-        WFOMC) is in probabilistic inference, particularly for statistical
-        relational models such as Markov logic networks that define
-        probabilities over sets of objects and relations thereof
+  \item The main application of WFOMC is in probabilistic inference,
+        particularly for statistical relational models such as Markov logic
+        networks that define probabilities over sets of objects and relations
+        thereof
         \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16}.
-  \item lifted probabilistic inference (overview)
-        \citep{DBLP:conf/ecai/Kersting12}
-  \item predecessors in lifted probabilistic inference
-  \begin{itemize}
-    \item first-order variable elimination (the last citation is not a
-          predecessor)
-          \citep{DBLP:conf/ijcai/BrazAR05,DBLP:conf/aaai/MilchZKHK08,DBLP:journals/jair/TaghipourFDB13}
-    \item lifted AND/OR search \citep{DBLP:conf/aaai/GogateD10}
-    \item and a variety of other approaches
-          \citep{DBLP:conf/uai/BrazO17,DBLP:conf/nips/JhaGMS10,DBLP:journals/ijar/RiguzziBZCL17}
-  \end{itemize}
-  \item relevant representations
-  \begin{itemize}
-    \item probabilistic programming languages
-          \citep{DBLP:journals/ml/RaedtK15,DBLP:journals/ijar/RiguzziBZCL17}
-    \item Markov logic networks \citep{DBLP:journals/ml/RichardsonD06}
-    \item and other lifted graphical models \citep{DBLP:journals/ml/KimmigMG15}
-  \end{itemize}
   \item probabilistic databases (WFOMC inspires PDB-specific methods and lifted
         inference evolves independently in the PDB community)
         \citep{DBLP:journals/pvldb/GatterbauerS15,DBLP:journals/debu/GribkoffSB14}
