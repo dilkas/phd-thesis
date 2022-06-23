@@ -1,4 +1,4 @@
-\chapter{Generating Random WMC Instances} \label{chapter:comparison}
+\chapter{Generating Random WMC Instances}\label{chapter:comparison}
 
 \section{Introduction}
 
@@ -18,10 +18,9 @@ add support for continuous variables \citep{DBLP:conf/ijcai/BellePB15}, infinite
 domains \citep{DBLP:conf/aaai/Belle17}, and first-order logic
 \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16} and generalise
 the definition to support arbitrary pseudo-Boolean functions instead of clauses
-\citep{DBLP:conf/sat/DilkasB21}. Exact \textsf{WMC} algorithms can be broadly
-classified as based on search
-\citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/SharmaRSM19}, knowledge
-compilation
+(\cref{chapter:wmc2}). Exact \textsf{WMC} algorithms can be broadly classified
+as based on search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/SharmaRSM19},
+knowledge compilation
 \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/ijcai/OztokD15},
 and dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
 Other alternatives include approximate \citep{DBLP:conf/aaai/RenkensKBR14} and
@@ -31,47 +30,47 @@ hybrid approaches \citep{DBLP:conf/sat/HecherTW20}, quantum computing
 \citep{DBLP:conf/ijcai/ChakrabortyFMV15}.
 
 % motivation for the problem
-Recent papers that include experimental comparisons of \textsf{WMC}
-algorithms show many of them performing very similarly
-overall \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20} but with
-overwhelming differences when run on specific subsets of
-data \citep{DBLP:conf/uai/DilkasB21,DBLP:conf/sat/DilkasB21,DBLP:conf/ijcai/LagniezM17}.
-Examples of such segregating data sets include bipartite Bayesian networks by
-\citet{DBLP:conf/aaai/SangBK05} and
-relational Bayesian networks by
-\citet{DBLP:journals/ijar/ChaviraDJ06}
-that encode reachability in graphs under node deletion. So far, such performance
-differences remain unexplained. However, knowledge about the nature of these
-differences can inform our choices and aid in further algorithmic developments.
-Moreover, identifying performance predictors of algorithms is often an important
-step in developing a portfolio approach to the
-problem \citep{DBLP:journals/jair/XuHHL08}. Lastly, if new algorithms are always
-tested on the same set of benchmarks, eventually they may become somewhat fitted
-to the particular characteristics of those instances, leading to algorithms that
-may perform worse when run on new types of
-data \citep{DBLP:conf/cec/HossainALA10}.
+In \cref{chapter:wmc1,chapter:wmc2} as well as recent experimental work by
+others
+\citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20,DBLP:conf/ijcai/LagniezM17},
+we see most \textsf{WMC} algorithms performing very similarly overall but with
+overwhelming differences when run on specific subsets of data. Examples of such
+segregating data sets include bipartite Bayesian networks by
+\citet{DBLP:conf/aaai/SangBK05} and relational Bayesian networks by
+\citet{DBLP:journals/ijar/ChaviraDJ06} that encode reachability in graphs under
+node deletion. So far, such performance differences remain unexplained. However,
+knowledge about the nature of these differences can inform our choices and aid
+in further algorithmic developments. Moreover, identifying performance
+predictors of algorithms is often an important step in developing a portfolio
+approach to the problem \citep{DBLP:journals/jair/XuHHL08}. Lastly, if new
+algorithms are always tested on the same set of benchmarks, eventually they may
+become somewhat fitted to the particular characteristics of those instances,
+leading to algorithms that may perform worse when run on new types of data
+\citep{DBLP:conf/cec/HossainALA10}.
+
+% TODO: incorporate this sentence somewhere, referencing the chapter instead.
+% Similarly, while there is a recent attempt \citep{DBLP:conf/cp/DilkasB20} to
+% compare \textsf{WMC} algorithms on random instances of a particular
+% application of \textsf{WMC} (i.e., probabilistic logic programs), it fails to
+% discern any meaningful differences among the algorithms.
 
 % related work on SAT
 Both theoretical and experimental analysis of \SAT{} (and, to a lesser extent,
 $\#\SAT{}$) algorithms on random instances is a rich area of research spanning
-almost forty years. Variations of some of the first random models ever
-proposed \citep{DBLP:journals/dam/FrancoP83,DBLP:journals/siamcomp/PurdomB83}
-continue to be instrumental up to this day for, e.g., establishing the location
-of the threshold between satisfiable and unsatisfiable
-instances \citep{DBLP:conf/focs/AchlioptasM02} and efficiently approximating
-$\#\SAT{}$ \citep{DBLP:conf/icalp/GalanisG0Y20}. Other random models consider
-non-uniform variable frequencies \citep{DBLP:conf/ijcai/AnsoteguiBL09}, fixing
-the number of times each variable occurs both positively and
-negatively \citep{DBLP:journals/cpc/Coja-OghlanW18}, and adding other constraints
-such as cardinality and `exclusive or' \citep{DBLP:conf/ijcai/PoteJM19}. In
-contrast, only one \textsf{WMC} algorithm so far has been analysed using random
-instances \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05}. Similarly,
-while there is a recent attempt \citep{DBLP:conf/cp/DilkasB20} to compare
-\textsf{WMC} algorithms on random instances of a particular application of
-\textsf{WMC} (i.e., probabilistic logic programs), it fails to discern any
-meaningful differences among the algorithms. The goal of this chapter is to
-explain some of the differences between \textsf{WMC} algorithms via an
-experimental study that uses random instances.
+almost forty years. Variations of some of the first random models ever proposed
+\citep{DBLP:journals/dam/FrancoP83,DBLP:journals/siamcomp/PurdomB83} continue to
+be instrumental up to this day for, e.g., establishing the location of the
+threshold between satisfiable and unsatisfiable instances
+\citep{DBLP:conf/focs/AchlioptasM02} and efficiently approximating $\#\SAT{}$
+\citep{DBLP:conf/icalp/GalanisG0Y20}. Other random models consider non-uniform
+variable frequencies \citep{DBLP:conf/ijcai/AnsoteguiBL09}, fixing the number of
+times each variable occurs both positively and negatively
+\citep{DBLP:journals/cpc/Coja-OghlanW18}, and adding other constraints such as
+cardinality and `exclusive or' \citep{DBLP:conf/ijcai/PoteJM19}. In contrast,
+only one \textsf{WMC} algorithm so far has been analysed using random instances
+\citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05}. The goal of this
+chapter is to explain some of the differences between \textsf{WMC} algorithms
+via an experimental study that uses random instances.
 
 % parameters for SAT
 Experimental work investigating how \SAT{} algorithms behave on random
@@ -339,12 +338,19 @@ well, see \cref{sec:remarks}) although alternatives (e.g., exponential scaling)
 could be considered. As long as $\rho < 1$, every $k$-CNF formula retains a
 positive probability of being generated by the algorithm.
 
-To transform the generated formula into a \textsf{WMC} instance, we need
-to define weights on literals.\footnote{Note that algorithms such as
-  \textsc{DPMC} and
-  \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20} support
-  a more flexible way of assigning weights that can lead to significant
-  performance improvements \citep{DBLP:conf/uai/DilkasB21,DBLP:conf/sat/DilkasB21}.} We want to partition all variables into three groups: those with weights equal to zero and one, those with weights equal to 0.5, and those with arbitrary weights, where the size of each group is determined by $\delta$ and $\epsilon$. To do this, we sample a permutation $\pi \leftlsquigarrow \mathcal{U}S_\nu$ (where $S_\nu$ is the permutation group on $\{1, 2, \dots, \nu \}$), and assign to each \emph{variable} $x_n$ a weight drawn u.a.r.\ from
+To transform the generated formula into a \textsf{WMC} instance, we need to
+define weights on literals.\footnote{Recall that in
+  \cref{chapter:wmc1,chapter:wmc2} we showed that algorithms such as
+  \textsc{DPMC} and \textsc{ADDMC}
+  \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20} become more efficient
+  when equipped with a different input format that assigns weights to formulas
+  rather than literals.} We want to partition all variables into three groups:
+those with weights equal to zero and one, those with weights equal to 0.5, and
+those with arbitrary weights, where the size of each group is determined by
+$\delta$ and $\epsilon$. To do this, we sample a permutation
+$\pi \leftlsquigarrow \mathcal{U}S_\nu$ (where $S_\nu$ is the permutation group
+on $\{1, 2, \dots, \nu \}$), and assign to each \emph{variable} $x_n$ a weight
+drawn u.a.r.\ from
 \begin{itemize}
 \item $\mathcal{U}\{\,0, 1\,\}$ if $\pi(n) \le \nu\delta$,
 \item $\mathcal{U}\{\,0.5\,\}$ if $\nu\delta < \pi(n) \le \nu\delta +
