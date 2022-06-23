@@ -224,9 +224,21 @@ a weight function $\nu\colon 2^U \to \mathbb{R}_{\ge 0}$ \emph{induces} a
 measure $\mu_\nu\colon 2^{2^U} \to \mathbb{R}_{\ge 0}$ if $\mu_\nu(x) =
 \sum_{\{u\} \le x} \nu(u)$.
 
-\begin{theorem} \label{prop:measure}
+\begin{theorem}\label{prop:measure}
   The function $\mu_\nu$ is a measure.
 \end{theorem}
+\begin{proof}
+  Note that $\mu_\nu(\bot) = 0$ since there are no atoms below $\bot$. Let
+  $a, b \in 2^{2^{U}}$ be such that $a \land b = \bot$. By elementary properties
+  of Boolean algebras, all atoms below $a \lor b$ are either below $a$ or below
+  $b$. Moreover, none of them can be below both $a$ and $b$ because then they
+  would have to be below $a \land b = \bot$. Thus
+  \begin{align*}
+    \mu_\nu(a \lor b) &= \sum_{\{u\} \le a \lor b} \nu(u) = \sum_{\{u\} \le a} \nu(u) + \sum_{\{u\} \le b} \nu(u) \\
+                      &= \mu_\nu(a) + \mu_\nu(b)
+  \end{align*}
+  as required.
+\end{proof}
 
 Finally, a measure $\mu\colon 2^{2^U} \to \mathbb{R}_{\ge 0}$ is
 \emph{factorable} if there exists a factored weight function $\nu\colon 2^U \to
@@ -297,7 +309,7 @@ Boolean algebra. This can be demonstrated with a simple example.
 Note that in this case, we chose to interpret $\nu_b$ as $\Pr(b \mid a)$
 while---with a different definition of $\nu_b$ that represents the joint
 probability distribution $\Pr(a, b)$---$\nu_b$ by itself could induce $\mu$. In
-general, however, factorising the full weight function into several smaller
+general, however, factoring the full weight function into several smaller
 functions often results in weight functions with smaller domains which leads to
 increased efficiency and decreased memory usage
 \citep{DBLP:conf/aaai/DudekPV20}. We can easily generalise this example further.
@@ -312,8 +324,7 @@ encode them into instances of WMC is by adding more literals
 \citep{DBLP:journals/ai/ChaviraD08}. We can use the measure-theoretic
 perspective on WMC to show that this is always possible, however, as ensuing
 sections will demonstrate, it can make the inference task much harder in
-practice.\footnote{The proofs of this and other theoretical results can be found
-  in the supplementary material.}
+practice.
 
 \begin{theorem}
   For any set $U$ and measure $\mu\colon 2^{2^U} \to \mathbb{R}_{\ge 0}$, there
@@ -321,6 +332,22 @@ practice.\footnote{The proofs of this and other theoretical results can be found
   \mathbb{R}_{\ge 0}$, and a formula $f \in 2^{2^V}$ such that $\mu(x) = \mu'(x
   \land f)$ for all formulas $x \in 2^{2^U}$.
 \end{theorem}
+\begin{proof}
+  Let $V = U \cup \{ f_m \mid m \in 2^U \}$, and
+  $f = \bigwedge_{m \in 2^U} \{ m \} \leftrightarrow f_m$. We define weight
+  function $\nu\colon 2^V \to \mathbb{R}_{\ge 0}$ as
+  $\nu = \prod_{v \in V} \nu_v$, where $\nu_v(\{v\}) = \mu(\{m\})$ if $v = f_m$
+  for some $m \in 2^U$ and $\nu_v(x) = 1$ for all other $v \in V$ and
+  $x \in 2^{\{v\}}$. Let $\mu'\colon 2^{2^V} \to \mathbb{R}_{\ge 0}$ be the
+  measure induced by $\nu$. It is enough to show that $\mu$ and
+  $x \mapsto \mu'(x \land f)$ agree on the atoms in $2^{2^U}$. For any
+  $\{ a \} \in 2^{2^U}$,
+  \begin{align*}
+    \mu'(\{ a \} \land f) &= \sum_{\{ x \} \le \{ a \} \land f} \nu(x) = \nu(a \cup \{ f_a \}) \\
+                          &= \nu_{f_a}(\{ f_a \}) = \mu(\{ a \})
+  \end{align*}
+  as required.
+\end{proof}
 
 \section{Encoding Bayesian Networks Using Conditional Weights} \label{sec:bns}
 
@@ -485,19 +512,35 @@ $\phi$.\footnote{Note that it can just as well compute \emph{any} probability
   expressed using the random variables in $\mathcal{V}$.} We begin with
 \cref{lemma:cpt} which shows that any conditional weight function produces the
 right answer when given a valid encoding of variable-value assignments relevant
-to the CPT.
+to the CPT\@.
 
-\begin{lemma} \label{lemma:cpt}
-  Let $X \in \mathcal{V}$ be a random variable with parents $\mathrm{pa}(X) = \{ Y_1,
-  \dots, Y_n \}$. Then $\mathrm{CPT}_X\colon 2^{\mathcal{E}^*(X)} \to
-  \mathbb{R}_{\ge 0}$ is such that for any $x \in \Imm X$ and $(y_1, \dots, y_n)
-  \in \prod_{i=1}^n \Imm Y_i$,
+\begin{lemma}\label{lemma:cpt}
+  Let $X \in \mathcal{V}$ be a random variable with parents
+  $\mathrm{pa}(X) = \{ Y_1, \dots, Y_n \}$. Then
+  $\mathrm{CPT}_X\colon 2^{\mathcal{E}^*(X)} \to \mathbb{R}_{\ge 0}$ is such
+  that for any $x \in \Imm X$ and
+  $(y_1, \dots, y_n) \in \prod_{i=1}^n \Imm Y_i$,
   \[
     \mathrm{CPT}_X (T) = \Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n),
   \]
-  where $T = \{ \lambda_{X=x} \} \cup \{ \lambda_{Y_i=y_i} \mid i = 1, \dots, n
-  \}$.
+  where
+  $T = \{ \lambda_{X=x} \} \cup \{ \lambda_{Y_i=y_i} \mid i = 1, \dots, n \}$.
 \end{lemma}
+\begin{proof}
+  If $X$ is binary, then $\mathrm{CPT}_X$ is a sum of
+  $2\prod_{i=1}^n |\Imm Y_i|$ terms, one for each possible assignment of values
+  to variables $X, Y_1, \dots, Y_n$. Exactly one of these terms is nonzero when
+  applied to $T$, and it is equal to
+  $\Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n)$ by definition.
+
+  If $X$ is not binary, then
+  $\left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)(T) = 1$, and
+  \[
+    \left( \prod_{i=1}^m \prod_{j=i+1}^m (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]}) \right)(T) = 1,
+  \]
+  so $\mathrm{CPT}_X(T) = \Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n)$ by a
+  similar argument as before.
+\end{proof}
 
 Now, \cref{lemma:full_distribution} shows that $\phi$ represents the full
 probability distribution of the Bayesian network, i.e., it gives the right
@@ -509,15 +552,32 @@ probabilities for the right inputs and zero otherwise.
     \phi(T) =
     \begin{cases}
       \Pr(x_1, \dots, x_n) &
-      \begin{aligned}
-        &\text{if } T = \{ \lambda_{X_i=x_i} \}_{i = 1}^n \text{ for} \\
-        &\text{some } \textstyle (x_i)_{i=1}^n \in \prod_{i=1}^n \Imm X_i
-      \end{aligned} \\
+                             \begin{aligned}
+                               &\text{if } T = \{ \lambda_{X_i=x_i} \}_{i = 1}^n \text{ for} \\
+                               &\text{some } \textstyle (x_i)_{i=1}^n \in \prod_{i=1}^n \Imm X_i
+                             \end{aligned} \\
       0 & \text{otherwise,}
     \end{cases}
   \]
   for all $T \in 2^U$.
 \end{lemma}
+\begin{proof}
+  If $T = \{ \lambda_{X=v_X} \mid X \in \mathcal{V} \}$ for some
+  ${(v_X)}_{X \in \mathcal{V}} \in \prod_{X \in \mathcal{V}} \Imm X$, then
+  \begin{align*}
+    \phi(T) &= \prod_{X \in \mathcal{V}} \Pr \left( X=v_X \;\middle|\; \bigwedge_{Y \in \mathrm{pa}(X)} Y=v_Y \right) \\
+            &= \Pr \left( \bigwedge_{X \in \mathcal{V}} X=v_X \right)
+  \end{align*}
+  by \cref{lemma:cpt} and the definition of a Bayesian network. Otherwise there
+  must be some non-binary random variable $X \in \mathcal{V}$ such that
+  $|\mathcal{E}(X) \cap T| \ne 1$. If $\mathcal{E}(X) \cap T = \emptyset$, then
+  $\left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)(T) = 0$, and so
+  $\mathrm{CPT}_X(T) = 0$, and $\phi(T) = 0$. If $|\mathcal{E}(X) \cap T| > 1$,
+  then we must have two different values $x_1, x_2 \in \Imm X$ such that
+  $\{\lambda_{X=x_1}, \lambda_{X=x_2} \} \subseteq T$ which means that
+  $(\overline{[\lambda_{X=x_1}]} + \overline{[\lambda_{X=x_2}]})(T) = 0$, and
+  so, again, $\mathrm{CPT}_X(T) = 0$, and $\phi(T) = 0$.
+\end{proof}
 
 We end with \cref{thm:correctness} that shows how $\phi$ can be combined with an
 encoding of a single variable-value assignment so that \textsf{ADDMC}
@@ -529,15 +589,35 @@ encoding of a single variable-value assignment so that \textsf{ADDMC}
     (\exists_U(\phi \cdot [\lambda_{X=x}]))(\emptyset) = \Pr(X = x).
   \]
 \end{theorem}
+\begin{proof}
+  Let $\mathcal{V} = \{ X, Y_1, \dots, Y_n \}$. Then
+  \begin{align*}
+    (\exists_U (\phi \cdot [\lambda_{X=x}]))(\emptyset) &= \sum_{T \in 2^U} (\phi \cdot [\lambda_{X=x}])(T) \\
+                                                        &= \sum_{\lambda_{X=x} \in T \in 2^U} \phi(T) \\
+                                                        &= \sum_{\lambda_{X=x} \in T \in 2^U} \left( \prod_{Y \in \mathcal{V}} \mathrm{CPT}_Y \right)(T) \\
+                                                        &= \sum_{{(y_i)}_{i=1}^n \in \prod_{i=1}^n \Imm Y_i} \Pr(x, y_1, \dots, y_n) \\
+                                                        &= \Pr(X = x)
+  \end{align*}
+  by:
+  \begin{itemize}
+    \item the proof of Theorem~1 by \citet{DBLP:conf/aaai/DudekPV20};
+    \item if $\lambda_{X=x} \not\in T \in 2^U$, then
+    \[
+      (\phi \cdot [\lambda_{X=x}])(T) = \phi(T) \cdot [\lambda_{X=x}](T \cap \{\lambda_{X=x} \}) = \phi(T) \cdot 0 = 0;
+    \]
+    \item \cref{lemma:full_distribution};
+    \item marginalisation of a probability distribution.
+  \end{itemize}
+\end{proof}
 
-\subsection{Textual Representation} \label{sec:textual_representation}
+\subsection{Textual Representation}\label{sec:textual_representation}
 
 \Cref{alg:encoding} encodes a Bayesian network into a function on a Boolean
 algebra, but how does it relate to the standard interpretation of a WMC encoding
 as a formula in conjunctive normal form (CNF) together with a collection of
 weights? The factors of $\phi$ that restrict the values of indicator variables
 for non-binary random variables are already expressed as a product of sums of
-0/1-valued functions, i.e., a kind of CNF. Disregarding these functions, each
+0/1-valued functions, i.e., a kind of CNF\@. Disregarding these functions, each
 conditional weight function $\mathrm{CPT}_X$ is represented by a sum with a term
 for every subset of $\mathcal{E}^*(X)$. To encode these terms, we introduce
 \emph{extended weight clauses} to the WMC format used by \textsf{Cachet}
