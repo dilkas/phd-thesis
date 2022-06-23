@@ -324,13 +324,13 @@ combinations of relations that satisfy these conditions.
   FOMC of $\phi$ counts partial injections.
 \end{example}
 
-\paragraph{Notation for functions.}
+\paragraph*{Notation for functions.}
 We write $\to$ for functions, $\pfun$ for partial functions,
 $\twoheadrightarrowtail$ for bijections, and $\hookrightarrow$ for set
 inclusion. Let $\id$ denote the identity function (on any domain). For any
 function $f$, let $\dom(f)$ be its domain, and $\Imm f$ be its image.
 
-\paragraph{Notation for lists.}
+\paragraph*{Notation for lists.}
 Let $\langle\rangle$ and $\langle x \rangle$ denote an empty list and a list
 with one element $x$, respectively. We write $\in$ for (in-order) enumeration,
 $\mdoubleplus$ for concatenation, and $|\cdot|$ for the length of a list. Let
@@ -355,14 +355,14 @@ of nodes, and $s \in V$ is the unique source. Also, $N^+$ is the direct
 successor function that maps each node in $V$ to a \emph{list} that contains
 other nodes in $V$.
 
-\paragraph{Node labels.}
+\paragraph*{Node labels.}
 Node labels consist of two parts: the \emph{type} and the \emph{parameters}.
 To avoid clutter, we leave the parameters implicit and let $\tau$ denote the
 node-labelling function that maps each node in $V$ to its type. For each
 node $v \in V$, the length of list $N^+(v)$ (i.e., the out-degree of $v$) is
 determined by its type $\tau(v)$.
 
-\paragraph{Node types.}
+\paragraph*{Node types.}
 Most of the types are as in previous work
 \citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11}. The type for
 non-tree-like edges (denoted by $\Reff$), while used before, is extended to
@@ -398,7 +398,7 @@ new types:
 \todo[inline]{Check every reference to \cref{fig:examplefcg} to make sure
   they're up-to-date.}
 
-\paragraph{Drawing an FCG.}
+\paragraph*{Drawing an FCG.}
 When drawing FCGs:
 \begin{itemize}
   \item outgoing edges are ordered from left to right,
@@ -410,7 +410,7 @@ node has out-degree 1 (i.e., $|N^+(s)| = 1$), label
 $\GDR_{a \gets a \setminus \{\, x \,\}}$, and type $\GDR$ (i.e.,
 $\tau(s) = \GDR$).
 
-\paragraph{Some notational conventions.}
+\paragraph*{Some notational conventions.}
 Similarly to previous work \citep{DBLP:conf/ijcai/BroeckTMDR11}, we write $T_p$
 for an FCG that has a node with label $T_p$ (i.e., type $T$ and parameter(s)
 $p$) and $\star$'s as all of its direct successors. For instance, as an FCG,
@@ -449,7 +449,7 @@ label of the source.
     pre-order traversal of the underlying tree.}\label{fig:ordering}
 \end{figure}
 
-\paragraph{Connecting FCGs with formulas.} We introduce a structure that
+\paragraph*{Connecting FCGs with formulas.} We introduce a structure that
 represents a solution to a FOMC problem while it is still being built. A
 \emph{chip} is a pair $(G, L)$, where $G$ is an FCG, and $L$ is a list of
 formulas, such that $|L|$ is equal to the number of $\star$'s in $G$. The
@@ -467,7 +467,7 @@ underlying tree in \cref{fig:smallexample2}), then $|L| = 2$. Moreover, the
 first element of $L$ is associated with the $\star$ labelled 3, and the second
 with the one labelled 4.
 
-\paragraph{Hashing.}
+\paragraph*{Hashing.}
 We use (integer-valued) hash functions to efficiently discard pairs of formulas
 that are too different for recursion to be established. The hash code of a
 clause $c = (L, C, \delta)$ (denoted by $\# c$) combines the hash codes of the
@@ -476,7 +476,7 @@ literals, the number of inequality constraints $|C|$, and the number of
 variables $|\Vars(c)|$. The hash code of a formula $\phi$ combines the hash
 codes of all its clauses and is denoted by $\#\phi$.
 
-\paragraph{Caching.}
+\paragraph*{Caching.}
 Previously, a cache was used to check if a formula is identical to one of the
 formulas that have already been fully compiled. If that is the case, then the
 circuit already contains the subcircuit for this formula. Instead of duplicating
@@ -513,7 +513,7 @@ and the algorithm continues with the next rule.
 % computed independently. Note that the WMC of $x$ is independent of the size of
 % $D$---this further simplifies the matters.
 
-\paragraph{Notation.}
+\paragraph*{Notation.}
 Let $S$ be a set of constraints or literals, $V$ a set of variables, and $x$
 either a variable or a constant. We write $S[x/V]$ to denote $S$ with all
 occurrences of all variables in $V$ replaced with $x$.\footnote{Note that if
@@ -679,7 +679,7 @@ $\delta'$ that replaces $d$ with $d'$ (on \cref{line:newdelta}).
 
 \subsubsection{Identifying Opportunities for Recursion}\label{sec:ref}
 
-\paragraph{Notation.}
+\paragraph*{Notation.}
 First, for partial functions $\alpha, \beta\colon A \pfun B$ s.t.
 $\alpha|_{\dom(\alpha) \cap \dom(\beta)} = \beta|_{\dom(\alpha) \cap \dom(\beta)}$,
 we write $\alpha \cup \beta$ for the unique partial function s.t.
@@ -1341,7 +1341,7 @@ and $j = 0, \dots, n$.
 
 \section{Conclusions and Future Work}
 
-\paragraph{Future work.}
+\paragraph*{Future work.}
 \begin{itemize}
   \item Transform FCGs to definitions of (possibly recursive) functions on
         integers. Use a computer algebra system to simplify them.

@@ -4,25 +4,31 @@
 
 % WMC
 Weighted model counting (\textsf{WMC})---a weighted generalisation of
-propositional model counting
-($\#\SAT{}$) \citep{DBLP:journals/ai/ChaviraD08}---has emerged as a powerful
-computational framework for problems in a variety of domains. In particular,
-\textsf{WMC} has been used to perform probabilistic inference for graphical
-models such as Bayesian networks and Markov random
-fields \citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05},
+propositional model counting ($\#\SAT{}$)
+\citep{DBLP:journals/ai/ChaviraD08}---has emerged as a powerful computational
+framework for problems in a variety of domains. In particular, \textsf{WMC} has
+been used to perform probabilistic inference for graphical models such as
+Bayesian networks and Markov networks
+\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05},
 probabilistic programs \citep{DBLP:journals/pacmpl/HoltzenBM20}, and
 probabilistic logic programs \citep{DBLP:journals/tplp/FierensBRSGTJR15}. More
 recently, \textsf{WMC} was used in the context of neural-symbolic artificial
 intelligence as well \citep{DBLP:conf/icml/XuZFLB18}. Extensions of \textsf{WMC}
 add support for continuous variables \citep{DBLP:conf/ijcai/BellePB15}, infinite
-domains \citep{DBLP:conf/aaai/Belle17}, and first-order
-logic \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16} and
-generalise the definition to support arbitrary pseudo-Boolean functions instead
-of clauses \citep{DBLP:conf/sat/DilkasB21}.
-Exact \textsf{WMC} algorithms can be broadly classified as based on
-search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/SharmaRSM19}, knowledge
-compilation \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/ijcai/OztokD15}, and
-dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}. Other alternatives include approximate \citep{DBLP:conf/aaai/RenkensKBR14} and parallel algorithms \citep{DBLP:conf/pgm/DalLL18,DBLP:conf/esa/FichteHWZ18}, hybrid approaches \citep{DBLP:conf/sat/HecherTW20}, quantum computing \citep{DBLP:conf/ecai/Riguzzi20}, and reduction to model counting \citep{DBLP:conf/ijcai/ChakrabortyFMV15}.
+domains \citep{DBLP:conf/aaai/Belle17}, and first-order logic
+\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16} and generalise
+the definition to support arbitrary pseudo-Boolean functions instead of clauses
+\citep{DBLP:conf/sat/DilkasB21}. Exact \textsf{WMC} algorithms can be broadly
+classified as based on search
+\citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/SharmaRSM19}, knowledge
+compilation
+\citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/ijcai/OztokD15},
+and dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
+Other alternatives include approximate \citep{DBLP:conf/aaai/RenkensKBR14} and
+parallel algorithms \citep{DBLP:conf/pgm/DalLL18,DBLP:conf/esa/FichteHWZ18},
+hybrid approaches \citep{DBLP:conf/sat/HecherTW20}, quantum computing
+\citep{DBLP:conf/ecai/Riguzzi20}, and reduction to model counting
+\citep{DBLP:conf/ijcai/ChakrabortyFMV15}.
 
 % motivation for the problem
 Recent papers that include experimental comparisons of \textsf{WMC}
@@ -63,7 +69,7 @@ instances \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/sat/SangBK05}. Similarly,
 while there is a recent attempt \citep{DBLP:conf/cp/DilkasB20} to compare
 \textsf{WMC} algorithms on random instances of a particular application of
 \textsf{WMC} (i.e., probabilistic logic programs), it fails to discern any
-meaningful differences among the algorithms. The goal of this paper is to
+meaningful differences among the algorithms. The goal of this chapter is to
 explain some of the differences between \textsf{WMC} algorithms via an
 experimental study that uses random instances.
 
@@ -102,22 +108,25 @@ zero and one or having the same weight repeat many times) on the running times
 of the algorithms.
 
 In addition to introducing a new random model for \textsf{WMC} instances, the
-contributions of this paper include several key experimental findings about the
-behaviour of \textsf{WMC} algorithms---namely,
-\textsc{c2d}\footnote{\url{http://reasoning.cs.ucla.edu/c2d/}} \citep{DBLP:conf/ecai/Darwiche04},
-\textsc{Cachet}\footnote{\url{https://cs.rochester.edu/u/kautz/Cachet/}} \citep{DBLP:conf/sat/SangBBKP04},
-\textsc{d4}\footnote{\url{https://www.cril.univ-artois.fr/KC/d4.html}} \citep{DBLP:conf/ijcai/LagniezM17},
-\textsc{DPMC}\footnote{\url{https://github.com/vardigroup/dpmc}} \citep{DBLP:conf/cp/DudekPV20},
-and
-\textsc{miniC2D}\footnote{\url{http://reasoning.cs.ucla.edu/minic2d/}} \citep{DBLP:conf/ijcai/OztokD15}---on
-random instances. First, we show that the easy-hard-easy pattern with respect to
-(w.r.t.) density is different for dynamic programming algorithms than it is for
-all other algorithms. Second, we present statistical evidence that all the
-algorithms scale exponentially w.r.t.\ primal treewidth and estimate how the
-base of that exponential changes w.r.t.\ density. Third, we show how the
-performance of ADD-based algorithms gradually improves w.r.t the proportion of
-weights that have repeating values and sharply improves w.r.t.\ the proportion
-of weights set to zero and one.
+contributions of this chapter include several key experimental findings about
+the behaviour of \textsf{WMC} algorithms---namely,
+\textsc{c2d}\footnote{\url{http://reasoning.cs.ucla.edu/c2d/}}
+\citep{DBLP:conf/ecai/Darwiche04},
+\textsc{Cachet}\footnote{\url{https://cs.rochester.edu/u/kautz/Cachet/}}
+\citep{DBLP:conf/sat/SangBBKP04},
+\textsc{d4}\footnote{\url{https://www.cril.univ-artois.fr/KC/d4.html}}
+\citep{DBLP:conf/ijcai/LagniezM17},
+\textsc{DPMC}\footnote{\url{https://github.com/vardigroup/dpmc}}
+\citep{DBLP:conf/cp/DudekPV20}, and
+\textsc{miniC2D}\footnote{\url{http://reasoning.cs.ucla.edu/minic2d/}}
+\citep{DBLP:conf/ijcai/OztokD15}---on random instances. First, we show that the
+easy-hard-easy pattern with respect to (w.r.t.) density is different for dynamic
+programming algorithms than it is for all other algorithms. Second, we present
+statistical evidence that all the algorithms scale exponentially w.r.t.\ primal
+treewidth and estimate how the base of that exponential changes w.r.t.\ density.
+Third, we show how the performance of ADD-based algorithms gradually improves
+w.r.t the proportion of weights that have repeating values and sharply improves
+w.r.t.\ the proportion of weights set to zero and one.
 
 % 1. Other parameters include structural entropy
 % \cite{DBLP:journals/access/LinWN21}, the proportion of clauses that have at
@@ -220,7 +229,7 @@ $2^w$ \citep{DBLP:conf/cp/DudekPV20}.
 \section{Random $k$-CNF Formulas with Varying Primal
   Treewidth}\label{sec:model}
 
-\paragraph{Notation.}
+\paragraph*{Notation.}
 For any graph $G$, we write $\mathcal{V}(G)$ for its set of nodes and
 $\mathcal{E}(G)$ for its set of edges. Let $S$ be a finite set. We write
 $\mathcal{U}S$ for the discrete uniform probability distribution on $S$. We
@@ -594,20 +603,20 @@ density than (some) $\#\SAT{}$ algorithms.
 
 \section{Conclusions and Future Work}
 
-In this paper, we studied the behaviour of and differences among \textsf{WMC}
+In this chapter, we studied the behaviour of and differences among \textsf{WMC}
 algorithms on random instances generated by a standard model for $k$-CNF
 formulas extended with parameters that control primal treewidth and literal
 weights. Among other things, we established statistical evidence for the
 existence of an exponential relationship between primal treewidth and the
 running time of all \textsf{WMC} algorithms. The running time of ADD-based
-algorithms was observed to peak at a higher density, scale worse w.r.t. primal
+algorithms was observed to peak at a higher density, scale worse w.r.t.\ primal
 treewidth, and depend negatively on repeating weight values compared to
 algorithms based on search or knowledge compilation. These observations can, to
 some degree, be extended to a closely related weighted projected model counting
 algorithm \citep{DBLP:conf/sat/DudekPV21} as well as to other applications of
-ADDs more generally, e.g., probabilistic
-inference \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11} and
-stochastic planning \citep{DBLP:conf/uai/HoeySHB99}.
+ADDs more generally, e.g., probabilistic inference
+\citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11} and stochastic
+planning \citep{DBLP:conf/uai/HoeySHB99}.
 
 One limitation of our work is that variability in primal treewidth was achieved
 via a parameter, and this could bias randomness in some unexpected way (although

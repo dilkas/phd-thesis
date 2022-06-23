@@ -1,6 +1,15 @@
-\chapter{WMC with Conditional Weights for Bayesian Networks} \label{chapter:wmc1}
+\chapter{WMC with Conditional Weights for Bayesian Networks}\label{chapter:wmc1}
 
 \section{Introduction}
+
+% TODO: explain the difference between this and the next chapter
+
+% While in this chapter we focus on measure-theoretic foundations and propose a
+% new encoding for Bayesian networks, a related line of work---motivated by the
+% same issue of WMC encodings having both more variables and more clauses as a
+% consequence of having to conform to an unnecessarily restrictive
+% format---shows how these variables and clauses can be removed from (most)
+% already-existing Bayesian network encodings.
 
 Weighted model counting (WMC), i.e., an extension of model counting ($\#\SAT{}$)
 that assigns a weight to every model \citep{DBLP:conf/aaai/SangBK05}, has
@@ -62,7 +71,7 @@ instances, often by one or two orders of magnitude. We explain the performance
 benefits by showing how our encoding has asymptotically fewer variables and
 ADDs.
 
-\section{Related Work} \label{sec:related}
+\section{Related Work}\label{sec:related}
 
 Performing inference on Bayesian networks by encoding them into instances of WMC
 is a well-established idea with a history of almost twenty years. Five encodings
@@ -111,10 +120,8 @@ findings outlined in this section while also showing that the performance of
 each encoding depends on the WMC algorithm in use, and smaller encodings are not
 necessarily faster.
 
-While in this paper we focus on measure-theoretic foundations and propose a new encoding for Bayesian networks, a related line of work---motivated by the same issue of WMC encodings having both more variables and more clauses as a consequence of having to conform to an unnecessarily restrictive format---shows how these variables and clauses can be removed from (most) already-existing Bayesian network encodings.
-
 \section{Boolean Algebras, Power Sets, and Propositional
-  Logic} \label{sec:prelims}
+  Logic}\label{sec:prelims}
 
 \begin{sidewaystable}
   \centering
@@ -227,7 +234,9 @@ Finally, a measure $\mu\colon 2^{2^U} \to \mathbb{R}_{\ge 0}$ is
 the process of calculating the value of $\mu_\nu(x)$ for some $x \in 2^{2^U}$
 with a given definition of $\nu$.
 
-\paragraph{Relation to the classical (logic-based) view of WMC.} Let
+% TODO: this paragraph needs to be rewritten, in particular to avoid terms
+% 'axiom' and 'theory'
+\paragraph*{Relation to the classical (logic-based) view of WMC.} Let
 $\mathcal{L}$ be a propositional logic with two atoms $a$ and $b$ as in
 \cref{sec:prelims} and $w\colon \{ a, b, \neg a, \neg b \} \to \mathbb{R}_{\ge
   0}$ a weight function defined as $w(a) = 0.3$, $w(\neg a) = 0.7$, $w(b)
@@ -366,30 +375,32 @@ restricting oneself to factorable measures and thus having to add extra
 variables. We will refer to it as \texttt{cw}. A Bayesian network is a directed
 acyclic graph with random variables as vertices that defines a probability
 distribution over them. Let $\mathcal{V}$ denote this set of random variables.
-For any random variable $X \in \mathcal{V}$, let $\im X$ denote its set of
+For any random variable $X \in \mathcal{V}$, let $\Imm X$ denote its set of
 values and $\mathrm{pa}(X)$ its set of parents. The full probability
-distribution is then equal to $\prod_{X \in \mathcal{V}} \Pr(X \mid
-\mathrm{pa}(X))$. For discrete Bayesian networks (and we only consider discrete
-networks in this paper), each factor of this product can be represented by a
-CPT. See \cref{fig:example_bn} for an example Bayesian network that we will
-refer to throughout this section. For this network, $\mathcal{V} = \{ W, F, T
-\}$, $\mathrm{pa}(W) = \emptyset$, $\mathrm{pa}(F) = \mathrm{pa}(T) = \{ W \}$,
-$\im W = \im F = \{0, 1 \}$, and $\im T = \{ l, m, h \}$.
+distribution is then equal to
+$\prod_{X \in \mathcal{V}} \Pr(X \mid \mathrm{pa}(X))$. For discrete Bayesian
+networks (and we only consider discrete networks here), each factor of this
+product can be represented by a CPT\@. See \cref{fig:example_bn} for an example
+Bayesian network that we will refer to throughout this section. For this
+network, $\mathcal{V} = \{ W, F, T \}$, $\mathrm{pa}(W) = \emptyset$,
+$\mathrm{pa}(F) = \mathrm{pa}(T) = \{ W \}$, $\Imm W = \Imm F = \{0, 1 \}$, and
+$\Imm T = \{ l, m, h \}$.
 
 \begin{definition}[Indicator variables]
-  Let $X \in \mathcal{V}$ be a random variable. If $X$ is binary (i.e., $|\im X|
-  = 2$), we can arbitrary identify one of the values as $1$ and the other one as
-  $0$ (i.e, $\im X \cong \{ 0, 1 \}$). Then $X$ can be represented by a single
-  \emph{indicator variable} $\lambda_{X=1}$. For notational simplicity, for any
-  set $S$, we write $\lambda_{X=0} \in S$ or $S = \{ \lambda_{X=0}, \dots \}$ to
-  mean $\lambda_{X=1} \not\in S$.
+  Let $X \in \mathcal{V}$ be a random variable. If $X$ is binary (i.e.,
+  $|\Imm X| = 2$), we can arbitrary identify one of the values as $1$ and the
+  other one as $0$ (i.e, $\Imm X \cong \{ 0, 1 \}$). Then $X$ can be represented
+  by a single \emph{indicator variable} $\lambda_{X=1}$. For notational
+  simplicity, for any set $S$, we write $\lambda_{X=0} \in S$ or
+  $S = \{ \lambda_{X=0}, \dots \}$ to mean $\lambda_{X=1} \not\in S$.
 
-  On the other hand, if $X$ is not binary, we represent $X$ with $|\im X|$
+  On the other hand, if $X$ is not binary, we represent $X$ with $|\Imm X|$
   indicator variables, one for each value. We let
   \[
-    \mathcal{E}(X) = \begin{cases}
-      \{ \lambda_{X=1} \} & \text{if } |\im X| = 2 \\
-      \{ \lambda_{X=x} \mid x \in \im X \} & \text{otherwise.}
+    \mathcal{E}(X) =
+    \begin{cases}
+      \{ \lambda_{X=1} \} & \text{if } |\Imm X| = 2 \\
+      \{ \lambda_{X=x} \mid x \in \Imm X \} & \text{otherwise.}
     \end{cases}
   \]
   denote the set of indicator variables for $X$ and $\mathcal{E}^*(X) =
@@ -410,31 +421,24 @@ $\im W = \im F = \{0, 1 \}$, and $\im T = \{ l, m, h \}$.
   \For{$X \in \mathcal{V}$}{
     \textit{let} $\mathrm{pa}(X) = \{ Y_1, \dots, Y_n \}$\;
     $\mathrm{CPT}_X \gets 0$\;
-    \eIf{$|\im X| = 2$}{
-      \For{$(y_i)_{i=1}^n \in \prod_{i = 1}^n \im Y_i$}{
+    \eIf{$|\Imm X| = 2$}{
+      \For{$(y_i)_{i=1}^n \in \prod_{i = 1}^n \Imm Y_i$}{
         $p_1 \gets \Pr(X = 1 \mid y_1, \dots, y_n)$\;
         $p_0 \gets \Pr(X \ne 1 \mid y_1, \dots, y_n)$\;
-        \nosemic $\mathrm{CPT}_X \gets \mathrm{CPT}_X$\;
-        \pushline $+ p_1[\lambda_{X=1}] \cdot \prod_{i=1}^n
-        [\lambda_{Y_i=y_i}]$\;
-        \dosemic $+ p_0 \overline{[\lambda_{X=1}]} \cdot \prod_{i=1}^n
-        [\lambda_{Y_i=y_i}]$\;
+        \nosemic$\mathrm{CPT}_X \gets \mathrm{CPT}_X$\;
+        \pushline$+ p_1[\lambda_{X=1}] \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
+        \dosemic$+ p_0 \overline{[\lambda_{X=1}]} \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
       }
     }{
-      \textit{let} $\im X = \{ x_1, \dots, x_m \}$\;
-      \For{$x \in \im X$ {\rm \textbf{and}} $(y_i)_{i=1}^n \in \prod_{i = 1}^n
-        \im Y_i$}{
+      \textit{let} $\Imm X = \{ x_1, \dots, x_m \}$\;
+      \For{$x \in \Imm X$ {\rm \textbf{and}} ${(y_i)}_{i=1}^n \in \prod_{i = 1}^n \Imm Y_i$}{
         $p_x \gets \Pr(X = x \mid y_1, \dots, y_n)$\;
-        \nosemic $\mathrm{CPT}_X \gets \mathrm{CPT}_X$\;
-        \pushline $+ p_x[\lambda_{X=x}] \cdot \prod_{i=1}^n
-        [\lambda_{Y_i=y_i}]$\;
-        \dosemic $+ \overline{[\lambda_{X=x}]} \cdot \prod_{i=1}^n
-        [\lambda_{Y_i=y_i}]$\;
+        \nosemic$\mathrm{CPT}_X \gets \mathrm{CPT}_X$\;
+        \pushline$+ p_x[\lambda_{X=x}] \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
+        \dosemic$+ \overline{[\lambda_{X=x}]} \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
       }
-      \nosemic $\mathrm{CPT}_X \gets \mathrm{CPT}_X \cdot \left( \sum_{i=1}^m
-        [\lambda_{X = x_i}] \right)$\;
-      \pushline\dosemic $\cdot \prod_{i=1}^m \prod_{j=i+1}^m
-      (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]})$\;
+      \nosemic$\mathrm{CPT}_X \gets \mathrm{CPT}_X \cdot \left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)$\;
+      \pushline\dosemic$\cdot \prod_{i=1}^m \prod_{j=i+1}^m (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]})$\;
     }
     $\phi \gets \phi \cdot \mathrm{CPT}_X$\;
   }
@@ -486,8 +490,8 @@ to the CPT.
 \begin{lemma} \label{lemma:cpt}
   Let $X \in \mathcal{V}$ be a random variable with parents $\mathrm{pa}(X) = \{ Y_1,
   \dots, Y_n \}$. Then $\mathrm{CPT}_X\colon 2^{\mathcal{E}^*(X)} \to
-  \mathbb{R}_{\ge 0}$ is such that for any $x \in \im X$ and $(y_1, \dots, y_n)
-  \in \prod_{i=1}^n \im Y_i$,
+  \mathbb{R}_{\ge 0}$ is such that for any $x \in \Imm X$ and $(y_1, \dots, y_n)
+  \in \prod_{i=1}^n \Imm Y_i$,
   \[
     \mathrm{CPT}_X (T) = \Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n),
   \]
@@ -499,7 +503,7 @@ Now, \cref{lemma:full_distribution} shows that $\phi$ represents the full
 probability distribution of the Bayesian network, i.e., it gives the right
 probabilities for the right inputs and zero otherwise. 
 
-\begin{lemma} \label{lemma:full_distribution}
+\begin{lemma}\label{lemma:full_distribution}
   Let $\mathcal{V} = \{X_1, \dots, X_n\}$. Then
   \[
     \phi(T) =
@@ -507,7 +511,7 @@ probabilities for the right inputs and zero otherwise.
       \Pr(x_1, \dots, x_n) &
       \begin{aligned}
         &\text{if } T = \{ \lambda_{X_i=x_i} \}_{i = 1}^n \text{ for} \\
-        &\text{some } \textstyle (x_i)_{i=1}^n \in \prod_{i=1}^n \im X_i
+        &\text{some } \textstyle (x_i)_{i=1}^n \in \prod_{i=1}^n \Imm X_i
       \end{aligned} \\
       0 & \text{otherwise,}
     \end{cases}
@@ -519,8 +523,8 @@ We end with \cref{thm:correctness} that shows how $\phi$ can be combined with an
 encoding of a single variable-value assignment so that \textsf{ADDMC}
 \citep{DBLP:conf/aaai/DudekPV20} would compute its marginal probability.
 
-\begin{theorem} \label{thm:correctness}
-  For any $X \in \mathcal{V}$ and $x \in \im X$,
+\begin{theorem}\label{thm:correctness}
+  For any $X \in \mathcal{V}$ and $x \in \Imm X$,
   \[
     (\exists_U(\phi \cdot [\lambda_{X=x}]))(\emptyset) = \Pr(X = x).
   \]
@@ -709,7 +713,7 @@ their experiments.
 For each Bayesian network, we need to choose a probability to compute. Whenever
 a Bayesian network comes with an evidence file, we compute the probability of
 evidence. Otherwise, let $X$ denote the last-mentioned vertex in the Bayesian
-network. If $\mathsf{true} \in \im X$, then we compute the marginal probability
+network. If $\mathsf{true} \in \Imm X$, then we compute the marginal probability
 of $X = \mathsf{true}$. Otherwise, we pick the value of $X$ which is listed
 first and calculate its marginal probability.
 
@@ -772,7 +776,7 @@ considering asymptotic upper bounds on the numbers of variables and ADDs based
 on the size and structure of the Bayesian network. Let $n = |\mathcal{V}|$ be
 the number of vertices in the Bayesian network, $d = \max_{X \in \mathcal{V}}
 |\mathrm{pa}(X)|$ the maximum in-degree (i.e., the number of parents), and $v =
-\max_{X \in \mathcal{V}} |\im X|$ the maximum number of values per variable.
+\max_{X \in \mathcal{V}} |\Imm X|$ the maximum number of values per variable.
 \Cref{tbl:asymptotes} shows how \texttt{cw} has fewer variables and fewer ADDs
 than any other encoding. We conjecture that it is primarily the reduced number
 of variables that makes the \textsf{ADDMC} variable ordering heuristics much

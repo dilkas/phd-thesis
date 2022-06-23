@@ -37,7 +37,7 @@ The experimental work in these last two chapters, i.e., \cref{chapter:randomlps,
 
 %% We hope that the contributions in this thesis will...
 
-%% \paragraph{Impact: What broad areas of research are affected by my work?}
+%% \paragraph*{Impact: What broad areas of research are affected by my work?}
 %% \begin{itemize}
 %% \item theory and algorithms: counting algorithms, arithmetic complexity
 %% \item AI: PGMs, statistical relational learning
@@ -48,7 +48,7 @@ The experimental work in these last two chapters, i.e., \cref{chapter:randomlps,
 
 In this section, we present a broad overview of how our contributions and the questions raised by this work could be taken forward and influence key areas of research in computer science, artificial intelligence, and mathematics.
 
-\paragraph{Algorithms and applications.}
+\paragraph*{Algorithms and applications.}
 In this thesis, we contributed to the development and applicability of three WMC algorithms: ADDMC \citep{DBLP:conf/aaai/DudekPV20}, DPMC \citep{DBLP:conf/cp/DudekPV20}, and ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11}. The first two are propositional WMC algorithms based on ADDs while ForcLift is a WMC algorithm for first-order logic based on knowledge compilation. Most weighted first-order model counting (WFOMC) algorithms try to solve each instance in a lifted manner (i.e., run in polynomial time with respect to the sizes of the domains involved) and fail if unsuccessful. ForcLift is an exception as it supports using a (propositional) WMC algorithm for parts of the problem that cannot be solved by other compilation rules. Can this transition to WMC be implemented more efficiently, i.e., without fully grounding the instance? Is the WFOMC algorithm better off constructing its own exponential-time solution instead of relying on a WMC algorithm (and is that even possible)? The only way WFOMC can become the standard approach to probabilistic inference in statistical relational models is by being able to gracefully handle all instances, even if it means abandoning efficiency guarantees. Finally, ample opportunities remain to connect WMC with new problem domains. For instance, back in \cref{chapter:introduction} we compared WMC to a range of other computational problems that ask to compute a sum of products. Establishing efficient reductions among these problems could yield new fixed-parameter tractable algorithms and/or improvements to the empirical state of the art. Similarly, adapting a WMC algorithm to a semiring other than $(\mathbb{R}_{\ge 0}, +, \cdot)$ could yield improvements to some of the related problems outlined by \citet{DBLP:journals/japll/KimmigBR17}.
 
 % TODO (V): Perhaps you should add a small note here: exploring the impact of these contributions with respect to the many applications that are being considered on WMC is also worth exploring. Eg does it lead to more formalisms that can be reduced owing to the measure theo foundations. Does it lead to more practical algorithms for ProbLog. Does it mean the computation of the loss function in the nesy approaches can be made faster, see if you can provide an informal justification for why this should be the case
@@ -67,7 +67,7 @@ In this thesis, we contributed to the development and applicability of three WMC
 %%   \end{itemize}
 %% \end{itemize}
 
-\paragraph{Computational complexity.}
+\paragraph*{Computational complexity.}
 Note that the execution of both WMC and WFOMC algorithms can be divided into two parts:
 \begin{itemize}
 \item looking for a \emph{solution} (i.e., an arithmetic circuit/expression that computes the required sum of products) and
@@ -75,7 +75,7 @@ Note that the execution of both WMC and WFOMC algorithms can be divided into two
 \end{itemize}
 (The two are typically much more intertwined in the case of propositional WMC.) With this dichotomy in mind, one could ask: are the algorithms finding optimal solutions? How much of the total running time depends on the complexity of the solution, and how much on the algorithmic methods for finding one? Answers to these questions would highlight the weaknesses of state-of-the-art algorithms and direct the efforts of future research towards addressing these weaknesses. On a more theoretical level, single-domain (W)FOMC problems compute sequences, many of which are well-known to mathematicians. Since there is significant interest in computing such sequences efficiently, the existence of many such sequences with no efficient formulas suggests that a tractable solution might not exist. However, we have no proof of that, i.e., no arithmetic circuit lower bounds for sequences that have been known for decades and are easy to describe in natural language and in logic. So far, the most notable hardness result states that there exists a sentence in first-order logic with three variables for which FOMC is $\#\P_1$-complete \citep{DBLP:conf/pods/BeameBGS15}. Having similar hardness results for sentences that are both simple and practical would be a significant advancement to the field.
 
-\paragraph{Random instance generation.}
+\paragraph*{Random instance generation.}
 In this thesis, we introduce two ways to generate random instances: one for (probabilistic) logic programs and one for propositional formulas in CNF that are then turned into WMC instances. As we provide the very first attempts at testing WMC algorithms on random data, many opportunities for improvements and future work remain. An interesting opportunity to connect our work on random logic programs in \cref{chapter:randomlps} and on (W)FOMC in \cref{chapter:wfomc} is by adapting the constraint model to generate (W)FOMC instances instead of logic programs. This way one could systematically search for interesting instances that, e.g.,
 \begin{itemize}
 \item reveal differences in the runtime complexity of various algorithms or
@@ -91,7 +91,7 @@ There is also ample opportunity for theoretical contributions. For instance, one
 %% \end{itemize}
 
 % TODO (V) ('Finally, for the'): I think this reference is rather vague. Instead there has been some recent work on making connections between tractable circuits and explainability, and perhaps you can articulate something based on that. There is also some discussion on robustness in machine learning and where exact computation can help. Likewise you could reference the work on approximate counting as another dimension to your work. You could mention the use of portfolio approaches to make SAT extremely fast, and whether something similar could be tried out with your work.
-\paragraph{Artificial intelligence and combinatorics.}
+\paragraph*{Artificial intelligence and combinatorics.}
 Our hope for the broader field of artificial intelligence is that---similarly to the resurgence of symbolic artificial intelligence amidst deep neural networks \citep{garnelo2019reconciling}---the field shifts some of its focus from numbers and probabilities to structural concepts such as functions and relations. Once a solution to, e.g., a WFOMC problem is formulated as a function $f$ rather than the evaluation of $f$ on some particular input values, richer ways of reasoning become available. For example, instead of asking whether a probability of some event is above/below some threshold in a particular situation, one could ask for conditions on the input values that are necessary for the probability to be sufficiently high/low. Such reasoning capabilities have clear benefits to the robustness of artificial agents and to explainability---another rapidly emerging area of research \citep{DBLP:journals/corr/abs-1909-03012,DBLP:journals/fdata/BelleP21,DBLP:journals/corr/abs-2202-10335}. Finally, for the benefit of both artificial intelligence and combinatorics, we would like to reiterate and expand on the notion of automatic enumerative combinatorialist by \citet{DBLP:conf/ilp/BarvinekB0ZK21}. Perhaps WFOMC can mature into an easy-to-use tool comparable to constraint programming that can compute any function expressible in first-order logic, in many cases providing a simple solution via a combination of recursive functions.
 
 %% \begin{itemize}

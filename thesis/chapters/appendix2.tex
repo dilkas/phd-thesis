@@ -38,11 +38,12 @@
   as required.
 \end{proof}
 
-\begin{customlemma}{1} \label{lemma:cpt2}
-  Let $X \in \mathcal{V}$ be a random variable with parents $\mathrm{pa}(X) = \{ Y_1,
-  \dots, Y_n \}$. Then $\mathrm{CPT}_X\colon 2^{\mathcal{E}^*(X)} \to
-  \mathbb{R}_{\ge 0}$ is such that for any $x \in \im X$ and $(y_1, \dots, y_n)
-  \in \prod_{i=1}^n \im Y_i$,
+\begin{customlemma}{1}\label{lemma:cpt2}
+  Let $X \in \mathcal{V}$ be a random variable with parents
+  $\mathrm{pa}(X) = \{ Y_1, \dots, Y_n \}$. Then
+  $\mathrm{CPT}_X\colon 2^{\mathcal{E}^*(X)} \to \mathbb{R}_{\ge 0}$ is such
+  that for any $x \in \Imm X$ and
+  $(y_1, \dots, y_n) \in \prod_{i=1}^n \Imm Y_i$,
   \[
     \mathrm{CPT}_X (T) = \Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n),
   \]
@@ -50,10 +51,11 @@
   \}$.
 \end{customlemma}
 \begin{proof}
-  If $X$ is binary, then $\mathrm{CPT}_X$ is a sum of $2\prod_{i=1}^n |\im
-  Y_i|$ terms, one for each possible assignment of values to variables $X, Y_1,
-  \dots, Y_n$. Exactly one of these terms is nonzero when applied to $T$, and
-  it is equal to $\Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n)$ by definition.
+  If $X$ is binary, then $\mathrm{CPT}_X$ is a sum of
+  $2\prod_{i=1}^n |\Imm Y_i|$ terms, one for each possible assignment of values
+  to variables $X, Y_1, \dots, Y_n$. Exactly one of these terms is nonzero when
+  applied to $T$, and it is equal to
+  $\Pr(X = x \mid Y_1 = y_1, \dots, Y_n = y_n)$ by definition.
 
   If $X$ is not binary, then $\left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)(T) = 1$, and
   \[
@@ -70,7 +72,7 @@
       \Pr(x_1, \dots, x_n) &
       \begin{aligned}
         &\text{if } T = \{ \lambda_{X_i=x_i} \}_{i = 1}^n \text{ for} \\
-        &\text{some } \textstyle (x_i)_{i=1}^n \in \prod_{i=1}^n \im X_i
+        &\text{some } \textstyle (x_i)_{i=1}^n \in \prod_{i=1}^n \Imm X_i
       \end{aligned} \\
       0 & \text{otherwise,}
     \end{cases}
@@ -78,8 +80,8 @@
   for all $T \in 2^U$.
 \end{customlemma}
 \begin{proof}
-  If $T = \{ \lambda_{X=v_X} \mid X \in \mathcal{V} \}$ for some $(v_X)_{X
-    \in \mathcal{V}} \in \prod_{X \in \mathcal{V}} \im X$, then
+  If $T = \{ \lambda_{X=v_X} \mid X \in \mathcal{V} \}$ for some
+  ${(v_X)}_{X \in \mathcal{V}} \in \prod_{X \in \mathcal{V}} \Imm X$, then
   \begin{align*}
     \phi(T) &= \prod_{X \in \mathcal{V}} \Pr \left( X=v_X \;\middle|\; \bigwedge_{Y \in \mathrm{pa}(X)} Y=v_Y \right) \\
             &= \Pr \left( \bigwedge_{X \in \mathcal{V}} X=v_X \right)
@@ -89,14 +91,14 @@
   $|\mathcal{E}(X) \cap T| \ne 1$. If $\mathcal{E}(X) \cap T = \emptyset$, then
   $\left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)(T) = 0$, and so
   $\mathrm{CPT}_X(T) = 0$, and $\phi(T) = 0$. If $|\mathcal{E}(X) \cap T| > 1$,
-  then we must have two different values $x_1, x_2 \in \im X$ such that
+  then we must have two different values $x_1, x_2 \in \Imm X$ such that
   $\{\lambda_{X=x_1}, \lambda_{X=x_2} \} \subseteq T$ which means that
   $(\overline{[\lambda_{X=x_1}]} + \overline{[\lambda_{X=x_2}]})(T) = 0$, and
   so, again, $\mathrm{CPT}_X(T) = 0$, and $\phi(T) = 0$.
 \end{proof}
 
 \begin{customthm}{4}
-  For any $X \in \mathcal{V}$ and $x \in \im X$,
+  For any $X \in \mathcal{V}$ and $x \in \Imm X$,
   \[
     (\exists_U(\phi \cdot [\lambda_{X=x}]))(\emptyset) = \Pr(X = x).
   \]
@@ -107,7 +109,7 @@
     (\exists_U (\phi \cdot [\lambda_{X=x}]))(\emptyset) &= \sum_{T \in 2^U} (\phi \cdot [\lambda_{X=x}])(T) \\
                                                         &= \sum_{\lambda_{X=x} \in T \in 2^U} \phi(T) \\
                                                         &= \sum_{\lambda_{X=x} \in T \in 2^U} \left( \prod_{Y \in \mathcal{V}} \mathrm{CPT}_Y \right)(T) \\
-                                                        &= \sum_{(y_i)_{i=1}^n \in \prod_{i=1}^n \im Y_i} \Pr(x, y_1, \dots, y_n) \\
+                                                        &= \sum_{{(y_i)}_{i=1}^n \in \prod_{i=1}^n \Imm Y_i} \Pr(x, y_1, \dots, y_n) \\
                                                         &= \Pr(X = x)
   \end{align*}
   by:

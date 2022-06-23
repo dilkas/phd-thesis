@@ -134,7 +134,6 @@
 \DeclareMathOperator{\Determined}{\Delta}
 \DeclareMathOperator{\Undetermined}{\Upsilon}
 \DeclareMathOperator{\AlmostDetermined}{\Gamma}
-\DeclareMathOperator{\im}{im}
 \DeclareMathOperator{\CR}{\textsc{CR}}
 \DeclareMathOperator{\GDR}{\textsc{GDR}}
 \DeclareMathOperator{\IE}{\textsc{IE}}
@@ -345,39 +344,27 @@
 % * !!! incorporate new feedback in ALL sections
 % * Figures/tables: alignment issues
 % * Add additional information from phd_notes and previous versions of some of the papers.
-% * Remove the use of the words: theory, axiom
 % * true/false are written in three different fonts in different chapters: texttt, textsc, and textsf
-% * maybe: use sf for SAT, WMC, and a few other problems
 % * double check what symbols I use for implication and equivalence
-% * have theorems, examples, etc. numbering be chapter-specific (or even more densely)
 % * consistent spacing around sets, use of coloneqq
-% * maybe briefly introduce notation for positive and nonnegative integers, non-negative reals, etc.
 % * capitalisation and font for predicates, variables, constants, etc.
 % * textsc for algorithm names (e.g., problog)
-% * fonts for names of problems (e.g., SAT, WMC) (no font)
-% * replace \paragraph with \paragraph*
+% * fonts for names of problems (e.g., SAT, #SAT, WMC, FOMC, WFOMC) (no font)
 % * generating random logic programs:
 % ** are the definitions of fact/rule the same as in the background section?
 % ** replace the citation for stratification in the content chapter with the better one from the background chapter
 % ** there's no need for hyphens in 'variable-ordering' and 'value-ordering'
 % ** it's first fail (equivalent to dom) rather than fail-first
 % * predicates and constants lowercase, variables uppercase
-% * incorporate other paragraphs from my year 2 review (on the use of probabilities, WMC, applications of WMC, motivation for my work, probabilistic inference algorithms, knowledge compilation, WMC algorithms)
 % * consider using listings for all Prolog and maybe ProbLog code (but then everything becomes sf instead of tt)
-% * maybe write Markov network instead of Markov random field
 % * all figures/tables/algorithms float to top?
 % * primal graphs are also known as moral graphs and i-maps in the case of BNs
-% * don't cite anything for Markov networks
-% * what should I do with the unpublished part of the KR paper?
 % * citations for definitions, theorems, etc. should be citet rather than citep
 % * make the arrows (and tree sibling and node distances) all the same
 % * check if some arXiv citations can be replaced by their published versions
 % * notation for graphs: \mathcal{V}, \mathcal{E}, \mathcal{L}
 % * introduction, background,recursion: merge table cells with the same info
-% * replace all references to 'this paper' with 'this chapter' or 'this thesis'
 % * preserve the section of paper1 in wmc-without-parameters that got deleted in paper2
-% * merge Im and im commands
-% * merge the two sets of colours
 % * eliminate warnings (e.g., overflow, single-spacing)
 % * rewrite the last paragraph of section 3.2 (how the UAI paper refers to the SAT paper)
 % * background: wmc should be defined at the very beginning
@@ -404,6 +391,7 @@
 % * write acknowledgements
 % * make sure to use \text{, } and \text{. } for FOL
 % * integrate the proofs from the appendix to the main paper
+% * V: again make sure that the conclusions are befitting a thesis by indicating pointers to previous and upcoming chapters.
 
 \include{chapters/introduction} % 5-14 pages (9 on average)
 \include{chapters/background} % 11-45 pages (27 on average)

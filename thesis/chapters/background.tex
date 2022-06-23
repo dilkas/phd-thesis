@@ -100,7 +100,7 @@ The query \texttt{ancestor(sky, zoe)} returns true since Sky is a parent of a pa
 
 % could also describe stratification in more detail (either here or in Chapter 3)
 
-%% \paragraph{Things to mention.}
+%% \paragraph*{Things to mention.}
 %% \begin{itemize}
 %% \item we're not defining literals here
 %% \item the generalisation of clauses affects the definitions of stratification and dependency graph as well
@@ -122,7 +122,7 @@ The query \texttt{ancestor(sky, zoe)} returns true since Sky is a parent of a pa
 %%   \end{itemize}
 %% \end{itemize}
 
-\subsection{Constraint Programming} \label{sec:cp}
+\subsection{Constraint Programming}\label{sec:cp}
 
 Constraint models are successfully used to tackle search problems in many domains such as bioinformatics, configuration, networks, planning, scheduling, and vehicle routing \citep{DBLP:reference/fai/2}. Here we briefly describe what a constraint satisfaction problem (CSP) is, how an algorithm might attempt to solve it, and how one can help the algorithm search efficiently.
 
@@ -141,15 +141,15 @@ Constraint models are successfully used to tackle search problems in many domain
 
   First, note each column (i.e, \emph{file}) must have exactly one queen. Let $(q_i)_{i=1}^n$ be variables with domains $q_i \in \{\, 1, \dots, n \,\}$, where we use $q_i = j$ to denote that the $i$th column queen is on row (i.e., \emph{rank}) $j$. Then the entire problem can be described by the following three constraints.
 
-  \begin{constraint} \label{exampleconstraint:1}
+  \begin{constraint}\label{exampleconstraint:1}
     $\alldifferent(\{\,q_i\,\}_{i=1}^n)$
   \end{constraint}
 
-  \begin{constraint} \label{exampleconstraint:2}
+  \begin{constraint}\label{exampleconstraint:2}
     $\alldifferent(\{\, q_i + i \mid i = 1, \dots, n \,\})$
   \end{constraint}
 
-  \begin{constraint} \label{exampleconstraint:3}
+  \begin{constraint}\label{exampleconstraint:3}
     $\alldifferent(\{\, q_i - i \mid i = 1, \dots, n \,\})$
   \end{constraint}
 
@@ -609,7 +609,7 @@ Pseudo-Boolean functions, most commonly represented as ADDs (although a tensor-b
 
 Informally, both BDDs and ADDs are like decision trees (whose leaves correspond to elements of the image of the function that is being represented) but compressed into a DAG. Below we define ADDs---the definition of BDDs simply requires replacing $\mathbb{R}$ with $\{\, 0, 1 \,\}$. Our definition is partially based on the original definition by \citet{DBLP:journals/fmsd/BaharFGHMPS97} as well as recent work by \citet{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The definition can also be generalised to use any set instead of $\mathbb{R}$ and to represent several functions instead of just one.
 
-\paragraph{Notation.} Let $G$ be a directed graph. Then $\mathcal{V}(G)$ denotes the set of nodes of $G$, $\mathcal{E}(G)$ denotes the set of edges of $G$, and $\mathcal{L}(G)$ denotes the set of sinks of $G$.
+\paragraph*{Notation.} Let $G$ be a directed graph. Then $\mathcal{V}(G)$ denotes the set of nodes of $G$, $\mathcal{E}(G)$ denotes the set of edges of $G$, and $\mathcal{L}(G)$ denotes the set of sinks of $G$.
 
 \begin{definition} \label{def:add}
   Given a set of variables $X$ and a variable ordering represented as an injection
