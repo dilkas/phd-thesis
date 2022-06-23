@@ -335,12 +335,10 @@ Perhaps the best-known representations of probability distributions are \emph{pr
 %%     \caption{the CPTs associated with the Bayesian network in \cref{example:bn} and \cref{fig:bn}}
 %%     \label{fig:examplecpts}
 %%   \end{subfigure}
-  \caption{Two PGMs that describe the independence structure of \cref{example:bn}}
+  \caption{Two PGMs that describe the independence structure of \cref{example:bn}.}
 \end{figure}
 
 \begin{table}
-  \caption{An example CPT for $\Pr(A \mid B, E)$ from \cref{example:bn}}
-  \label{table:examplecpt}
   \centering
   \begin{tabular}[t]{lllr}
     \toprule
@@ -356,6 +354,8 @@ Perhaps the best-known representations of probability distributions are \emph{pr
     true & true & true & 0.95 \\
     \bottomrule
   \end{tabular}
+  \caption{An example CPT for $\Pr(A \mid B, E)$ from
+    \cref{example:bn}.}\label{table:examplecpt}
 \end{table}
 
 The graph of a \emph{Bayesian network} for this example scenario is in \cref{fig:bn}. This directed acyclic graph (DAG) tells us that the joint probability distribution can be factored as
@@ -376,7 +376,7 @@ What if we wanted to generalise \cref{example:bn} to support any number of neigh
 
 Augmenting a programming language with probabilities is another common way to compactly represent probability distributions. Logic programming languages, in particular, have been frequently used for this purpose. Examples of probabilistic logic programming languages include the independent choice logic \citep{DBLP:journals/ai/Poole97,DBLP:conf/ilp/Poole08}, PRISM \citep{DBLP:conf/ijcai/SatoK97,DBLP:conf/ilp/SatoK08}, BLOG \citep{DBLP:conf/ijcai/MilchMRSOK05}, NP-BLOG \citep{DBLP:conf/uai/CarbonettoKFP05}, ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} and CP-logic \citep{DBLP:journals/tplp/VennekensDB09}. Functional and imperative programming languages have also seen some use, examples of which include BUGS \citep{gilks1994language}, IBAL \citep{DBLP:conf/ijcai/Pfeffer01}, Church \citep{DBLP:conf/uai/GoodmanMRBT08}, and Stan \citep{stan}. More information on probabilistic logic programming, probabilistic programming more generally, and statistical relational artificial intelligence can be found in the work of \citet{DBLP:conf/ilp/2008p}, \citet{DBLP:conf/icse/GordonHNR14}, and \citet{DBLP:series/synthesis/2016Raedt}, respectively.
 
-\begin{lstlisting}[caption=A ProbLog program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}, label={lst:problog}]
+\begin{lstlisting}[caption=A ProbLog program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}., label={lst:problog}]
   neighbour(john).
   neighbour(marry).
 
@@ -396,7 +396,7 @@ Augmenting a programming language with probabilities is another common way to co
   query(burglary).
 \end{lstlisting}
 
-\begin{lstlisting}[escapeinside={(*}{*)},caption=A BLOG program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}, label={lst:blog}]
+\begin{lstlisting}[escapeinside={(*}{*)},caption=A BLOG program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}., label={lst:blog}]
   type Neighbour;
   distinct Neighbour John, Mary;
 
@@ -495,8 +495,7 @@ The first two items on this list are described in \cref{sec:nnf,sec:sdds}, respe
         }
       };
     \end{tikzpicture}
-    \caption{d-DNNF}
-    \label{fig:ddnnf}
+    \caption{d-DNNF}\label{fig:ddnnf}
   \end{subfigure}
   \begin{subfigure}{0.32\textwidth}
     \centering
@@ -534,8 +533,7 @@ The first two items on this list are described in \cref{sec:nnf,sec:sdds}, respe
         }};
       \draw[*-Latex] let \p1 = (bullet.two), \p2 = (bullet.center) in ({\x1 + 2.5},{\y2 + 2}) -- (3);
     \end{tikzpicture}
-    \caption{SDD}
-    \label{fig:sdd}
+    \caption{SDD}\label{fig:sdd}
   \end{subfigure}
   \begin{subfigure}{0.32\textwidth}
     \centering
@@ -547,11 +545,12 @@ The first two items on this list are described in \cref{sec:nnf,sec:sdds}, respe
         child {node[draw,rectangle] {$C$}}
       };
     \end{tikzpicture}
-    \caption{vtree}
-    \label{fig:vtree}
+    \caption{vtree}\label{fig:vtree}
   \end{subfigure}
-  \caption{A d-DNNF and an SDD representation of $C \land (A \lor \neg B)$, together with the corresponding vtree. The numbers 1 and 3 come from the in-order traversal of the vtree and visually connect subtrees of both the SDD and the vtree.}
-  \label{fig:kc}
+  \caption{A d-DNNF and an SDD representation of $C \land (A \lor \neg B)$,
+    together with the corresponding vtree. The numbers 1 and 3 come from the
+    in-order traversal of the vtree and visually connect subtrees of both the
+    SDD and the vtree.}\label{fig:kc}
 \end{figure}
 
 Note that the formulas in \cref{example:ddnnf1,example:ddnnf2} are equivalent, and the latter is also pictured in \cref{fig:ddnnf}.
@@ -656,8 +655,7 @@ To view an ADD as a pseudo-Boolean function, given an interpretation $\iota\colo
       \draw[-Latex] (A) -- (C);
       \draw[-Latex] (B) -- (0);
     \end{tikzpicture}
-    \caption{BDD}
-    \label{fig:bdd}
+    \caption{BDD}\label{fig:bdd}
   \end{subfigure}
   \begin{subfigure}{0.49\textwidth}
     \centering
@@ -671,10 +669,12 @@ To view an ADD as a pseudo-Boolean function, given an interpretation $\iota\colo
       \draw[dashed,-Latex] (y) -- (a);
       \draw[-Latex] (y) -- (b);
     \end{tikzpicture}
-    \caption{ADD}
-    \label{fig:add}
+    \caption{ADD}\label{fig:add}
   \end{subfigure} % could redraw the second diagram to be more like the others
-  \caption{Example BDD (for the formula $C \land (A \lor \neg B)$) and ADD (for the function $f$ in \cref{example:add}). An edge $e$ is dashed if $\epsilon(e) = 0$ and solid otherwise, where $\epsilon$ is as in \cref{def:add}.}
+  \caption{Example BDD (for the formula $C \land (A \lor \neg B)$) and ADD (for
+    the function $f$ in \cref{example:add}). An edge $e$ is dashed if
+    $\epsilon(e) = 0$ and solid otherwise, where $\epsilon$ is as in
+    \cref{def:add}.}
 \end{figure}
 
 \begin{example} \label{example:add}
@@ -700,8 +700,6 @@ We end our discussion of BDDs and ADDs by describing some of their properties as
 
 \begin{table}
   \centering
-  \caption{Operations on ADDs, their definitions, and the time complexity of the best-known algorithm for performing each operation. Let $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$ be pseudo-Boolean functions represented by ADDs with $n$ and $m$ nodes respectively, and let $r \in \mathbb{R}$, and $x \in X$.}
-  \label{tbl:complexity}
   \begin{tabular}{lll}
     \toprule
     Operation & Definition & Complexity \\
@@ -714,6 +712,12 @@ We end our discussion of BDDs and ADDs by describing some of their properties as
     $\exists_xf$ & $\exists_xf\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_xf(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ \\
     \bottomrule
   \end{tabular}
+  \caption{Operations on ADDs, their definitions, and the time complexity of the
+    best-known algorithm for performing each operation. Let
+    $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$ be
+    pseudo-Boolean functions represented by ADDs with $n$ and $m$ nodes
+    respectively, and let $r \in \mathbb{R}$, and
+    $x \in X$.}\label{tbl:complexity}
 \end{table}
 
 The operations pertinent to our needs are listed in \cref{tbl:complexity}: reduction of an ADD to its canonical form, addition/multiplication as well as scalar addition/multiplication, two types of \emph{restrictions}, and \emph{projection}. For a more detailed description, we refer the reader to previous work \citep{DBLP:journals/fmsd/BaharFGHMPS97,DBLP:conf/aaai/DudekPV20}. The linear reduction algorithm is by \citet{somenzi1998cudd}, the algorithms for most other operations are by \citet{DBLP:journals/tc/Bryant86}, and the complexity of projection comes as a corollary of the complexities of all other operations.

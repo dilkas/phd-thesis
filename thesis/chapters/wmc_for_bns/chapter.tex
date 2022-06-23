@@ -118,9 +118,6 @@ While in this paper we focus on measure-theoretic foundations and propose a new 
 
 \begin{sidewaystable}
   \centering
-  \caption{Notation for a logic with two atoms. The elements in both columns are
-    listed in the same order.}
-  \label{tbl:notation_example}
   \begin{tabular}{lcc}
     \toprule
     Name in logic & Boolean-algebraic notation & Set-theoretic notation \\
@@ -136,6 +133,8 @@ While in this paper we focus on measure-theoretic foundations and propose a new 
     \multirow{-7}{*}{Formulas (elements of $2^{2^U}$)} & $\bot$ & $\emptyset$ \\
     \bottomrule
   \end{tabular}
+  \caption{Notation for a logic with two atoms. The elements in both columns are
+    listed in the same order.}\label{tbl:notation_example}
 \end{sidewaystable}
 
 In this section, we give a brief introduction to two alternative ways to think
@@ -359,8 +358,7 @@ practice.\footnote{The proofs of this and other theoretical results can be found
       \bottomrule
     \end{tabular}
   \end{subfigure}
-  \caption{An example Bayesian network with its CPTs.}
-  \label{fig:example_bn}
+  \caption{An example Bayesian network with its CPTs.}\label{fig:example_bn}
 \end{figure*}
 
 In this section, we describe a way to encode Bayesian networks into WMC without
@@ -405,8 +403,7 @@ $\im W = \im F = \{0, 1 \}$, and $\im T = \{ l, m, h \}$.
 \end{definition}
 
 \begin{algorithm}[t]
-  \caption{Encoding a Bayesian network.}
-  \label{alg:encoding}
+  \caption{Encoding a Bayesian network.}\label{alg:encoding}
   \KwData{vertices $\mathcal{V}$, probability distribution $\Pr$}
   \KwResult{$\phi\colon 2^U \to \mathbb{R}_{\ge 0}$}
   $\phi \gets 1$\;
@@ -623,14 +620,11 @@ correct for this, we multiply the final answer by two for every $u \in U
   \centering
   \input{chapters/wmc_for_bns/cumulative.tex}%
   \caption{Cumulative numbers of instances solved by combinations of algorithms
-    and encodings over time.}
-  \label{fig:cumulative}
+    and encodings over time.}\label{fig:cumulative}
 \end{figure*}
 
 \begin{table}
   \centering
-  \caption{The numbers of instances (out of 1466) solved by
-    each combination of algorithm and encoding (uniquely, faster than others, and in total).}%
   \begin{tabular}{lrrr}
     \toprule
     Algorithm \& Encoding & Unique & Fastest & Total \\
@@ -646,17 +640,19 @@ correct for this, we multiply the final answer by two for every $u \in U
     $\textsf{Cachet} + \texttt{sbk05}$ & 13 & 229 & 928 \\
     \bottomrule
   \end{tabular}
-  \label{tbl:tallies}
+  \caption{The numbers of instances (out of 1466) solved by each combination of
+    algorithm and encoding (uniquely, faster than others, and in
+    total).}\label{tbl:tallies}
 \end{table}
 
 \begin{figure*}[t]
   \centering
   \input{chapters/wmc_for_bns/scatter.tex}%
-  \caption{An instance-by-instance comparison between $\textsf{ADDMC} +
-    \texttt{cw}$ and the best overall combination of algorithm and encoding
-    ($\textsf{Ace} + \texttt{cd06}$, on the left) as well as the second-best
-    encoding for \textsf{ADDMC} (\texttt{sbk05}, on the right).}
-  \label{fig:scatter}
+  \caption{An instance-by-instance comparison between
+    $\textsf{ADDMC} + \texttt{cw}$ and the best overall combination of algorithm
+    and encoding ($\textsf{Ace} + \texttt{cd06}$, on the left) as well as the
+    second-best encoding for \textsf{ADDMC} (\texttt{sbk05}, on the
+    right).}\label{fig:scatter}
 \end{figure*}
 
 We compare the six WMC encodings for Bayesian networks when run with both
@@ -757,9 +753,6 @@ significantly on (as-of-yet unknown) properties of the Bayesian networks.
 
 \begin{table}
   \centering
-  \caption{Asymptotic upper bounds on the numbers of variables and clauses/ADDs
-    for each encoding.}
-  \label{tbl:asymptotes}
   \begin{tabular}{m{0.4\linewidth} c c}
     \toprule
     Encoding(s) & Variables & Clauses/ADDs \\
@@ -769,6 +762,8 @@ significantly on (as-of-yet unknown) properties of the Bayesian networks.
     \texttt{d02} & $O(nv^{d+1})$ & $O(ndv^{d+1})$ \\
     \bottomrule
   \end{tabular}
+  \caption{Asymptotic upper bounds on the numbers of variables and clauses/ADDs
+    for each encoding.}\label{tbl:asymptotes}
 \end{table}
 
 We can explain what makes \textsf{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} run

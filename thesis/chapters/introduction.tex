@@ -62,8 +62,6 @@ WMC has been extended in many ways, e.g., to support first-order logic and conti
 Instead of performing addition and multiplication on numbers, one can do so on elements of an arbitrary (commutative) semiring. This extension of WMC is known as \emph{semiring programming} (SP) \citep{DBLP:journals/ijar/BelleR20}. Another important generalisation offered by SP is flexibility in how the numbers that are to be multiplied and added (i.e., the \emph{weights}) can be defined. In this thesis, we do something similar within the constraints of a modern WMC algorithm and call our generalisation \emph{pseudo-Boolean projection} (PBP).
 
 \begin{table}
-  \caption{An assortment of problems that require one to compute a quantity defined as a sum of products}
-  \label{table:comparison}
   \centering
   \begin{tabular}{lll}
     \toprule
@@ -80,6 +78,7 @@ Instead of performing addition and multiplication on numbers, one can do so on e
     Permanent & permutations & elements of a matrix \\
     \bottomrule
   \end{tabular}
+  \caption{An assortment of problems that require one to compute a quantity defined as a sum of products.}\label{table:comparison}
 \end{table}
 
 While WMC and its extensions use logic-based input formats, other sum-of-products problems have been studied before. For instance, the \emph{SumProd} problem, which generalises problems such as probabilistic inference in Bayesian networks and propositional model counting, is defined in terms of discrete variables and functions \citep{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. In this case, the sum is over all possible instantiations of the variables, and the product is over the values of the functions. Another similar problem is the \emph{algebraic path problem} where the sum is over all paths in a graph from one node to another, and the product is over the weights of the edges in the path \citep{DBLP:series/synthesis/2010Baras}. This problem generalises many graph problems such as shortest and longest path and has many uses in routing and network reliability analysis. Lastly, even famous problems in algebraic complexity theory such as computing the determinant or the permanent of a matrix are examples of this sum-of-products computational paradigm \citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See \cref{table:comparison} for a summary of all of the discussed problems.
@@ -215,8 +214,13 @@ In recent experiments, \textsf{WMC} algorithms are shown to perform similarly ov
       \node[fill=comparison,ultra thick,label=right:\cref{chapter:comparison}] {}; \\
     };
   \end{tikzpicture}
-  \caption{Concepts relevant to the thesis. The first row contains two approaches to generating random problem instances. The second row contains some representations of probability distributions. The third row contains encodings, i.e., computational problems that encode probabilistic inference tasks. The last row contains WMC and WFOMC algorithms. Each chapter is assigned a colour that indicates which concepts and interactions between concepts the chapter is about.}
-  \label{fig:overview}
+  \caption{Concepts relevant to the thesis. The first row contains two
+    approaches to generating random problem instances. The second row contains
+    some representations of probability distributions. The third row contains
+    encodings, i.e., computational problems that encode probabilistic inference
+    tasks. The last row contains WMC and WFOMC algorithms. Each chapter is
+    assigned a colour that indicates which concepts and interactions between
+    concepts the chapter is about.}\label{fig:overview}
 \end{figure}
 
 % TODO (V) ('combine into a coherent picture'): Play a role in the overall development aroundmodel counting. Alt phrasing - We shareholder contributions connect to each other in relation to developments in model counting

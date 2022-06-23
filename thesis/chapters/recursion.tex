@@ -550,7 +550,7 @@ introduced constants or constraints or both. The aforementioned conditions
 ensure that these parts can be treated independently.
 
 \begin{algorithm}
-  \caption{The compilation rule for $\GDR$ nodes}\label{alg:domainrecursion}
+  \caption{The compilation rule for $\GDR$ nodes.}\label{alg:domainrecursion}
   \KwIn{formula $\phi$}
   \KwOut{set of chips $S$}
   $S \gets \emptyset$\;
@@ -633,7 +633,7 @@ recursive function. The GDR compilation rule is summarised as
 \subsubsection{Constraint Removal} \label{sec:cr}
 
 \begin{algorithm}
-  \caption{The compilation rule for $\CR$ nodes}\label{alg:constraintremoval}
+  \caption{The compilation rule for $\CR$ nodes.}\label{alg:constraintremoval}
   \KwIn{formula $\phi$, set of domains $\mathcal{D}$}
   \KwOut{set of chips $S$}
   $S \gets \emptyset$\;
@@ -715,7 +715,7 @@ is as in \cref{example:first}, then
 % Everything Else
 
 \begin{algorithm}
-  \caption{The compilation rule for $\Reff$ nodes}
+  \caption{The compilation rule for $\Reff$ nodes.}
   \label{alg:trycache}
   \KwIn{formula $\phi$, cache $C$}
   \KwOut{a set of chips}
@@ -921,7 +921,7 @@ remove the first formula from $L$ and potentially add something to $G$, $L$, and
 $C$.
 
 \begin{algorithm}
-  \caption{The (main part of the) search algorithm}\label{alg:search}
+  \caption{The (main part of the) search algorithm.}\label{alg:search}
   \KwIn{a formula $\phi_0$}
   \KwResult{all found FCGs for $\phi_0$ are in set $S$} $S \gets \emptyset$\;
   $(G_0, L_0, C_{0}) \gets \applyGreedyRules{$\phi_0$, $\emptyset$}$\;\label{line:greedy}
@@ -992,7 +992,7 @@ $C$.
 
 \begin{algorithm}
   \caption{Helper functions for updating a cache and merging
-    FCGs}\label{alg:helpers}
+    FCGs.}\label{alg:helpers}
   \Fn{\updateCache{cache $C$, formula $\phi$, FCG $(V, s, N^+, \tau)$}}{
     \lIf{$\tau(s) = \textsc{Ref}$}{\Return{$C$}}
     \lIf{$\#\phi \not\in \dom(C)$}{\Return{$C \cup \{\, \#\phi \mapsto (\phi, s) \,\}$}}

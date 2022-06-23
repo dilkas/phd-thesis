@@ -257,7 +257,7 @@ can similarly simplify ADDs as well. Other \textsf{WMC} algorithms are
 indifferent to the numerical values of weights.
 
 \begin{algorithm}[t]
-  \caption{Generating a random formula}\label{alg:random}
+  \caption{Generating a random formula.}\label{alg:random}
   \SetKwData{kcnf}{kcnf}
   \SetKwFunction{NewVariable}{NewVariable}
   \SetKwProg{Fn}{Function}{:}{}
@@ -417,7 +417,7 @@ algorithms.
 %   \end{pmatrix}
 % \]
 
-% The novel part of the algorithm is centred around \cref{line:return}. 
+% The novel part of the algorithm is centred around \cref{line:return}.
 
 \subsection{Validating the Model}\label{sec:remarks}
 
@@ -482,9 +482,25 @@ enough to influence our experimental setup in the next section.
 \begin{figure}[t]
   \centering
   \includegraphics{chapters/comparison/treewidth}
-  \caption[Visualisations of the data from \cref{exp:density}. The top-left plot shows how the running time of each algorithm changes w.r.t.\ density when $\rho = 0$. The top-right plot shows changes in the running time of each algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at the bottom show how the estimated base of the exponential relationship between primal treewidth and the runtime of each algorithm depends on $\mu$. The bottom-left plot is for the simple linear model (with shaded regions showing standard error), and the bottom-right plot uses the estimates provided by ESA (with shaded regions showing \SI{95}{\percent} confidence intervals).]%
-          {Visualisations of the data from \cref{exp:density}. The top-left plot shows how the running time of each algorithm changes w.r.t.\ density when $\rho = 0$. The top-right plot shows changes in the running time of each algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at the bottom show how the estimated base of the exponential relationship between primal treewidth and the runtime of each algorithm depends on $\mu$. The bottom-left plot is for the simple linear model (with shaded regions showing standard error), and the bottom-right plot uses the estimates provided by ESA \protect{\citep{DBLP:conf/gecco/PushakH20}} (with shaded regions showing \SI{95}{\percent} confidence intervals).}
-  \label{fig:treewidth}
+  \caption[Visualisations of the data from \cref{exp:density}. The top-left plot
+  shows how the running time of each algorithm changes w.r.t.\ density when
+  $\rho = 0$. The top-right plot shows changes in the running time of each
+  algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at the
+  bottom show how the estimated base of the exponential relationship between
+  primal treewidth and the runtime of each algorithm depends on $\mu$. The
+  bottom-left plot is for the simple linear model (with shaded regions showing
+  standard error), and the bottom-right plot uses the estimates provided by ESA
+  (with shaded regions showing \SI{95}{\percent} confidence intervals).]%
+  {Visualisations of the data from \cref{exp:density}. The top-left plot shows
+    how the running time of each algorithm changes w.r.t.\ density when
+    $\rho = 0$. The top-right plot shows changes in the running time of each
+    algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at
+    the bottom show how the estimated base of the exponential relationship
+    between primal treewidth and the runtime of each algorithm depends on $\mu$.
+    The bottom-left plot is for the simple linear model (with shaded regions
+    showing standard error), and the bottom-right plot uses the estimates
+    provided by ESA \protect{\citep{DBLP:conf/gecco/PushakH20}} (with shaded
+    regions showing \SI{95}{\percent} confidence intervals).}\label{fig:treewidth}
 \end{figure}
 
 % the experimental setup
@@ -537,7 +553,7 @@ peak hardness w.r.t.\ density occurs at around 1.9 for all algorithms except for
   \includegraphics{chapters/comparison/r2}
   \caption{The coefficients of determination (rounded to one decimal place) of
     all the linear models fitted for the top-right subplot of
-    \cref{fig:treewidth}}\label{fig:r2}
+    \cref{fig:treewidth}.}\label{fig:r2}
 \end{figure}
 
 \begin{figure}[t]
@@ -546,7 +562,7 @@ peak hardness w.r.t.\ density occurs at around 1.9 for all algorithms except for
   \caption{Changes in the running time of each algorithm as a result of changing
     $\delta$ (on the left-hand side) and $\epsilon$ (on the right-hand side)
     according to the data from
-    \cref{exp:delta,exp:epsilon}}\label{fig:delta_epsilon}
+    \cref{exp:delta,exp:epsilon}.}\label{fig:delta_epsilon}
 \end{figure}
 
 The other question we want to investigate using this experiment is how each algorithm scales w.r.t.\ primal treewidth. The top-right plot in \cref{fig:treewidth} shows this relationship for a fixed value of $\mu$, and one can see some evidence that the running time of \textsc{DPMC} grows faster w.r.t.\ primal treewidth than the running time of the other algorithms. We use two statistical techniques to quantify this growth: a simple linear regression model and the empirical scaling analyzer (ESA)~v2\footnote{\url{https://github.com/YashaPushak/ESA}} \citep{DBLP:conf/gecco/PushakH20}. In both cases, for each algorithm and value of $\mu$ in \cref{exp:density}, we select the median runtime for all available values of primal treewidth. In the former case, we fit the model $\ln t \sim \alpha w + \beta$, where $t$ is the median running time of the algorithm, $w$ is the primal treewidth, and $\alpha$ and $\beta$ are parameters.\footnote{Similar statistical analyses have been used to investigate polynomial-to-exponential phase transitions in \SAT{} \citep{DBLP:journals/constraints/CoarfaDASV03} and the behaviour of \SAT{} solvers on CNF-XOR formulas \citep{DBLP:conf/ijcai/DudekMV17}.} In other words, this model attempts to express median running time as $e^\beta{(e^\alpha)}^w$. In the latter case, we run ESA with 1001 bootstrap samples, a window of 101, and use the first \SI{30}{\percent} of the data for training.

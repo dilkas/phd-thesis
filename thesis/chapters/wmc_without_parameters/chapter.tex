@@ -357,8 +357,7 @@ representation of a clause in the DIMACS CNF format.
 \subsection{From WMC to PBP}
 
 \begin{algorithm}[t]
-  \caption{WMC to PBP transformation}
-  \label{alg:transformation}
+  \caption{WMC to PBP transformation.}\label{alg:transformation}
   \SetKwFunction{rename}{rename}
   \SetKwProg{Fn}{Function}{:}{}
   \KwData{WMC (or minimum-cardinality WMC) instance $(\phi, X_I, X_P, w)$}
@@ -754,9 +753,8 @@ Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors with a
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{chapters/wmc_without_parameters/cumulative}
-  \caption{Cactus plot of all algorithm-encoding pairs. The dotted line
-    denotes the total number of instances used.}
-  \label{fig:cumulative2}
+  \caption{Cactus plot of all algorithm-encoding pairs. The dotted line denotes
+    the total number of instances used.}\label{fig:cumulative2}
 \end{figure}
 
 \begin{figure}
@@ -781,9 +779,6 @@ Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors with a
   \end{minipage}\hfill
   \begin{minipage}{0.49\textwidth}
     \centering
-    \captionof{table}{The numbers of instances (out of 1466) that each algorithm and
-      encoding combination solved faster than any other combination and in
-      total.}\label{tbl:performance}
     \begin{tabular}{lrr}
       \toprule
       Combination & Fastest & Solved \\
@@ -802,6 +797,9 @@ Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors with a
       $\textsf{Cachet} + \texttt{sbk05}$ & 49 & 983 \\
       \bottomrule
     \end{tabular}
+    \captionof{table}{The numbers of instances (out of 1466) that each algorithm
+      and encoding combination solved faster than any other combination and in
+      total.}\label{tbl:performance}
   \end{minipage}
 \end{figure}
 

@@ -533,14 +533,13 @@ $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
     \draw[-{Stealth[scale=1.5]}] (parent) edge node[above] {$+$} (father);
     \draw[-{Stealth[scale=1.5]}] (mother) edge node[below] {$-$} (father);
   \end{tikzpicture}%
-  \caption{The predicate dependency graph of the program from \protect{\cref{ex:program}}. Positive edges are labelled with `$+$', and negative edges with `$-$'.}
-  \label{fig:predicate_dependencies}
+  \caption{The predicate dependency graph of the program from
+    \protect{\cref{ex:program}}. Positive edges are labelled with `$+$', and
+    negative edges with `$-$'.}\label{fig:predicate_dependencies}
 \end{figure}
 
 \begin{table}
   \centering
-  \caption{Types of (potential) dependencies of a predicate $\mathsf{P}$ based on the number of undetermined edges on the path from the dependency to $\mathsf{P}$}
-  \label{tbl:dependencies}
   \begin{tabular}{clc}
     \toprule
     Edges & Name & Notation \\
@@ -550,6 +549,9 @@ $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
     $>1$ & Undetermined & $\Undetermined(p)$ \\
     \bottomrule
   \end{tabular}
+  \caption{Types of (potential) dependencies of a predicate $\mathsf{P}$ based
+    on the number of undetermined edges on the path from the dependency to
+    $\mathsf{P}$.}\label{tbl:dependencies}
 \end{table}
 
 Since the definition of independence relies on the dependency graph, we can
@@ -584,8 +586,7 @@ to replace any of $p$, $s$, $t$ in situations where the name is unimportant.
   \lIf{$D = \emptyset$}{\Return{\textsc{true}}}
   \leIf{$\exists (\Determined \_, \Determined \_) \in
     D$}{\Return{\textsc{false}}}{\Return{\textsc{undefined}}}
-  \caption{Entailment for independence}
-  \label{alg:independence_entailment}
+  \caption{Entailment for independence.}\label{alg:independence_entailment}
 \end{algorithm}
 
 Each entailment algorithm returns one out of three values:
@@ -616,8 +617,7 @@ independent. Otherwise, we return \textsc{undefined}.
     \lIf{$\{ d_1, d_2 \} = \{ \Determined(\_), \AlmostDetermined(\_, s, t)
       \}$ \label{line:propagation_condition}}{$\mathbf{A}[s][t]$.\removeValue{$1$}}
   }
-  \caption{Propagation for independence}
-  \label{alg:independence_propagation}
+  \caption{Propagation for independence.}\label{alg:independence_propagation}
 \end{algorithm}
 
 Propagation algorithms have two goals: causing a contradiction (failing) in
@@ -658,8 +658,7 @@ exist---\cref{line:propagation_condition} handles this possibility.
       \leIf{$D' = D$}{\Return{$D$}}{$D \gets D'$}
     }
   }
-  \caption{Dependencies of a predicate}
-  \label{alg:dependencies}
+  \caption{Dependencies of a predicate.}\label{alg:dependencies}
 \end{algorithm}
 
 The function $\getDependencies$ in \cref{alg:dependencies} calculates $D_p$ for
@@ -721,8 +720,9 @@ as intended.
       \end{block}
     \end{blockarray}
     \]
-    \caption{The adjacency matrix of the graph. The boxed value is the decision variable that will be propagated by \cref{alg:independence_propagation}.}
-    \label{fig:dependencies_matrix}
+    \caption{The adjacency matrix of the graph. The boxed value is the decision
+      variable that will be propagated by
+      \cref{alg:independence_propagation}.}\label{fig:dependencies_matrix}
   \end{subfigure}%
   \hfill
   \begin{subfigure}[b]{.39\textwidth}
@@ -739,11 +739,11 @@ as intended.
         \draw[-{Stealth},dashed,darkgray] (parent) edge (mother);
       \end{tikzpicture}
     }
-    \caption{A drawing of the graph. Dashed edges are undetermined---they may or may not exist.}
-    \label{fig:dependencies2}
+    \caption{A drawing of the graph. Dashed edges are undetermined---they may or
+      may not exist.}\label{fig:dependencies2}
   \end{subfigure}
-  \caption{The predicate dependency graph of \protect{\cref{example:independence}}}
-  \label{fig:example}
+  \caption{The predicate dependency graph of
+    \protect{\cref{example:independence}}.}\label{fig:example}
 \end{figure}
 % TODO: alignment is not good enough
 
@@ -824,15 +824,17 @@ Likewise, a higher number of predicates complicates the situation as well.
 \begin{figure}
   \centering
   \input{chapters/random_lps/impact.tex}%
-  \caption{The mean number of nodes in the binary search tree for each value of each experimental parameter. Note that the horizontal axis is on a $\log_2$ scale.}
-  \label{fig:impact}
+  \caption{The mean number of nodes in the binary search tree for each value of
+    each experimental parameter. Note that the horizontal axis is on a $\log_2$
+    scale.}\label{fig:impact}
 \end{figure}
 
 \begin{figure}
   \centering
   \input{chapters/random_lps/bars.tex}%
-  \caption{Inference time for different values of $\maxArity{}$ and proportions of probabilistic facts that are probabilistic. The total number of facts is fixed at $10^5$.}
-  \label{fig:bars}
+  \caption{Inference time for different values of $\maxArity{}$ and proportions
+    of probabilistic facts that are probabilistic. The total number of facts is
+    fixed at $10^5$.}\label{fig:bars}
 \end{figure}
 
 \subsection{Experimental Comparison of Inference Algorithms} \label{sec:1experiment2}
@@ -895,8 +897,7 @@ parts of a program can be handled independently.
   \caption{Mean inference time for a range of \textsc{ProbLog} inference
     algorithms as a function of the total number of facts in the program and the
     proportion of independent pairs of predicates. For the second plot, the
-    number of facts is fixed at $10^5$.}
-  \label{fig:line_plots}
+    number of facts is fixed at $10^5$.}\label{fig:line_plots}
 \end{figure}
 
 \section{Conclusion}
