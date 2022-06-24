@@ -519,7 +519,7 @@ PBP.
       that $c \ne \{ p \}$ and $p \in c$, \label{cond:just_parameter}
     \item and for any $c, d \in \phi$ such that $c \ne d$, $p \in c$ and $p
       \in d$, $\bigwedge_{l \in c \setminus \{ p \}} \neg l \land \bigwedge_{l
-        \in d \setminus \{ p \}} \neg l$ is false. \label{cond:disjoint}
+        \in d \setminus \{ p \}} \neg l$ is false.\label{cond:disjoint}
     \end{enumerate}
   \end{enumerate}
 \end{theorem}
@@ -610,15 +610,22 @@ that at most one implication clause per any parameter variable $p \in X_P$ can
                                                                &= w(p) + (1-w(p)) \left[ \bigwedge_{c \in \phi_p} c \setminus \{ p \} \right]_0^1 \\
                                                                &= \left[ \bigwedge_{c \in \phi_p} c \setminus \{ p \} \right]_{w(p)}^1 = \left[ \bigvee_{c \in \phi_p} \bigwedge_{l \in c \setminus \{ p \}} \neg l \right]_1^{w(p)}.
   \end{align*}
-   By \cref{cond:disjoint}, $\bigwedge_{l \in c \setminus \{ p \}} \neg l$ can
-   be true for at most one $c \in \phi_p$, and so
-   \[
-   \left[ \bigvee_{c \in \phi_p} \bigwedge_{l \in c \setminus \{ p \}} \neg l \right]_1^{w(p)} = \prod_{c \in \phi_p} \left[ \bigwedge_{l \in c \setminus \{ p \}} \neg l \right]_1^{w(p)}
-   \]
-   which is exactly what we needed to show. This ends the proof that the first loop of \cref{alg:transformation} preserves the answer under both \cref{cond:d02} and \cref{cond:bklm16}. Finally, the loop on \crefrange{line:foreach2start}{line:foreach2end} of \cref{alg:transformation} replaces $[v]_1^p[\neg v]_1^q$ with $[v]_q^p$ (for some $v \in X_I$ and $p, q \in \mathbb{R}$), but, of course, $[v]_1^p[\neg v]_1^q = [v]_1^p[v]_q^1 = [v]_q^p$, i.e., the answer is unchanged.
+  By \cref{cond:disjoint}, $\bigwedge_{l \in c \setminus \{ p \}} \neg l$ can be
+  true for at most one $c \in \phi_p$, and so
+  \[
+    \left[ \bigvee_{c \in \phi_p} \bigwedge_{l \in c \setminus \{ p \}} \neg l \right]_1^{w(p)} = \prod_{c \in \phi_p} \left[ \bigwedge_{l \in c \setminus \{ p \}} \neg l \right]_1^{w(p)}
+  \]
+  which is exactly what we needed to show. This ends the proof that the first
+  loop of \cref{alg:transformation} preserves the answer under both
+  \cref{cond:d02} and \cref{cond:bklm16}. Finally, the loop on
+  \crefrange{line:foreach2start}{line:foreach2end} of \cref{alg:transformation}
+  replaces $[v]_1^p[\neg v]_1^q$ with $[v]_q^p$ (for some $v \in X_I$ and
+  $p, q \in \mathbb{R}$), but, of course,
+  $[v]_1^p[\neg v]_1^q = [v]_1^p[v]_q^1 = [v]_q^p$, i.e., the answer is
+  unchanged.
 \end{proof}
 
-\begin{theorem}[Minimum-Cardinality Correctness] \label{thm:mccorrectness}
+\begin{theorem}[Minimum-Cardinality Correctness]\label{thm:mccorrectness}
   Let $(\phi, X_I, X_P, w)$ be a minimum-cardinality WMC instance that satisfies
   \cref{cond:2b2,cond:2b3,cond:just_parameter,cond:disjoint} of
   \cref{thm:correctness2} as well as the following:
@@ -733,14 +740,15 @@ For experimental data, we use Bayesian networks available with \textsf{Ace} and
   \texttt{water}.
 \end{itemize}
 
-To perform Bayesian network inference with \textsf{DPMC} (or with any
-other WMC algorithm not based on compilation such as \textsf{Cachet}), one
-needs to select a probability to compute
-\citep{DBLP:conf/cp/DudekPV20,DBLP:conf/sat/SangBBKP04}. If a network comes
-with an evidence file, we compute the probability of this evidence. Otherwise,
-let $X$ be the variable last mentioned in the Bayesian network file. If
-\textsf{true} is one of the values of $X$, then we compute $\Pr(X =
-\textsf{true})$, otherwise we choose the first-mentioned value of $X$.
+To perform Bayesian network inference with \textsf{DPMC} (or with any other WMC
+algorithm not based on compilation such as \textsf{Cachet}), one needs to select
+a probability to compute
+\citep{DBLP:conf/cp/DudekPV20,DBLP:conf/sat/SangBBKP04}. If a network comes with
+an evidence file, we compute the probability of this evidence. Otherwise, let
+$X$ be the variable last mentioned in the Bayesian network file. If \true{} is
+one of the values of $X$, then we compute $\Pr(X = \true{})$, otherwise we
+choose the first-mentioned value of $X$.
+% TODO: connect this to the previous chapter?
 
 The experiments were run on a computing cluster with Intel Xeon E5-2630,
 Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors with a

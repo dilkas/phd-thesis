@@ -146,7 +146,7 @@ without having to...
         solution always terminates.
         \begin{itemize}
           \item But their code only conjectures stuff on data. My conjectures
-                are guaranteed always true.
+                are guaranteed to always be true.
           \item everything has to be expressible in \Ctwo{}, i.e., the
                 two-variable fragment of FOL with counting quantifiers on one
                 domain.
@@ -1152,10 +1152,10 @@ from $v$.
   A contradiction node with clause $c$ as a parameter is interpreted as one if
   the clause has groundings and zero otherwise. In this case,
   $c = (\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})$,
-  which can be read as $\forall X, Y \in b^{\top}\text{, }X \ne Y \implies \bot$,
-  i.e., $\forall X, Y \in b^{\top}\text{, }X = Y$. This
-  latter sentence is true if and only if $|b^{\top}| < 2$. Therefore, we
-  can use the Iverson bracket notation to write $\diamondsuit = [l < 2]$.
+  which can be read as $\forall X, Y \in b^{\top}\text{,
+  }X \ne Y \implies \bot$, i.e., $\forall X, Y \in b^{\top}\text{, }X = Y$. This
+  latter sentence is true if and only if $|b^{\top}| < 2$. Therefore, we can use
+  the Iverson bracket notation to write $\diamondsuit = [l < 2]$.
 
   It remains to interpret the $\Reff$ node. Parameter
   $\{\, a \mapsto a', b \mapsto b^\bot \,\}$ tells us that the interpretation of

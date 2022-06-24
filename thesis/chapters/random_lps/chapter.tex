@@ -581,25 +581,22 @@ to replace any of $p$, $s$, $t$ in situations where the name is unimportant.
   \SetKwFunction{isDetermined}{isDetermined}
   \SetKwData{predicate}{predicate}
   \KwData{predicates $p_1$, $p_2$}
-  $D \gets \{ (d_1, d_2) \in \getDependencies{$p_1$, 1} \times
-  \getDependencies{$p_2$, 1} \mid d_1.\predicate = d_2.\predicate \}$\;
-  \lIf{$D = \emptyset$}{\Return{\textsc{true}}}
-  \leIf{$\exists (\Determined \_, \Determined \_) \in
-    D$}{\Return{\textsc{false}}}{\Return{\textsc{undefined}}}
+  $D \gets \{ (d_1, d_2) \in \getDependencies{$p_1$, 1} \times \getDependencies{$p_2$, 1} \mid d_1.\predicate = d_2.\predicate \}$\;
+  \lIf{$D = \emptyset$}{\Return{\normalfont\true{}}}
+  \leIf{$\exists (\Determined \_, \Determined \_) \in D$}{\Return{\normalfont\false{}}}{\Return{\normalfont\undefined{}}}
   \caption{Entailment for independence.}\label{alg:independence_entailment}
 \end{algorithm}
 
-Each entailment algorithm returns one out of three values:
-\textsc{true} if the constraint is guaranteed to hold, \textsc{false} if the
-constraint is violated, and \textsc{undefined} if whether the constraint will be
-satisfied or not depends on the future decisions made by the solver.
-\Cref{alg:independence_entailment} outlines a simple entailment algorithm for
-the independence of two predicates $p_1$ and $p_2$. First, we separately
-calculate all dependencies of $p_1$ and $p_2$ and look at the set $D$ of
-dependencies that $p_1$ and $p_2$ have in common. If there are none, then the
-predicates are clearly independent. If they have a dependency in common that is
-already fully determined ($\Determined$) for both predicates, then they cannot be
-independent. Otherwise, we return \textsc{undefined}.
+Each entailment algorithm returns one out of three values: \true{} if the
+constraint is guaranteed to hold, \false{} if the constraint is violated, and
+\undefined{} if whether the constraint will be satisfied or not depends on the
+future decisions made by the solver. \Cref{alg:independence_entailment} outlines
+a simple entailment algorithm for the independence of two predicates $p_1$ and
+$p_2$. First, we separately calculate all dependencies of $p_1$ and $p_2$ and
+look at the set $D$ of dependencies that $p_1$ and $p_2$ have in common. If
+there are none, then the predicates are clearly independent. If they have a
+dependency in common that is already fully determined ($\Determined$) for both
+predicates, then they cannot be independent. Otherwise, we return \undefined{}.
 
 \begin{algorithm}[t]
   \LinesNumbered
@@ -621,13 +618,13 @@ independent. Otherwise, we return \textsc{undefined}.
 \end{algorithm}
 
 Propagation algorithms have two goals: causing a contradiction (failing) in
-situations where the corresponding entailment algorithm would return
-\textsc{false}, and eliminating values from domains of variables that are
-guaranteed to cause a contradiction. \cref{alg:independence_propagation} does
-the former on \cref{line:fail}. Furthermore, for any dependency shared between
-predicates $p_1$ and $p_2$, if it is determined ($\Determined$) for one
-predicate and almost determined ($\AlmostDetermined$) for another, then the edge
-that prevents the $\AlmostDetermined$ from becoming a $\Determined$ cannot
+situations where the corresponding entailment algorithm would return \false{},
+and eliminating values from domains of variables that are guaranteed to cause a
+contradiction. \cref{alg:independence_propagation} does the former on
+\cref{line:fail}. Furthermore, for any dependency shared between predicates
+$p_1$ and $p_2$, if it is determined ($\Determined$) for one predicate and
+almost determined ($\AlmostDetermined$) for another, then the edge that prevents
+the $\AlmostDetermined$ from becoming a $\Determined$ cannot
 exist---\cref{line:propagation_condition} handles this possibility.
 
 \begin{algorithm}[t]
@@ -641,7 +638,7 @@ exist---\cref{line:propagation_condition} handles this possibility.
   \KwData{adjacency matrix $\mathbf{A}$}
   \Fn{\getDependencies{$p$, \all}} {
     $D \gets \{ \Determined(p) \}$\;
-    \While{\logical{true}}{
+    \While{\normalfont\true{}}{
       $D' \gets \emptyset$\;
       \For{$d \in D$ {\bf and} $q \in \predicates{}$}{
         $\edgeExists \gets \mathbf{A}[q][d.\predicate] = \{ 1 \}$\;
@@ -699,12 +696,11 @@ as intended.
     D_{\mathsf{mother}} &= \{ \Determined(\mathsf{mother}), \AlmostDetermined(\mathsf{parent}, \mathsf{parent}, \mathsf{mother}) \}, \\
     D_{\mathsf{parent}} &= \{ \Determined(\mathsf{parent}) \}.
   \end{align*}
-  An entailment check at this stage would produce \textsc{undefined}, but
-  propagation replaces the boxed value in \cref{fig:dependencies_matrix} with
-  zero, eliminating the potential edge from $\mathsf{parent}$ to
-  $\mathsf{mother}$. This also eliminates $\mathsf{mother}$ from $D_\Box$, and
-  this is enough to make \cref{alg:independence_entailment} return
-  \textsc{true}.
+  An entailment check at this stage would produce \undefined{}, but propagation
+  replaces the boxed value in \cref{fig:dependencies_matrix} with zero,
+  eliminating the potential edge from $\mathsf{parent}$ to $\mathsf{mother}$.
+  This also eliminates $\mathsf{mother}$ from $D_\Box$, and this is enough to
+  make \cref{alg:independence_entailment} return \true{}.
 \end{example}
 
 \begin{figure}
