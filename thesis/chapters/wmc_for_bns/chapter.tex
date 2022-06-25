@@ -349,9 +349,9 @@ practice.
   as required.
 \end{proof}
 
-\section{Encoding Bayesian Networks Using Conditional Weights} \label{sec:bns}
+\section{Encoding Bayesian Networks Using Conditional Weights}\label{sec:bns}
 
-\begin{figure*}
+\begin{figure}[t]
   \centering
   \begin{subfigure}{0.2\textwidth}
     \centering
@@ -395,7 +395,7 @@ practice.
     \end{tabular}
   \end{subfigure}
   \caption{An example Bayesian network with its CPTs.}\label{fig:example_bn}
-\end{figure*}
+\end{figure}
 
 In this section, we describe a way to encode Bayesian networks into WMC without
 restricting oneself to factorable measures and thus having to add extra
@@ -698,46 +698,7 @@ algebra by $0.5$, but the number of atoms under consideration is halved. To
 correct for this, we multiply the final answer by two for every $u \in U
 \setminus V$.
 
-\section{Experimental Results} \label{sec:2experiments}
-
-\begin{figure*}[t]
-  \centering
-  \input{chapters/wmc_for_bns/cumulative.tex}%
-  \caption{Cumulative numbers of instances solved by combinations of algorithms
-    and encodings over time.}\label{fig:cumulative}
-\end{figure*}
-
-\begin{table}
-  \centering
-  \begin{tabular}{lrrr}
-    \toprule
-    Algorithm \& Encoding & Unique & Fastest & Total \\
-    \midrule
-    $\textsf{Ace} + \texttt{cd05}$ & \textcolor{gray}{0} & 55 & 1169 \\
-    $\textsf{Ace} + \texttt{cd06}$ & \textbf{34} & 218 & \textbf{1259} \\
-    $\textsf{Ace} + \texttt{d02}$ & \textcolor{gray}{0} & 46 & 993 \\
-    $\textsf{ADDMC} + \texttt{bklm16}$ & \textcolor{gray}{0} & 29 & \textcolor{gray}{617} \\
-    $\textsf{ADDMC} + \texttt{cw}$ & 14 & \textbf{770} & 919 \\
-    $\textsf{ADDMC} + \texttt{d02}$ & \textcolor{gray}{0} & \textcolor{gray}{0} & 703 \\
-    $\textsf{ADDMC} + \texttt{sbk05}$ & \textcolor{gray}{0} & \textcolor{gray}{0} & 729 \\
-    $\textsf{c2d} + \texttt{bklm16}$ & \textcolor{gray}{0} & 3 & 1017 \\
-    $\textsf{Cachet} + \texttt{sbk05}$ & 13 & 229 & 928 \\
-    \bottomrule
-  \end{tabular}
-  \caption{The numbers of instances (out of 1466) solved by each combination of
-    algorithm and encoding (uniquely, faster than others, and in
-    total).}\label{tbl:tallies}
-\end{table}
-
-\begin{figure*}[t]
-  \centering
-  \input{chapters/wmc_for_bns/scatter.tex}%
-  \caption{An instance-by-instance comparison between
-    $\textsf{ADDMC} + \texttt{cw}$ and the best overall combination of algorithm
-    and encoding ($\textsf{Ace} + \texttt{cd06}$, on the left) as well as the
-    second-best encoding for \textsf{ADDMC} (\texttt{sbk05}, on the
-    right).}\label{fig:scatter}
-\end{figure*}
+\section{Experimental Results}\label{sec:2experiments}
 
 We compare the six WMC encodings for Bayesian networks when run with both
 \textsf{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} and the WMC algorithms used in
@@ -813,6 +774,45 @@ binary. We classify them into the following seven categories:
   \texttt{pathfinder}, \texttt{pigs}, \texttt{water}).
 \end{itemize}
 
+\begin{figure}[t]
+  \centering
+  \input{chapters/wmc_for_bns/cumulative.tex}%
+  \caption{Cumulative numbers of instances solved by combinations of algorithms
+    and encodings over time.}\label{fig:cumulative}
+\end{figure}
+
+\begin{table}[t]
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+    Algorithm \& Encoding & Unique & Fastest & Total \\
+    \midrule
+    $\textsf{Ace} + \texttt{cd05}$ & \textcolor{gray}{0} & 55 & 1169 \\
+    $\textsf{Ace} + \texttt{cd06}$ & \textbf{34} & 218 & \textbf{1259} \\
+    $\textsf{Ace} + \texttt{d02}$ & \textcolor{gray}{0} & 46 & 993 \\
+    $\textsf{ADDMC} + \texttt{bklm16}$ & \textcolor{gray}{0} & 29 & \textcolor{gray}{617} \\
+    $\textsf{ADDMC} + \texttt{cw}$ & 14 & \textbf{770} & 919 \\
+    $\textsf{ADDMC} + \texttt{d02}$ & \textcolor{gray}{0} & \textcolor{gray}{0} & 703 \\
+    $\textsf{ADDMC} + \texttt{sbk05}$ & \textcolor{gray}{0} & \textcolor{gray}{0} & 729 \\
+    $\textsf{c2d} + \texttt{bklm16}$ & \textcolor{gray}{0} & 3 & 1017 \\
+    $\textsf{Cachet} + \texttt{sbk05}$ & 13 & 229 & 928 \\
+    \bottomrule
+  \end{tabular}
+  \caption{The numbers of instances (out of 1466) solved by each combination of
+    algorithm and encoding (uniquely, faster than others, and in
+    total).}\label{tbl:tallies}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \input{chapters/wmc_for_bns/scatter.tex}%
+  \caption{An instance-by-instance comparison between
+    $\textsf{ADDMC} + \texttt{cw}$ and the best overall combination of algorithm
+    and encoding ($\textsf{Ace} + \texttt{cd06}$, on the left) as well as the
+    second-best encoding for \textsf{ADDMC} (\texttt{sbk05}, on the
+    right).}\label{fig:scatter}
+\end{figure}
+
 \Cref{fig:cumulative} shows that \texttt{cd05}
 \citep{DBLP:conf/ijcai/ChaviraD05} and \texttt{cd06}
 \citep{DBLP:conf/sat/ChaviraD06} (when run with \textsf{Ace}) are in the lead,
@@ -835,7 +835,7 @@ $\textsf{Ace}+\texttt{cd06}$, and vice versa for Mastermind instances, we
 conclude that the best-performing algorithm-encoding combination depends
 significantly on (as-of-yet unknown) properties of the Bayesian networks.
 
-\begin{table}
+\begin{table}[t]
   \centering
   \begin{tabular}{m{0.4\linewidth} c c}
     \toprule

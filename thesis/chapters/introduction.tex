@@ -19,47 +19,105 @@
 
 % broad goal -> objectives -> another specific area -> the problem -> specifics
 
-\chapter{Introduction} \label{chapter:introduction} % 5-14 pages (9 on average)
+% 5-14 pages (9 on average)
+\chapter{Introduction}\label{chapter:introduction}
 
 % ==================== WMC====================
 
 % * description and example(s)
 
-%% TODO (V): I do not know if you intended to add more things at the start, but this might be too abrupt start for most readers. 
-%% I would instead say that probability theory and statistics is the foundation of modern data science, et cetera, and in this thesis we are concerned with certain approaches to formulate and compute probabilities in popular representations such as Bayes  networks. That’s one way of starting. The other way of starting is to make the argument about the need for the unification of logic and probability, perhaps this doesn’t fit well with the introduction as it is written.
+Probabilistic methods are central to artificial intelligence
+\citep{DBLP:books/aw/RN2020}, data science \citep{provost2013data}, statistics,
+and machine learning \citep{DBLP:books/lib/Bishop07,DBLP:books/daglib/0023091}.
+A fundamental task when working with probabilities is to compute some desired
+probability from a collection of other known probabilities, i.e.,
+\emph{probabilistic inference}. This thesis is about a particular approach to
+probabilistic inference (and other similar computational tasks) and its use in
+performing inference on popular representations of probability distributions
+such as Bayesian networks. More generally, we look at different ways of
+describing arithmetic computations pertinent to probabilistic inference and how
+algorithms interpret those descriptions, leading to solutions of varying
+complexity. We begin with an example that showcases how one can compute a
+probability in various ways depending on how one chooses to reason about it.
 
-\begin{example} \label{example:veryfirst}
-  Suppose we have a biased coin that has a probability $0 \le p \le 1$ of landing heads. What is the probability that it lands heads \emph{at least once} if we toss it \emph{three times}? More formally, we have three independent Bernoulli random variables $X_1$, $X_2$, and $X_3$ such that $X_i \sim \Bernoulli(p)$ for all $i$, and we want to compute
+\begin{example}\label{example:veryfirst}
+  Suppose we have a biased coin that has a probability $0 \le p \le 1$ of
+  landing heads. What is the probability that it lands heads \emph{at least
+    once} if we toss it \emph{three times}? More formally, we have three
+  independent Bernoulli random variables $X_1$, $X_2$, and $X_3$ such that
+  $X_i \sim \Bernoulli(p)$ for all $i$, and we want to compute
   \[
-  P \coloneqq \Pr(X_1 = 1 \cup X_2 = 1 \cup X_3 = 1).
+    P \coloneqq \Pr(X_1 = 1 \cup X_2 = 1 \cup X_3 = 1).
   \]
 
-  The conceptually simplest way of calculating the value of $P$ is by adding seven terms, each of which is a product of three factors, i.e., either $p$ or $1-p$. This way, we get
+  The conceptually simplest way of calculating the value of $P$ is by adding
+  seven terms, each of which is a product of three factors, i.e., either $p$ or
+  $1-p$. This way, we get
   \begin{equation} \label{eq:naive}
-  P = ppp + pp(1-p) + \cdots + (1-p)(1-p)p.
+    P = ppp + pp(1-p) + \cdots + (1-p)(1-p)p.
   \end{equation}
-  One can compute the probability of any event in such a way, although the number of arithmetic operations in \cref{eq:naive} scales exponentially with the number of variables.
+  One can compute the probability of any event in such a way, although the
+  number of arithmetic operations in \cref{eq:naive} scales exponentially with
+  the number of variables.
 
-  It is more computationally efficient to reason as follows. If $X_1 = 1$, then all combinations of values of $X_2$ and $X_3$ are in the event whose probability we are trying to compute. If $X_1 = 0$, then we can similarly reason about the value of  $X_3$ being immaterial if $X_2 = 1$. This line of reasoning gives us the following way to calculate the probability of interest:
+  It is more computationally efficient to reason as follows. If $X_1 = 1$, then
+  all combinations of values of $X_2$ and $X_3$ are in the event whose
+  probability we are trying to compute. If $X_1 = 0$, then we can similarly
+  reason about the value of $X_3$ being immaterial if $X_2 = 1$. This line of
+  reasoning gives us the following way to calculate the probability of interest:
   \begin{equation} \label{eq:wmcexample}
-  P = p \times 1 \times 1 + (1-p)(p \times 1 + (1-p)p).
+    P = p \times 1 \times 1 + (1-p)(p \times 1 + (1-p)p).
   \end{equation}
 
-  Even more efficiently, one can recognize that the only sequence of coin toss results \emph{not} in the event $X_1 = 1 \cup X_2 = 1 \cup X_3 = 1$ is $X_1 = 0$, $X_2 = 0$, and $X_3 = 0$. Thus, the value of $P$ can be computed as
+  Even more efficiently, one can recognize that the only sequence of coin toss
+  results \emph{not} in the event $X_1 = 1 \cup X_2 = 1 \cup X_3 = 1$ is
+  $X_1 = 0$, $X_2 = 0$, and $X_3 = 0$. Thus, the value of $P$ can be computed as
   \begin{equation} \label{eq:wfomcexample}
-  P = 1 - (1-p)^3.
+    P = 1 - {(1-p)}^3.
   \end{equation}
 \end{example}
 
-The first of these three approaches hints at the central problem of this thesis. Our goal is to efficiently compute a sum-of-products expression such as the one in \cref{eq:naive}. Of course, the difficulty of this problem partially depends on how each problem instance is formulated, i.e., the input format. The main input format that we concern ourselves with is based on propositional logic---this variation of the problem is known as \emph{weighted model counting} (WMC) \citep{DBLP:journals/ai/ChaviraD08}. \Cref{eq:wmcexample} is an example of the kind of efficiency improvements that can be achieved by WMC.
+The first of these three approaches hints at the central problem of this thesis.
+Our goal is to efficiently compute a sum-of-products expression such as the one
+in \cref{eq:naive}. Of course, the difficulty of this problem partially depends
+on how each problem instance is formulated, i.e., the input format. The main
+input format that we concern ourselves with is based on propositional
+logic---this variation of the problem is known as \emph{weighted model counting}
+(WMC) \citep{DBLP:journals/ai/ChaviraD08}. \Cref{eq:wmcexample} is an example of
+the kind of efficiency improvements that can be achieved by WMC\@.
 
-% TODO (V): I think it is important to add an intermediate paragraph here where you say something like - readers familiar with proba theory but not logic might find this a curious choice. But as it turns out this formulation is an underlying computational representation for the problem off computing condition inference in a range of different representations from factor graphs to probl programs, and provide references. In fact in most inference competitions for example the conference U AI, this formulation often comes off at the top
+Using logic to encode such computational problems may seem like a curious choice
+for a reader familiar with probability theory but not logic-based algorithms.
+However, propositional logic has long played an important role in efficiently
+solving decision, optimisation, and counting problems
+\citep{DBLP:series/faia/2009-185}---WMC is just an extension for function
+problems. Moreover, WMC has established itself as the state-of-the-art approach
+to probabilistic inference across many representations such as probabilistic
+programming languages \citep{DBLP:journals/ijar/RiguzziBZCL17} and graphical
+models \citep{DBLP:conf/ijcai/AgrawalPM21}.
 
 % * More generally: WMC, WFOMC, and other sum-of-products problems
 
-WMC has been extended in many ways, e.g., to support first-order logic and continuous variables. The former extension is known as \emph{(symmetric) weighted first-order model counting} (WFOMC) \citep{DBLP:conf/ijcai/BroeckTMDR11}. WFOMC algorithms capitalise on mathematical operations besides multiplication and addition and thus can compute $P$ from \cref{example:veryfirst} as in \cref{eq:wfomcexample}. The latter extension is called \emph{weighted model integration} (WMI) \citep{DBLP:conf/ijcai/BellePB15}. In WMI, constraints on continuous variables are described using a fragment of first-order logic known as \emph{linear arithmetic over the rationals} (LRA), i.e., inequalities with addition. The two extensions combined into one are known as \emph{(symmetric) weighted first-order model integration} (WFOMI) \citep{DBLP:conf/uai/FeldsteinB21}.
+WMC has been extended in many ways, e.g., to support first-order logic and
+continuous variables. The former extension is known as \emph{(symmetric)
+  weighted first-order model counting} (WFOMC)
+\citep{DBLP:conf/ijcai/BroeckTMDR11}. WFOMC algorithms capitalise on
+mathematical operations besides multiplication and addition and thus can compute
+$P$ from \cref{example:veryfirst} as in \cref{eq:wfomcexample}. The latter
+extension is called \emph{weighted model integration} (WMI)
+\citep{DBLP:conf/ijcai/BellePB15}. In WMI, constraints on continuous variables
+are described using a fragment of first-order logic known as \emph{linear
+  arithmetic over the rationals} (LRA), i.e., inequalities with addition. The
+two extensions combined into one are known as \emph{(symmetric) weighted
+  first-order model integration} (WFOMI) \citep{DBLP:conf/uai/FeldsteinB21}.
 
-Instead of performing addition and multiplication on numbers, one can do so on elements of an arbitrary (commutative) semiring. This extension of WMC is known as \emph{semiring programming} (SP) \citep{DBLP:journals/ijar/BelleR20}. Another important generalisation offered by SP is flexibility in how the numbers that are to be multiplied and added (i.e., the \emph{weights}) can be defined. In this thesis, we do something similar within the constraints of a modern WMC algorithm and call our generalisation \emph{pseudo-Boolean projection} (PBP).
+Instead of performing addition and multiplication on numbers, one can do so on
+elements of an arbitrary (commutative) semiring. This extension of WMC is known
+as \emph{semiring programming} (SP) \citep{DBLP:journals/ijar/BelleR20}. Another
+important generalisation offered by SP is flexibility in how the numbers that
+are to be multiplied and added (i.e., the \emph{weights}) can be defined. In
+this thesis, we do something similar within the constraints of a modern WMC
+algorithm and call our generalisation \emph{pseudo-Boolean projection} (PBP).
 
 \begin{table}
   \centering
@@ -78,19 +136,48 @@ Instead of performing addition and multiplication on numbers, one can do so on e
     Permanent & permutations & elements of a matrix \\
     \bottomrule
   \end{tabular}
-  \caption{An assortment of problems that require one to compute a quantity defined as a sum of products.}\label{table:comparison}
+  \caption{An assortment of problems that require one to compute a quantity
+    defined as a sum of products.}\label{table:comparison}
 \end{table}
 
-While WMC and its extensions use logic-based input formats, other sum-of-products problems have been studied before. For instance, the \emph{SumProd} problem, which generalises problems such as probabilistic inference in Bayesian networks and propositional model counting, is defined in terms of discrete variables and functions \citep{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. In this case, the sum is over all possible instantiations of the variables, and the product is over the values of the functions. Another similar problem is the \emph{algebraic path problem} where the sum is over all paths in a graph from one node to another, and the product is over the weights of the edges in the path \citep{DBLP:series/synthesis/2010Baras}. This problem generalises many graph problems such as shortest and longest path and has many uses in routing and network reliability analysis. Lastly, even famous problems in algebraic complexity theory such as computing the determinant or the permanent of a matrix are examples of this sum-of-products computational paradigm \citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See \cref{table:comparison} for a summary of all of the discussed problems.
+While WMC and its extensions use logic-based input formats, other
+sum-of-products problems have been studied before. For instance, the
+\emph{SumProd} problem, which generalises problems such as probabilistic
+inference in Bayesian networks and propositional model counting, is defined in
+terms of discrete variables and functions
+\citep{DBLP:journals/jair/BacchusDP09,DBLP:journals/ai/Dechter99}. In this case,
+the sum is over all possible instantiations of the variables, and the product is
+over the values of the functions. Another similar problem is the \emph{algebraic
+  path problem} where the sum is over all paths in a graph from one node to
+another, and the product is over the weights of the edges in the path
+\citep{DBLP:series/synthesis/2010Baras}. This problem generalises many graph
+problems such as shortest and longest path and has many uses in routing and
+network reliability analysis. Lastly, even famous problems in algebraic
+complexity theory such as computing the determinant or the permanent of a matrix
+are examples of this sum-of-products computational paradigm
+\citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See
+\cref{table:comparison} for a summary of all of the discussed problems.
 
-Many reductions are possible among instances of these problems, e.g., both WFOMC and SumProd can be reduced to WMC. Empirically, WMC is also a state-of-the-art approach to inference in probabilistic graphical models \citep{DBLP:conf/ijcai/AgrawalPM21}. Publications describing novel WMC algorithms continue to appear each year \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}. Furthermore, a competition\footnote{\url{https://mccompetition.org/}} (as well as a workshop) for model counting and extensions thereof started running annually in 2020 \citep{DBLP:journals/corr/abs-2012-01323}. Given all of this, it is all the more important to
+% Many reductions are possible among instances of these problems, e.g., both
+% WFOMC and SumProd can be reduced to WMC\@.
+
+WMC is a rapidly growing area of research. Publications describing novel WMC
+algorithms continue to appear each year
+\citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}. Furthermore, a
+competition\footnote{\url{https://mccompetition.org/}} (as well as a workshop)
+for model counting and extensions thereof started running annually in 2020
+\citep{DBLP:journals/corr/abs-2012-01323}. Given all of this, it is all the more
+important to
 \begin{itemize}
-\item develop WMC algorithms with good empirical performance,
-\item understand the comparative strengths and weaknesses of different approaches,
-\item and optimise the encoding process that transforms problems from the application (e.g., probabilistic inference) domain to a representation accepted by the algorithm.
+  \item develop WMC algorithms with good empirical performance,
+  \item understand the comparative strengths and weaknesses of different
+        approaches,
+  \item and optimise the encoding process that transforms problems from the
+        application (e.g., probabilistic inference) domain to a representation
+        accepted by the algorithm.
 \end{itemize}
-
-% TODO (V): Perhaps conclude this list by saying in this thesis, we will look at precisely these aspects and propose certain contributions to w model counting that address these aspects from different perspectives. This provides a nice lead up to the next section
+In this thesis, we contribute to all three of these objectives in a variety of
+ways.
 
 %% Many algorithms for probabilistic inference have been proposed. Variable
 %% elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
@@ -113,15 +200,38 @@ Many reductions are possible among instances of these problems, e.g., both WFOMC
 
 % In my work, I address this problem by assessing the empirical performance of these algorithms on random instances of different kinds, revealing the weaknesses of the standard definition of WMC, and suggesting more expressive alternatives.
 
-\section{Approach, Contributions, and Outline} % 2 pages?
+% 2 pages?
+\section{Approach, Contributions, and Outline}
 
 % ==================================== A paragraph on the approach: generalisation, main ideas ====================
 
-Our main conceptual tool on this quest is generalisation. While the term \emph{generalisation} can be defined in many ways, we use it to mean that $x$ is a generalisation of $y$ if $x$ can do/express/capture everything that $y$ can, and more. Many important results in science and mathematics are generalisations, e.g., the Lebesgue integral generalises the Riemann integral, and Einstein's general theory of relativity generalises Newton's law of universal gravitation. An example of generalisation closer to home is the emergence of solvers for, e.g., Boolean satisfiability (SAT), constraint programming, integer programming, and linear programming, that can be used to solve many decision and optimisation problems. While designing algorithms for specific problems remains a valuable enterprise, there is indisputable value in having a range of tools with broader applicability.
+Our main conceptual tool on this quest is generalisation. While the term
+\emph{generalisation} can be defined in many ways, we use it to mean that $x$ is
+a generalisation of $y$ if $x$ can do/express/capture everything that $y$ can,
+and more. Many important results in science and mathematics are generalisations,
+e.g., the Lebesgue integral generalises the Riemann integral, and Einstein's
+general theory of relativity generalises Newton's law of universal gravitation.
+An example of generalisation closer to home is the emergence of solvers for,
+e.g., Boolean satisfiability (SAT), constraint programming, integer programming,
+and linear programming, that can be used to solve many decision and optimisation
+problems. While designing algorithms for specific problems remains a valuable
+enterprise, there is indisputable value in having a range of tools with broader
+applicability.
 
 % =========================== A paragraph that partitions the chapters and describes them in broad terms =========
 
-We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2} we generalise the definition of WMC (to PBP) to take full advantage of the capabilities of recent developments in WMC algorithms. In \cref{chapter:wfomc}, we generalise some of the procedures and data structures used by a WFOMC algorithm to make it applicable to a wider range of problem instances. The main idea behind this work is that, in many cases, efficiency improvements can be achieved by developing algorithms that can handle richer data structures. Another important idea in this work, particularly \cref{chapter:randomlps,chapter:comparison}, is that empirical testing of algorithms on a wide range of random instances can help reveal fundamental differences in the behaviour of said algorithms. In what follows, we review the contributions and the structure of this thesis in more detail.
+We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2}
+we generalise the definition of WMC (to PBP) to take full advantage of the
+capabilities of recent developments in WMC algorithms. In \cref{chapter:wfomc},
+we generalise some of the procedures and data structures used by a WFOMC
+algorithm to make it applicable to a wider range of problem instances. The main
+idea behind this work is that, in many cases, efficiency improvements can be
+achieved by developing algorithms that can handle richer data structures.
+Another important idea in this work, particularly
+\cref{chapter:randomlps,chapter:comparison}, is that empirical testing of
+algorithms on a wide range of random instances can help reveal fundamental
+differences in the behaviour of said algorithms. In what follows, we review the
+contributions and the structure of this thesis in more detail.
 
 % ==================================== Paragraphs for individual chapters/contributions ===========================
 
@@ -132,7 +242,21 @@ We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2} 
 % 1. WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions
 % \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra.
 
-Encoding a probabilistic inference problem as an instance of WMC typically necessitates adding extra literals and clauses. This is partly so because the predominant definition of WMC assigns weights to models based on weights on literals, and this severely restricts what probability distributions can be represented. In \cref{chapter:wmc1}, we develop a \emph{measure-theoretic perspective on WMC} and propose a way to encode conditional weights on literals analogously to conditional probabilities. This representation can be as succinct as standard WMC with weights on literals but can also expand as needed to represent probability distributions with less structure. To demonstrate the performance benefits of conditional weights over the addition of extra literals, we develop a \emph{new WMC encoding} for Bayesian networks and adapt a recent WMC algorithm \textsf{ADDMC}~\citep{DBLP:conf/aaai/DudekPV20} to the new format. Our experiments show that the new encoding significantly improves the performance of the algorithm on most benchmark instances. \Cref{chapter:wmc1} is published as:
+Encoding a probabilistic inference problem as an instance of WMC typically
+necessitates adding extra literals and clauses. This is partly so because the
+predominant definition of WMC assigns weights to models based on weights on
+literals, and this severely restricts what probability distributions can be
+represented. In \cref{chapter:wmc1}, we develop a \emph{measure-theoretic
+  perspective on WMC} and propose a way to encode conditional weights on
+literals analogously to conditional probabilities. This representation can be as
+succinct as standard WMC with weights on literals but can also expand as needed
+to represent probability distributions with less structure. To demonstrate the
+performance benefits of conditional weights over the addition of extra literals,
+we develop a \emph{new WMC encoding} for Bayesian networks and adapt a recent
+WMC algorithm \textsf{ADDMC}~\citep{DBLP:conf/aaai/DudekPV20} to the new format.
+Our experiments show that the new encoding significantly improves the
+performance of the algorithm on most benchmark instances. \Cref{chapter:wmc1} is
+published as:
 \begin{displayquote}
   \bibentry{DBLP:conf/uai/DilkasB21}
 \end{displayquote}
@@ -142,7 +266,14 @@ Encoding a probabilistic inference problem as an instance of WMC typically neces
 % 4. evidence that it is experimentally useful
 % and using recent state-of-the-art WMC techniques based on pseudo-Boolean function manipulation, competitive with the more traditional WMC algorithms based on knowledge compilation and backtracking search. 
 
-\Cref{chapter:wmc2} builds on \cref{chapter:wmc1} and further considers WMC in its full generality, leading to the definition of PBP. Here we present an \emph{algorithm that transforms WMC instances into PBP instances} while eliminating around \SI{43}{\percent} of variables on average across various Bayesian network encodings. Moreover, we identify \emph{sufficient conditions} for such a variable removal to be possible. Our experiments show significant improvement in WMC-based Bayesian network inference. \Cref{chapter:wmc2} is published as:
+\Cref{chapter:wmc2} builds on \cref{chapter:wmc1} and further considers WMC in
+its full generality, leading to the definition of PBP. Here we present an
+\emph{algorithm that transforms WMC instances into PBP instances} while
+eliminating around \SI{43}{\percent} of variables on average across various
+Bayesian network encodings. Moreover, we identify \emph{sufficient conditions}
+for such a variable removal to be possible. Our experiments show significant
+improvement in WMC-based Bayesian network inference. \Cref{chapter:wmc2} is
+published as:
 \begin{displayquote}
   \bibentry{DBLP:conf/sat/DilkasB21}
 \end{displayquote}
@@ -150,12 +281,41 @@ Encoding a probabilistic inference problem as an instance of WMC typically neces
 % 5. expanded what's liftable using (available) WFOMC algorithms
 % 6. showed how a WFOMC algorithm can discover recursive solutions
 
-In \cref{chapter:wfomc}, our attention shifts to another version of WMC, namely, WFOMC as well as its unweighted variant FOMC. Despite being around for more than a decade, practical (W)FOMC algorithms are still unable to compute functions as simple as a factorial. In this chapter, we argue that the capabilities of FOMC algorithms are severely limited by their inability to express arbitrary recursive computations. To \emph{enable arbitrary recursion}, we relax the restrictions that typically accompany domain recursion and generalise circuits used to express a solution to an FOMC problem to graphs that may contain cycles. To this end, we enhance the most well-established WFOMC algorithm ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation rules and an algorithm to check whether a recursive call is feasible. These improvements allow us to \emph{automatically find efficient solutions} to counting fundamental structures such as injections and bijections.
+In \cref{chapter:wfomc}, our attention shifts to another version of WMC, namely,
+WFOMC as well as its unweighted variant FOMC. Despite being around for more than
+a decade, practical (W)FOMC algorithms are still unable to compute functions as
+simple as a factorial. In this chapter, we argue that the capabilities of FOMC
+algorithms are severely limited by their inability to express arbitrary
+recursive computations. To \emph{enable arbitrary recursion}, we relax the
+restrictions that typically accompany domain recursion and generalise circuits
+used to express a solution to an FOMC problem to graphs that may contain cycles.
+To this end, we enhance the most well-established WFOMC algorithm ForcLift
+\citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation rules and an algorithm
+to check whether a recursive call is feasible. These improvements allow us to
+\emph{automatically find efficient solutions} to counting fundamental structures
+such as injections and bijections.
 
 % 7. developed a way of generating (P)LPs that's much more general than anything from before
 % 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
 
-In \cref{chapter:randomlps,chapter:comparison}, we transition to the other strand of this work, i.e., random instance generation. Testing algorithms across a wide range of problem instances is crucial to ensure the validity of any claim about one algorithm's superiority over another. However, when it comes to inference algorithms for probabilistic logic programs, experimental evaluations are limited to only a few programs. Existing methods to generate random logic programs are limited to propositional programs and often impose stringent syntactic restrictions. In \cref{chapter:randomlps}, we present a \emph{novel approach to generating random logic programs and random probabilistic logic programs} using constraint programming, introducing a \emph{new constraint to control the independence structure of the underlying probability distribution}. We also provide a combinatorial argument for the correctness of the model, show how the model scales with parameter values, and use the model to compare probabilistic inference algorithms across a range of synthetic problems. Our model allows inference algorithm developers to evaluate and compare the algorithms across a wide range of instances, providing a detailed picture of their comparative strengths and weaknesses. \Cref{chapter:randomlps} is published as:
+In \cref{chapter:randomlps,chapter:comparison}, we transition to the other
+strand of this work, i.e., random instance generation. Testing algorithms across
+a wide range of problem instances is crucial to ensure the validity of any claim
+about one algorithm's superiority over another. However, when it comes to
+inference algorithms for probabilistic logic programs, experimental evaluations
+are limited to only a few programs. Existing methods to generate random logic
+programs are limited to propositional programs and often impose stringent
+syntactic restrictions. In \cref{chapter:randomlps}, we present a \emph{novel
+  approach to generating random logic programs and random probabilistic logic
+  programs} using constraint programming, introducing a \emph{new constraint to
+  control the independence structure of the underlying probability
+  distribution}. We also provide a combinatorial argument for the correctness of
+the model, show how the model scales with parameter values, and use the model to
+compare probabilistic inference algorithms across a range of synthetic problems.
+Our model allows inference algorithm developers to evaluate and compare the
+algorithms across a wide range of instances, providing a detailed picture of
+their comparative strengths and weaknesses. \Cref{chapter:randomlps} is
+published as:
 \begin{displayquote}
   \bibentry{DBLP:conf/cp/DilkasB20}
 \end{displayquote}
@@ -163,7 +323,26 @@ In \cref{chapter:randomlps,chapter:comparison}, we transition to the other stran
 % 9. developed a way to generate propositional formulas in CNF with varying primal treewidth
 % 10. showed that ADD-based WMC algorithms scale worse w.r.t. it than all other algorithms
 
-In recent experiments, \textsf{WMC} algorithms are shown to perform similarly overall but with significant differences on specific subsets of benchmarks. A good understanding of the differences in the performance of algorithms requires identifying key characteristics that favour some algorithms over others. In \cref{chapter:comparison}, we introduce a \emph{random model} for \textsf{WMC} instances with a parameter that influences primal treewidth---the parameter most commonly used to characterise the difficulty of an instance. We then use this model to experimentally compare the performance of \textsf{WMC} algorithms \textsc{c2d} \citep{DBLP:conf/ecai/Darwiche04}, \textsc{Cachet} \citep{DBLP:conf/sat/SangBBKP04}, \textsc{d4} \citep{DBLP:conf/ijcai/LagniezM17}, \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20}, and \textsc{miniC2D} \citep{DBLP:conf/ijcai/OztokD15} on random instances. We show that the \emph{easy-hard-easy pattern is different} for algorithms based on dynamic programming and algebraic decision diagrams (ADDs) than for all other solvers. We also show how all \textsf{WMC} algorithms scale exponentially with respect to primal treewidth and how this scalability varies across algorithms and densities. Finally, we demonstrate how the performance of ADD-based algorithms changes depending on how much determinism or redundancy there is in the numerical values of weights.
+In recent experiments, \textsf{WMC} algorithms are shown to perform similarly
+overall but with significant differences on specific subsets of benchmarks. A
+good understanding of the differences in the performance of algorithms requires
+identifying key characteristics that favour some algorithms over others. In
+\cref{chapter:comparison}, we introduce a \emph{random model} for \textsf{WMC}
+instances with a parameter that influences primal treewidth---the parameter most
+commonly used to characterise the difficulty of an instance. We then use this
+model to experimentally compare the performance of \textsf{WMC} algorithms
+\textsc{c2d} \citep{DBLP:conf/ecai/Darwiche04}, \textsc{Cachet}
+\citep{DBLP:conf/sat/SangBBKP04}, \textsc{d4}
+\citep{DBLP:conf/ijcai/LagniezM17}, \textsc{DPMC}
+\citep{DBLP:conf/cp/DudekPV20}, and \textsc{miniC2D}
+\citep{DBLP:conf/ijcai/OztokD15} on random instances. We show that the
+\emph{easy-hard-easy pattern is different} for algorithms based on dynamic
+programming and algebraic decision diagrams (ADDs) than for all other solvers.
+We also show how all \textsf{WMC} algorithms scale exponentially with respect to
+primal treewidth and how this scalability varies across algorithms and
+densities. Finally, we demonstrate how the performance of ADD-based algorithms
+changes depending on how much determinism or redundancy there is in the
+numerical values of weights.
 
 % ============================== Describe the figure ==============================
 
@@ -223,6 +402,22 @@ In recent experiments, \textsf{WMC} algorithms are shown to perform similarly ov
     concepts the chapter is about.}\label{fig:overview}
 \end{figure}
 
-% TODO (V) ('combine into a coherent picture'): Play a role in the overall development aroundmodel counting. Alt phrasing - We shareholder contributions connect to each other in relation to developments in model counting
-
-We end the introduction with a visual description of how the topics covered in this thesis combine into a coherent picture. \Cref{fig:overview} lists some of the key concepts of this work and shows how each chapter of the thesis relates to these concepts and interactions between them. \Cref{chapter:background} covers a selection of topics related to this work and refers the reader to suitable literature for further information. \Cref{chapter:wmc1} examines the definition of WMC more closely and suggests a way to bypass it, leading to a more succinct encoding of Bayesian network probabilistic inference compatible with the ADDMC algorithm. Then \cref{chapter:wmc2} describes WMC encodings for Bayesian networks, defines PBP, shows how to transform WMC instances to PBP instances, and how the DPMC algorithm benefits from this new format. In \cref{chapter:wfomc}, we expand the capabilities of the WFOMC algorithm ForcLift to new (previously unsolvable) instances. \Cref{chapter:randomlps} describes a constraint model that can generate random (probabilistic) logic programs in the ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} language---a well known use-case of WMC. \Cref{chapter:comparison} develops an algorithm for generating random WMC instances and uses it showcase some important differences in the behaviour of WMC algorithms. Finally, \cref{chapter:conclusion} summarises our results and provides a perspective for potential future work.
+We end the introduction with a visual description of the topics covered in this
+thesis. \Cref{fig:overview} lists some of the key concepts of this work and
+shows how each chapter of the thesis relates to these concepts and interactions
+between them. \Cref{chapter:background} covers a selection of topics related to
+this work and refers the reader to suitable literature for further information.
+\Cref{chapter:wmc1} examines the definition of WMC more closely and suggests a
+way to bypass it, leading to a more succinct encoding of Bayesian network
+probabilistic inference compatible with the ADDMC algorithm. Then
+\cref{chapter:wmc2} describes WMC encodings for Bayesian networks, defines PBP,
+shows how to transform WMC instances to PBP instances, and how the DPMC
+algorithm benefits from this new format. In \cref{chapter:wfomc}, we expand the
+capabilities of the WFOMC algorithm ForcLift to new (previously unsolvable)
+instances. \Cref{chapter:randomlps} describes a constraint model that can
+generate random (probabilistic) logic programs in the ProbLog
+\citep{DBLP:conf/ijcai/RaedtKT07} language---a well known use-case of WMC\@.
+\Cref{chapter:comparison} develops an algorithm for generating random WMC
+instances and uses it showcase some important differences in the behaviour of
+WMC algorithms. Finally, \cref{chapter:conclusion} summarises our results and
+provides a perspective for potential future work.

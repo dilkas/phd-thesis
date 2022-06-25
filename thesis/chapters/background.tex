@@ -81,21 +81,21 @@ case is clarified on a case-by-case basis.
 % * model counting: assessing the quality of an explanation of a machine learning model \citep{DBLP:conf/sat/NarodytskaSMIM19}
 % * model counting: analysing software for vulnerabilities \citep{DBLP:conf/sp/ZhouQRZ18}
 
-We begin with a description of \SAT{} and some of its extensions. Given a
-propositional formula\footnote{Unless stated otherwise, formulas for \SAT{} and
-  other similar problems are assumed to be in CNF.}, \SAT{} asks whether the
-formula is satisfiable. \SAT{} (also known as \emph{propositional/Boolean
+We begin with a description of SAT and some of its extensions. Given a
+propositional formula\footnote{Unless stated otherwise, formulas for SAT and
+  other similar problems are assumed to be in CNF.}, SAT asks whether the
+formula is satisfiable. SAT (also known as \emph{propositional/Boolean
   satisfiability}) is the first problem shown to be \NP-complete
 \citep{DBLP:conf/stoc/Cook71,levin1973universal}. Motivated by many real-life
-problems that were found to be reducible to \SAT{}, research in \SAT{} solving
+problems that were found to be reducible to SAT, research in SAT solving
 produced algorithms that can efficiently tackle large instances despite the
 exponential worst-case time complexity \citep{DBLP:series/faia/2009-185}.
 
 Instead of satisfying all clauses, one can attempt to find an interpretation
-that satisfies the maximum number of clauses---this problem is called Max\SAT{}
+that satisfies the maximum number of clauses---this problem is called MaxSAT
 \citep{bacchus2021maximum,DBLP:series/faia/LiM09}. It is an \NP-hard
 optimisation problem that (in its most general form) attaches a (potentially
-infinite) cost for failing to satisfy each clause and seeks to minise total
+infinite) cost for failing to satisfy each clause and seeks to minimise total
 cost.
 
 \#\SAT{}, or \emph{(propositional) model counting}, asks to count the number of
@@ -165,10 +165,10 @@ detail in \cref{sec:cp}.
 
 \section{Declarative Programming}\label{sec:declarative}
 
-% TODO (V) (on 'here'): This can be contrasted to imperative programming
-In a declarative programming language, one describes \emph{what} is to be
-computed but not \emph{how}. Here we describe two declarative programming
-paradigms pertinent to our work: logic programming and constraint programming.
+In contrast to imperative programming, in a declarative programming language,
+one describes \emph{what} is to be computed but not \emph{how}. Here we describe
+two declarative programming paradigms pertinent to our work: logic programming
+and constraint programming.
 
 \subsection{Logic Programming}\label{sec:lp}
 
@@ -184,8 +184,9 @@ details on logic programming and Prolog, we refer the reader to some of the
 numerous books on the subject
 \citep{DBLP:books/daglib/0041598,DBLP:books/daglib/0067951}.
 
-% TODO (V): Is it worth clarifying that a clause can also mean a disjunction of
-% literals generally, but A specific format is required in logic programming
+\todo[inline]{Is it worth clarifying that a clause can also mean a disjunction
+  of literals generally, but A specific format is required in logic programming}
+
 A \emph{logic program} is a finite sequence\footnote{Although it is common to
   define logic programs as sets, the order is important for efficiency and can
   be the difference between finite and infinite running time.} of clauses. A
@@ -411,9 +412,8 @@ minimises either their sum or their product \citep{DBLP:reference/fai/Beek06}.
 Both kinds of heuristics can also be random, e.g., a variable or a value can be
 sampled from a uniform distribution. Random heuristics are typically combined
 with a \emph{restart strategy} that decides how long the search should continue
-before assuming that a mistake must have been made and restarting the search.
-
-% TODO (V) (on the last sentence): Maybe provide some references to this
+before assuming that a mistake must have been made and restarting the search
+\citep{DBLP:reference/fai/Beek06}.
 
 \section{Representations of Probability
   Distributions}\label{sec:representations}
@@ -1151,4 +1151,9 @@ the analysis of breast cancer
 \citep{DBLP:journals/jcb/SakhanenkoG12}, and molecular profiling
 \citep{de2013phenetic} data.
 
-% TODO (V): Is it worth adding a small comment on how you expect the contributions of this thesis to connect to some of this work Something along the lines of: although it is hard to anticipate how the contributions of this work might affect all of these applications, we immediately see that improvements in terms of inference and encoding can affect the modelling and solving of probabilistic frameworks such as programs and networks.
+\todo[inline]{ Is it worth adding a small comment on how you expect the
+  contributions of this thesis to connect to some of this work Something along
+  the lines of: although it is hard to anticipate how the contributions of this
+  work might affect all of these applications, we immediately see that
+  improvements in terms of inference and encoding can affect the modelling and
+  solving of probabilistic frameworks such as programs and networks. }
