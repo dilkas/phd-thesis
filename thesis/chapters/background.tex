@@ -98,23 +98,23 @@ optimisation problem that (in its most general form) attaches a (potentially
 infinite) cost for failing to satisfy each clause and seeks to minimise total
 cost.
 
-\#\SAT{}, or \emph{(propositional) model counting}, asks to count the number of
-models of a formula \citep{DBLP:series/faia/GomesSS09}. \#\SAT{} is the
-canonical \#\P-complete problem with many applications in areas such as planning
-and probabilistic reasoning. $\#\exists\SAT{}$, or \emph{projected model
+\mc{}, or \emph{(propositional) model counting}, asks to count the number of
+models of a formula \citep{DBLP:series/faia/GomesSS09}. \mc{} is the canonical
+\#\P-complete problem with many applications in areas such as planning and
+probabilistic reasoning. $\#\exists\textrm{SAT}$, or \emph{projected model
   counting}, selects a subset of variables called \emph{priority variables}
 \citep{DBLP:conf/sat/AzizCMS15}. The task is then to count the number of
 assignments of values to priority variables that can be extended to models. The
-extension of \#\SAT{} most relevant to our work is called \emph{weighted model
+extension of \mc{} most relevant to our work is called \emph{weighted model
   counting} (WMC). Given a propositional formula $\phi$ and a \emph{weight
   function} $w$ from the literals of $\phi$ to non-negative real numbers, WMC
 asks to compute
 \[
-\mathrm{WMC}(\phi) = \sum_{\omega \models \phi} \prod_{\omega \models l} w(l),
+\WMC(\phi) = \sum_{\omega \models \phi} \prod_{\omega \models l} w(l),
 \]
 where the summation is over all models $\omega$ of $\phi$, and the product is
 over all literals of $\omega$ \citep{DBLP:journals/ai/ChaviraD08}. Lastly, both
-\#\SAT{} and WMC have been extended to first-order logic
+\mc{} and WMC have been extended to first-order logic
 \citep{DBLP:conf/ijcai/BroeckTMDR11}---this is the topic of
 \cref{chapter:wfomc}.
 
@@ -150,7 +150,7 @@ algebraic constructs to encode problems from various domains. First, a
 propositional formula with prepended quantifiers for all of its variables is
 known as a \emph{quantified Boolean formula} \citep{DBLP:series/faia/BuningB09}.
 One can then ask whether the formula is true or false. \emph{Satisfiability
-  module theories} considers \SAT{} in the context of a background theory
+  module theories} considers SAT in the context of a background theory
 \citep{DBLP:series/faia/BarrettSST09}. These theories can describe the
 properties of integer arithmetic, sets, trees, strings, and many commonly-used
 abstract data structures. \emph{Pseudo-Boolean} solvers consider decision and
@@ -183,9 +183,6 @@ needs and reasonably consistent with the terminology used in logic. For more
 details on logic programming and Prolog, we refer the reader to some of the
 numerous books on the subject
 \citep{DBLP:books/daglib/0041598,DBLP:books/daglib/0067951}.
-
-\todo[inline]{Is it worth clarifying that a clause can also mean a disjunction
-  of literals generally, but A specific format is required in logic programming}
 
 A \emph{logic program} is a finite sequence\footnote{Although it is common to
   define logic programs as sets, the order is important for efficiency and can
@@ -1151,9 +1148,9 @@ the analysis of breast cancer
 \citep{DBLP:journals/jcb/SakhanenkoG12}, and molecular profiling
 \citep{de2013phenetic} data.
 
-\todo[inline]{ Is it worth adding a small comment on how you expect the
-  contributions of this thesis to connect to some of this work Something along
-  the lines of: although it is hard to anticipate how the contributions of this
-  work might affect all of these applications, we immediately see that
-  improvements in terms of inference and encoding can affect the modelling and
-  solving of probabilistic frameworks such as programs and networks. }
+Although it is hard to anticipate how the contributions of this work might
+affect all of these applications, efficiency improvements can enable new
+applications for which current WMC is not fast enough. This is especially the
+case for WFOMC, where said improvements usually bring classes of instances from
+exponential to polynomial time. At the very least, WMC-based approaches should
+be able to handle bigger and more complex data sets regardless of their origin.

@@ -11,10 +11,10 @@
 % format---shows how these variables and clauses can be removed from (most)
 % already-existing Bayesian network encodings.
 
-Weighted model counting (WMC), i.e., an extension of model counting ($\#\SAT{}$)
-that assigns a weight to every model \citep{DBLP:conf/aaai/SangBK05}, has
-emerged as one of the most dominant and competitive approaches for handling
-inference tasks in a wide range of formalisms including Bayesian networks
+Weighted model counting (WMC), i.e., an extension of model counting (\mc{}) that
+assigns a weight to every model \citep{DBLP:conf/aaai/SangBK05}, has emerged as
+one of the most dominant and competitive approaches for handling inference tasks
+in a wide range of formalisms including Bayesian networks
 \citep{DBLP:conf/aaai/SangBK05,DBLP:books/daglib/0024906}, probabilistic
 graphical models more generally \citep{DBLP:conf/ecsqaru/ChoiKD13}, and
 probabilistic programs
@@ -210,7 +210,7 @@ function spaces by defining several special functions: unit $1\colon 2^\emptyset
 \mathbb{R}_{\ge 0}$ and any set $T$, we will write $\alpha(T)$ to mean $\alpha(T
 \cap X)$.
 
-\section{WMC as a Measure on a Boolean Algebra} \label{sec:wmc_as_measure}
+\section{WMC as a Measure on a Boolean Algebra}\label{sec:wmc_as_measure}
 
 In this section, we introduce an alternative definition of WMC and demonstrate
 how it relates to the standard one. Let $U$ be a set. A \emph{measure} is a
@@ -257,7 +257,7 @@ $\mathcal{L}$ with a sole axiom $a$. Then $\Delta$ has two models: $\{ a, b \}$
 and $\{ a, \neg b \}$ and its WMC \citep{DBLP:journals/ai/ChaviraD08} is
 \begin{equation} \label{eq:wmc_example}
   \begin{split}
-    \mathrm{WMC}(\Delta) &= \sum_{\omega \models \Delta} \prod_{\omega \models l} w(l) \\
+    \WMC(\Delta) &= \sum_{\omega \models \Delta} \prod_{\omega \models l} w(l) \\
     &= w(a)w(b) + w(a)w(\neg b) = 0.3.
   \end{split}
 \end{equation}
@@ -871,18 +871,18 @@ also a factor, but that does not affect our asymptotic bounds.
 
 \section{Conclusions and Future Work}
 
-WMC was originally motivated by an appeal to the success of \SAT{} solvers in
+WMC was originally motivated by an appeal to the success of SAT solvers in
 efficiently tackling an $\NP{}$-complete problem
-\citep{DBLP:conf/aaai/SangBK05}. \textsf{ADDMC} does not rely on \SAT{}-based
+\citep{DBLP:conf/aaai/SangBK05}. \textsf{ADDMC} does not rely on SAT-based
 algorithmic techniques \citep{DBLP:conf/aaai/DudekPV20}, and our proposed format
 diverges even more from the DIMACS CNF format for Boolean formulas. To what
-extent are \SAT{}-based methods still applicable? The answer depends
-significantly on the problem domain. For Bayesian networks, the rules describing
-that each random variable can only be associated with exactly one value were
-still encoded as clauses. As has been noted previously
-\citep{DBLP:conf/sat/ChaviraD06}, rows in CPTs with probabilities equal to zero
-or one can be represented as clauses as well. Therefore, our work can be seen as
-proposing a middle ground between $\#\SAT{}$ and probabilistic inference.
+extent are SAT-based methods still applicable? The answer depends significantly
+on the problem domain. For Bayesian networks, the rules describing that each
+random variable can only be associated with exactly one value were still encoded
+as clauses. As has been noted previously \citep{DBLP:conf/sat/ChaviraD06}, rows
+in CPTs with probabilities equal to zero or one can be represented as clauses as
+well. Therefore, our work can be seen as proposing a middle ground between \mc{}
+and probabilistic inference.
 
 While we chose \textsf{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} as the WMC
 algorithm and Bayesian networks as a canonical example of a probabilistic

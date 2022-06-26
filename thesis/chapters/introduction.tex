@@ -282,18 +282,18 @@ published as:
 % 6. showed how a WFOMC algorithm can discover recursive solutions
 
 In \cref{chapter:wfomc}, our attention shifts to another version of WMC, namely,
-WFOMC as well as its unweighted variant FOMC. Despite being around for more than
-a decade, practical (W)FOMC algorithms are still unable to compute functions as
-simple as a factorial. In this chapter, we argue that the capabilities of FOMC
-algorithms are severely limited by their inability to express arbitrary
-recursive computations. To \emph{enable arbitrary recursion}, we relax the
-restrictions that typically accompany domain recursion and generalise circuits
-used to express a solution to an FOMC problem to graphs that may contain cycles.
-To this end, we enhance the most well-established WFOMC algorithm ForcLift
-\citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation rules and an algorithm
-to check whether a recursive call is feasible. These improvements allow us to
-\emph{automatically find efficient solutions} to counting fundamental structures
-such as injections and bijections.
+WFOMC as well as its unweighted variant FOMC\@. Despite being around for more
+than a decade, practical (W)FOMC algorithms are still unable to compute
+functions as simple as a factorial. In this chapter, we argue that the
+capabilities of FOMC algorithms are severely limited by their inability to
+express arbitrary recursive computations. To \emph{enable arbitrary recursion},
+we relax the restrictions that typically accompany domain recursion and
+generalise circuits used to express a solution to an FOMC problem to graphs that
+may contain cycles. To this end, we enhance the most well-established WFOMC
+algorithm ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation
+rules and an algorithm to check whether a recursive call is feasible. These
+improvements allow us to \emph{automatically find efficient solutions} to
+counting fundamental structures such as injections and bijections.
 
 % 7. developed a way of generating (P)LPs that's much more general than anything from before
 % 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
@@ -323,26 +323,26 @@ published as:
 % 9. developed a way to generate propositional formulas in CNF with varying primal treewidth
 % 10. showed that ADD-based WMC algorithms scale worse w.r.t. it than all other algorithms
 
-In recent experiments, \textsf{WMC} algorithms are shown to perform similarly
-overall but with significant differences on specific subsets of benchmarks. A
-good understanding of the differences in the performance of algorithms requires
+In recent experiments, WMC algorithms are shown to perform similarly overall but
+with significant differences on specific subsets of benchmarks. A good
+understanding of the differences in the performance of algorithms requires
 identifying key characteristics that favour some algorithms over others. In
-\cref{chapter:comparison}, we introduce a \emph{random model} for \textsf{WMC}
-instances with a parameter that influences primal treewidth---the parameter most
-commonly used to characterise the difficulty of an instance. We then use this
-model to experimentally compare the performance of \textsf{WMC} algorithms
-\textsc{c2d} \citep{DBLP:conf/ecai/Darwiche04}, \textsc{Cachet}
+\cref{chapter:comparison}, we introduce a \emph{random model} for WMC instances
+with a parameter that influences primal treewidth---the parameter most commonly
+used to characterise the difficulty of an instance. We then use this model to
+experimentally compare the performance of WMC algorithms \textsc{c2d}
+\citep{DBLP:conf/ecai/Darwiche04}, \textsc{Cachet}
 \citep{DBLP:conf/sat/SangBBKP04}, \textsc{d4}
 \citep{DBLP:conf/ijcai/LagniezM17}, \textsc{DPMC}
 \citep{DBLP:conf/cp/DudekPV20}, and \textsc{miniC2D}
 \citep{DBLP:conf/ijcai/OztokD15} on random instances. We show that the
 \emph{easy-hard-easy pattern is different} for algorithms based on dynamic
 programming and algebraic decision diagrams (ADDs) than for all other solvers.
-We also show how all \textsf{WMC} algorithms scale exponentially with respect to
-primal treewidth and how this scalability varies across algorithms and
-densities. Finally, we demonstrate how the performance of ADD-based algorithms
-changes depending on how much determinism or redundancy there is in the
-numerical values of weights.
+We also show how all WMC algorithms scale exponentially with respect to primal
+treewidth and how this scalability varies across algorithms and densities.
+Finally, we demonstrate how the performance of ADD-based algorithms changes
+depending on how much determinism or redundancy there is in the numerical values
+of weights.
 
 % ============================== Describe the figure ==============================
 

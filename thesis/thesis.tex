@@ -38,7 +38,6 @@
 \usepackage{siunitx}
 \usepackage[inline,shortlabels]{enumitem}
 \usepackage{capt-of}
-%\usepackage[caption=false]{subfig}
 \usepackage{booktabs}
 \usepackage[misc,geometry]{ifsym}
 \usepackage{breakcites}
@@ -55,14 +54,10 @@
 \usepackage{microtype}
 \usepackage{csquotes}
 \usepackage[capitalise,noabbrev]{cleveref}
-%\usepackage{MnSymbol}
 \usepackage[color=lightgray]{todonotes} % TODO: temp
 
 \usepackage{natbib}
 \usepackage{bibentry}
-%% \usepackage[backend=biber]{biblatex}
-%% \addbibresource{thesis}
-%\bibliographystyle{apalike}
 \bibliographystyle{abbrvnat}
 
 \allsectionsfont{\raggedright}
@@ -133,6 +128,8 @@
 \newcommand{\Uone}{$\mathsf{U}_{1}$}
 \newcommand{\Ctwo}{$\mathsf{C}^{2}$}
 
+\newcommand{\mc}{\#{SAT}}
+
 \DeclareMathOperator{\alldifferent}{\mathtt{alldifferent}}
 \DeclareMathOperator{\Bernoulli}{Bernoulli}
 \DeclareMathOperator{\Determined}{\Delta}
@@ -152,7 +149,6 @@
 \DeclareMathOperator{\Vars}{Vars}
 \DeclareMathOperator{\WMC}{WMC}
 \DeclareMathOperator{\gr}{gr}
-
 \DeclareMathOperator{\leftlsquigarrow}{\text{\reflectbox{$\rightsquigarrow$}}}
 
 \Crefname{algocf}{Algorithm}{Algorithms}
@@ -352,7 +348,6 @@
 % * consistent spacing around sets, use of coloneqq
 % * capitalisation and font for predicates, variables, constants, etc.
 % * textsc for algorithm names (e.g., problog)
-% * fonts for names of problems (e.g., SAT, #SAT, WMC, FOMC, WFOMC) (no font)
 % * generating random logic programs:
 % ** are the definitions of fact/rule the same as in the background section?
 % ** replace the citation for stratification in the content chapter with the better one from the background chapter
