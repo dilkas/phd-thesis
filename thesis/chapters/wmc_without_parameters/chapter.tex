@@ -791,45 +791,41 @@ Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors with a
   \caption{An instance-by-instance comparison between $\textsf{DPMC} +
     \texttt{bklm16++}$ (the best combination according to \cref{fig:cumulative2})
   and the second and third best-performing combinations: $\textsf{Ace} +
-  \texttt{cd06}$ and $\textsf{DPMC} + \texttt{bklm16}$.}
-  \label{fig:scatter2}
+  \texttt{cd06}$ and $\textsf{DPMC} + \texttt{bklm16}$.}\label{fig:scatter2}
 \end{figure}
 
 \begin{figure}
   \centering
-  \begin{minipage}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{chapters/wmc_without_parameters/box}
-    \caption{Box plots of the numbers of variables in each encoding across all
-      benchmark instances before and after applying \cref{alg:transformation}.
-      Outliers and the top parts of some whiskers are
-      omitted.}\label{fig:box}
-  \end{minipage}\hfill
-  \begin{minipage}{0.49\textwidth}
-    \centering
-    \begin{tabular}{lrr}
-      \toprule
-      Combination & Fastest & Solved \\
-      \midrule
-      $\textsf{Ace} + \texttt{cd05}$ & 27 & 1247 \\
-      $\textsf{Ace} + \texttt{cd06}$ & 135 & 1340 \\
-      $\textsf{Ace} + \texttt{d02}$ & 56 & 1060 \\
-      $\textsf{DPMC} + \texttt{bklm16}$ & 241 & 1327 \\
-      $\textsf{DPMC} + \texttt{bklm16++}$ & \textbf{992} & \textbf{1435} \\
-      $\textsf{DPMC} + \texttt{cd05++}$ & \textcolor{gray}{0} & 867 \\
-      $\textsf{DPMC} + \texttt{cd06++}$ & \textcolor{gray}{0} & 932 \\
-      $\textsf{DPMC} + \texttt{d02}$ & 1 & 1267 \\
-      $\textsf{DPMC} + \texttt{d02++}$ & 7 & 1272 \\
-      $\textsf{DPMC} + \texttt{sbk05}$ & 31 & 1308 \\
-      $\textsf{c2d} + \texttt{bklm16}$ & \textcolor{gray}{0} & 997 \\
-      $\textsf{Cachet} + \texttt{sbk05}$ & 49 & 983 \\
-      \bottomrule
-    \end{tabular}
-    \captionof{table}{The numbers of instances (out of 1466) that each algorithm
-      and encoding combination solved faster than any other combination and in
-      total.}\label{tbl:performance}
-  \end{minipage}
+  \includegraphics[width=\textwidth]{chapters/wmc_without_parameters/box}
+  \caption{Box plots of the numbers of variables in each encoding across all
+    benchmark instances before and after applying \cref{alg:transformation}.
+    Outliers and the top parts of some whiskers are omitted.}\label{fig:box}
 \end{figure}
+
+\begin{table}
+  \centering
+  \begin{tabular}{lrr}
+    \toprule
+    Combination & Fastest & Solved \\
+    \midrule
+    $\textsf{Ace} + \texttt{cd05}$ & 27 & 1247 \\
+    $\textsf{Ace} + \texttt{cd06}$ & 135 & 1340 \\
+    $\textsf{Ace} + \texttt{d02}$ & 56 & 1060 \\
+    $\textsf{DPMC} + \texttt{bklm16}$ & 241 & 1327 \\
+    $\textsf{DPMC} + \texttt{bklm16++}$ & \textbf{992} & \textbf{1435} \\
+    $\textsf{DPMC} + \texttt{cd05++}$ & \textcolor{gray}{0} & 867 \\
+    $\textsf{DPMC} + \texttt{cd06++}$ & \textcolor{gray}{0} & 932 \\
+    $\textsf{DPMC} + \texttt{d02}$ & 1 & 1267 \\
+    $\textsf{DPMC} + \texttt{d02++}$ & 7 & 1272 \\
+    $\textsf{DPMC} + \texttt{sbk05}$ & 31 & 1308 \\
+    $\textsf{c2d} + \texttt{bklm16}$ & \textcolor{gray}{0} & 997 \\
+    $\textsf{Cachet} + \texttt{sbk05}$ & 49 & 983 \\
+    \bottomrule
+  \end{tabular}
+  \caption{The numbers of instances (out of 1466) that each algorithm and
+    encoding combination solved faster than any other combination and in
+    total.}\label{tbl:performance}
+\end{table}
 
 \Cref{fig:cumulative2} shows $\textsf{DPMC}+\texttt{bklm16++}$ to be the
 best-performing combination across all time limits up to \SI{1000}{\second} with

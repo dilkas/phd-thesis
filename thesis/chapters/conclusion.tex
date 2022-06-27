@@ -13,12 +13,20 @@ either directly or indirectly building on the results of our work.
 % claims?
 % what broad areas of research are affected by my work? how might that effect propagate in the future?
 
-\todo[inline]{Perhaps you should start by saying recall that WMC is a
+\todo[inline,caption={}]{Perhaps you should start by saying recall that WMC is a
   fundamental computational task underlying many formalisms and application. We
   emphasised that in order to improve the foundations and the applicability of
   this formulation different kinds of generalisations were needed, eg with
-  regards to (insert bullet point list from chapter 1, just before the start of
-  the contribution section).}
+  regards to (copied from the introduction).
+  \begin{itemize}
+    \item develop WMC algorithms with good empirical performance,
+    \item understand the comparative strengths and weaknesses of different
+          approaches,
+    \item and optimise the encoding process that transforms problems from the
+          application (e.g., probabilistic inference) domain to a representation
+          accepted by the algorithm.
+  \end{itemize}
+}
 
 The contributions of this thesis can be divided into two parts:
 \begin{itemize}
@@ -106,46 +114,54 @@ In this section, we present a broad overview of how our contributions and the
 questions raised by this work could be taken forward and influence key areas of
 research in computer science, artificial intelligence, and mathematics.
 
-\paragraph*{Algorithms and applications.}
+\subsection{Algorithms and Applications}
+
 In this thesis, we contributed to the development and applicability of three WMC
-algorithms: ADDMC \citep{DBLP:conf/aaai/DudekPV20}, DPMC
-\citep{DBLP:conf/cp/DudekPV20}, and ForcLift
+algorithms: \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20}, \textsc{DPMC}
+\citep{DBLP:conf/cp/DudekPV20}, and \textsc{ForcLift}
 \citep{DBLP:conf/ijcai/BroeckTMDR11}. The first two are propositional WMC
-algorithms based on ADDs while ForcLift is a WMC algorithm for first-order logic
-based on knowledge compilation. Most weighted first-order model counting (WFOMC)
-algorithms try to solve each instance in a lifted manner (i.e., run in
-polynomial time with respect to the sizes of the domains involved) and fail if
-unsuccessful. ForcLift is an exception as it supports using a (propositional)
-WMC algorithm for parts of the problem that cannot be solved by other
-compilation rules. Can this transition to WMC be implemented more efficiently,
-i.e., without fully grounding the instance? Is the WFOMC algorithm better off
-constructing its own exponential-time solution instead of relying on a WMC
-algorithm (and is that even possible)? The only way WFOMC can become the
-standard approach to probabilistic inference in statistical relational models is
-by being able to gracefully handle all instances, even if it means abandoning
-efficiency guarantees. Finally, ample opportunities remain to improve WMC
-encodings that already exist as well as connect WMC to new problem domains. In
-particular, we showed how PBP encodings of Bayesian networks are much smaller
-than the equivalent WMC encodings and can be handled more efficiently by a WMC
-algorithm. Designing PBP encodings for other applications of WMC and to new
-problem domains could be similarly beneficial. Moreover, back in
-\cref{chapter:introduction} we compared WMC to a range of other computational
-problems that ask to compute a sum of products. Establishing efficient
-reductions among these problems could yield new fixed-parameter tractable
-algorithms and/or improvements to the empirical state of the art. Similarly,
-adapting a WMC algorithm to a semiring other than
+algorithms based on ADDs while \textsc{ForcLift} is a WMC algorithm for
+first-order logic based on knowledge compilation.
+
+\todo[inline]{You could mention the use of portfolio approaches to make SAT
+  extremely fast \citep{DBLP:journals/jair/XuHHL08} (other domains
+  \citep{DBLP:conf/lion/KotthoffMS16}), and whether something similar could be
+  tried out with your work.}
+
+\todo[inline, caption={}]{Likewise you could reference the work on approximate
+  counting as another dimension to your work.
+  \begin{itemize}
+    \item approximate \textsc{ForcLift} \citep{DBLP:conf/uai/BroeckCD12}
+    \item approximations with ADDs \citep{DBLP:conf/nips/St-AubinHB00}
+    \item approximate model counting \citep{DBLP:series/faia/ChakrabortyMV21}
+  \end{itemize}
+  Remove unused references.
+}
+
+Most weighted first-order model counting (WFOMC) algorithms try to solve each
+instance in a lifted manner (i.e., run in polynomial time with respect to the
+sizes of the domains involved) and fail if unsuccessful. \textsc{ForcLift} is an
+exception as it supports using a (propositional) WMC algorithm for parts of the
+problem that cannot be solved by other compilation rules. Can this transition to
+WMC be implemented more efficiently, i.e., without fully grounding the instance?
+Is the WFOMC algorithm better off constructing its own exponential-time solution
+instead of relying on a WMC algorithm (and is that even possible)? The only way
+WFOMC can become the standard approach to probabilistic inference in statistical
+relational models is by being able to gracefully handle all instances, even if
+it means abandoning efficiency guarantees.
+
+Finally, ample opportunities remain to improve WMC encodings that already exist
+as well as connect WMC to new problem domains. In particular, we showed how PBP
+encodings of Bayesian networks are much smaller than the equivalent WMC
+encodings and can be handled more efficiently by a WMC algorithm. Designing PBP
+encodings for other applications of WMC and to new problem domains could be
+similarly beneficial. Moreover, back in \cref{chapter:introduction} we compared
+WMC to a range of other computational problems that ask to compute a sum of
+products. Establishing efficient reductions among these problems could yield new
+fixed-parameter tractable algorithms and/or improvements to the empirical state
+of the art. Similarly, adapting a WMC algorithm to a semiring other than
 $(\mathbb{R}_{\ge 0}, +, \cdot)$ could yield improvements to some of the related
 problems outlined by \citet{DBLP:journals/japll/KimmigBR17}.
-
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item You could mention the use of portfolio approaches to make SAT
-          extremely fast \citep{DBLP:journals/jair/XuHHL08}, and whether
-          something similar could be tried out with your work.
-    \item Likewise you could reference the work on approximate counting as
-          another dimension to your work.
-  \end{itemize}
-}
 
 %% The two theoretical directions for future work we discuss here are on the arithmetic complexity of WMC/WFOMC and the various notions of completeness of WFOMC algorithms.
 %% \begin{itemize}
@@ -161,7 +177,8 @@ problems outlined by \citet{DBLP:journals/japll/KimmigBR17}.
 %%   \end{itemize}
 %% \end{itemize}
 
-\paragraph*{Computational complexity.}
+\subsection{Computational Complexity}
+
 Note that the execution of both WMC and WFOMC algorithms can be divided into two
 parts:
 \begin{itemize}
@@ -175,6 +192,7 @@ solutions? How much of the total running time depends on the complexity of the
 solution, and how much on the algorithmic methods for finding one? Answers to
 these questions would highlight the weaknesses of state-of-the-art algorithms
 and direct the efforts of future research towards addressing these weaknesses.
+
 On a more theoretical level, single-domain (W)FOMC problems compute sequences,
 many of which are well-known to mathematicians. Since there is significant
 interest in computing such sequences efficiently, the existence of many such
@@ -187,12 +205,15 @@ for which FOMC is $\#\P_1$-complete \citep{DBLP:conf/pods/BeameBGS15}. Having
 similar hardness results for sentences that are both simple and practical would
 be a significant advancement to the field.
 
-\paragraph*{Random instance generation.}
+\subsection{Random Instances}
+
 In this thesis, we introduce two ways to generate random instances: one for
 (probabilistic) logic programs and one for propositional formulas in CNF that
 are then turned into WMC instances. As we provide the very first attempts at
 testing WMC algorithms on random data, many opportunities for improvements and
-future work remain. An interesting opportunity to connect our work on random
+future work remain.
+
+An interesting opportunity to connect our work on random
 logic programs in \cref{chapter:randomlps} and on (W)FOMC in
 \cref{chapter:wfomc} is by adapting the constraint model to generate (W)FOMC
 instances instead of logic programs. This way one could systematically search
@@ -202,11 +223,13 @@ for interesting instances that, e.g.,
   \item demonstrate a gap between the performance of state-of-the-art WFOMC
         algorithms and formulas constructed by hand.
 \end{itemize}
+
 There is also ample opportunity for theoretical contributions. For instance, one
 explanation for the surprising experimental results of \cref{chapter:randomlps}
 is that all of the generated instances yielded easy WMC problems, and the
 computational bottleneck was in the handling of the logic program before WMC\@.
 We can state this idea as a (somewhat informal) conjecture.
+
 \begin{conjecture}
   With high probability, the WMC instance that results from a random
   probabilistic logic program generated by the constraint model in
@@ -217,7 +240,8 @@ We can state this idea as a (somewhat informal) conjecture.
 %% is that one random decision influences/conditions all subsequent decisions,
 %% unlike in the case of Erd\H{o}s-R\'enyi random graphs)
 
-\paragraph*{Artificial intelligence and combinatorics.}
+\subsection{Artificial Intelligence and Combinatorics}
+
 Our hope for the broader field of artificial intelligence is that---similarly to
 the resurgence of symbolic artificial intelligence amidst deep neural networks
 \citep{garnelo2019reconciling}---the field shifts some of its focus from numbers
@@ -231,6 +255,7 @@ sufficiently high/low. Such reasoning capabilities have clear benefits to the
 robustness of artificial agents and to explainability---another rapidly emerging
 area of research
 \citep{DBLP:journals/corr/abs-1909-03012,DBLP:journals/fdata/BelleP21,DBLP:journals/corr/abs-2202-10335}.
+
 Finally, for the benefit of both artificial intelligence and combinatorics, we
 would like to reiterate and expand on the notion of automatic enumerative
 combinatorialist by \citet{DBLP:conf/ilp/BarvinekB0ZK21}. Perhaps (W)FOMC can
