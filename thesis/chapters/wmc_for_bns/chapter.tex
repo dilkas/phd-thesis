@@ -130,13 +130,13 @@ necessarily faster.
     Name in logic & Boolean-algebraic notation & Set-theoretic notation \\
     \midrule
     Atoms (elements of $U$) & $a, b$ & $a, b$ \\
-    \rowcolor{gray!10} Models (elements of $2^U$) & $\neg a \land \neg b, a \land \neg b, \neg a \land b, a \land b$ & $\emptyset, \{a\}, \{b\}, \{a, b\}$ \\
-    & $\top$ & $\{ \emptyset, \{a\}, \{b\}, \{a, b\} \}$ \\
-    & $\neg a \lor \neg b, a \to b$ & $\{ \emptyset, \{a\}, \{b\} \}, \{ \emptyset, \{b\}, \{a, b\} \}$ \\
-    & $b \to a, a \lor b$ & $\{ \emptyset, \{a\}, \{a, b\} \}, \{ \{a\}, \{b\}, \{a, b\} \}$ \\
-    & $\neg b, \neg a, a \leftrightarrow b$ & $\{\emptyset, \{a\}\}, \{\emptyset, \{b\}\}, \{\emptyset, \{a, b\}\}$ \\
-    & $(a \land \neg b) \lor (b \land \neg a), a, b$ & $\{\{a\}, \{b\}\}, \{\{a\}, \{a, b\}\}, \{\{b\}, \{a, b\}\}$ \\
-    & $\neg a \land \neg b, a \land \neg b, \neg a \land b, a \land b$ & $\{\emptyset\}, \{\{a\}\}, \{\{b\}\}, \{\{a, b\}\}$ \\
+    \rowcolor{gray!10} Models (elements of $2^U$) & $\neg a \land \neg b, a \land \neg b, \neg a \land b, a \land b$ & $\emptyset, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\}$ \\
+    & $\top$ & $\{\, \emptyset, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
+    & $\neg a \lor \neg b, a \to b$ & $\{\, \emptyset, \{\, a \,\}, \{\, b \,\} \,\}, \{\, \emptyset, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
+    & $b \to a, a \lor b$ & $\{\, \emptyset, \{\, a \,\}, \{\, a, b \,\} \,\}, \{\, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
+    & $\neg b, \neg a, a \leftrightarrow b$ & $\{\, \emptyset, \{\, a \,\} \,\}, \{\, \emptyset, \{\, b \,\} \,\}, \{\, \emptyset, \{\, a, b \,\} \,\}$ \\
+    & $(a \land \neg b) \lor (b \land \neg a), a, b$ & $\{\, \{\, a \,\}, \{\, b \,\} \,\}, \{\, \{\, a \,\}, \{\, a, b \,\} \,\}, \{\, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
+    & $\neg a \land \neg b, a \land \neg b, \neg a \land b, a \land b$ & $\{\, \emptyset \,\}, \{\, \{\, a \,\} \,\}, \{\, \{\, b \,\} \,\}, \{\, \{\, a, b \,\} \,\}$ \\
     \multirow{-7}{*}{Formulas (elements of $2^{2^U}$)} & $\bot$ & $\emptyset$ \\
     \bottomrule
   \end{tabular}
@@ -147,18 +147,18 @@ necessarily faster.
 In this section, we give a brief introduction to two alternative ways to think
 about logical constructs such as models and formulas. Let us consider a simple
 example of a propositional logic $\mathcal{L}$ with only two atoms $a$ and $b$,
-and let $U = \{ a, b \}$. Then $2^U$, the power set of $U$, is the set of all
-models of $\mathcal{L}$, and $2^{2^U}$ is the set of all formulas. These sets
-can also be represented as Boolean algebras (e.g., using the syntax $(2^{2^U},
-\land, \lor, \neg, \bot, \top)$) with a partial order $\le$ that corresponds to
-set inclusion $\subseteq$---see \cref{tbl:notation_example} for examples of how
-various elements can be represented in both notations. Most importantly, note
-that the word \emph{atom} has completely different meanings in logic and Boolean
-algebras. An atom in $\mathcal{L}$ is an atomic formula, i.e., an element of
-$U$, whereas an atom in a Boolean algebra is (in set-theoretic terms) a
-singleton set. For instance, an atom in $2^{2^U}$ corresponds to a model of
-$\mathcal{L}$, i.e., an element of $2^U$. Unless referring specifically to a
-logic, we will use the algebraic definition of an atom and refer to logical
+and let $U = \{\, a, b \,\}$. Then $2^U$, the power set of $U$, is the set of
+all models of $\mathcal{L}$, and $2^{2^U}$ is the set of all formulas. These
+sets can also be represented as Boolean algebras (e.g., using the syntax
+$(2^{2^U}, \land, \lor, \neg, \bot, \top)$) with a partial order $\le$ that
+corresponds to set inclusion $\subseteq$---see \cref{tbl:notation_example} for
+examples of how various elements can be represented in both notations. Most
+importantly, note that the word \emph{atom} has completely different meanings in
+logic and Boolean algebras. An atom in $\mathcal{L}$ is an atomic formula, i.e.,
+an element of $U$, whereas an atom in a Boolean algebra is (in set-theoretic
+terms) a singleton set. For instance, an atom in $2^{2^U}$ corresponds to a
+model of $\mathcal{L}$, i.e., an element of $2^U$. Unless referring specifically
+to a logic, we will use the algebraic definition of an atom and refer to logical
 atoms as \emph{variables}. In the rest of the paper, for any set $U$, we will
 use set-theoretic notation for $2^U$ and Boolean-algebraic notation for
 $2^{2^U}$, except for (Boolean) atoms in $2^{2^U}$ that are denoted as $\{x\}$
@@ -176,25 +176,25 @@ multiplication and projection are as defined by
 \citet{DBLP:conf/aaai/DudekPV20}, while others are new.
 
 \begin{definition}[Operations on functions]
-  Let $\alpha\colon 2^X \to \mathbb{R}_{\ge 0}$ and $\beta\colon 2^Y \to
-  \mathbb{R}_{\ge 0}$ be functions, $p \in \mathbb{R}_{\ge 0}$, and $x \in X$.
-  We define the following operations:
+  Let $\alpha\colon 2^X \to \mathbb{R}_{\ge 0}$ and
+  $\beta\colon 2^Y \to \mathbb{R}_{\ge 0}$ be functions,
+  $p \in \mathbb{R}_{\ge 0}$, and $x \in X$. We define the following operations:
   \begin{description}
-  \item[Addition:] $\alpha + \beta\colon 2^{X \cup Y} \to \mathbb{R}_{\ge 0}$ is
-    such that $(\alpha + \beta)(T) = \alpha(T \cap X) + \beta(T \cap Y)$ for all
-    $T \in 2^{X \cup Y}$.
-  \item[Multiplication:] $\alpha \cdot \beta\colon 2^{X \cup Y} \to
-    \mathbb{R}_{\ge 0}$ is such that $(\alpha \cdot \beta)(T) = \alpha(T \cap X)
-    \cdot \beta(T \cap Y)$ for all $T \in 2^{X \cup Y}$.
-  \item[Scalar multiplication:] $p\alpha\colon 2^X \to \mathbb{R}_{\ge 0}$ is
-    such that $(p\alpha)(T) = p \cdot \alpha(T)$ for all $T \in 2^X$.
-  \item[Complement:] $\overline{\alpha}\colon 2^X \to \mathbb{R}_{\ge 0}$ is
-    such that $\overline{\alpha}(T) = 1 - \alpha(T)$ for all $T \in 2^X$.
-  \item[Projection:] $\exists_x\alpha\colon 2^{X \setminus \{ x \}} \to
-    \mathbb{R}_{\ge 0}$ is such that $(\exists_x\alpha)(T) = \alpha(T) +
-    \alpha(T \cup \{ x \})$ for all $T \in 2^{X \setminus \{x \}}$. For any $Z =
-    \{ z_1, \dots, z_n \} \subseteq X$, we write $\exists_Z$ to mean
-    $\exists_{z_1}\dots\exists_{z_n}$.
+    \item[Addition:] $\alpha + \beta\colon 2^{X \cup Y} \to \mathbb{R}_{\ge 0}$ is
+          such that $(\alpha + \beta)(T) = \alpha(T \cap X) + \beta(T \cap Y)$ for all
+          $T \in 2^{X \cup Y}$.
+    \item[Multiplication:] $\alpha \cdot \beta\colon 2^{X \cup Y} \to
+          \mathbb{R}_{\ge 0}$ is such that $(\alpha \cdot \beta)(T) = \alpha(T \cap X)
+          \cdot \beta(T \cap Y)$ for all $T \in 2^{X \cup Y}$.
+    \item[Scalar multiplication:] $p\alpha\colon 2^X \to \mathbb{R}_{\ge 0}$ is
+          such that $(p\alpha)(T) = p \cdot \alpha(T)$ for all $T \in 2^X$.
+    \item[Complement:] $\overline{\alpha}\colon 2^X \to \mathbb{R}_{\ge 0}$ is
+          such that $\overline{\alpha}(T) = 1 - \alpha(T)$ for all $T \in 2^X$.
+    \item[Projection:] $\exists_x\alpha\colon 2^{X \setminus \{\, x \,\}} \to
+          \mathbb{R}_{\ge 0}$ is such that $(\exists_x\alpha)(T) = \alpha(T) +
+          \alpha(T \cup \{\, x \,\})$ for all $T \in 2^{X \setminus \{\, x \,\}}$. For any $Z =
+          \{\, z_1, \dots, z_n \,\} \subseteq X$, we write $\exists_Z$ to mean
+          $\exists_{z_1}\dots\exists_{z_n}$.
   \end{description}
 \end{definition}
 
@@ -250,25 +250,28 @@ with a given definition of $\nu$.
 % 'axiom' and 'theory'
 \paragraph*{Relation to the classical (logic-based) view of WMC.} Let
 $\mathcal{L}$ be a propositional logic with two atoms $a$ and $b$ as in
-\cref{sec:prelims} and $w\colon \{ a, b, \neg a, \neg b \} \to \mathbb{R}_{\ge
-  0}$ a weight function defined as $w(a) = 0.3$, $w(\neg a) = 0.7$, $w(b)
-= 0.2$, $w(\neg b) = 0.8$. Furthermore, let $\Delta$ be a theory in
-$\mathcal{L}$ with a sole axiom $a$. Then $\Delta$ has two models: $\{ a, b \}$
-and $\{ a, \neg b \}$ and its WMC \citep{DBLP:journals/ai/ChaviraD08} is
+\cref{sec:prelims} and
+$w\colon \{\, a, b, \neg a, \neg b \,\} \to \mathbb{R}_{\ge 0}$ a weight
+function defined as $w(a) = 0.3$, $w(\neg a) = 0.7$, $w(b) = 0.2$,
+$w(\neg b) = 0.8$. Furthermore, let $\Delta$ be a theory in $\mathcal{L}$ with a
+sole axiom $a$. Then $\Delta$ has two models: $\{\, a, b \,\}$ and
+$\{\, a, \neg b \,\}$ and its WMC \citep{DBLP:journals/ai/ChaviraD08} is
 \begin{equation} \label{eq:wmc_example}
   \begin{split}
     \WMC(\Delta) &= \sum_{\omega \models \Delta} \prod_{\omega \models l} w(l) \\
-    &= w(a)w(b) + w(a)w(\neg b) = 0.3.
+                 &= w(a)w(b) + w(a)w(\neg b) = 0.3.
   \end{split}
 \end{equation}
-Alternatively, we can define $\nu_a\colon 2^{\{a\}} \to \mathbb{R}_{\ge 0}$ as
-$\nu_a(\{ a \}) = 0.3$, $\nu_a(\emptyset) = 0.7$ and $\nu_b\colon 2^{\{b\}} \to
-\mathbb{R}_{\ge 0}$ as $\nu_b(\{ b \}) = 0.2$, $\nu_b(\emptyset) = 0.8$. Let
-$\mu$ be the measure on $2^{2^U}$ induced by $\nu = \nu_a \cdot \nu_b$. Then,
-equivalently to \cref{eq:wmc_example}, we can write
+Alternatively, we can define
+$\nu_a\colon 2^{\{\, a \,\}} \to \mathbb{R}_{\ge 0}$ as
+$\nu_a(\{\, a \,\}) = 0.3$, $\nu_a(\emptyset) = 0.7$ and
+$\nu_b\colon 2^{\{\, b \,\}} \to \mathbb{R}_{\ge 0}$ as
+$\nu_b(\{\, b \,\}) = 0.2$, $\nu_b(\emptyset) = 0.8$. Let $\mu$ be the measure
+on $2^{2^U}$ induced by $\nu = \nu_a \cdot \nu_b$. Then, equivalently to
+\cref{eq:wmc_example}, we can write
 \begin{align*}
-  \mu(a) &= \nu(\{ a, b \}) + \nu(\{ a \}) \\
-         &= \nu_a(\{a\})\nu_b(\{b\}) + \nu_a(\{a\})\nu_b(\emptyset) = 0.3.
+  \mu(a) &= \nu(\{\, a, b \,\}) + \nu(\{\, a \,\}) \\
+         &= \nu_a(\{\, a \,\})\nu_b(\{\, b \,\}) + \nu_a(\{\, a \,\})\nu_b(\emptyset) = 0.3.
 \end{align*}
 Thus, one can equivalently think of WMC as summing over models of a theory or
 over atoms below an element of a Boolean algebra.

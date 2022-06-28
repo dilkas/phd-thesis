@@ -3,7 +3,7 @@
 In this appendix, we provide examples of probabilistic logic programs generated
 by various combinations of parameters. In all cases, we use
 \[
-  \{ 0.1, 0.2, \dots, 0.9, 1, 1, 1, 1, 1\}
+  \{\, 0.1, 0.2, \dots, 0.9, 1, 1, 1, 1, 1 \,\}
 \]
 as the multiset of probabilities. Each clause is written on a separate line and
 ends with a full stop. The head and the body of each clause are separated with
@@ -15,7 +15,7 @@ Parentheses are used to demonstrate precedence, although many of them are
 redundant.
 
 By setting $\predicates{} = [\texttt{p}]$, $\arities{} = [1]$, $\variables{} =
-\{ \texttt{X} \}$, $\constants{} = \emptyset$, $\maxNumNodes{} = 4$, and
+\{\, \texttt{X} \,\}$, $\constants{} = \emptyset$, $\maxNumNodes{} = 4$, and
 $\maxNumClauses{} = 1$, we get fifteen one-line programs, six of which are
 without negative cycles (as highlighted below). Only the last program has no
 cycles at all.
@@ -94,8 +94,8 @@ Note that:
 \end{itemize}
 
 To demonstrate variable symmetry reduction in action, we set $\predicates{} =
-[\texttt{p}]$, $\arities{} = [3]$, $\variables{} = \{\texttt{X}, \texttt{Y},
-\texttt{Z} \}$, $\constants{} = \emptyset$, $\maxNumNodes{} = 1$,
+[\texttt{p}]$, $\arities{} = [3]$, $\variables{} = \{\, \texttt{X}, \texttt{Y},
+\texttt{Z} \,\}$, $\constants{} = \emptyset$, $\maxNumNodes{} = 1$,
 $\maxNumClauses{} = 1$, and forbid all cycles. This gives us the following five
 programs:
 
@@ -122,11 +122,12 @@ p(Y, Z, Y).
 \end{verbatim}
 \end{itemize}
 
-This is one of many possible programs with $\predicates{} = [\texttt{p},
-\texttt{q}, \texttt{r}]$, $\arities{} = [1, 2, 3]$, $\variables{} =
-\{\texttt{X}, \texttt{Y}, \texttt{Z} \}$, $\constants{} = \{ \texttt{a},
-\texttt{b}, \texttt{c} \}$, $\maxNumNodes{} = 5$, $\maxNumClauses{} = 5$, and
-without negative cycles:
+This is one of many possible programs with
+$\predicates{} = [\texttt{p}, \texttt{q}, \texttt{r}]$,
+$\arities{} = [1, 2, 3]$,
+$\variables{} = \{\, \texttt{X}, \texttt{Y}, \texttt{Z} \,\}$,
+$\constants{} = \{\, \texttt{a}, \texttt{b}, \texttt{c} \,\}$,
+$\maxNumNodes{} = 5$, $\maxNumClauses{} = 5$, and without negative cycles:
 
 \begin{verbatim}
 p(b) :- \+((q(a, b)), (q(X, Y)), (q(Z, X))).
@@ -136,12 +137,12 @@ q(X, a) :- r(Y, b, Z).
 r(Y, b, Z).
 \end{verbatim}
 
-Finally, we set
-$\predicates{} = [\texttt{p}, \texttt{q}, \texttt{r}]$, $\arities{} = [1, 1,
-1]$, $\variables{} = \emptyset$, $\constants{} = \{ \texttt{a} \}$,
-$\maxNumNodes{} = 3$, $\maxNumClauses{} = 3$, forbid negative cycles, and
-constrain predicates \texttt{p} and \texttt{q} to be independent. The resulting
-search space contains thousands of programs such as:
+Finally, we set $\predicates{} = [\texttt{p}, \texttt{q}, \texttt{r}]$,
+$\arities{} = [1, 1, 1]$, $\variables{} = \emptyset$,
+$\constants{} = \{\, \texttt{a} \,\}$, $\maxNumNodes{} = 3$,
+$\maxNumClauses{} = 3$, forbid negative cycles, and constrain predicates
+\texttt{p} and \texttt{q} to be independent. The resulting search space contains
+thousands of programs such as:
 
 \begin{itemize}
 \item

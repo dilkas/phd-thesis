@@ -235,7 +235,7 @@
   Originally used as a flexible way of performing probabilistic inference on
   graphical models, WMC has found many applications across artificial
   intelligence (AI), machine learning, and other domains. Areas of AI that rely
-  on WMC include explainable AI, neuro-symbolic AI, probabilistic programming,
+  on WMC include explainable AI, neural-symbolic AI, probabilistic programming,
   and statistical relational AI\@. WMC also has applications in bioinformatics,
   data mining, natural language processing, prognostics, and robotics.
 
@@ -341,43 +341,29 @@
 \end{preliminary}
 
 % TODO:
-% * !!! incorporate new feedback in ALL sections
+% * !!! incorporate new feedback in all content chapters
 % * Add additional information from phd_notes and previous versions of some of the papers.
-% * double check what symbols I use for implication and equivalence
 % * consistent spacing around sets, use of coloneqq
-% * capitalisation and font for predicates, variables, constants, etc.
-% * textsc for algorithm names (e.g., problog, prolog, forclift, all WMC algorithms including DPMC, ADDMC, Ace, maybe some others)
-% * generating random logic programs:
-% ** are the definitions of fact/rule the same as in the background section?
-% ** replace the citation for stratification in the content chapter with the better one from the background chapter
-% ** there's no need for hyphens in 'variable-ordering' and 'value-ordering'
-% ** it's first fail (equivalent to dom) rather than fail-first
-% * predicates and constants lowercase, variables uppercase
+% * capitalisation and font for predicates (lowercase), variables (uppercase), constants (lowercase), etc.
+% * textsc for algorithm names (e.g., problog, prolog, forclift, Crane, all WMC algorithms including DPMC, ADDMC, Ace, maybe some others)
 % * consider using listings for all Prolog and maybe ProbLog code (but then everything becomes sf instead of tt)
 % * all figures/tables/algorithms float to top?
-% * citations for definitions, theorems, etc. should be citet rather than citep
-% * make the arrows (and tree sibling and node distances) all the same
+% * make all the arrows in tikz pictures (and tree sibling and node distances) all the same
 % * check if some arXiv citations can be replaced by their published versions
 % * notation for graphs: \mathcal{V}, \mathcal{E}, \mathcal{L}
 % * introduction, background,recursion: merge table cells with the same info
 % * preserve the section of paper1 in wmc-without-parameters that got deleted in paper2
 % * eliminate warnings (e.g., overflow, single-spacing)
-% * rewrite the last paragraph of section 3.2 (how the UAI paper refers to the SAT paper)
 % * background: wmc should be defined at the very beginning
 % * also list contributions at the beginning of each chapter
-% * random instances chapter
-% ** motivation: unclear how algorithms differ
-% ** link: the LP approach failed to distinguish the algorithms
 % * refer to background sections in main chapters
 % * introduction: define / write a bit about pseudo-Boolean functions (necessary for the next chapter). Maybe make a connection with pseudo-Boolean constraints.
 % * the tikzpicture in the recursion chapter could also be redrawn to be a tree
-% * neuro or neural?
 % * in algorithms, write forall if selecting more than one variable
 % * Chapter 5 (and maybe elsewhere): tikzcd diagrams should not be referred to as equations
 % * recursion chapter: double check the results in the table
 % * write acknowledgements
 % * make sure to use \text{, } and \text{. } for FOL
-% * make sure to mention the appendix
 % * V: again make sure that the conclusions are befitting a thesis by indicating pointers to previous and upcoming chapters.
 
 \include{chapters/introduction} % 5-14 pages (9 on average)

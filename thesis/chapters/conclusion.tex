@@ -13,20 +13,8 @@ either directly or indirectly building on the results of our work.
 % claims?
 % what broad areas of research are affected by my work? how might that effect propagate in the future?
 
-\todo[inline,caption={}]{Perhaps you should start by saying recall that WMC is a
-  fundamental computational task underlying many formalisms and application. We
-  emphasised that in order to improve the foundations and the applicability of
-  this formulation different kinds of generalisations were needed, eg with
-  regards to (copied from the introduction).
-  \begin{itemize}
-    \item develop WMC algorithms with good empirical performance,
-    \item understand the comparative strengths and weaknesses of different
-          approaches,
-    \item and optimise the encoding process that transforms problems from the
-          application (e.g., probabilistic inference) domain to a representation
-          accepted by the algorithm.
-  \end{itemize}
-}
+% Recall that WMC is a fundamental computational task underlying many formalisms
+% and applications.
 
 The contributions of this thesis can be divided into two parts:
 \begin{itemize}
@@ -87,11 +75,16 @@ Second, first-order model counting (and first-order knowledge compilation in
 particular) can discover the definitions of recursive functions (including
 recurrence relations) that capture the model count of a given sentence.
 
-\todo[inline]{ In summary, we have a) introduce new foundations for WMC by
-  exploring a measure theo formulation 2) introduced new encoding schemes as
-  appropriate for dynamic programming approaches 3) extend the first definition
-  to account for rec. solutions 4) provided algorithms for random instance
-  testing}
+In summary, we
+\begin{itemize}
+  \item introduced new foundations for WMC based on measures on Boolean
+        algebras,
+  \item generalised WMC to PBP,
+  \item introduced new encoding schemes and encoding transformation algorithms,
+  \item introduced \textsc{Crane}, i.e., a more powerful version of
+        \textsc{ForcLift} that works with graphs rather than circuits,
+  \item and provided algorithms for random instance generation.
+\end{itemize}
 
 %% \section{Discussion}
 
@@ -116,27 +109,24 @@ research in computer science, artificial intelligence, and mathematics.
 
 \subsection{Algorithms and Applications}
 
+% You could mention the use of portfolio approaches to make SAT extremely fast
+% \citep{DBLP:journals/jair/XuHHL08} (other domains
+% \citep{DBLP:conf/lion/KotthoffMS16}), and whether something similar could be
+% tried out with your work.
+
 In this thesis, we contributed to the development and applicability of three WMC
 algorithms: \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20}, \textsc{DPMC}
 \citep{DBLP:conf/cp/DudekPV20}, and \textsc{ForcLift}
 \citep{DBLP:conf/ijcai/BroeckTMDR11}. The first two are propositional WMC
-algorithms based on ADDs while \textsc{ForcLift} is a WMC algorithm for
-first-order logic based on knowledge compilation.
-
-\todo[inline]{You could mention the use of portfolio approaches to make SAT
-  extremely fast \citep{DBLP:journals/jair/XuHHL08} (other domains
-  \citep{DBLP:conf/lion/KotthoffMS16}), and whether something similar could be
-  tried out with your work.}
-
-\todo[inline, caption={}]{Likewise you could reference the work on approximate
-  counting as another dimension to your work.
-  \begin{itemize}
-    \item approximate \textsc{ForcLift} \citep{DBLP:conf/uai/BroeckCD12}
-    \item approximations with ADDs \citep{DBLP:conf/nips/St-AubinHB00}
-    \item approximate model counting \citep{DBLP:series/faia/ChakrabortyMV21}
-  \end{itemize}
-  Remove unused references.
-}
+algorithms based on ADDs whereas \textsc{ForcLift} is a WMC algorithm for
+first-order logic based on knowledge compilation. While in this work we focused
+exclusively on exact algorithms, all of them could be adapted to approximate
+instead. An approximation technique called \emph{lifted relax, compensate and
+  then recover} is already part of \textsc{ForcLift}
+\citep{DBLP:conf/uai/BroeckCD12}, so it would only need to be adapted to the
+generalised setting of \textsc{Crane}. Likewise, approximate computations using
+ADDs have already been studied \citep{DBLP:conf/nips/St-AubinHB00}, so, e.g.,
+\textsc{DPMC} could be extended to approximate as well.
 
 Most weighted first-order model counting (WFOMC) algorithms try to solve each
 instance in a lifted manner (i.e., run in polynomial time with respect to the

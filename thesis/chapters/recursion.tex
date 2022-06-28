@@ -587,8 +587,8 @@ recursive function. The GDR compilation rule is summarised as
 \begin{example}
   Let $\phi = \{\, c_1, c_2 \,\}$ be a formula, where
   \begin{align*}
-    c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}), \\
-    c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \}).
+    c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}), \\
+    c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}).
   \end{align*}
   While GDR is possible on both domains, here we illustrate how it works on $a$.
   Having chosen a domain, the algorithm iterates over the clauses of $\phi$.
@@ -607,11 +607,11 @@ recursive function. The GDR compilation rule is summarised as
   In this case, both subsets of $V$ satisfy these conditions, and
   \cref{line:generation} generates two clauses for the output formula:
   \[
-    (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto b \}),
+    (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}),
   \]
   (from $W = \emptyset$) and
   \[
-    (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{ Y \mapsto b, Z \mapsto b \})
+    (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{\, Y \mapsto b, Z \mapsto b \,\})
   \]
   (from $W = V$).
 
@@ -620,15 +620,15 @@ recursive function. The GDR compilation rule is summarised as
   because of the $Z \ne X$ constraint. The other three subsets of $V$ all
   generate clauses for $\phi'$:
   \[
-    (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{ X \mapsto a, Y \mapsto b, Z \mapsto a \})
+    (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\})
   \]
   (from $W = \emptyset$),
   \[
-    (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{ Y \mapsto b, Z \mapsto a \})
+    (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{\, Y \mapsto b, Z \mapsto a \,\})
   \]
   (from $W = \{\, X \,\}$), and
   \[
-    (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{ X \mapsto a, Y \mapsto b, \})
+    (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b, \,\})
   \]
   (from $W = \{\, Z \,\}$).
 \end{example}

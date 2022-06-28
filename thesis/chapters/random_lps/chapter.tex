@@ -3,10 +3,23 @@
 
 \section{Introduction}
 
-% TODO (V): Here as well you seem to have used the introduction from the paper
-% but somehow it seems fine here. Mainly because it's self-contained. But just
-% check once more that it is connecting nicely with the previous chapters and
-% you are positioning your own contribution in an effective manner.
+\todo[inline,caption={}]{
+  \begin{itemize}
+    \item are the definitions of fact/rule the same as in the background
+          section?
+    \item replace the citation for stratification in the content chapter with
+          the better one from the background chapter
+    \item there's no need for hyphens in 'variable-ordering' and
+          'value-ordering'
+    \item it's first fail (equivalent to dom) rather than fail-first
+    \item make sure to mention the appendix
+  \end{itemize}
+}
+
+\todo[inline]{ Here as well you seem to have used the introduction from the
+  paper but somehow it seems fine here. Mainly because it's self-contained. But
+  just check once more that it is connecting nicely with the previous chapters
+  and you are positioning your own contribution in an effective manner. }
 
 Unifying logic and probability is a long-standing challenge in artificial
 intelligence \citep{DBLP:journals/cacm/Russell15}, and, in that regard,
@@ -120,33 +133,36 @@ $|\arities{}|$ = $|\predicates{}|$), a set of variables $\variables{}$, and a
 set of constants $\constants{}$. Either $\variables{}$ or $\constants{}$ can be
 empty, but we assume that $|\constants{}| + |\variables{}| > 0$. Similarly, the
 model supports zero-arity predicates but requires at least one predicate to have
-non-zero arity. For notational convenience, we also set $\maxArity{} = \max
-\arities{}$. Next, we need a measure of how complex a body of a clause can be.
-As we represent each body by a tree (see \cref{sec:bodies}), we set
-$\maxNumNodes{} \ge 1$ to be the maximum number of nodes in the tree
+non-zero arity. For notational convenience, we also set
+$\maxArity{} = \max \arities{}$. Next, we need a measure of how complex a body
+of a clause can be. As we represent each body by a tree (see \cref{sec:bodies}),
+we set $\maxNumNodes{} \ge 1$ to be the maximum number of nodes in the tree
 representation of any clause. We also set $\maxNumClauses{}$ to be the maximum
-number of clauses in a program. We must have that $\maxNumClauses{} \ge
-|\predicates{}|$ because we require each predicate to have at least one clause
-that defines it. The model supports enforcing predicate independence (see
-\cref{sec:independence}), so a set of independent pairs of predicates is another
-parameter. Since this model can generate probabilistic as well as
-non-probabilistic programs, each clause is paired with a probability which is
-randomly selected from a given list---our last parameter. For generating
-non-probabilistic programs, one can set this list to $[1]$. Finally, we define
-$\tokens{} = \{ \neg, \land, \lor, \top \}$ as the set of tokens that (together
-with atoms) form a clause. All decision variables of the model can now be
-divided into $2 \times \maxNumClauses{}$ separate groups, treating the body and
-the head of each clause separately. We say that the variables are contained in
-two arrays: $\arrayt{bodies}{\maxNumClauses{}}{Body}$ and
+number of clauses in a program. We must have that
+$\maxNumClauses{} \ge |\predicates{}|$ because we require each predicate to have
+at least one clause that defines it. The model supports enforcing predicate
+independence (see \cref{sec:independence}), so a set of independent pairs of
+predicates is another parameter. Since this model can generate probabilistic as
+well as non-probabilistic programs, each clause is paired with a probability
+which is randomly selected from a given list---our last parameter. For
+generating non-probabilistic programs, one can set this list to $[1]$. Finally,
+we define $\tokens{} = \{\, \neg, \land, \lor, \top \,\}$ as the set of tokens
+that (together with atoms) form a clause. All decision variables of the model
+can now be divided into $2 \times \maxNumClauses{}$ separate groups, treating
+the body and the head of each clause separately. We say that the variables are
+contained in two arrays: $\arrayt{bodies}{\maxNumClauses{}}{Body}$ and
 $\arrayt{heads}{\maxNumClauses{}}{Head}$.
 
-\section{Heads of Clauses} \label{sec:heads}
+\section{Heads of Clauses}\label{sec:heads}
 
-% TODO (V): Here as well you have to motivate why you are slightly different from those preliminary section. But is it easy enough to do I think. All you have to say is that you slightly elaborate on the definitions of accommodate more granularity
+\todo[inline]{ Here as well you have to motivate why you are slightly different
+  from those preliminary section. But is it easy enough to do I think. All you
+  have to say is that you slightly elaborate on the definitions of accommodate
+  more granularity }
 
 We define the \emph{head} of a clause as a $\variable{predicate} \in \predicates{}
-\cup \{ \Box \}$ and $\arrayd{arguments}{\maxArity{}}{\constants{} \cup
-  \variables{}} \cup \{ \Box \}$. Here, we use $\Box$ to denote either a
+\cup \{\, \Box \,\}$ and $\arrayd{arguments}{\maxArity{}}{\constants{} \cup
+  \variables{}} \cup \{\, \Box \,\}$. Here, we use $\Box$ to denote either a
 disabled clause that we choose not to use or disabled arguments if the arity of
 the $\variable{predicate}$ is less than $\maxArity{}$. The reason why we need a
 separate value for the latter (i.e., why it is not enough to fix disabled
@@ -166,7 +182,7 @@ arguments.
 \end{constraint}
 We also add a constraint that each predicate should get at least one clause.
 \begin{constraint}
-  Let $P = \{ h.\variable{predicate} \mid h \in \variable{heads} \}$ be a
+  Let $P = \{\,, h.\variable{predicate} \mid h \in \variable{heads} \,\}$ be a
   multiset. Then
   \[
     \variable{nValues}(P) = \begin{cases}
@@ -207,13 +223,14 @@ operator.
 
 We can use the $\variable{tree}$ constraint \citep{DBLP:conf/cp/FagesL11} to
 forbid cycles in the $\variable{structure}$ array and simultaneously define
-$\variable{numTrees} \in \{ 1, \dots, \maxNumNodes{} \}$ to count the number of
-trees. We will view the tree rooted at the zeroth node as the main tree and
+$\variable{numTrees} \in \{\, 1, \dots, \maxNumNodes{} \,\}$ to count the number
+of trees. We will view the tree rooted at the zeroth node as the main tree and
 restrict all other trees to single nodes. For this to work, we need to make sure
 that the zeroth node is indeed a root, i.e., fix $\variable{structure}[0] = 0$.
-For convenience, we also define $\variable{numNodes} \in \{ 1, \dots,
-\maxNumNodes{} \}$ to count the number of nodes in the main tree. We define it
-as $\variable{numNodes} = \maxNumNodes{} - \variable{numTrees} + 1$.
+For convenience, we also define
+$\variable{numNodes} \in \{\, 1, \dots, \maxNumNodes{} \,\}$ to count the number
+of nodes in the main tree. We define it as
+$\variable{numNodes} = \maxNumNodes{} - \variable{numTrees} + 1$.
 
 \begin{example} \label{example:formula}
   Let $\maxNumNodes{} = 8$. Then $\neg\mathsf{P}(X) \lor (\mathsf{Q}(X) \land
@@ -227,11 +244,11 @@ as $\variable{numNodes} = \maxNumNodes{} - \variable{numTrees} + 1$.
   \end{alignat*}
 \end{example}
 
-Here, $\top$ is the value we use for the remaining one-node trees. The
-elements of the $\variable{values}$ array are nodes. A \emph{node} has a
+Here, $\top$ is the value we use for the remaining one-node trees. The elements
+of the $\variable{values}$ array are nodes. A \emph{node} has a
 $\variable{name} \in \tokens{} \cup \predicates{}$ and
-$\arrayd{arguments}{\maxArity{}}{\variables{} \cup \constants{} \cup \{ \Box
-  \}}$. The node's $\variable{arity}$ can then be defined in the same way as in
+$\arrayd{arguments}{\maxArity{}}{\variables{} \cup \constants{} \cup \{\, \Box \,\}}$.
+The node's $\variable{arity}$ can then be defined in the same way as in
 \cref{sec:heads}. Furthermore, we can use \cref{constr:arity} to again disable
 the extra arguments.
 
@@ -267,9 +284,9 @@ number of children (zero, one, and two, respectively).
   For $i = 0, \dots, \maxNumNodes{} - 1$, let $C_i$ be the number of times $i$
   appears in the \variable{structure} array with index greater than $i$. Then
   \begin{align*}
-    C_i = 0 &\iff \variable{values}[i].\variable{name} \in \predicates{} \cup \{ \top \},\\
+    C_i = 0 &\iff \variable{values}[i].\variable{name} \in \predicates{} \cup \{\, \top \,\},\\
     C_i = 1 &\iff \variable{values}[i].\variable{name} = \neg,\\
-    C_i > 1 &\iff \variable{values}[i].\variable{name} \in \{ \land, \lor \}.
+    C_i > 1 &\iff \variable{values}[i].\variable{name} \in \{\, \land, \lor \,\}.
   \end{align*}
 \end{constraint}
 The value $\top$ serves a twofold purpose: it is used as the fixed value for
@@ -294,7 +311,7 @@ $\Box$.
   \]
 \end{constraint}
 
-\section{Variable Symmetry Breaking} \label{sec:variable_symmetry}
+\section{Variable Symmetry Breaking}\label{sec:variable_symmetry}
 
 Ideally, we want to avoid generating programs that are equivalent in the sense
 that they produce the same answers to all queries. Even more importantly, we
@@ -311,12 +328,12 @@ only make sense if $|\variables{}| > 1$ and that all definitions and constraints
 here are on a per-clause basis.
 \begin{definition}
   Let $N = \maxArity{} \times (\maxNumNodes{} + 1)$, and let
-  $\variable{terms}[N] \in \constants{} \cup \variables{} \cup \{ \Box
-  \}$ be a flattened array of all arguments in a particular clause. Then we can
-  use a channeling constraint to define $\variable{occ}[|\constants{}| +
-  |\variables{}| + 1]$ as an array of subsets of $\{ 0, \dots, N-1 \}$ such that
-  for all $i = 0, \dots, N - 1$, and $t \in \constants{} \cup \variables{} \cup
-  \{ \Box \}$,
+  $\variable{terms}[N] \in \constants{} \cup \variables{} \cup \{\, \Box \,\}$
+  be a flattened array of all arguments in a particular clause. Then we can use
+  a channeling constraint to define
+  $\variable{occ}[|\constants{}| + |\variables{}| + 1]$ as an array of subsets
+  of $\{\, 0, \dots, N-1 \,\}$ such that for all $i = 0, \dots, N - 1$, and
+  $t \in \constants{} \cup \variables{} \cup \{\, \Box \,\}$,
   \[
     i \in \variable{occ}[t] \quad \iff \quad
     \variable{terms}[i] = t.
@@ -324,7 +341,7 @@ here are on a per-clause basis.
 \end{definition}
 Next, we introduce an array that holds the first occurrence of each variable.
 \begin{definition}
-  Let $\arrayd{intros}{|\variables{}|}{\{ 0, \dots, N \}}$ be such that
+  Let $\arrayd{intros}{|\variables{}|}{\{\, 0, \dots, N \,\}}$ be such that
   for $v \in \variables{}$,
   \[
     \variable{intros}[v] = \begin{cases}
@@ -341,13 +358,14 @@ symmetries simply by sorting $\variable{intros}$. In other words, we constrain
 the model so that the variable listed first (in whatever order $\variables{}$ is
 presented in) has to occur first in our representation of a clause.
 
-\begin{example} \label{example:sibling}
-  Let $\constants{} = \emptyset$, $\variables{} = \{ X, Y, Z \}$, $\maxArity{} =
-  2$, $\maxNumNodes{} = 3$, and consider the clause $\mathsf{sibling}(X, Y)
-  \gets \mathsf{parent}(X, Z) \land \mathsf{parent}(Y, Z)$. Then
+\begin{example}\label{example:sibling}
+  Let $\constants{} = \emptyset$, $\variables{} = \{\, X, Y, Z \,\}$,
+  $\maxArity{} = 2$, $\maxNumNodes{} = 3$, and consider the clause
+  $\mathsf{sibling}(X, Y) \gets \mathsf{parent}(X, Z) \land \mathsf{parent}(Y, Z)$.
+  Then
   \begin{align*}
     \variable{terms} &= [X, Y, \Box, \Box, X, Z, Y, Z], \\
-    \variable{occ} &= [\{ 0, 4 \}, \{ 1, 6 \}, \{ 5, 7 \}, \{ 2, 3 \}], \\
+    \variable{occ} &= [\{\, 0, 4 \,\}, \{\, 1, 6 \,\}, \{\, 5, 7 \,\}, \{\, 2, 3 \,\}], \\
     \variable{intros} &= [0, 1, 5],
   \end{align*}
   where the $\Box$'s correspond to the conjunction node.
@@ -357,7 +375,7 @@ We end the section with several redundant constraints that make the CSP easier
 to solve. First, we can state that the positions occupied by different terms
 must be different.
 \begin{constraint} \label{constraint:all_diff}
-  For $u \ne v \in \constants{} \cup \variables{} \cup \{ \Box \}$,
+  For $u \ne v \in \constants{} \cup \variables{} \cup \{\, \Box \,\}$,
   $\variable{occ}[u] \cap \variable{occ}[v] = \emptyset$.
 \end{constraint}
 The reason why we use zero to represent an unused variable is so that we could
@@ -370,16 +388,15 @@ element of the set.
   \variable{intros}[v] - 1 \in \variable{occ}[v]$.
 \end{constraint}
 Finally, we define an auxiliary set variable to act as a set of possible values
-that $\variable{intros}$ can take. Let $\variable{potentials} \subseteq \{ 0,
-\dots, N \}$ be such that for $v \in \variables{}$, $\variable{intros}[v] \in
-\variable{potentials}$. Using this new variable, we can add a constraint saying
-that non-predicate nodes in the tree representation of a clause cannot have
-variables as arguments.
+that $\variable{intros}$ can take. Let
+$\variable{potentials} \subseteq \{\, 0, \dots, N \,\}$ be such that for
+$v \in \variables{}$, $\variable{intros}[v] \in \variable{potentials}$. Using
+this new variable, we can add a constraint saying that non-predicate nodes in
+the tree representation of a clause cannot have variables as arguments.
 \begin{constraint} \label{constraint:potentialIntroductions}
   For $i = 0, \dots, \maxNumNodes{} - 1$, let
   \[
-    S = \{ \maxArity{} \times (i + 1) + j + 1 \mid j = 0, \dots, \maxArity{} - 1
-    \}.
+    S = \{\, \maxArity{} \times (i + 1) + j + 1 \mid j = 0, \dots, \maxArity{} - 1 \,\}.
   \]
   If $\variable{values}[i].\variable{name} \not\in \predicates{}$, then
   $\variable{potentials} \cap S = \emptyset$.
@@ -516,10 +533,8 @@ $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
   $\mathsf{mother}$ to $\mathsf{father}$ is negative, while the other two edges
   are positive. The dependencies of each predicate are:
   \begin{alignat*}{3}
-    D_{\mathsf{parent}} &= \{ \mathsf{parent} \}, \quad && D_{\mathsf{sibling}}
-    &&= \{\mathsf{sibling}, \mathsf{parent} \},\\
-    D_{\mathsf{mother}} &= \{ \mathsf{mother} \}, \quad && D_{\mathsf{father}}
-    &&= \{ \mathsf{father}, \mathsf{mother}, \mathsf{parent} \}.
+    D_{\mathsf{parent}} &= \{\, \mathsf{parent} \,\}, \quad && D_{\mathsf{sibling}} &&= \{\, \mathsf{sibling}, \mathsf{parent} \,\},\\
+    D_{\mathsf{mother}} &= \{\, \mathsf{mother} \,\}, \quad && D_{\mathsf{father}} &&= \{\, \mathsf{father}, \mathsf{mother}, \mathsf{parent} \,\}.
   \end{alignat*}
   Hence, we have two pairs of independent predicates, i.e., $\mathsf{mother}$ is
   independent of $\mathsf{parent}$ and $\mathsf{sibling}$.
@@ -562,14 +577,14 @@ represent this graph as an adjacency matrix constructed as part of the model.
 Let $\mathbf{A}$ be a $|\predicates{}| \times |\predicates{}|$ binary matrix
 defined element-wise by stating that $\mathbf{A}[i][j] = 0$ if and only if, for
 all $k = 0, \dots, \maxNumClauses{} - 1$, either
-$\variable{heads}[k].\variable{predicate} \ne j$ or $ i \not\in
-\{a.\variable{name} \mid a \in \variable{bodies}[k].\variable{values} \}$.
+$\variable{heads}[k].\variable{predicate} \ne j$ or
+$ i \not\in \{\, a.\variable{name} \mid a \in \variable{bodies}[k].\variable{values} \,\}$.
 
 Given a partially-solved model with its predicate dependency graph, let us pick
 an arbitrary path from $\mathsf{Q}$ to $\mathsf{P}$ (for some $\mathsf{P},
 \mathsf{Q} \in \predicates{}$) that consists of determined edges that are
 denoted by $1$ in $\mathbf{A}$ and potential/undetermined edges that are
-denoted by $\{ 0, 1 \}$. Each such path characterises a \emph{(potential)
+denoted by $\{\, 0, 1 \,\}$. Each such path characterises a \emph{(potential)
   dependency} $\mathsf{Q}$ for $\mathsf{P}$. We classify all such dependencies
 into three classes depending on the number of undetermined edges on the path.
 These classes are outlined in \cref{tbl:dependencies}, where $p$ represents the
@@ -584,7 +599,7 @@ to replace any of $p$, $s$, $t$ in situations where the name is unimportant.
   \SetKwFunction{isDetermined}{isDetermined}
   \SetKwData{predicate}{predicate}
   \KwData{predicates $p_1$, $p_2$}
-  $D \gets \{ (d_1, d_2) \in \getDependencies{$p_1$, 1} \times \getDependencies{$p_2$, 1} \mid d_1.\predicate = d_2.\predicate \}$\;
+  $D \gets \{\, (d_1, d_2) \in \getDependencies{$p_1$, 1} \times \getDependencies{$p_2$, 1} \mid d_1.\predicate = d_2.\predicate \,\}$\;
   \lIf{$D = \emptyset$}{\Return{\normalfont\true{}}}
   \leIf{$\exists (\Determined \_, \Determined \_) \in D$}{\Return{\normalfont\false{}}}{\Return{\normalfont\undefined{}}}
   \caption{Entailment for independence.}\label{alg:independence_entailment}
@@ -613,9 +628,8 @@ predicates, then they cannot be independent. Otherwise, we return \undefined{}.
   \For{$(d_1, d_2) \in \getDependencies{$p_1$, 0} \times \getDependencies{$p_2$,
       0}$ s.t. $d_1.\predicate = d_2.\predicate$}{
     \lIf{$d_1$ {\bf is} $\Determined(\_)$ {\bf and} $d_2$ {\bf is}
-      $\Determined(\_)$}{\fail{}} \label{line:fail}
-    \lIf{$\{ d_1, d_2 \} = \{ \Determined(\_), \AlmostDetermined(\_, s, t)
-      \}$ \label{line:propagation_condition}}{$\mathbf{A}[s][t]$.\removeValue{$1$}}
+      $\Determined(\_)$}{\fail{}}\label{line:fail}
+    \lIf{$\{\, d_1, d_2 \,\} = \{\, \Determined(\_), \AlmostDetermined(\_, s, t) \,\}$\label{line:propagation_condition}}{$\mathbf{A}[s][t]$.\removeValue{$1$}}
   }
   \caption{Propagation for independence.}\label{alg:independence_propagation}
 \end{algorithm}
@@ -640,20 +654,17 @@ exist---\cref{line:propagation_condition} handles this possibility.
   \SetKwProg{Fn}{Function}{:}{}
   \KwData{adjacency matrix $\mathbf{A}$}
   \Fn{\getDependencies{$p$, \all}} {
-    $D \gets \{ \Determined(p) \}$\;
+    $D \gets \{\, \Determined(p) \,\}$\;
     \While{\normalfont\true{}}{
       $D' \gets \emptyset$\;
       \For{$d \in D$ {\bf and} $q \in \predicates{}$}{
-        $\edgeExists \gets \mathbf{A}[q][d.\predicate] = \{ 1 \}$\;
-        \lIf{$\edgeExists$ {\bf and} $d$ {\bf is} $\Determined(\_)$}{$D' \gets
-          D' \cup \{ \Determined(q) \}$}
-        \lElseIf{$\edgeExists$ {\bf and} $d$ {\bf is} $\AlmostDetermined(\_, s,
-          t)$}{$D' \gets D' \cup \{ \AlmostDetermined(q, s, t) \}$}
+        $\edgeExists \gets \mathbf{A}[q][d.\predicate] = \{\, 1 \,\}$\;
+        \lIf{$\edgeExists$ {\bf and} $d$ {\bf is} $\Determined(\_)$}{$D' \gets D' \cup \{\, \Determined(q) \,\}$}
+        \lElseIf{$\edgeExists$ {\bf and} $d$ {\bf is} $\AlmostDetermined(\_, s, t)$}{$D' \gets D' \cup \{\, \AlmostDetermined(q, s, t) \,\}$}
         \uElseIf{$|\mathbf{A}[q][d.\predicate]| > 1$ {\bf and} $d$~{\bf is}~$\Determined(r)$}{
-          $D' \gets D' \cup \{ \AlmostDetermined(q, q, r) \}$\;
+          $D' \gets D' \cup \{\, \AlmostDetermined(q, q, r) \,\}$\;
         }
-        \lElseIf{$|\mathbf{A}[q][d.\predicate]| > 1$ {\bf and} \all}{$D' \gets
-          D' \cup \{ \Undetermined(q) \}$}
+        \lElseIf{$|\mathbf{A}[q][d.\predicate]| > 1$ {\bf and} \all}{$D' \gets D' \cup \{\, \Undetermined(q) \,\}$}
       }
       \leIf{$D' = D$}{\Return{$D$}}{$D \gets D'$}
     }
@@ -689,15 +700,14 @@ as intended.
   \end{align*}
   where $\Box$ indicates an unknown predicate with domain
   \[
-    D_\Box = \{ \mathsf{father}, \mathsf{mother}, \mathsf{parent},
-    \mathsf{sibling} \}.
+    D_\Box = \{\, \mathsf{father}, \mathsf{mother}, \mathsf{parent}, \mathsf{sibling} \,\}.
   \]
   The predicate dependency graph is pictured in \cref{fig:example}. Suppose we
   have a constraint that $\mathsf{mother}$ and $\mathsf{parent}$ must be
   independent. The lists of potential dependencies for both predicates are:
   \begin{align*}
-    D_{\mathsf{mother}} &= \{ \Determined(\mathsf{mother}), \AlmostDetermined(\mathsf{parent}, \mathsf{parent}, \mathsf{mother}) \}, \\
-    D_{\mathsf{parent}} &= \{ \Determined(\mathsf{parent}) \}.
+    D_{\mathsf{mother}} &= \{\, \Determined(\mathsf{mother}), \AlmostDetermined(\mathsf{parent}, \mathsf{parent}, \mathsf{mother}) \,\}, \\
+    D_{\mathsf{parent}} &= \{\, \Determined(\mathsf{parent}) \,\}.
   \end{align*}
   An entailment check at this stage would produce \undefined{}, but propagation
   replaces the boxed value in \cref{fig:dependencies_matrix} with zero,
@@ -714,7 +724,7 @@ as intended.
       \begin{block}{l!{\quad}(cccc)}
         \mathsf{father} & 0 & 0 & 0 & 0 \\
         \mathsf{mother} & 1 & 0 & 0 & 0 \\
-        \mathsf{parent} & 1 & \fbox{\{ 0, 1 \}} & \{ 0, 1 \} & \{ 0, 1 \} \\
+        \mathsf{parent} & 1 & \fbox{\{\, 0, 1 \,\}} & \{\, 0, 1 \,\} & \{\, 0, 1 \,\} \\
         \mathsf{sibling} & 0 & 0 & 0 & 0 \\
       \end{block}
     \end{blockarray}
@@ -841,35 +851,36 @@ Likewise, a higher number of predicates complicates the situation as well.
 For this experiment, we consider clauses of two types: \emph{rules} are clauses
 such that the head atom has at least one variable, and \emph{facts} are clauses
 with empty bodies and no variables. We use our constraint model to generate the
-rules according to the following parameter values: $|\predicates{}|,
-|\variables{}|, \maxNumNodes{} \in \{ 2, 4, 8 \}$, $\maxArity{} \in \{ 1, 2, 3
-\}$, $\maxNumClauses{} = |\predicates{}|$, $\constants{} = \emptyset$. These
-values are (approximately) representative of many standard benchmarking
-instances which often have 2--8 predicates of arity one or two, 0--8 rules, and
-a larger database of facts \citep{DBLP:journals/tplp/FierensBRSGTJR15}. Just like
-before, we explore all possible numbers of independent predicate pairs. We also
-add a constraint that forbids empty bodies. For both rules and facts,
-probabilities are uniformly sampled from $\{ 0.1, 0.2, \dots, 0.9 \}$.
-Furthermore, all rules are probabilistic, while we vary the proportion of
-probabilistic facts among \SI{25}{\percent}, \SI{50}{\percent}, and
-\SI{75}{\percent}. For generating facts, we consider $|\constants{}| \in \{100,
-200, 400 \}$ and vary the number of facts among $10^3$, $10^4$, and $10^5$ but
-with one exception: the number of facts is not allowed to exceed
-\SI{75}{\percent} of all possible facts with the given values of
-$\predicates{}$, $\arities{}$, and $\constants{}$. Facts are generated using a
-simple procedure that randomly selects a predicate, combines it with the right
-number of constants, and checks whether the generated atom is already included
-or not. We randomly select configurations from the description above and
-generate ten programs with a complete restart of the constraint solver before
-the generation of each program, including choosing different arities and
-independent pairs. Finally, we set the query of each program to a random fact
-not explicitly included in the program and consider six natively supported
-algorithms and knowledge compilation techniques: binary decision diagrams (BDDs)
-\citep{DBLP:journals/tc/Bryant86}, negation normal form (NNF), deterministic
-decomposable NNF (d-DNNF) \citep{DBLP:journals/jair/DarwicheM02}, K-Best
-\citep{DBLP:conf/ijcai/RaedtKT07}, and two encodings based on sentential decision
-diagrams \citep{DBLP:conf/ijcai/Darwiche11}, one of which encodes the entire
-program (SDDX), while the other one encodes only the part of the program
+rules according to the following parameter values:
+$|\predicates{}|, |\variables{}|, \maxNumNodes{} \in \{\, 2, 4, 8 \,\}$,
+$\maxArity{} \in \{\, 1, 2, 3 \,\}$, $\maxNumClauses{} = |\predicates{}|$,
+$\constants{} = \emptyset$. These values are (approximately) representative of
+many standard benchmarking instances which often have 2--8 predicates of arity
+one or two, 0--8 rules, and a larger database of facts
+\citep{DBLP:journals/tplp/FierensBRSGTJR15}. Just like before, we explore all
+possible numbers of independent predicate pairs. We also add a constraint that
+forbids empty bodies. For both rules and facts, probabilities are uniformly
+sampled from $\{\, 0.1, 0.2, \dots, 0.9 \,\}$. Furthermore, all rules are
+probabilistic, while we vary the proportion of probabilistic facts among
+\SI{25}{\percent}, \SI{50}{\percent}, and \SI{75}{\percent}. For generating
+facts, we consider $|\constants{}| \in \{\, 100, 200, 400 \,\}$ and vary the
+number of facts among $10^3$, $10^4$, and $10^5$ but with one exception: the
+number of facts is not allowed to exceed \SI{75}{\percent} of all possible facts
+with the given values of $\predicates{}$, $\arities{}$, and $\constants{}$.
+Facts are generated using a simple procedure that randomly selects a predicate,
+combines it with the right number of constants, and checks whether the generated
+atom is already included or not. We randomly select configurations from the
+description above and generate ten programs with a complete restart of the
+constraint solver before the generation of each program, including choosing
+different arities and independent pairs. Finally, we set the query of each
+program to a random fact not explicitly included in the program and consider six
+natively supported algorithms and knowledge compilation techniques: binary
+decision diagrams (BDDs) \citep{DBLP:journals/tc/Bryant86}, negation normal form
+(NNF), deterministic decomposable NNF (d-DNNF)
+\citep{DBLP:journals/jair/DarwicheM02}, K-Best
+\citep{DBLP:conf/ijcai/RaedtKT07}, and two encodings based on sentential
+decision diagrams \citep{DBLP:conf/ijcai/Darwiche11}, one of which encodes the
+entire program (SDDX), while the other one encodes only the part of the program
 relevant to the query (SDD).\footnote{Forward SDDs (FSDDs) and forward BDDs
   (FBDDs) \citep{DBLP:conf/aaai/TsamouraGK20,DBLP:conf/ijcai/VlasselaerBKMR15}
   are omitted because the former uses too much memory and the implementation of
