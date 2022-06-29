@@ -1,4 +1,4 @@
-\chapter{Example Programs}
+\chapter{Example Logic Programs}
 
 In this appendix, we provide examples of probabilistic logic programs generated
 by various combinations of parameters. In all cases, we use
@@ -85,19 +85,19 @@ p(X).
 
 Note that:
 \begin{itemize}
-\item A program such as Program~14, because of its cyclic definition, defines a
-  predicate that has probability zero across all constants. This can more easily
-  be seen as solving equation $0.7x = x$.
-\item Programs 10 and 14 are not equivalent (i.e., double negation does not
-  cancel out) because Program 10 has a negative cycle and is thus considered to
-  be ill-defined.
+  \item A program such as Program~14, because of its cyclic definition, defines
+        a predicate that has probability zero across all constants. This can
+        more easily be seen as solving equation $0.7x = x$.
+  \item Programs 10 and 14 are not equivalent (i.e., double negation does not
+        cancel out) because Program 10 has a negative cycle and is thus
+        considered to be ill-defined.
 \end{itemize}
 
-To demonstrate variable symmetry reduction in action, we set $\predicates{} =
-[\texttt{p}]$, $\arities{} = [3]$, $\variables{} = \{\, \texttt{X}, \texttt{Y},
-\texttt{Z} \,\}$, $\constants{} = \emptyset$, $\maxNumNodes{} = 1$,
-$\maxNumClauses{} = 1$, and forbid all cycles. This gives us the following five
-programs:
+To demonstrate variable symmetry reduction in action, we set
+$\predicates{} = [\texttt{p}]$, $\arities{} = [3]$,
+$\variables{} = \{\, \texttt{X}, \texttt{Y}, \texttt{Z} \,\}$,
+$\constants{} = \emptyset$, $\maxNumNodes{} = 1$, $\maxNumClauses{} = 1$, and
+forbid all cycles. This gives us the following five programs:
 
 \begin{itemize}
 \item

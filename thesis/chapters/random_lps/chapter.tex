@@ -75,16 +75,16 @@ To the best of our knowledge, this is the first work that
 A major advantage of a constraint-based approach is the ability to add
 additional constraints as needed, and to do that efficiently (compared to
 generate-and-test approaches). As an example of this, in \cref{sec:independence}
-we develop a custom constraint that, given two predicates $\mathsf{P}$ and
-$\mathsf{Q}$, ensures that any ground atom with predicate $\mathsf{P}$ is
-independent of any ground atom with predicate $\mathsf{Q}$. In this way, we can
-easily regulate the independence structure of the underlying probability
-distribution. In \cref{sec:counting} we also present a combinatorial argument
-for correctness that counts the number of programs that the model produces for
-various parameter values. We end the paper with two experimental results in
-\cref{sec:1experiments}: one investigating how the constraint model scales when
-tasked with producing more complex programs, and one showing how the model can
-be used to evaluate and compare probabilistic inference algorithms.
+we develop a custom constraint that, given two predicates $p$ and $q$, ensures
+that any ground atom with predicate $p$ is independent of any ground atom with
+predicate $q$. In this way, we can easily regulate the independence structure of
+the underlying probability distribution. In \cref{sec:counting} we also present
+a combinatorial argument for correctness that counts the number of programs that
+the model produces for various parameter values. We end the paper with two
+experimental results in \cref{sec:1experiments}: one investigating how the
+constraint model scales when tasked with producing more complex programs, and
+one showing how the model can be used to evaluate and compare probabilistic
+inference algorithms.
 
 Overall, our main contributions are concerned with logic programming-based
 languages and frameworks, which capture a major fragment of SRL
@@ -104,13 +104,12 @@ applied to $n$ terms. A \emph{formula} is any well-formed expression that
 connects atoms using conjunction $\land$, disjunction $\lor$, and negation
 $\neg$. A \emph{clause} is a pair of a \emph{head} (which is an atom) and a
 \emph{body} (which is a formula\footnote{Our model supports arbitrarily complex
-  bodies of clauses (e.g., $\neg\mathsf{P}(X) \lor (\mathsf{Q}(X) \land
-  \mathsf{P}(X))$) because \textsc{ProbLog} does too. However, one can easily
-  restrict our representation of a body to a single conjunction of literals
-  (e.g., $\mathsf{Q}(X) \land \neg\mathsf{P}(X))$) by adding a couple of
-  additional constraints.}). A \emph{(logic) program} is a set of clauses, and a
-\emph{\textsc{ProbLog} program} is a set of clause-probability pairs
-\citep{DBLP:journals/tplp/FierensBRSGTJR15}.
+  bodies of clauses (e.g., $\neg p(X) \lor (q(X) \land p(X))$) because
+  \textsc{ProbLog} does too. However, one can easily restrict our representation
+  of a body to a single conjunction of literals (e.g., $q(X) \land \neg p(X)$)
+  by adding a couple of additional constraints.}). A \emph{(logic) program} is a
+set of clauses, and a \emph{\textsc{ProbLog} program} is a set of
+clause-probability pairs \citep{DBLP:journals/tplp/FierensBRSGTJR15}.
 
 In the world of CSPs, we also have \emph{(constraint) variables}, each with a
 \emph{domain}, whose values are restricted using \emph{constraints}. All
@@ -160,23 +159,23 @@ $\arrayt{heads}{\maxNumClauses{}}{Head}$.
   have to say is that you slightly elaborate on the definitions of accommodate
   more granularity }
 
-We define the \emph{head} of a clause as a $\variable{predicate} \in \predicates{}
-\cup \{\, \Box \,\}$ and $\arrayd{arguments}{\maxArity{}}{\constants{} \cup
-  \variables{}} \cup \{\, \Box \,\}$. Here, we use $\Box$ to denote either a
-disabled clause that we choose not to use or disabled arguments if the arity of
-the $\variable{predicate}$ is less than $\maxArity{}$. The reason why we need a
-separate value for the latter (i.e., why it is not enough to fix disabled
-arguments to a single already-existing value) will become clear in
-\cref{sec:variable_symmetry}. This $\variable{predicate}$ variable has a
-corresponding arity that depends on the $\variable{predicate}$. We can
-define $\variable{arity} \in [0, \maxArity{}]$ as the arity of the
+We define the \emph{head} of a clause as a
+$\variable{predicate} \in \predicates{} \cup \{\, \Box \,\}$ and
+$\arrayd{arguments}{\maxArity{}}{\constants{} \cup \variables{}} \cup \{\, \Box \,\}$.
+Here, we use $\Box$ to denote either a disabled clause that we choose not to use
+or disabled arguments if the arity of the $\variable{predicate}$ is less than
+$\maxArity{}$. The reason why we need a separate value for the latter (i.e., why
+it is not enough to fix disabled arguments to a single already-existing value)
+will become clear in \cref{sec:variable_symmetry}. This $\variable{predicate}$
+variable has a corresponding arity that depends on the $\variable{predicate}$.
+We can define $\variable{arity} \in [0, \maxArity{}]$ as the arity of the
 $\variable{predicate}$ if $\variable{predicate} \in \predicates{}$ and zero
 otherwise using the table constraint \citep{DBLP:conf/cpaior/MairyDL15}. This
 constraint uses a set of pairs of the form $(p, a)$, where $p$ ranges over all
 possible values of the $\variable{predicate}$, and $a$ is either the arity of
 predicate $p$ or zero. Having defined arity, we can now fix the superfluous
 arguments.
-\begin{constraint} \label{constr:arity}
+\begin{constraint}\label{constr:arity}
   For $i = 0, \dots, \maxArity{} - 1$, $\variable{arguments}[i] = \Box \iff i
   \ge \variable{arity}$.
 \end{constraint}
@@ -194,11 +193,11 @@ We also add a constraint that each predicate should get at least one clause.
   $\variable{count}(\Box, P)$ counts how many times $\Box$ appears in $P$.
 \end{constraint}
 Finally, we want to disable duplicate clauses but with one exception: there may
-be more than one disabled clause, i.e., a clause with head $\variable{predicate}
-= \Box$. Assuming a lexicographic order over entire clauses such that $\Box >
-\mathsf{P}$ for all $\mathsf{P} \in \predicates{}$ and the head predicate is the
-`first digit' of this representation, the following constraint disables
-duplicates as well as orders the clauses.
+be more than one disabled clause, i.e., a clause with head
+$\variable{predicate} = \Box$. Assuming a lexicographic order over entire
+clauses such that $\Box > p$ for all $p \in \predicates{}$ and the head
+predicate is the `first digit' of this representation, the following constraint
+disables duplicates as well as orders the clauses.
 \begin{constraint}
   For $i = 1, \dots, \maxNumClauses{} - 1$, if $\variable{heads}[i].\variable{predicate}
   \ne \Box$, then
@@ -208,7 +207,7 @@ duplicates as well as orders the clauses.
   \]
 \end{constraint}
 
-\section{Bodies of Clauses} \label{sec:bodies}
+\section{Bodies of Clauses}\label{sec:bodies}
 
 As was briefly mentioned before, the \emph{body} of a clause is represented by a
 tree. It has two parts. First, there is the
@@ -232,15 +231,12 @@ $\variable{numNodes} \in \{\, 1, \dots, \maxNumNodes{} \,\}$ to count the number
 of nodes in the main tree. We define it as
 $\variable{numNodes} = \maxNumNodes{} - \variable{numTrees} + 1$.
 
-\begin{example} \label{example:formula}
-  Let $\maxNumNodes{} = 8$. Then $\neg\mathsf{P}(X) \lor (\mathsf{Q}(X) \land
-  \mathsf{P}(X))$ can be encoded as:
+\begin{example}\label{example:formula}
+  Let $\maxNumNodes{} = 8$. Then $\neg p(X) \lor (q(X) \land p(X))$ can
+  be encoded as:
   \begin{alignat*}{9}
-    \variable{structure} &= [0, &&0, &&0, &&1, &&2, &&2, &&6, &&7], \quad
-    &&\variable{numNodes} = 6, \\
-    \variable{values} &= [{\lor}, &&{\neg}, &&{\land}, \mathsf{P}(&&X),
-    \mathsf{Q}(&&X), \mathsf{P}(&&X), &&\top, &&\top], \quad
-    &&\variable{numTrees} = 3.
+    \variable{structure} &= [0, &&0, &&0, &&1, &&2, &&2, &&6, &&7], \quad &&\variable{numNodes} = 6, \\
+    \variable{values} &= [{\lor}, &&{\neg}, &&{\land}, p(&&X), q(&&X), p(&&X), &&\top, &&\top], \quad &&\variable{numTrees} = 3.
   \end{alignat*}
 \end{example}
 
@@ -253,20 +249,19 @@ The node's $\variable{arity}$ can then be defined in the same way as in
 the extra arguments.
 
 \begin{example}
-  Let $\maxArity{} = 2$, $X \in \variables{}$, and let $\mathsf{P}$ be a
-  predicate with arity 1. Then the node representing atom $\mathsf{P}(X)$ has:
-    $\variable{name} = \mathsf{P}$, $\variable{arguments} = [X, \Box]$,
-    $\variable{arity} = 1$.
+  Let $\maxArity{} = 2$, $X \in \variables{}$, and let $p$ be a predicate with
+  arity 1. Then the node representing atom $p(X)$ has: $\variable{name} = p$,
+  $\variable{arguments} = [X, \Box]$, $\variable{arity} = 1$.
 \end{example}
 
-We need to constrain the forest represented by the $\variable{structure}$
-array together with its $\variable{values}$ to eliminate symmetries and adhere
-to our desired format. First, we can recognise that the order of the elements in
-the $\variable{structure}$ array does not matter, i.e., the structure is only
+We need to constrain the forest represented by the $\variable{structure}$ array
+together with its $\variable{values}$ to eliminate symmetries and adhere to our
+desired format. First, we can recognize that the order of the elements in the
+$\variable{structure}$ array does not matter, i.e., the structure is only
 defined by how the elements link to each other, so we can add a constraint for
-sorting the $\variable{structure}$ array. Next, since we already have a
-variable that counts the number of nodes in the main tree, we can fix the
-structure and the values of the remaining trees to some constant values.
+sorting the $\variable{structure}$ array. Next, since we already have a variable
+that counts the number of nodes in the main tree, we can fix the structure and
+the values of the remaining trees to some constant values.
 \begin{constraint}
   For $i = 1, \dots, \maxNumNodes{} - 1$, if $i < \variable{numNodes}$, then
   \[
@@ -280,7 +275,7 @@ except the zeroth node cannot be a root and must have its parent located to
 the left of itself. Next, we classify all nodes into three classes: predicate
 (or empty) nodes, negation nodes, and conjunction/disjunction nodes based on the
 number of children (zero, one, and two, respectively).
-\begin{constraint} \label{constraint:node_types}
+\begin{constraint}\label{constraint:node_types}
   For $i = 0, \dots, \maxNumNodes{} - 1$, let $C_i$ be the number of times $i$
   appears in the \variable{structure} array with index greater than $i$. Then
   \begin{align*}
@@ -443,9 +438,7 @@ possible clause bodies with total arity $a$ (and any number of nodes) as
 
 The number of ways to select $n$ terms is
 \[
-  P(n) = |\constants{}|^n + \sum_{\substack{1 \le k \le |\variables{}|, \\ 0 =
-      s_0 < s_1 < \dots < s_k < s_{k+1} = n+1}} \prod_{i=0}^k (|\constants{}| +
-  i)^{s_{i+1} - s_i - 1}.
+  P(n) = |\constants{}|^n + \sum_{\substack{1 \le k \le |\variables{}|, \\ 0 = s_0 < s_1 < \cdots < s_k < s_{k+1} = n+1}} \prod_{i=0}^k {(|\constants{}| + i)}^{s_{i+1} - s_i - 1}.
 \]
 The first term is the number of ways to select $n$ constants. The parameter $k$
 is the number of variables used in the clause, and $s_1, \dots, s_k$ mark the
@@ -474,7 +467,7 @@ of programs generated by our model in \num{1032} different scenarios, thus
 showing that the combinatorial description developed in this section matches the
 model's behaviour.
 
-\section{Stratification and Independence} \label{sec:independence}
+\section{Stratification and Independence}\label{sec:independence}
 
 \emph{Stratification} is a condition necessary for probabilistic logic programs
 \citep{DBLP:conf/padl/MantadelisR17} and often enforced on logic programs
@@ -486,24 +479,22 @@ in $\mathscr{P}_i$ can only refer to predicates defined in $\mathscr{P}_j$ for
 $j \le i$ \citep{DBLP:journals/tcs/Bidoit91}.
 
 \emph{Independence}, on the other hand, is defined on a pair of predicates (say,
-$\mathsf{P}, \mathsf{Q} \in \mathcal{P}$) and can be interpreted in two ways.
-First, if $\mathsf{P}$ and $\mathsf{Q}$ are independent, then any ground atom of
-$\mathsf{P}$ is independent of any ground atom of $\mathsf{Q}$ in the underlying
-probability distribution of the probabilistic program. Second, the part of the
-program needed to fully define $\mathsf{P}$ is disjoint from the part of the
-program needed to define $\mathsf{Q}$.
+$p, q \in \mathcal{P}$) and can be interpreted in two ways. First, if $p$ and
+$q$ are independent, then any ground atom of $p$ is independent of any ground
+atom of $q$ in the underlying probability distribution of the probabilistic
+program. Second, the part of the program needed to fully define $p$ is disjoint
+from the part of the program needed to define $q$.
 
 These two seemingly disparate concepts can be defined using the same building
 block, i.e., a predicate dependency graph. Let $\mathscr{P}$ be a probabilistic
 logic program with its set of predicates $\predicates{}$. Its \emph{(predicate)
   dependency graph} is a directed graph $G_{\mathscr{P}}$ with elements of
-$\predicates{}$ as nodes and an edge between $\mathsf{P}, \mathsf{Q} \in
-\predicates{}$ if there is a clause in $\mathscr{P}$ with $\mathsf{Q}$ as the
-head and $\mathsf{P}$ mentioned in the body. We say that the edge is
-\emph{negative} if there exists a clause with $\mathsf{Q}$ as the head and at
-least one instance of $\mathsf{P}$ at the body such that the path from the root
-to the $\mathsf{P}$ node in the tree representation of the clause passes through
-at least one negation node; otherwise, it is \emph{positive}. We say that
+$\predicates{}$ as nodes and an edge between $p, q \in \predicates{}$ if there
+is a clause in $\mathscr{P}$ with $q$ as the head and $p$ mentioned in the body.
+We say that the edge is \emph{negative} if there exists a clause with $q$ as the
+head and at least one instance of $p$ at the body such that the path from the
+root to the $p$ node in the tree representation of the clause passes through at
+least one negation node; otherwise, it is \emph{positive}. We say that
 $\mathscr{P}$ (or $G_{\mathscr{P}}$) has a \emph{negative cycle} if
 $G_{\mathscr{P}}$ has a cycle with at least one negative edge. A program
 $\mathscr{P}$ is \emph{stratified} if $G_{\mathscr{P}}$ has no negative
@@ -515,12 +506,11 @@ predicates of which are fully determined, and looking for negative cycles in the
 dependency graph constructed based on those clauses using an algorithm such as
 Bellman-Ford.
 
-For any predicate $\mathsf{P} \in \predicates{}$, the set of \emph{dependencies}
-of $\mathsf{P}$ is the smallest set $D_{\mathsf{P}}$ such that
-$\mathsf{P} \in D_{\mathsf{P}}$, and, for every $\mathsf{Q} \in D_{\mathsf{P}}$,
-all direct predecessors of $\mathsf{Q}$ in $G_{\mathscr{P}}$ are in
-$D_{\mathsf{P}}$. Two predicates $\mathsf{P}$ and $\mathsf{Q}$ are
-\emph{independent} if $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
+For any predicate $p \in \predicates{}$, the set of \emph{dependencies} of $p$
+is the smallest set $D_{p}$ such that $p \in D_{p}$, and, for every
+$q \in D_{p}$, all direct predecessors of $q$ in $G_{\mathscr{P}}$ are in
+$D_{p}$. Two predicates $p$ and $q$ are \emph{independent} if
+$D_{p} \cap D_{q} = \emptyset$.
 
 \begin{example}\label{ex:program}
   Consider the following (fragment of a) program:
@@ -529,7 +519,7 @@ $D_{\mathsf{P}}$. Two predicates $\mathsf{P}$ and $\mathsf{Q}$ are
     \mathsf{father}(X, Y) &\gets \mathsf{parent}(X, Y) \land \neg\mathsf{mother}(X, Y). \label[clause]{eq:example_clause}
   \end{align}
   Its predicate dependency graph is in \cref{fig:predicate_dependencies}.
-  Because of the negation in \eqref{eq:example_clause}, the edge from
+  Because of the negation in \cref{eq:example_clause}, the edge from
   $\mathsf{mother}$ to $\mathsf{father}$ is negative, while the other two edges
   are positive. The dependencies of each predicate are:
   \begin{alignat*}{3}
@@ -562,14 +552,14 @@ $D_{\mathsf{P}}$. Two predicates $\mathsf{P}$ and $\mathsf{Q}$ are
     \toprule
     Edges & Name & Notation \\
     \midrule
-    $0$ & Determined & $\Determined(p)$ \\
-    $1$ & Almost determined & $\AlmostDetermined(p, s, t)$ \\
-    $>1$ & Undetermined & $\Undetermined(p)$ \\
+    $0$ & Determined & $\Determined(r)$ \\
+    $1$ & Almost determined & $\AlmostDetermined(r, s, t)$ \\
+    $>1$ & Undetermined & $\Undetermined(r)$ \\
     \bottomrule
   \end{tabular}
-  \caption{Types of (potential) dependencies of a predicate $\mathsf{P}$ based
-    on the number of undetermined edges on the path from the dependency to
-    $\mathsf{P}$.}\label{tbl:dependencies}
+  \caption{Types of (potential) dependencies of a predicate $p$ based on the
+    number of undetermined edges on the path from the dependency to
+    $p$.}\label{tbl:dependencies}
 \end{table}
 
 Since the definition of independence relies on the dependency graph, we can
@@ -581,18 +571,18 @@ $\variable{heads}[k].\variable{predicate} \ne j$ or
 $ i \not\in \{\, a.\variable{name} \mid a \in \variable{bodies}[k].\variable{values} \,\}$.
 
 Given a partially-solved model with its predicate dependency graph, let us pick
-an arbitrary path from $\mathsf{Q}$ to $\mathsf{P}$ (for some $\mathsf{P},
-\mathsf{Q} \in \predicates{}$) that consists of determined edges that are
-denoted by $1$ in $\mathbf{A}$ and potential/undetermined edges that are
-denoted by $\{\, 0, 1 \,\}$. Each such path characterises a \emph{(potential)
-  dependency} $\mathsf{Q}$ for $\mathsf{P}$. We classify all such dependencies
-into three classes depending on the number of undetermined edges on the path.
-These classes are outlined in \cref{tbl:dependencies}, where $p$ represents the
-dependency predicate $\mathsf{Q}$, and, in the case of $\AlmostDetermined{}$,
-$(s, t) \in \predicates{}^2$ is the one undetermined edge on the path. For a
-dependency $d$---regardless of its exact type---we will refer to its predicate
-$p$ as $d.\mathsf{predicate}$. In describing the algorithms, we will use `$\_$'
-to replace any of $p$, $s$, $t$ in situations where the name is unimportant.
+an arbitrary path from $q$ to $p$ (for some $p, q \in \predicates{}$) that
+consists of determined edges that are denoted by $1$ in $\mathbf{A}$ and
+potential/undetermined edges that are denoted by $\{\, 0, 1 \,\}$. Each such
+path characterises a \emph{(potential) dependency} $q$ for $p$. We classify all
+such dependencies into three classes depending on the number of undetermined
+edges on the path. These classes are outlined in \cref{tbl:dependencies}, where
+$r$ represents the dependency predicate $q$, and, in the case of
+$\AlmostDetermined{}$, $(s, t) \in \predicates{}^2$ is the one undetermined edge
+on the path. For a dependency $d$---regardless of its exact type---we will refer
+to its predicate $r$ as $d.\mathtt{predicate}$. In describing the algorithms, we
+will use `$\_$' to replace any of $r$, $s$, $t$ in situations where the name is
+unimportant.
 
 \begin{algorithm}[t]
   \SetKwFunction{getDependencies}{deps}
@@ -679,20 +669,20 @@ almost-determined dependencies. It starts by establishing the predicate $p$
 itself as a dependency and continues to add dependencies of dependencies until
 the set $D$ stabilises. For each dependency $d \in D$, we look at the in-links
 of $d$ in the predicate dependency graph. If the edge from some predicate $q$ to
-$d.\mathsf{predicate}$ is fully determined and $d$ is determined, then $q$ is
+$d.\mathtt{predicate}$ is fully determined and $d$ is determined, then $q$ is
 another determined dependency of $p$. If the edge is determined but $d$ is
 almost determined, then $q$ is an almost-determined dependency. The same outcome
 applies if $d$ is fully determined but the edge is undetermined. Finally, if we
 are interested in collecting all dependencies regardless of their status, then
 $q$ is a dependency of $p$ as long as the edge from $q$ to
-$d.\mathsf{predicate}$ is possible. Note that if there are multiple paths in the
+$d.\mathtt{predicate}$ is possible. Note that if there are multiple paths in the
 dependency graph from $q$ to $p$, \cref{alg:dependencies} could include $q$ once
 for each possible type ($\Determined$, $\Undetermined$, and
 $\AlmostDetermined$), but
 \cref{alg:independence_propagation,alg:independence_entailment} would still work
 as intended.
 
-\begin{example} \label{example:independence}
+\begin{example}\label{example:independence}
   Consider this partially determined (fragment of a) program:
   \begin{align*}
     \Box(X, Y) &\gets \mathsf{parent}(X, Z) \land \mathsf{parent}(Y, Z),\\
