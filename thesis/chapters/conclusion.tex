@@ -32,10 +32,11 @@ tractability of the propositional and first-order variants of WMC\@. In
 improved by generalising weights from their standard definition based on
 literals to one capable of representing a richer subset of all possible
 pseudo-Boolean functions. In \cref{chapter:wfomc}, we extend the capabilities of
-ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} so that it is able to solve more
-instances in a lifted manner, e.g., instances with injective mappings. The
-empirical contributions of \cref{chapter:randomlps,chapter:comparison} are about
-making new things possible, i.e., introducing novel tools and methods. In
+\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} so that it is able to
+solve more instances in a lifted manner, e.g., instances with injective
+mappings. The empirical contributions of
+\cref{chapter:randomlps,chapter:comparison} are about making new things
+possible, i.e., introducing novel tools and methods. In
 \cref{chapter:randomlps}, we developed a constraint model for (probabilistic)
 logic programs that can be used to generate random programs or enumerate all
 small programs under some given constraints. The constraints include various
@@ -88,9 +89,39 @@ In summary, we
 
 %% \section{Discussion}
 
-%% While WMC and its counterpart for first-order logic WFOMC both take logic-based input and compute a sum of products, algorithmically they are quite different. The first difference is in the size of input: most WFOMC benchmarks have at most three variables whereas most WMC instances have thousands of variables. This difference motivates the definition of liftability in lieu of tractability. Let us take DPMC \citep{DBLP:conf/cp/DudekPV20} and ForcLift as representative examples of algorithms for each problem. The way in which an algorithm solves an instance can be explained as a sequence of operations: on ADDs in the former case and on (a variation of) formulas in the latter. However, due to the difference in input size, WMC algorithms are expected to perform a much larger number of such operations. Hence, the efficiency of each individual operation is more important in the case of WMC. Here, optimising not just the asymptotic complexity of each operation but also the data structures in use can yield significant performance gains. Finally, there is an important difference regarding complexity. As is the case with all complete exact solutions to \NP-hard problems, WMC algorithms have an exponential worst-case complexity. A typical algorithm attempts to do much better on most realistic instances, but provides no guarantees. In contrast, one can often express the running time of a WFOMC algorithm on an instance $\mathscr{I}$ as $\Theta(p(n_1, \dots, n_k))$, where $p$ is a polynomial, and $\{\,n_i\,\}_{i=1}^k$ are the sizes of the domains in $\mathscr{I}$.
+%% While WMC and its counterpart for first-order logic WFOMC both take
+%% logic-based input and compute a sum of products, algorithmically they are
+%% quite different. The first difference is in the size of input: most WFOMC
+%% benchmarks have at most three variables whereas most WMC instances have
+%% thousands of variables. This difference motivates the definition of
+%% liftability in lieu of tractability. Let us take DPMC
+%% \citep{DBLP:conf/cp/DudekPV20} and \textsc{ForcLift} as representative
+%% examples of algorithms for each problem. The way in which an algorithm solves
+%% an instance can be explained as a sequence of operations: on ADDs in the
+%% former case and on (a variation of) formulas in the latter. However, due to
+%% the difference in input size, WMC algorithms are expected to perform a much
+%% larger number of such operations. Hence, the efficiency of each individual
+%% operation is more important in the case of WMC. Here, optimising not just the
+%% asymptotic complexity of each operation but also the data structures in use
+%% can yield significant performance gains. Finally, there is an important
+%% difference regarding complexity. As is the case with all complete exact
+%% solutions to \NP-hard problems, WMC algorithms have an exponential worst-case
+%% complexity. A typical algorithm attempts to do much better on most realistic
+%% instances, but provides no guarantees. In contrast, one can often express the
+%% running time of a WFOMC algorithm on an instance $\mathscr{I}$ as
+%% $\Theta(p(n_1, \dots, n_k))$, where $p$ is a polynomial, and
+%% $\{\,n_i\,\}_{i=1}^k$ are the sizes of the domains in $\mathscr{I}$.
 
-%% Algorithmically, W(FO)MC is interesting because of its connections to classic decision problems such as SAT, counting problems like \mc{}, and other function problems such as polynomial evaluation. The algorithms benefit from many disparate techniques such as dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}, knowledge compilation \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/BroeckTMDR11}, search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/BroeckTMDR11}, tree decompositions \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}, and close collaboration with SAT algorithms \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/sat/SangBBKP04}.
+%% Algorithmically, W(FO)MC is interesting because of its connections to classic
+%% decision problems such as SAT, counting problems like \mc{}, and other
+%% function problems such as polynomial evaluation. The algorithms benefit from
+%% many disparate techniques such as dynamic programming
+%% \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}, knowledge
+%% compilation \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/BroeckTMDR11},
+%% search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/BroeckTMDR11}, tree
+%% decompositions \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}, and
+%% close collaboration with SAT algorithms
+%% \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/sat/SangBBKP04}.
 
 %% We hope that the contributions in this thesis will...
 
@@ -101,7 +132,9 @@ In summary, we
 %% \end{itemize}
 
 \section{Future Directions}\label{sec:future}
-%% approximate DPMC: cite the APRICODD paper \citep{DBLP:conf/nips/St-AubinHB00}. Also, if two sinks have very similar values, an approximation could merge them
+%% approximate DPMC: cite the APRICODD paper
+%% \citep{DBLP:conf/nips/St-AubinHB00}. Also, if two sinks have very similar
+%% values, an approximation could merge them
 
 In this section, we present a broad overview of how our contributions and the
 questions raised by this work could be taken forward and influence key areas of

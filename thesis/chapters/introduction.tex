@@ -119,7 +119,7 @@ are to be multiplied and added (i.e., the \emph{weights}) can be defined. In
 this thesis, we do something similar within the constraints of a modern WMC
 algorithm and call our generalisation \emph{pseudo-Boolean projection} (PBP).
 
-\begin{table}
+\begin{table}[t]
   \centering
   \begin{tabular}{lll}
     \toprule
@@ -166,7 +166,7 @@ algorithms continue to appear each year
 \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}. Furthermore, a
 competition\footnote{\url{https://mccompetition.org/}} (as well as a workshop)
 for model counting and extensions thereof started running annually in 2020
-\citep{DBLP:journals/corr/abs-2012-01323}. Given all of this, it is all the more
+\citep{DBLP:journals/jea/FichteHH21}. Given all of this, it is all the more
 important to
 \begin{itemize}
   \item develop WMC algorithms with good empirical performance,
@@ -235,10 +235,6 @@ contributions and the structure of this thesis in more detail.
 
 % ==================================== Paragraphs for individual chapters/contributions ===========================
 
-%% For each chapter:
-%% * a short paragraph for each chapter, using the `paragraph' environment to emphasise the contribution
-%% * Explain how the current state of research led me to work on my RQ. In other words, emphasise timeliness, i.e., why now? Because ADDMC allows for my ideas to become implementable.
-
 % 1. WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions
 % \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra.
 
@@ -253,7 +249,7 @@ succinct as standard WMC with weights on literals but can also expand as needed
 to represent probability distributions with less structure. To demonstrate the
 performance benefits of conditional weights over the addition of extra literals,
 we develop a \emph{new WMC encoding} for Bayesian networks and adapt a recent
-WMC algorithm \textsf{ADDMC}~\citep{DBLP:conf/aaai/DudekPV20} to the new format.
+WMC algorithm \textsc{ADDMC}~\citep{DBLP:conf/aaai/DudekPV20} to the new format.
 Our experiments show that the new encoding significantly improves the
 performance of the algorithm on most benchmark instances. \Cref{chapter:wmc1} is
 published as:
@@ -290,10 +286,11 @@ express arbitrary recursive computations. To \emph{enable arbitrary recursion},
 we relax the restrictions that typically accompany domain recursion and
 generalise circuits used to express a solution to an FOMC problem to graphs that
 may contain cycles. To this end, we enhance the most well-established WFOMC
-algorithm ForcLift \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation
-rules and an algorithm to check whether a recursive call is feasible. These
-improvements allow us to \emph{automatically find efficient solutions} to
-counting fundamental structures such as injections and bijections.
+algorithm \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with new
+compilation rules and an algorithm to check whether a recursive call is
+feasible. These improvements allow us to \emph{automatically find efficient
+  solutions} to counting fundamental structures such as injections and
+bijections.
 
 % 7. developed a way of generating (P)LPs that's much more general than anything from before
 % 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
@@ -360,10 +357,10 @@ of weights.
     \node[draw,ultra thick,below=1cm of problog,color=wmc1,text=black] (wmc) {WMC};
     \node[draw,ultra thick,below=1cm of mln,color=gray,text=black] (wfomc) {WFOMC};
 
-    \node[draw,ultra thick,below=1cm of pbp,color=comparison,text=black] (dpmc) {DPMC};
-    \node[draw,ultra thick,color=comparison,text=black,left of=dpmc] (addmc) {ADDMC};
+    \node[draw,ultra thick,below=1cm of pbp,color=comparison,text=black] (dpmc) {\textsc{DPMC}};
+    \node[draw,ultra thick,color=comparison,text=black,left of=dpmc] (addmc) {\textsc{ADDMC}};
     \node[draw,ultra thick,below=1cm of wmc,color=comparison,text=black,text width=1.85cm,align=center] (otherwmc) {Other WMC algorithms};
-    \node[draw,ultra thick,below=1cm of wfomc,color=wfomc,text=black] (forclift) {ForcLift};
+    \node[draw,ultra thick,below=1cm of wfomc,color=wfomc,text=black] (forclift) {\textsc{ForcLift}};
     \node[draw,ultra thick,right=2.5cm of forclift.north,anchor=north,color=gray,text=black,text width=1.85cm,align=center] (otherwfomc) {Other WFOMC algorithms};
 
     \draw[-{Stealth},ultra thick,color=randomlps] (cp) -- (problog);
@@ -409,13 +406,13 @@ between them. \Cref{chapter:background} covers a selection of topics related to
 this work and refers the reader to suitable literature for further information.
 \Cref{chapter:wmc1} examines the definition of WMC more closely and suggests a
 way to bypass it, leading to a more succinct encoding of Bayesian network
-probabilistic inference compatible with the ADDMC algorithm. Then
+probabilistic inference compatible with the \textsc{ADDMC} algorithm. Then
 \cref{chapter:wmc2} describes WMC encodings for Bayesian networks, defines PBP,
-shows how to transform WMC instances to PBP instances, and how the DPMC
+shows how to transform WMC instances to PBP instances, and how the \textsc{DPMC}
 algorithm benefits from this new format. In \cref{chapter:wfomc}, we expand the
-capabilities of the WFOMC algorithm ForcLift to new (previously unsolvable)
-instances. \Cref{chapter:randomlps} describes a constraint model that can
-generate random (probabilistic) logic programs in the ProbLog
+capabilities of the WFOMC algorithm \textsc{ForcLift} to new (previously
+unsolvable) instances. \Cref{chapter:randomlps} describes a constraint model
+that can generate random (probabilistic) logic programs in the ProbLog
 \citep{DBLP:conf/ijcai/RaedtKT07} language---a well known use-case of WMC\@.
 \Cref{chapter:comparison} develops an algorithm for generating random WMC
 instances and uses it showcase some important differences in the behaviour of

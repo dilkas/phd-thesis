@@ -63,7 +63,7 @@ value-ordering heuristics and restarts to generate random programs. For sampling
 from a uniform distribution, the CSP can be transformed into a belief network
 \citep{DBLP:conf/aaai/DechterKBE02}. In fact, the same model can generate both
 probabilistic programs in the syntax of \textsc{ProbLog}
-\citep{DBLP:conf/ijcai/RaedtKT07} and non-probabilistic \textsc{Prolog} programs.
+\citep{DBLP:conf/ijcai/RaedtKT07} and non-probabilistic Prolog programs.
 To the best of our knowledge, this is the first work that
 \begin{itemize}
 \item addresses the problem of generating random logic programs in its full
@@ -516,13 +516,13 @@ dependency graph constructed based on those clauses using an algorithm such as
 Bellman-Ford.
 
 For any predicate $\mathsf{P} \in \predicates{}$, the set of \emph{dependencies}
-of $\mathsf{P}$ is the smallest set $D_{\mathsf{P}}$ such that $\mathsf{P} \in
-D_{\mathsf{P}}$, and, for every $\mathsf{Q} \in D_{\mathsf{P}}$, all direct
-predecessors of $\mathsf{Q}$ in $G_{\mathscr{P}}$ are in $D_{\mathsf{P}}$. Two
-predicates $\mathsf{P}$ and $\mathsf{Q}$ are \emph{independent} if
-$D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
+of $\mathsf{P}$ is the smallest set $D_{\mathsf{P}}$ such that
+$\mathsf{P} \in D_{\mathsf{P}}$, and, for every $\mathsf{Q} \in D_{\mathsf{P}}$,
+all direct predecessors of $\mathsf{Q}$ in $G_{\mathscr{P}}$ are in
+$D_{\mathsf{P}}$. Two predicates $\mathsf{P}$ and $\mathsf{Q}$ are
+\emph{independent} if $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
 
-\begin{example} \label{ex:program}
+\begin{example}\label{ex:program}
   Consider the following (fragment of a) program:
   \begin{align}
     \mathsf{sibling}(X, Y) &\gets \mathsf{parent}(X, Z) \land \mathsf{parent}(Y, Z), \nonumber \\
@@ -540,7 +540,7 @@ $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
   independent of $\mathsf{parent}$ and $\mathsf{sibling}$.
 \end{example}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
   \begin{tikzpicture}
     \node[draw] (parent) at (0, 0.5) {$\mathsf{parent}$};
@@ -556,7 +556,7 @@ $D_{\mathsf{P}} \cap D_{\mathsf{Q}} = \emptyset$.
     negative edges with `$-$'.}\label{fig:predicate_dependencies}
 \end{figure}
 
-\begin{table}
+\begin{table}[t]
   \centering
   \begin{tabular}{clc}
     \toprule
@@ -716,7 +716,7 @@ as intended.
   make \cref{alg:independence_entailment} return \true{}.
 \end{example}
 
-\begin{figure}
+\begin{figure}[t]
   \begin{subfigure}[b]{0.59\textwidth}
     \centering
     \[
@@ -830,7 +830,7 @@ fill with predicates without creating either a negative cycle or a forbidden
 dependency, and such trees become more common as the number of nodes increases.
 Likewise, a higher number of predicates complicates the situation as well.
 
-\begin{figure}
+\begin{figure}[t]
   \centering
   \input{chapters/random_lps/impact.tex}%
   \caption{The mean number of nodes in the binary search tree for each value of
@@ -838,7 +838,7 @@ Likewise, a higher number of predicates complicates the situation as well.
     scale.}\label{fig:impact}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
   \input{chapters/random_lps/bars.tex}%
   \caption{Inference time for different values of $\maxArity{}$ and proportions

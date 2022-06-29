@@ -183,7 +183,7 @@ $w\colon \{\,x, y, \neg x, \neg y\,\} \to \mathbb{R}_{\ge 0}$ defined as
 $w(x) = 0.3$, $w(y) = 0.2$, $w(\neg x) = 0.7$, $w(\neg y) = 0.8$ is
 $w(x)w(y)+w(x)w(\neg y)+w(\neg x)w(y) = 0.3 \times 0.2 + 0.3 \times 0.8 + 0.7 \times 0.2 = 0.44$.
 
-\section{Background on \textsf{\textmd{WMC}} Algorithms}\label{sec:background}
+\section{Background on WMC Algorithms}\label{sec:background}
 
 In this section, we briefly review the three major approaches to WMC---search,
 knowledge compilation, and dynamic programming---and their corresponding
@@ -247,7 +247,7 @@ of variables, and $w$ is the branchwidth of the underlying hypergraph
 \citep{DBLP:journals/jair/BacchusDP09,DBLP:conf/sat/SangBBKP04}, which is known
 to be within a constant factor of primal treewidth
 \citep{DBLP:journals/jct/RobertsonS91}. Similarly, the complexity of
-\textsf{DPMC} is not described in the paper, although the authors define a
+\textsc{DPMC} is not described in the paper, although the authors define a
 notion of width $w$ that is at most primal treewidth plus one and estimate the
 running time of the (execution part of the) algorithm to be proportional to
 $2^w$ \citep{DBLP:conf/cp/DudekPV20}.
@@ -375,15 +375,15 @@ those with weights equal to zero and one, those with weights equal to 0.5, and
 those with arbitrary weights, where the size of each group is determined by
 $\delta$ and $\epsilon$. To do this, we sample a permutation
 $\pi \leftlsquigarrow \mathcal{U}S_\nu$ (where $S_\nu$ is the permutation group
-on $\{1, 2, \dots, \nu \}$), and assign to each \emph{variable} $x_n$ a weight
-drawn u.a.r.\ from
+on $\{\, 1, 2, \dots, \nu \,\}$), and assign to each \emph{variable} $x_n$ a
+weight drawn u.a.r.\ from
 \begin{itemize}
-\item $\mathcal{U}\{\,0, 1\,\}$ if $\pi(n) \le \nu\delta$,
-\item $\mathcal{U}\{\,0.5\,\}$ if $\nu\delta < \pi(n) \le \nu\delta +
-  \nu\epsilon$,
-\item and $\mathcal{U}\{\, 0.01, 0.02, \dots, 0.99 \,\}$\footnote{For
-    convenience, we represent $(0, 1)$ as 99 discrete values.} if $\pi(n) >
-  \nu\delta + \nu\epsilon$.
+  \item $\mathcal{U}\{\,0, 1\,\}$ if $\pi(n) \le \nu\delta$,
+  \item $\mathcal{U}\{\,0.5\,\}$ if
+        $\nu\delta < \pi(n) \le \nu\delta + \nu\epsilon$,
+  \item and $\mathcal{U}\{\, 0.01, 0.02, \dots, 0.99 \,\}$\footnote{For
+        convenience, we represent $(0, 1)$ as 99 discrete values.} if
+        $\pi(n) > \nu\delta + \nu\epsilon$.
 \end{itemize}
 We extend these weights to weights on \emph{literals} by choosing the weight of
 each positive literal to be equal to the weight of its variable, and the weight
@@ -599,8 +599,8 @@ experienced the most issues fitting within the memory limit, accounting for
 respectively. We exclude the runs that terminated early due to running out of
 memory from the rest of our analysis.
 
-% Peaks w.r.t. density: DPMC different from other WMC algorithms which are
-% different from #SAT algorithms
+% Peaks w.r.t. density: \textsc{DPMC} different from other WMC algorithms which
+% are different from #SAT algorithms
 In \cref{exp:density}, we investigate how the running time of each algorithm
 depends on the density and primal treewidth by varying both $\mu$ and $\rho$.
 The results are in \cref{fig:treewidth}. The first thing to note is that the
