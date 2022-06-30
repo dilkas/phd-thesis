@@ -6,8 +6,8 @@ Recall that in \cref{chapter:wmc1} we examined WMC from a measure-theoretic
 perspective and found that---due to the rigidity of the standard
 formulation---WMC encodings usually contain many superfluous variables. This
 observation inspired an encoding for Bayesian networks that alleviates the
-issue. In this chapter, we continue to tackle the issue of superfluous parameter
-variables but take the solution a few steps further.
+issue. In this chapter, we continue to tackle the subject of superfluous
+parameter variables but take the solution a few steps further.
 
 If WMC is not the right format for probabilistic inference and other
 sum-of-products computations, what could be a better alternative? As many WMC
@@ -27,30 +27,28 @@ Moreover, to the best of our knowledge, neither approach
 \citep{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10} has a publicly
 available implementation.
 
-\todo[inline]{Continue writing below. Merge the two paragraphs.
+% Our work is similar in spirit in that it introduces a new
+% representation for computational problems but can reuse recent WMC algorithms
+% based on pseudo-Boolean function manipulation, namely, \textsc{ADDMC}
+% \citep{DBLP:conf/aaai/DudekPV20} and \textsc{DPMC}
+% \citep{DBLP:conf/cp/DudekPV20}. Furthermore, we identify sufficient conditions
+% for transforming a WMC instance into our new format.
 
-  Position the exact focus of the current chapter. You also need to contrast it
-  to the contributions of the previous chapter. Or at least say given what you
-  explored in the previous chap what is it that you will do with the current
-  chapter. I don't see a discussion of this. }
-
-Our work is similar in spirit in that it introduces a new
-representation for computational problems but can reuse recent WMC algorithms
-based on pseudo-Boolean function manipulation, namely, \textsc{ADDMC}
+In this work, we introduce a new computational problem called
+\emph{pseudo-Boolean projection} (PBP)---a generalisation of the conditional
+weights approach proposed in \cref{chapter:wmc1}. Recent WMC algorithms based on
+pseudo-Boolean function manipulation---namely, \textsc{ADDMC}
 \citep{DBLP:conf/aaai/DudekPV20} and \textsc{DPMC}
-\citep{DBLP:conf/cp/DudekPV20}. Furthermore, we identify sufficient conditions
-for transforming a WMC instance into our new format.
-
-In this work, we introduce a way to transform WMC problems into a new format
-based on pseudo-Boolean functions---\emph{pseudo-Boolean projection} (PBP). We
-formally show that every WMC problem instance has a corresponding PBP instance
-and identify conditions under which this transformation can remove parameter
-variables. Four out of the five known WMC encodings for Bayesian networks
+\citep{DBLP:conf/cp/DudekPV20}---can easily be adapted to the new format. In
+contrast to our previous work, instead of inventing new encodings, we show how
+every WMC problem instance can be transformed to PBP and identify conditions
+under which this transformation can remove parameter variables. Four out of the
+five known WMC encodings for Bayesian networks
 \citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}
 can indeed be simplified in this manner. We are able to eliminate
 \SI{43}{\percent} of variables on average and up to \SI{99}{\percent} on some
 instances. This transformation enables two encodings that were previously
-incompatible with most WMC algorithms (due to using a different definition of
+incompatible with most WMC algorithms (due to using a different formulation of
 WMC \citep{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}) to be run with
 \textsc{ADDMC} and \textsc{DPMC} and results in a significant performance boost
 for one other encoding, making it about three times faster than the state of the
@@ -76,31 +74,26 @@ encodings on common ground, identifying their key properties and assumptions.
 % 5) We identify conditions and describe an algorithm for transforming any WMC
 % instance into PBP
 
-\section{WMC}
+\section{Redefining WMC}
 
-\todo[inline]{Probably need to rewrite this.}
+Since the goal of this chapter is to generalise WMC in a way that eliminates the
+redundant parameter variables, in this section we redefine WMC in a way that
+explicitly partitions all variables into parameter and indicator variables. We
+also formalise a variant of WMC that has been implicitly used by
+\citet{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}.
 
-\todo[inline]{Perhaps you need to quickly argue why in different chapters you
-  have different perspectives on the same formalism. You could argue that these
-  different perspectives is precisely what allows you to explore different types
-  of generalisations}
+In this chapter, we denote interpretations (and models) of a propositional
+formula as subsets of the set of variables. These variables are implicitly
+mapped to \texttt{true} whereas all other variables are mapped to
+\texttt{false}. The \emph{cardinality} of a model is then the cardinality of
+this set.
 
-We begin with an overview of some notation and terminology. We use $\land$,
-$\lor$, $\neg$, $\Rightarrow$, and $\Leftrightarrow$ to denote conjunction,
-disjunction, negation, material implication, and material biconditional,
-respectively. Throughout the paper, we use set-theoretic notation for many
-concepts in logic. A \emph{clause} is a set of literals that are part of an
-implicit disjunction. Similarly, a \emph{formula} in CNF is a set of clauses
-that are part of an implicit conjunction. We identify a \emph{model} with a set
-of variables that correspond to the positive literals in the model (and all
-other variables are the negative literals of the model). We can then define the
-\emph{cardinality} of a model as the cardinality of this set. For example, let
-$\phi = (\neg a \lor b) \land a$ be a propositional formula over variables $a$
-and $b$. Then an equivalent set-theoretic representation of $\phi$ is
-$\{\, \{\, \neg a, b \,\}, \{\, a \,\} \,\}$. Any subset of $\{\, a, b \,\}$ is
-an interpretation of $\phi$, e.g., $\{\, a, b \,\}$ is a model of $\phi$
-(written $\{\, a, b \,\} \models \phi$) of cardinality two, while $\emptyset$ is
-an interpretation but not a model. We can now formally define WMC\@.
+\begin{example}
+  Let $\phi = (\neg a \lor b) \land a$ be a propositional formula over variables
+  $a$ and $b$. Then $\{\, a, b \,\}$ (i.e.,
+  $\{\, a \mapsto \texttt{true}, b \mapsto \texttt{true} \,\}$) is a model of
+  $\phi$ (written $\{\, a, b \,\} \models \phi$), and it has cardinality two.
+\end{example}
 
 \begin{definition}[WMC]\label{def:wmc}
   A \emph{WMC instance} is a tuple $(\phi, X_I, X_P, w)$, where $X_I$ is the set
@@ -113,21 +106,14 @@ an interpretation but not a model. We can now formally define WMC\@.
   $\sum_{Y \models \phi} \prod_{Y \models l} w(l)$.
 \end{definition}
 
-That is, the answer to a WMC instance is the sum of the weights of all models of
-$\phi$, where the weight of a model is defined as the product of the weights of
-all (positive and negative) literals in it. Our definition of WMC is largely
-based on the standard definition \citep{DBLP:journals/ai/ChaviraD08}, but
-explicitly partitions variables into indicator and parameter variables. In
-practice, we identify this partition in one of two ways. If an encoding is
-generated by \textsc{Ace}\footnote{\textsc{Ace}
+In practice, we identify this partition of variables in one of two ways. If an
+encoding is generated by \textsc{Ace}\footnote{\textsc{Ace}
   \citep{DBLP:journals/ai/ChaviraD08} implements most of the Bayesian network
   encodings and can also be used for compilation (and thus inference). It is
   available at \url{http://reasoning.cs.ucla.edu/ace/}.}, then variable types
 are explicitly identified in a file generated alongside the encoding. Otherwise,
-we take $X_I$ to be the set of all variables $x$ such that $w(x) = w(\neg x) =
-1$. Next, we formally define a variation of the WMC problem used by some of the
-Bayesian network encodings
-\citep{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}.
+we take $X_I$ to be the set of all variables $x$ such that
+$w(x) = w(\neg x) = 1$. Next, we formally define another variant of WMC.
 
 \begin{definition}
   Let $\phi$ be a formula over a set of variables $X$. Then $Y \subseteq X$ is a
@@ -154,40 +140,34 @@ Bayesian network encodings
   minimum-cardinality WMC answer is $0.2$.
 \end{example}
 
-\subsection{Bayesian Network Encodings}\label{sec:encodings}
+\section{Bayesian Network Encodings}\label{sec:encodings}
 
-A \emph{Bayesian network} is a directed acyclic graph with random variables as
-vertices and edges as conditional dependencies. As is common in related
-literature \citep{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}, we assume
-that each variable has a finite number of values. We call a Bayesian network
-\emph{binary} if every variable has two values. If all variables have finite
-numbers of values, the probability function associated with each variable $v$
-can be represented as a \emph{conditional probability table} (CPT), i.e., a
-table with a row for each combination of values that $v$ and its parent vertices
-can take. Each row then also has a \emph{probability}, i.e., a number in
-$[0, 1]$.
+Recall that a \emph{Bayesian network} is a directed acyclic graph with random
+variables as vertices and edges as conditional dependencies. As is common in
+related literature \citep{DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}, we
+assume that each variable has a finite number of values. We call a Bayesian
+network \emph{binary} if every variable has two values.
 
 WMC is a well-established technique for Bayesian network inference, particularly
 effective on networks where most variables have only a few possible values
 \citep{DBLP:conf/kr/Darwiche02}. Many ways of encoding a Bayesian network into a
-WMC instance have been proposed. We will refer to them based on the initials of
-the authors and the year of publication. \Citet{DBLP:conf/kr/Darwiche02} was the
-first to suggest the \texttt{d02} encoding that, in many ways, remains the
-foundation behind most other encodings. He also introduced the distinction
-between \emph{indicator} and \emph{parameter variables}; the former represent
+WMC instance have been proposed. \Citet{DBLP:conf/kr/Darwiche02} was the first
+to suggest the \texttt{d02} encoding that, in many ways, remains the foundation
+behind most other encodings. He also introduced the distinction between
+\emph{indicator} and \emph{parameter variables}; the former represent
 variable-value pairs in the Bayesian network, while the latter are associated
-with probabilities in the CPTs. The encoding \texttt{sbk05}
-\citep{DBLP:conf/aaai/SangBK05} is the only encoding that deviates from this
-arrangement: for each variable in the Bayesian network, one indicator variable
-acts simultaneously as a parameter variable. \Citet{DBLP:conf/ijcai/ChaviraD05}
-propose \texttt{cd05} where they shift from WMC to minimum-cardinality WMC
-because that allows the encoding to have fewer variables and clauses. In
-particular, they propose a way to use the same parameter variable to represent
-all probabilities in a CPT that are equal and keep only clauses that `imply'
-parameter variables (i.e., omit clauses where a parameter variable implies
-indicator variables).\footnote{\Cref{example:2} demonstrates what we mean by
-  implication clauses.} In their next encoding, \texttt{cd06}
-\citep{DBLP:conf/sat/ChaviraD06}, the same authors optimise the aforementioned
+with probabilities in the conditional probability tables (CPTs). The encoding
+\texttt{sbk05} \citep{DBLP:conf/aaai/SangBK05} is the only encoding that
+deviates from this arrangement: for each variable in the Bayesian network, one
+indicator variable acts simultaneously as a parameter variable.
+\Citet{DBLP:conf/ijcai/ChaviraD05} propose \texttt{cd05} where they shift from
+WMC to minimum-cardinality WMC because that allows the encoding to have fewer
+variables and clauses. In particular, they propose a way to use the same
+parameter variable to represent all probabilities in a CPT that are equal and
+keep only clauses that `imply' parameter variables (i.e., omit clauses where a
+parameter variable implies indicator variables).\footnote{\Cref{example:2}
+  demonstrates what we mean by implication clauses.} In their next encoding,
+\texttt{cd06}, \citet{DBLP:conf/sat/ChaviraD06} optimise the aforementioned
 implication clauses, choosing the smallest sufficient selection of indicator
 variables. A decade later, \citet{DBLP:conf/ecai/BartKLM16} present
 \texttt{bklm16} that improves upon \texttt{cd06} in two ways. First, they
@@ -235,71 +215,23 @@ experiments because the authors never looked at numerical answers.
 \section{Pseudo-Boolean Functions}
 
 In this work, we propose a more expressive representation for WMC based on
-pseudo-Boolean functions. A \emph{pseudo-Boolean function} is a function of the
-form ${\{\, 0, 1 \,\}}^n \to \mathbb{R}$ \citep{DBLP:journals/dam/BorosH02}.
-Equivalently, let $X$ denote a set with $n$ elements (we will refer to them as
-\emph{variables}), and $2^X$ denote its powerset. Then a pseudo-Boolean function
-can have $2^X$ as its domain (then it is also known as a \emph{set function}).
-
-Pseudo-Boolean functions, most commonly represented as
-algebraic decision diagrams (ADDs) \citep{DBLP:journals/fmsd/BaharFGHMPS97}
-(although a tensor-based approach has also been suggested
-\citep{DBLP:journals/corr/abs-1908-04381,DBLP:conf/cp/DudekPV20}), have seen
-extensive use in value iteration for Markov decision processes
-\citep{DBLP:conf/uai/HoeySHB99}, both exact and approximate Bayesian network
-inference \citep{DBLP:conf/ijcai/ChaviraD07,DBLP:conf/uai/GogateD11}, and
-sum-product network \citep{DBLP:conf/uai/PoonD11} to Bayesian network conversion
-\citep{DBLP:conf/icml/ZhaoMP15}. ADDs have been extended to compactly represent
-additive and multiplicative structure \citep{DBLP:conf/ijcai/SannerM05},
-sentences in first-order logic \citep{DBLP:journals/ai/SannerB09}, and continuous
-variables \citep{DBLP:conf/uai/SannerDB11}, the last of which was also applied to
-weighted model integration, i.e., the WMC extension for continuous variables
-\citep{DBLP:conf/ijcai/BellePB15,DBLP:conf/ijcai/KolbMSBK18}.
-
-Since two-valued pseudo-Boolean functions will be used extensively henceforth,
-we introduce some new notation. For any propositional formula $\phi$ over $X$
-and $p, q \in \mathbb{R}$, let $[\phi]^p_q\colon 2^X \to \mathbb{R}$ be the
-pseudo-Boolean function defined as
+pseudo-Boolean functions. Since two-valued pseudo-Boolean functions will be used
+extensively henceforth, we introduce some new notation. For any propositional
+formula $\phi$ over a set of variables $X$ and $p, q \in \mathbb{R}$, let
+${[\phi]}^p_q\colon 2^X \to \mathbb{R}$ be the pseudo-Boolean function defined
+as
 \[
-  [\phi]^p_q(Y) \coloneqq
+  {[\phi]}^p_q(Y) \coloneqq
   \begin{cases}
     p & \text{if } Y \models \phi \\
     q & \text{otherwise}
   \end{cases}
 \]
-for any $Y \subseteq X$. Next, we define some useful operations on
-pseudo-Boolean functions. The definitions of multiplication and projection are
-equivalent to those in previous work
-\citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
+for any $Y \subseteq X$.
 
-\begin{definition}[Operations] \label{def:operations} Let
-  $f, g\colon 2^X \to \mathbb{R}$ be pseudo-Boolean functions, $x, y \in X$,
-  $Y = \{\, y_i \,\}_{i=1}^n \subseteq X$, and $r \in \mathbb{R}$. Operations
-  such as addition and multiplication are defined pointwise, i.e.,
-  $(f+g)(Y) \coloneqq f(Y)+g(Y)$, and likewise for multiplication. Note that
-  properties such as associativity and commutativity are inherited from
-  $\mathbb{R}$. By regarding a real number as a constant pseudo-Boolean
-  function, we can reuse the same definitions to define \emph{scalar} operations
-  as $(r+f)(Y) = r+f(Y)$, and $(r \cdot f)(Y) = r \cdot f(Y)$.
-
-  \emph{Restrictions} $f|_{x=0}, f|_{x=1}\colon 2^X \to \mathbb{R}$ of $f$ are
-  defined as $f|_{x=0}(Y) \coloneqq f(Y \setminus \{\, x \,\})$, and
-  $f|_{x=1}(Y) \coloneqq f(Y \cup \{\, x \,\})$ for all $Y \subseteq X$.
-
-  \emph{Projection} $\exists_x$ is an endomorphism
-  $\exists_x\colon \mathbb{R}^{2^X} \to \mathbb{R}^{2^X}$ defined as
-  $\exists_{x}f \coloneqq f|_{x=1} + f|_{x=0}$. Since projection is commutative
-  (i.e., $\exists_x\exists_{y}f = \exists_y\exists_{x}f$)
-  \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}, we can define
-  $\exists_Y\colon \mathbb{R}^{2^X} \to \mathbb{R}^{2^X}$ as
-  $\exists_Y \coloneqq \exists_{y_1}\exists_{y_2}\dots\exists_{y_n}$. Throughout
-  the paper, projection is assumed to have the lowest precedence (e.g.,
-  $\exists_x fg = \exists_x (fg)$).
-\end{definition}
-
-Below we list some properties of the operations on pseudo-Boolean functions
-discussed in this section that can be conveniently represented using our syntax.
-The proofs of all these properties follow directly from the definitions.
+Below we list some properties of the operations on pseudo-Boolean functions that
+can be conveniently represented using our syntax. The proofs of all these
+properties follow directly from the definitions.
 
 \begin{proposition}[Basic Properties]\label{prop:basic}
   For any propositional formulas $\phi$ and $\psi$, and
@@ -316,14 +248,14 @@ The proofs of all these properties follow directly from the definitions.
 \end{proposition}
 
 \begin{remark}
-  Note that our definitions of binary operations assumed equal domains. For
-  convenience, we can assume domains to shrink whenever a function is
-  independent of some of the variables (i.e., $f|_{x=0} = f|_{x=1}$) and expand
-  for binary operations to make the domains of both functions equal. For
-  instance, let ${[x]}_0^1,{[\neg x]}_0^1\colon 2^{\{\, x \,\}} \to \mathbb{R}$
-  and ${[y]}_0^1\colon 2^{\{\, y \,\}} \to \mathbb{R}$ be pseudo-Boolean
-  functions. Then ${[x]}_0^1 \cdot {[\neg x]}_0^1$ has $2^\emptyset$ as its
-  domain. To multiply ${[x]}_0^1$ and ${[y]}_0^1$, we expand ${[x]}_0^1$ into
+  For convenience, we assume that the domain of a pseudo-Boolean function $f$
+  shrinks whenever $f$ is independent of some of the variables (i.e.,
+  $f|_{x=0} = f|_{x=1}$) and expand for binary operations to make the domains of
+  both functions equal. For instance, let
+  ${[x]}_0^1,{[\neg x]}_0^1\colon 2^{\{\, x \,\}} \to \mathbb{R}$ and
+  ${[y]}_0^1\colon 2^{\{\, y \,\}} \to \mathbb{R}$ be pseudo-Boolean functions.
+  Then ${[x]}_0^1 \cdot {[\neg x]}_0^1$ has $2^\emptyset$ as its domain. To
+  multiply ${[x]}_0^1$ and ${[y]}_0^1$, we expand ${[x]}_0^1$ into
   $\left({[x]}_0^1\right)'\colon 2^{\{\, x, y \,\}} \to \mathbb{R}$ which is
   defined as
   $\left({[x]}_0^1\right)'(Z) \coloneqq {[x]}_0^1(Z \cap \{\, x \,\})$ for all
@@ -335,12 +267,12 @@ The proofs of all these properties follow directly from the definitions.
 We introduce a new type of computational problem called \emph{pseudo-Boolean
   projection} based on two-valued pseudo-Boolean functions. While the same
 computational framework can handle any pseudo-Boolean functions, two-valued
-functions are particularly convenient because \textsc{DPMC} can be easily
-adapted to use them as input. Since we will only encounter functions of the form
-${[\phi]}^a_b$, where $\phi$ is a conjunction of literals, we can represent it
-in text as \texttt{w $\langle\phi\rangle$ a b} where $\langle\phi\rangle$ is a
-representation of $\phi$ analogous to the representation of a clause in the
-DIMACS CNF format.
+functions are particularly convenient because \textsc{DPMC}
+\citep{DBLP:conf/cp/DudekPV20} can be easily adapted to use them as input. Since
+we will only encounter functions of the form ${[\phi]}^a_b$, where $\phi$ is a
+conjunction of literals, we can represent it in text as \texttt{w
+  $\langle\phi\rangle$ a b} where $\langle\phi\rangle$ is a representation of
+$\phi$ analogous to the representation of a clause in the DIMACS CNF format.
 
 \begin{definition}[PBP Instance]\label{def:pbp}
   A PBP instance is a tuple $(F, X, \omega)$, where $X$ is the set of variables,
@@ -356,30 +288,6 @@ DIMACS CNF format.
 \end{definition}
 
 \subsection{From WMC to PBP}
-
-\begin{algorithm}[t]
-  \caption{WMC to PBP transformation.}\label{alg:transformation}
-  \SetKwFunction{rename}{rename}
-  \SetKwProg{Fn}{Function}{:}{}
-  \KwData{WMC (or minimum-cardinality WMC) instance $(\phi, X_I, X_P, w)$}
-  \KwResult{PBP instance $(F, X_I, \omega)$}
-  $F \gets \emptyset$\;
-  $\omega \gets 1$\;
-  \ForEach{clause $c \in \phi$\label{line:foreach1start}}{
-    \uIf{$c \cap X_P = \{\, p \,\}$ for some $p$ \textnormal{\textbf{and}} $w(p) \ne 1$}{
-      \uIf{$|c| = 1$}{$\omega \gets \omega \times w(p)$\;}
-      \Else{
-        $F \gets F \cup \left\{\, {\left[ \bigwedge_{l \in c \setminus \{\, p \,\}} \neg l \right]}^{w(p)}_1 \,\right\}$\;
-      }
-    }
-    \ElseIf{$\{\, p \mid \neg p \in c \,\} \cap X_P  = \emptyset$}{
-      $F \gets F \cup \{\, {[c]}^1_0 \,\}$\;\label{line:foreach1end}
-    }
-  }
-  \ForEach{$v \in X_I$ such that $\{\ {[v]}_1^p, {[\neg v]}_1^q \,\} \subseteq F$ for some $p$ and $q$\label{line:foreach2start}}{
-    $F \gets F \setminus \{\, {[v]}_1^p, {[\neg v]}_1^q \,\} \cup \{\, {[v]}_q^p \,\}$\;\label{line:foreach2end}
-  }
-\end{algorithm}
 
 In this section, we describe an algorithm for transforming WMC instances to the
 PBP format while removing all parameter variables. We chose to transform
@@ -399,15 +307,37 @@ The algorithm is based on several observations that will be made more precise in
 \cref{sec:proof}. First, all weights except for $\{\, w(p) \mid p \in X_P \,\}$
 are redundant as they either duplicate an already-defined weight or are equal to
 one. Second, each clause has at most one parameter variable. Third, if the
-parameter variable is negated, we can ignore the clause (this idea first appears
-in the \texttt{cd05} paper \citep{DBLP:conf/ijcai/ChaviraD05}). Note that while
-we formulate our algorithm as a sequel to the WMC encoding procedure primarily
-because the implementations of Bayesian network WMC encodings are all
-closed-source, as all transformations in the algorithm are local, it can be
-efficiently incorporated into a WMC encoding algorithm with no slowdown.
+parameter variable is negated, we can ignore the clause (this idea comes from
+the work of \citet{DBLP:conf/ijcai/ChaviraD05}). Note that while we formulate
+our algorithm as a sequel to the WMC encoding procedure primarily because the
+implementations of Bayesian network WMC encodings are all closed-source, as all
+transformations in the algorithm are local, it can be efficiently incorporated
+into a WMC encoding algorithm with no slowdown.
+
+\begin{algorithm}[t]
+  \caption{WMC to PBP transformation.}\label{alg:transformation}
+  \SetKwFunction{rename}{rename}
+  \SetKwProg{Fn}{Function}{:}{}
+  \KwData{WMC (or minimum-cardinality WMC) instance $(\phi, X_I, X_P, w)$}
+  \KwResult{PBP instance $(F, X_I, \omega)$}
+  $F \gets \emptyset$\;
+  $\omega \gets 1$\;
+  \ForEach{clause $c \in \phi$\label{line:foreach1start}}{
+    \uIf{$c \cap X_P = \{\, p \,\}$ for some variable $p$ \textnormal{\textbf{and}} $w(p) \ne 1$}{
+      \lIf{$|c| = 1$}{$\omega \gets \omega \times w(p)$}
+      \lElse{$F \gets F \cup \left\{\, {\left[ \bigwedge_{l \in c \setminus \{\, p \,\}} \neg l \right]}^{w(p)}_1 \,\right\}$}
+    }
+    \ElseIf{$\{\, p \mid \neg p \in c \,\} \cap X_P  = \emptyset$}{
+      $F \gets F \cup \{\, {[c]}^1_0 \,\}$\;\label{line:foreach1end}
+    }
+  }
+  \ForEach{$v \in X_I$ such that $\{\ {[v]}_1^p, {[\neg v]}_1^q \,\} \subseteq F$ for some $p$ and $q$\label{line:foreach2start}}{
+    $F \gets F \setminus \{\, {[v]}_1^p, {[\neg v]}_1^q \,\} \cup \{\, {[v]}_q^p \,\}$\;\label{line:foreach2end}
+  }
+\end{algorithm}
 
 The algorithm is listed as \cref{alg:transformation}. The main part of the
-algorithms is the first loop that iterates over clauses. If a clause consists of
+algorithm is the first loop that iterates over clauses. If a clause consists of
 a single parameter variable, we incorporate it into $\omega$. If a clause is of
 the form $\alpha \Rightarrow p$, where $p \in X_P$, and $\alpha$ is a
 conjunction of literals over $X_I$, we transform it into a pseudo-Boolean
@@ -465,7 +395,7 @@ PBP\@.
   \begin{equation}
   \left( \left\{\, {[c]}_0^1 \;\middle|\; c \in \phi \,\right\} \cup \left\{\, {[x]}_{w(\neg x)}^{w(x)} \;\middle|\; x \in X_I \cup X_P \,\right\}, X_I \cup X_P, 1 \right) \label{eq:new_wmc}
   \end{equation}
-  is a PBP instance with the same answer (as defined in \cref{def:wmc,def:pbp}).
+  is a PBP instance with the same answer (as in \cref{def:wmc,def:pbp}).
 \end{proposition}
 \begin{proof}
   Let $f = \prod_{c \in \phi} {[c]}_0^1$, and
@@ -741,37 +671,11 @@ greedy mode. This mode (which was not part of the original paper
 \citep{DBLP:conf/cp/DudekPV20}) optimises the order in which ADDs are multiplied
 by prioritising those with small representations.
 
-For experimental data, we use Bayesian networks available with \textsc{Ace} and
-\textsc{Cachet}. We split them into the following groups:
-\begin{itemize}
-\item DQMR (390 instances) and
-\item Grid networks (450 instances) as described by \citet{DBLP:conf/aaai/SangBK05};
-\item Mastermind (144 instances) and
-\item Random Blocks (256 instances) by \citet{DBLP:journals/ijar/ChaviraDJ06};
-\item other binary Bayesian networks (50 instances) including Plan Recognition
-  \citep{DBLP:conf/aaai/SangBK05}, Friends and Smokers, Students and Professors
-  \citep{DBLP:journals/ijar/ChaviraDJ06}, and \texttt{tcc4f};
-\item non-binary classic networks (176 instances): \texttt{alarm},
-  \texttt{diabetes}, \texttt{hailfinder}, \texttt{mildew},
-  \texttt{munin1}--\texttt{4}, \texttt{pathfinder}, \texttt{pigs}, and
-  \texttt{water}.
-\end{itemize}
-
-To perform Bayesian network inference with \textsc{DPMC} (or with any other WMC
-algorithm not based on compilation such as \textsc{Cachet}), one needs to select
-a probability to compute
-\citep{DBLP:conf/cp/DudekPV20,DBLP:conf/sat/SangBBKP04}. If a network comes with
-an evidence file, we compute the probability of this evidence. Otherwise, let
-$X$ be the variable last mentioned in the Bayesian network file. If \true{} is
-one of the values of $X$, then we compute $\Pr(X = \true{})$, otherwise we
-choose the first-mentioned value of $X$.
-
-\todo[inline]{Connect this to the previous chapter?}
-
-The experiments were run on a computing cluster with Intel Xeon E5-2630,
-Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors with a
-\SI{1000}{\second} timeout separately on both encoding and inference, and a
-\SI{32}{\gibi\byte} memory limit.\footnote{Each instance was run on the same
+The experimental data and the protocol for choosing which probability to compute
+are as in \cref{chapter:wmc1}. The experiments were run on a computing cluster
+with Intel Xeon E5-2630, Intel Xeon E7-4820, and Intel Xeon Gold 6138 processors
+with a \SI{1000}{\second} timeout separately on both encoding and inference, and
+a \SI{32}{\gibi\byte} memory limit.\footnote{Each instance was run on the same
   processor across all algorithms and encodings.}
 
 \subsection{Results}
