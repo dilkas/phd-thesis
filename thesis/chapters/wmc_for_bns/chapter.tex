@@ -318,7 +318,7 @@ practice.
 
 \begin{figure}[t]
   \centering
-    \begin{tikzpicture}[edge from parent/.style={draw,-latex}]
+    \begin{tikzpicture}[edge from parent/.style={draw,-Latex}]
       \node[draw,circle] {$W$}
       child {node[draw,circle] {$F$}}
       child {node[draw,circle] {$T$}};
@@ -625,13 +625,11 @@ variables can co-occur.
 Here we describe two changes to
 \textsc{ADDMC}\footnote{\url{https://github.com/vardigroup/ADDMC}}
 \citep{DBLP:conf/aaai/DudekPV20} needed to adapt it to the new format. First,
-\textsc{ADDMC} constructs the \emph{primal} (a.k.a. Gaifman) \emph{graph} of the
-input CNF formula as an aid for the algorithm's heuristics. This graph has as
-vertices the variables of the formula, and there is an edge between two
-variables $u$ and $v$ if there is a clause in the formula that contains both $u$
-and $v$. We extend this definition to functions on Boolean algebras, i.e., the
-factors of $\phi$. For any pair of distinct variables $u, v \in U$, we draw an
-edge between them in the primal graph if there is a function
+\textsc{ADDMC} constructs the primal graph of the input CNF formula as an aid
+for the algorithm's heuristics. We extend the usual definition of a primal graph
+to functions on Boolean algebras (i.e., the factors of $\phi$) in the obvious
+way. For any pair of distinct variables $u, v \in U$, we draw an edge between
+them in the primal graph if there is a function
 $\alpha\colon 2^X \to \mathbb{R}_{\ge 0}$ that is a factor of $\phi$ such that
 $u, v \in X$. For instance, a factor such as $\mathrm{CPT}_X$ will enable edges
 between all distinct pairs of variables in $\mathcal{E}^*(X)$. Second, even
@@ -838,14 +836,14 @@ WMC was originally motivated by an appeal to the success of SAT solvers in
 efficiently tackling an $\NP{}$-complete problem
 \citep{DBLP:conf/aaai/SangBK05}. \textsc{ADDMC} does not rely on SAT-based
 algorithmic techniques \citep{DBLP:conf/aaai/DudekPV20}, and our proposed format
-diverges even more from the DIMACS CNF format for Boolean formulas. To what
-extent are SAT-based methods still applicable? The answer depends significantly
-on the problem domain. For Bayesian networks, the rules describing that each
-random variable can only be associated with exactly one value were still encoded
-as clauses. As has been noted previously \citep{DBLP:conf/sat/ChaviraD06}, rows
-in CPTs with probabilities equal to zero or one can be represented as clauses as
-well. Therefore, our work can be seen as proposing a middle ground between \mc{}
-and probabilistic inference.
+diverges even more from the DIMACS CNF format for propositional formulas. To
+what extent are SAT-based methods still applicable? The answer depends
+significantly on the problem domain. For Bayesian networks, the rules describing
+that each random variable can only be associated with exactly one value were
+still encoded as clauses. As has been noted previously
+\citep{DBLP:conf/sat/ChaviraD06}, rows in CPTs with probabilities equal to zero
+or one can be represented as clauses as well. Therefore, our work can be seen as
+proposing a middle ground between \mc{} and probabilistic inference.
 
 While we chose \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} as the WMC
 algorithm and Bayesian networks as a canonical example of a probabilistic
@@ -858,6 +856,11 @@ idea could be adapted to other inference problem domains such as probabilistic
 programs
 \citep{DBLP:journals/tplp/FierensBRSGTJR15,DBLP:journals/corr/abs-2005-09089} as
 well as to search-based solvers such as \textsc{Cachet}
-\citep{DBLP:conf/sat/SangBBKP04} and \textsc{DPMC} ---an extension to
-\textsc{ADDMC} that adds support for computations based on tensors (rather than
-ADDs) and planning based on tree decompositions \citep{DBLP:conf/cp/DudekPV20}.
+\citep{DBLP:conf/sat/SangBBKP04}.
+
+\Cref{chapter:wmc2} continues to develop the perspective on WMC initiated in
+this chapter. There, we present a generalisation of WMC based on pseudo-Boolean
+functions. Support for the new format is then implemented for \textsc{DPMC}---an
+extension to \textsc{ADDMC} capable of performing computations using tensors
+(rather than ADDs) and planning using tree decompositions
+\citep{DBLP:conf/cp/DudekPV20}.

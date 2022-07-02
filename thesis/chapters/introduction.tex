@@ -363,24 +363,24 @@ of weights.
     \node[draw,ultra thick,below=1cm of wfomc,color=wfomc,text=black] (forclift) {\textsc{ForcLift}};
     \node[draw,ultra thick,right=2.5cm of forclift.north,anchor=north,color=gray,text=black,text width=1.85cm,align=center] (otherwfomc) {Other WFOMC algorithms};
 
-    \draw[-{Stealth},ultra thick,color=randomlps] (cp) -- (problog);
-    \draw[-{Stealth},ultra thick,color=comparison] (random) to [bend left=20] (wmc);
+    \draw[-Latex,ultra thick,color=randomlps] (cp) -- (problog);
+    \draw[-Latex,ultra thick,color=comparison] (random) to [bend left=20] (wmc);
 
-    \draw[-{Stealth},ultra thick,color=wmc2] (bn) -- (wmc);
-    \draw[-{Stealth},ultra thick,color=wmc1] (bn) -- (pbp);
-    \draw[-{Stealth},ultra thick,color=gray] (problog) -- (wmc);
-    \draw[-{Stealth},ultra thick,color=gray] (mln) -- (wmc);
-    \draw[-{Stealth},ultra thick,color=gray] (mln) -- (wfomc);
+    \draw[-Latex,ultra thick,color=wmc2] (bn) -- (wmc);
+    \draw[-Latex,ultra thick,color=wmc1] (bn) -- (pbp);
+    \draw[-Latex,ultra thick,color=gray] (problog) -- (wmc);
+    \draw[-Latex,ultra thick,color=gray] (mln) -- (wmc);
+    \draw[-Latex,ultra thick,color=gray] (mln) -- (wfomc);
 
-    \draw[-{Stealth},ultra thick,color=gray] (wfomc) -- (forclift);
-    \draw[-{Stealth},ultra thick,color=gray] (wfomc) -- (otherwfomc);
-    \draw[-{Stealth},ultra thick,color=gray] (wfomc) -- (wmc);
-    \draw[-{Stealth},ultra thick,color=wmc2] (wmc) -- (pbp);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (addmc);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (dpmc);
-    \draw[-{Stealth},ultra thick,color=gray] (wmc) -- (otherwmc);
-    \draw[-{Stealth},ultra thick,color=wmc1] (pbp) -- (addmc);
-    \draw[-{Stealth},ultra thick,color=wmc2] (pbp) -- (dpmc);
+    \draw[-Latex,ultra thick,color=gray] (wfomc) -- (forclift);
+    \draw[-Latex,ultra thick,color=gray] (wfomc) -- (otherwfomc);
+    \draw[-Latex,ultra thick,color=gray] (wfomc) -- (wmc);
+    \draw[-Latex,ultra thick,color=wmc2] (wmc) -- (pbp);
+    \draw[-Latex,ultra thick,color=gray] (wmc) -- (addmc);
+    \draw[-Latex,ultra thick,color=gray] (wmc) -- (dpmc);
+    \draw[-Latex,ultra thick,color=gray] (wmc) -- (otherwmc);
+    \draw[-Latex,ultra thick,color=wmc1] (pbp) -- (addmc);
+    \draw[-Latex,ultra thick,color=wmc2] (pbp) -- (dpmc);
 
     \matrix[draw,below left,xshift=1cm] at (current bounding box.north east) {
       \node[fill=wmc1,ultra thick,label=right:\cref{chapter:wmc1}] {}; \\

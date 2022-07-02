@@ -2,61 +2,37 @@
 
 \section{Introduction}
 
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item motivation: unclear how algorithms differ. Incorporate this sentence
-          somewhere, referencing the chapter instead. Similarly, while there is
-          a recent attempt to compare WMC algorithms on random instances of a
-          particular application of WMC (i.e., probabilistic logic programs), it
-          fails to discern any meaningful differences among the algorithms.
-    \item link: the LP approach failed to distinguish the algorithms
-  \end{itemize}
-}
-
-% WMC
-Weighted model counting (WMC)---a weighted generalisation of propositional model
-counting (\mc{}) \citep{DBLP:journals/ai/ChaviraD08}---has emerged as a powerful
-computational framework for problems in a variety of domains. In particular, WMC
-has been used to perform probabilistic inference for graphical models such as
-Bayesian networks and Markov networks
-\citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05},
-probabilistic programs \citep{DBLP:journals/pacmpl/HoltzenBM20}, and
-probabilistic logic programs \citep{DBLP:journals/tplp/FierensBRSGTJR15}. More
-recently, WMC was used in the context of neural-symbolic artificial intelligence
-as well \citep{DBLP:conf/icml/XuZFLB18}. Extensions of WMC add support for
-continuous variables \citep{DBLP:conf/ijcai/BellePB15}, infinite domains
-\citep{DBLP:conf/aaai/Belle17}, and first-order logic
-\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16} and generalise
-the definition to support arbitrary pseudo-Boolean functions instead of clauses
-(\cref{chapter:wmc2}). Exact WMC algorithms can be broadly classified as based
-on search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/SharmaRSM19},
-knowledge compilation
-\citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/ijcai/OztokD15},
-and dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
-Other alternatives include approximate \citep{DBLP:conf/aaai/RenkensKBR14} and
-parallel algorithms \citep{DBLP:conf/pgm/DalLL18,DBLP:conf/esa/FichteHWZ18},
-hybrid approaches \citep{DBLP:conf/sat/HecherTW20}, quantum computing
-\citep{DBLP:conf/ecai/Riguzzi20}, and reduction to model counting
-\citep{DBLP:conf/ijcai/ChakrabortyFMV15}.
+% Exact WMC algorithms can be broadly classified as based
+% on search \citep{DBLP:conf/sat/SangBBKP04,DBLP:conf/ijcai/SharmaRSM19},
+% knowledge compilation
+% \citep{DBLP:conf/ecai/Darwiche04,DBLP:conf/ijcai/LagniezM17,DBLP:conf/ijcai/OztokD15},
+% and dynamic programming \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}.
+% Other alternatives include approximate \citep{DBLP:conf/aaai/RenkensKBR14} and
+% parallel algorithms \citep{DBLP:conf/pgm/DalLL18,DBLP:conf/esa/FichteHWZ18},
+% hybrid approaches \citep{DBLP:conf/sat/HecherTW20}, quantum computing
+% \citep{DBLP:conf/ecai/Riguzzi20}, and reduction to model counting
+% \citep{DBLP:conf/ijcai/ChakrabortyFMV15}.
 
 % motivation for the problem
-In \cref{chapter:wmc1,chapter:wmc2} as well as recent experimental work by
+
+The experimental comparison of WMC algorithms on random probabilistic logic
+programs in \cref{chapter:randomlps} failed to discern any differences among the
+algorithms. However, both \cref{chapter:wmc1,chapter:wmc2} and recent work by
 others
 \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20,DBLP:conf/ijcai/LagniezM17},
-we see most WMC algorithms performing very similarly overall but with
-overwhelming differences when run on specific subsets of data. Examples of such
-segregating data sets include bipartite Bayesian networks by
-\citet{DBLP:conf/aaai/SangBK05} and relational Bayesian networks by
-\citet{DBLP:journals/ijar/ChaviraDJ06} that encode reachability in graphs under
-node deletion. So far, such performance differences remain unexplained. However,
-knowledge about the nature of these differences can inform our choices and aid
-in further algorithmic developments. Moreover, identifying performance
-predictors of algorithms is often an important step in developing a portfolio
-approach to the problem \citep{DBLP:journals/jair/XuHHL08}. Lastly, if new
-algorithms are always tested on the same set of benchmarks, eventually they may
-become somewhat fitted to the particular characteristics of those instances,
-leading to algorithms that may perform worse when run on new types of data
-\citep{DBLP:conf/cec/HossainALA10}.
+show most WMC algorithms performing very similarly overall but with overwhelming
+differences when run on specific subsets of data. Examples of such segregating
+data sets include bipartite Bayesian networks by \citet{DBLP:conf/aaai/SangBK05}
+and relational Bayesian networks by \citet{DBLP:journals/ijar/ChaviraDJ06} that
+encode reachability in graphs under node deletion. So far, such performance
+differences remain unexplained. However, knowledge about the nature of these
+differences can inform our choices and aid in further algorithmic developments.
+Moreover, identifying performance predictors of algorithms is often an important
+step in developing a portfolio approach to the problem
+\citep{DBLP:journals/jair/XuHHL08}. Lastly, if new algorithms are always tested
+on the same set of benchmarks, eventually they may become somewhat fitted to the
+particular characteristics of those instances, leading to algorithms that may
+perform worse when run on new types of data \citep{DBLP:conf/cec/HossainALA10}.
 
 % related work on SAT
 Both theoretical and experimental analysis of SAT (and, to a lesser extent,
@@ -149,40 +125,6 @@ w.r.t.\ the proportion of weights set to zero and one.
 % algorithms but also at the interaction between these two parameters of
 % interest.
 
-\section{Preliminaries}
-
-% \footnote{Also known by many other names such as Gaifman, (variable)
-% interaction, and variable incidence graph.}
-
-By \emph{variable}, we always mean a Boolean variable. A \emph{literal} is
-either a variable (say, $v$) or its negation (denoted $\neg v$), respectively
-called \emph{positive} and \emph{negative} literal. A \emph{clause} is a
-disjunction of literals. A \emph{formula} is any well-formed expression
-consisting of variables, negation, conjunction, and disjunction. A formula is in
-\emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it
-is in $k$-CNF if every clause has exactly $k$ literals. While we use the
-set-theoretic notation for CNF formulas (e.g., writing $c \in \phi$ to mean that
-clause $c$ is one of the clauses in formula $\phi$), duplicate clauses are still
-allowed. The \emph{primal graph} of a CNF formula is a graph that has a node for
-every variable, and there is an edge between two variables if they coappear in
-some clause. The \emph{treewidth} of a graph $G$ measures how similar $G$
-is to a tree and is defined as the smallest \emph{width} of any \emph{tree
-  decomposition} of $G$ \citep{DBLP:journals/jct/RobertsonS84}. The \emph{primal
-  treewidth} of a formula is the treewidth of its primal graph.
-
-Given a CNF formula $\phi$, SAT is a decision problem that asks whether there
-exists a way to assign values to all variables in $\phi$ such that $\phi$
-evaluates to true. Such a formula is said to be \emph{satisfiable}; otherwise,
-it is \emph{unsatisfiable}. \mc{} is a problem that asks to count the number of
-such assignments. WMC extends \mc{} with a weight function on literals and asks
-to compute the sum of the weights of the models of the given formula, where the
-weight of a model is the product of the weights of the literals in it
-\citep{DBLP:journals/ai/ChaviraD08}. For example, the WMC of the formula
-$x \lor y$ with a weight function
-$w\colon \{\,x, y, \neg x, \neg y\,\} \to \mathbb{R}_{\ge 0}$ defined as
-$w(x) = 0.3$, $w(y) = 0.2$, $w(\neg x) = 0.7$, $w(\neg y) = 0.8$ is
-$w(x)w(y)+w(x)w(\neg y)+w(\neg x)w(y) = 0.3 \times 0.2 + 0.3 \times 0.8 + 0.7 \times 0.2 = 0.44$.
-
 \section{Background on WMC Algorithms}\label{sec:background}
 
 In this section, we briefly review the three major approaches to WMC---search,
@@ -192,29 +134,27 @@ algorithms. The main search-based WMC algorithm \textsc{Cachet}
 SAT solver \citep{DBLP:conf/dac/MoskewiczMZZM01}, which is then extended with a
 component caching scheme and adapted to counting.
 
-\emph{Knowledge compilation} refers to transformations of propositional formulas
-into more restrictive formats that make various operations (such as model
-counting) tractable in the size of the representation
-\citep{DBLP:journals/jair/DarwicheM02}.
-\textsc{c2d} \citep{DBLP:conf/ecai/Darwiche04},
-\textsc{d4} \citep{DBLP:conf/ijcai/LagniezM17}, and
-\textsc{miniC2D} \citep{DBLP:conf/ijcai/OztokD15}
-are all algorithms of this type. \textsc{c2d} compiles to deterministic
-decomposable negation normal form
-(d-DNNF) \citep{DBLP:journals/jancl/Darwiche01}. Similarly, \textsc{d4} compiles
-to decision-DNNF (also known as decomposable decision
-graphs) \citep{DBLP:conf/aaai/FargierM06}. The only difference between d-DNNF and
+Recall that knowledge compilation refers to transformations of propositional
+formulas into more restrictive formats that make various operations (such as
+model counting) tractable in the size of the representation
+\citep{DBLP:journals/jair/DarwicheM02}. \textsc{c2d}
+\citep{DBLP:conf/ecai/Darwiche04}, \textsc{d4}
+\citep{DBLP:conf/ijcai/LagniezM17}, and \textsc{miniC2D}
+\citep{DBLP:conf/ijcai/OztokD15} are all algorithms of this type. \textsc{c2d}
+compiles to deterministic decomposable negation normal form (d-DNNF)
+\citep{DBLP:journals/jancl/Darwiche01}. Similarly, \textsc{d4} compiles to
+decision-DNNF (also known as decomposable decision graphs)
+\citep{DBLP:conf/aaai/FargierM06}. The only difference between d-DNNF and
 decision-DNNF is that decision-DNNF has if-then-else constructions instead of
-disjunctions \citep{DBLP:conf/ijcai/LagniezM17}. Finally,
-\textsc{miniC2D} compiles to decision-SDDs---a
-subset of sentential decision diagrams (SDDs) that form a subset of
-d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
+disjunctions \citep{DBLP:conf/ijcai/LagniezM17}. Finally, \textsc{miniC2D}
+compiles to decision-SDDs---a subset of sentential decision diagrams (SDDs) that
+form a subset of d-DNNF \citep{DBLP:conf/ijcai/Darwiche11}.
 
 All of the algorithms mentioned above execute in exactly the same way regardless
 of whether computing WMC or \mc{}. Two recent WMC algorithms instead use data
 structures whose size (and thus the runtime of the algorithm) depends on the
 numerical values of weights. These data structures are representations of
-\emph{pseudo-Boolean functions}, i.e., functions of the form
+pseudo-Boolean functions, i.e., functions of the form
 $f\colon 2^X \to \mathbb{R}_{\ge 0}$, where $X$ is a set, and $2^X$ denotes its
 powerset. \textsc{ADDMC} is the first such algorithm
 \citep{DBLP:conf/aaai/DudekPV20}. It uses ADDs to represent pseudo-Boolean
@@ -520,33 +460,9 @@ enough to influence our experimental setup in the next section.
 
 \section{Experimental Results}\label{sec:experiments}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics{chapters/comparison/treewidth}
-  \caption[Visualisations of the data from \cref{exp:density}. The top-left plot
-  shows how the running time of each algorithm changes w.r.t.\ density when
-  $\rho = 0$. The top-right plot shows changes in the running time of each
-  algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at the
-  bottom show how the estimated base of the exponential relationship between
-  primal treewidth and the runtime of each algorithm depends on $\mu$. The
-  bottom-left plot is for the simple linear model (with shaded regions showing
-  standard error), and the bottom-right plot uses the estimates provided by ESA
-  (with shaded regions showing \SI{95}{\percent} confidence intervals).]%
-  {Visualisations of the data from \cref{exp:density}. The top-left plot shows
-    how the running time of each algorithm changes w.r.t.\ density when
-    $\rho = 0$. The top-right plot shows changes in the running time of each
-    algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at
-    the bottom show how the estimated base of the exponential relationship
-    between primal treewidth and the runtime of each algorithm depends on $\mu$.
-    The bottom-left plot is for the simple linear model (with shaded regions
-    showing standard error), and the bottom-right plot uses the estimates
-    provided by ESA \protect{\citep{DBLP:conf/gecco/PushakH20}} (with shaded
-    regions showing \SI{95}{\percent} confidence intervals).}\label{fig:treewidth}
-\end{figure}
-
 % the experimental setup
 In this section, we describe three experiments that examine how the running
-times of WMC algorithms change w.r.t.\ parameters of our random model. All
+times of WMC algorithms change w.r.t.\ the parameters of our random model. All
 experiments were run on Intel Xeon~E5--2630 with Scientific Linux~7, GCC~10.2.0,
 Python~3.8.1, R~4.1.0, \textsc{c2d}~2.20 \citep{DBLP:conf/ecai/Darwiche04},
 \textsc{Cachet}~1.22 \citep{DBLP:conf/sat/SangBBKP04}, \textsc{htd}~1.2.0
@@ -598,6 +514,30 @@ experienced the most issues fitting within the memory limit, accounting for
 \SIrange{66}{72}{\percent} and \SIrange{28}{33}{\percent} of such instances,
 respectively. We exclude the runs that terminated early due to running out of
 memory from the rest of our analysis.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics{chapters/comparison/treewidth}
+  \caption[Visualisations of the data from \cref{exp:density}. The top-left plot
+  shows how the running time of each algorithm changes w.r.t.\ density when
+  $\rho = 0$. The top-right plot shows changes in the running time of each
+  algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at the
+  bottom show how the estimated base of the exponential relationship between
+  primal treewidth and the runtime of each algorithm depends on $\mu$. The
+  bottom-left plot is for the simple linear model (with shaded regions showing
+  standard error), and the bottom-right plot uses the estimates provided by ESA
+  (with shaded regions showing \SI{95}{\percent} confidence intervals).]%
+  {Visualisations of the data from \cref{exp:density}. The top-left plot shows
+    how the running time of each algorithm changes w.r.t.\ density when
+    $\rho = 0$. The top-right plot shows changes in the running time of each
+    algorithm w.r.t.\ primal treewidth with $\mu$ fixed at $1.9$. The plots at
+    the bottom show how the estimated base of the exponential relationship
+    between primal treewidth and the runtime of each algorithm depends on $\mu$.
+    The bottom-left plot is for the simple linear model (with shaded regions
+    showing standard error), and the bottom-right plot uses the estimates
+    provided by ESA \protect{\citep{DBLP:conf/gecco/PushakH20}} (with shaded
+    regions showing \SI{95}{\percent} confidence intervals).}\label{fig:treewidth}
+\end{figure}
 
 % Peaks w.r.t. density: \textsc{DPMC} different from other WMC algorithms which
 % are different from #SAT algorithms

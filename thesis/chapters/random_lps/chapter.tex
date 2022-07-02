@@ -3,37 +3,14 @@
 
 \section{Introduction}
 
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item are the definitions of fact/rule the same as in the background
-          section?
-    \item replace the citation for stratification in the content chapter with
-          the better one from the background chapter
-    \item there's no need for hyphens in 'variable-ordering' and
-          'value-ordering'
-    \item it's first fail (equivalent to dom) rather than fail-first
-    \item make sure to mention the appendix
-  \end{itemize}
-}
-
-\todo[inline]{ Here as well you seem to have used the introduction from the
-  paper but somehow it seems fine here. Mainly because it's self-contained. But
-  just check once more that it is connecting nicely with the previous chapters
-  and you are positioning your own contribution in an effective manner. }
-
-Unifying logic and probability is a long-standing challenge in artificial
-intelligence \citep{DBLP:journals/cacm/Russell15}, and, in that regard,
-statistical relational learning (SRL) has developed into an exciting area that
-mixes machine learning and symbolic (logical and relational) structures. In
-particular, probabilistic logic programs---including languages such as
-\textsc{PRISM} \citep{DBLP:conf/ijcai/SatoK97}, \textsc{ICL}
-\citep{DBLP:journals/ai/Poole97}, and \textsc{ProbLog}
-\citep{DBLP:conf/ijcai/RaedtKT07}---are promising frameworks for codifying
-complex SRL models. With the enhanced structure, however, inference becomes more
-challenging. At the moment, we have no precise way of evaluating and comparing
-inference algorithms. Incidentally, if one were to survey the literature, one
-often finds that an inference algorithm is only tested on a small number (1--4)
-of data sets
+Probabilistic logic programming languages such as the independent choice logic
+\citep{DBLP:journals/ai/Poole97}, PRISM \citep{DBLP:conf/ijcai/SatoK97}, and
+ProbLog \citep{DBLP:conf/ijcai/RaedtKT07} are promising frameworks for codifying
+complex statistical relational models whose inference procedures often rely on
+WMC
+\citep{DBLP:conf/uai/FierensBTGR11,DBLP:journals/tplp/FierensBRSGTJR15,DBLP:conf/aaai/VlasselaerKDMR16}.
+However, if one were to survey the literature, one often finds that an inference
+algorithm is only tested on a small number (1--4) of data sets
 \citep{DBLP:conf/ecai/BruynoogheMKGVJR10,DBLP:journals/tplp/KimmigDRCR11,DBLP:conf/ijcai/VlasselaerBKMR15},
 originating from areas such as social networks, citation patterns, and
 biological data. But how confident can we be that an algorithm works well if it
@@ -59,12 +36,12 @@ This representation takes the form of a \emph{constraint satisfaction problem}
 can take. Every solution to this problem (as output by a constraint solver)
 directly translates into a logic program. One can either output all
 (sufficiently small) programs that satisfy the given conditions or use random
-value-ordering heuristics and restarts to generate random programs. For sampling
+value ordering heuristics and restarts to generate random programs. For sampling
 from a uniform distribution, the CSP can be transformed into a belief network
 \citep{DBLP:conf/aaai/DechterKBE02}. In fact, the same model can generate both
-probabilistic programs in the syntax of \textsc{ProbLog}
-\citep{DBLP:conf/ijcai/RaedtKT07} and non-probabilistic Prolog programs.
-To the best of our knowledge, this is the first work that
+probabilistic programs in the syntax of ProbLog
+\citep{DBLP:conf/ijcai/RaedtKT07} and non-probabilistic Prolog programs. To the
+best of our knowledge, this is the first work that
 \begin{itemize}
 \item addresses the problem of generating random logic programs in its full
   generality (i.e., including first-order clauses with variables), and
@@ -80,50 +57,39 @@ that any ground atom with predicate $p$ is independent of any ground atom with
 predicate $q$. In this way, we can easily regulate the independence structure of
 the underlying probability distribution. In \cref{sec:counting} we also present
 a combinatorial argument for correctness that counts the number of programs that
-the model produces for various parameter values. We end the paper with two
+the model produces for various parameter values. We end the chapter with two
 experimental results in \cref{sec:1experiments}: one investigating how the
 constraint model scales when tasked with producing more complex programs, and
 one showing how the model can be used to evaluate and compare probabilistic
 inference algorithms.
 
-Overall, our main contributions are concerned with logic programming-based
-languages and frameworks, which capture a major fragment of SRL
-\citep{DBLP:series/synthesis/2016Raedt}. However, since probabilistic logic
-programming languages are closely related to other areas of machine learning,
-including (imperative) probabilistic programming
-\citep{DBLP:journals/ml/RaedtK15}, our results can lay the foundations for
-exploring broader questions on generating models and testing algorithms in
-machine learning.
-
 \section{Preliminaries}
 
-The basic primitives of logic programs are \emph{constants}, \emph{(logic)
-  variables}, and \emph{predicates} with their \emph{arities}. A \emph{term} is
-either a variable or a constant, and an \emph{atom} is a predicate of arity $n$
-applied to $n$ terms. A \emph{formula} is any well-formed expression that
-connects atoms using conjunction $\land$, disjunction $\lor$, and negation
-$\neg$. A \emph{clause} is a pair of a \emph{head} (which is an atom) and a
-\emph{body} (which is a formula\footnote{Our model supports arbitrarily complex
-  bodies of clauses (e.g., $\neg p(X) \lor (q(X) \land p(X))$) because
-  \textsc{ProbLog} does too. However, one can easily restrict our representation
-  of a body to a single conjunction of literals (e.g., $q(X) \land \neg p(X)$)
-  by adding a couple of additional constraints.}). A \emph{(logic) program} is a
-set of clauses, and a \emph{\textsc{ProbLog} program} is a set of
-clause-probability pairs \citep{DBLP:journals/tplp/FierensBRSGTJR15}.
+% The basic primitives of logic programs are \emph{constants}, \emph{(logic)
+%   variables}, and \emph{predicates} with their \emph{arities}. A \emph{term} is
+% either a variable or a constant, and an \emph{atom} is a predicate of arity $n$
+% applied to $n$ terms. A \emph{formula} is any well-formed expression that
+% connects atoms using conjunction $\land$, disjunction $\lor$, and negation
+% $\neg$. A \emph{clause} is a pair of a \emph{head} (which is an atom) and a
+% \emph{body} (which is a formula\footnote{Our model supports arbitrarily complex
+%   bodies of clauses (e.g., $\neg p(X) \lor (q(X) \land p(X))$) because ProbLog
+%   does too. However, one can easily restrict our representation of a body to a
+%   single conjunction of literals (e.g., $q(X) \land \neg p(X)$) by adding a
+%   couple of additional constraints.}). A \emph{(logic) program} is a set of
+% clauses, and a \emph{ProbLog program} is a set of clause-probability pairs
+% \citep{DBLP:journals/tplp/FierensBRSGTJR15}.
 
-In the world of CSPs, we also have \emph{(constraint) variables}, each with a
-\emph{domain}, whose values are restricted using \emph{constraints}. All
-constraint variables in the model are integer or set variables, however, if an
-integer refers to a logical construct (e.g., a logical variable or a constant),
-we will make no distinction between the two. We say that a constraint variable
-is \emph{(fully) determined} if its domain (at the time) has exactly one value.
-We let $\Box$ denote the absent/disabled value of an optional variable
-\citep{DBLP:conf/cpaior/MearsSSTMW14}. We write $\arrayd{a}{b}{c}$ to mean that
-$\variable{a}$ is an array of variables of length $b$ such that each element of
-$\variable{a}$ has domain $c$. Similarly, we write $\arrayt{a}{b}{c}$ to denote
-an array $\variable{a}$ of length $b$ such that each element of $\variable{a}$
-has type $\variable{c}$. Finally, we assume that all arrays start with index
-zero.
+All constraint variables that we use in this chapter are integer or set
+variables, however, if an integer refers to a logical construct (e.g., a logical
+variable or a constant), we will make no distinction between the two. We say
+that a constraint variable is \emph{(fully) determined} if its domain (at the
+time) has exactly one value. We let $\Box$ denote the absent/disabled value of
+an optional variable \citep{DBLP:conf/cpaior/MearsSSTMW14}. We write
+$\arrayd{a}{b}{c}$ to mean that $\variable{a}$ is an array of variables of
+length $b$ such that each element of $\variable{a}$ has domain $c$. Similarly,
+we write $\arrayt{a}{b}{c}$ to denote an array $\variable{a}$ of length $b$ such
+that each element of $\variable{a}$ has type $\variable{c}$. Finally, we assume
+that all arrays start with index zero.
 
 \paragraph*{Parameters of the model.} We begin by defining sets and lists of the
 primitives used in constructing logic programs: a list of predicates
@@ -144,22 +110,19 @@ independence (see \cref{sec:independence}), so a set of independent pairs of
 predicates is another parameter. Since this model can generate probabilistic as
 well as non-probabilistic programs, each clause is paired with a probability
 which is randomly selected from a given list---our last parameter. For
-generating non-probabilistic programs, one can set this list to $[1]$. Finally,
-we define $\tokens{} = \{\, \neg, \land, \lor, \top \,\}$ as the set of tokens
-that (together with atoms) form a clause. All decision variables of the model
-can now be divided into $2 \times \maxNumClauses{}$ separate groups, treating
-the body and the head of each clause separately. We say that the variables are
-contained in two arrays: $\arrayt{bodies}{\maxNumClauses{}}{Body}$ and
+generating non-probabilistic programs, one can set this list to
+$\langle 1 \rangle$. Finally, we define
+$\tokens{} = \{\, \neg, \land, \lor, \top \,\}$ as the set of tokens that
+(together with atoms) form a clause. All decision variables of the model can now
+be divided into $2 \times \maxNumClauses{}$ separate groups, treating the body
+and the head of each clause separately. We say that the variables are contained
+in two arrays: $\arrayt{bodies}{\maxNumClauses{}}{Body}$ and
 $\arrayt{heads}{\maxNumClauses{}}{Head}$.
 
 \section{Heads of Clauses}\label{sec:heads}
 
-\todo[inline]{ Here as well you have to motivate why you are slightly different
-  from those preliminary section. But is it easy enough to do I think. All you
-  have to say is that you slightly elaborate on the definitions of accommodate
-  more granularity }
-
-We define the \emph{head} of a clause as a
+In \cref{sec:heads,sec:bodies}, we define clauses (i.e., their heads and bodies)
+using constraint programming terms. We define the \emph{head} of a clause as a
 $\variable{predicate} \in \predicates{} \cup \{\, \Box \,\}$ and
 $\arrayd{arguments}{\maxArity{}}{\constants{} \cup \variables{}} \cup \{\, \Box \,\}$.
 Here, we use $\Box$ to denote either a disabled clause that we choose not to use
@@ -537,9 +500,9 @@ $D_{p} \cap D_{q} = \emptyset$.
     \node[draw] (mother) at (0, -0.5) {$\mathsf{mother}$};
     \node[draw] (sibling) at (2, 0.5) {$\mathsf{sibling}$};
     \node[draw] (father) at (2, -0.5) {$\mathsf{father}$};
-    \draw[-{Stealth[scale=1.5]}] (parent) edge node[above] {$+$} (sibling);
-    \draw[-{Stealth[scale=1.5]}] (parent) edge node[above] {$+$} (father);
-    \draw[-{Stealth[scale=1.5]}] (mother) edge node[below] {$-$} (father);
+    \draw[-Latex] (parent) edge node[above] {$+$} (sibling);
+    \draw[-Latex] (parent) edge node[above] {$+$} (father);
+    \draw[-Latex] (mother) edge node[below] {$-$} (father);
   \end{tikzpicture}%
   \caption{The predicate dependency graph of the program from
     \protect{\cref{ex:program}}. Positive edges are labelled with `$+$', and
@@ -733,10 +696,10 @@ as intended.
         \node[draw] (mother) at (0, -0.5) {$\mathsf{mother}$};
         \node[draw] (sibling) at (2, 0.5) {$\mathsf{sibling}$};
         \node[draw] (father) at (2, -0.5) {$\mathsf{father}$};
-        \draw[-{Stealth}] (parent) edge (father);
-        \draw[-{Stealth}] (mother) edge (father);
-        \draw[-{Stealth},dashed,darkgray] (parent) edge (sibling);
-        \draw[-{Stealth},dashed,darkgray] (parent) edge (mother);
+        \draw[-Latex] (parent) edge (father);
+        \draw[-Latex] (mother) edge (father);
+        \draw[-Latex,dashed,darkgray] (parent) edge (sibling);
+        \draw[-Latex,dashed,darkgray] (parent) edge (mother);
       \end{tikzpicture}
     }
     \caption{A drawing of the graph. Dashed edges are undetermined---they may or
@@ -752,14 +715,15 @@ We now present the results of two experiments: in \cref{sec:1experiment1} we
 examine the scalability of our constraint model with respect to its parameters
 and in \cref{sec:1experiment2} we demonstrate how the model can be used to
 compare inference algorithms and describe their behaviour across a wide range of
-programs. The experiments were run on a system with Intel Core i5-8250U
-processor and \SI{8}{\giga\byte} of RAM. The constraint model was implemented in
-Java~8 with Choco~4.10.2 \citep{choco}. All inference algorithms are implemented
-in \textsc{ProbLog}~2.1.0.39 and were run using Python~3.8.2 with PySDD~0.2.10
-and PyEDA~0.28.0. For both sets of experiments, we generate programs without
-negative cycles and use a \SI{60}{\second} timeout.
+programs.\footnote{See \cref{theappendix} for examples of programs generated
+  using various sets of parameter values.} The experiments were run on a system
+with Intel Core i5-8250U processor and \SI{8}{\giga\byte} of RAM\@. The
+constraint model was implemented in Java~8 with Choco~4.10.2 \citep{choco}. All
+inference algorithms are implemented in ProbLog~2.1.0.39 and were run using
+Python~3.8.2 with PySDD~0.2.10 and PyEDA~0.28.0. For both sets of experiments,
+we generate programs without negative cycles and use a \SI{60}{\second} timeout.
 
-\subsection{Empirical Performance of the Model} \label{sec:1experiment1}
+\subsection{Empirical Performance of the Model}\label{sec:1experiment1}
 
 Along with constraints, variables, and their domains, two more design decisions
 are needed to complete the model: heuristics and restarts. By trial and error,
@@ -768,7 +732,7 @@ the variable ordering heuristic was devised to eliminate sources of
 making changes that have no hope of fixing the contradiction. Thus, we partition
 all decision variables into an ordered list of groups and require the values of
 all variables from one group to be determined before moving to the next group.
-Within each group, we use the `fail first' variable ordering heuristic. The
+Within each group, we use the `first fail' variable ordering heuristic. The
 first group consists of all head predicates. Afterwards, we handle all remaining
 decision variables from the first clause before proceeding to the next. The
 decision variables within each clause are divided into
@@ -836,13 +800,15 @@ Likewise, a higher number of predicates complicates the situation as well.
     fixed at $10^5$.}\label{fig:bars}
 \end{figure}
 
-\subsection{Experimental Comparison of Inference Algorithms} \label{sec:1experiment2}
+\subsection{Experimental Comparison of Inference
+  Algorithms}\label{sec:1experiment2}
 
 For this experiment, we consider clauses of two types: \emph{rules} are clauses
 such that the head atom has at least one variable, and \emph{facts} are clauses
-with empty bodies and no variables. We use our constraint model to generate the
-rules according to the following parameter values:
-$|\predicates{}|, |\variables{}|, \maxNumNodes{} \in \{\, 2, 4, 8 \,\}$,
+with empty bodies and no variables.\footnote{Note that these definitions are
+  slightly different from the definitions in \cref{chapter:background}.} We use
+our constraint model to generate the rules according to the following parameter
+values: $|\predicates{}|, |\variables{}|, \maxNumNodes{} \in \{\, 2, 4, 8 \,\}$,
 $\maxArity{} \in \{\, 1, 2, 3 \,\}$, $\maxNumClauses{} = |\predicates{}|$,
 $\constants{} = \emptyset$. These values are (approximately) representative of
 many standard benchmarking instances which often have 2--8 predicates of arity
@@ -894,10 +860,10 @@ parts of a program can be handled independently.
 \begin{figure}[t]
   \centering
   \input{chapters/random_lps/line_plots.tex}%
-  \caption{Mean inference time for a range of \textsc{ProbLog} inference
-    algorithms as a function of the total number of facts in the program and the
-    proportion of independent pairs of predicates. For the second plot, the
-    number of facts is fixed at $10^5$.}\label{fig:line_plots}
+  \caption{Mean inference time for a range of ProbLog inference algorithms as a
+    function of the total number of facts in the program and the proportion of
+    independent pairs of predicates. For the second plot, the number of facts is
+    fixed at $10^5$.}\label{fig:line_plots}
 \end{figure}
 
 \section{Conclusion}
@@ -907,12 +873,15 @@ probabilistic logic programs. The model avoids unnecessary symmetries, is
 reasonably efficient and supports additional constraints such as predicate
 independence. Our experimental results provide the first comparison of inference
 algorithms for probabilistic logic programming languages that generalises over
-programs, i.e., is not restricted to just a few programs and data sets. While
-the results did not reveal any significant differences among the algorithms,
-they did reveal a shared weakness, i.e., the inability to ignore the part of a
-program that is easily seen to be irrelevant to the given query.
+programs, i.e., is not restricted to just a few programs and data sets. On the
+one hand, the experimental results revealed a weakness shared by all of the
+inference algorithms, i.e., the inability to ignore the part of a program that
+is easily seen to be irrelevant to the given query. On the other hand, all of
+the algorithms behaved identically. \Cref{chapter:comparison} continues the
+quest to better understand the differences among WMC algorithms by generating
+WMC instances with varying structural properties.
 
-Nonetheless, we would like to outline two directions for future work. First, the
+We end the chapter by outlining two directions for future work. First, the
 experimental evaluation in \cref{sec:1experiment1} revealed scalability issues,
 particularly concerning the length/complexity of clauses. However, this
 particular issue is likely to resolve itself if the format of a clause is

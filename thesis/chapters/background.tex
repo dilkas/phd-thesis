@@ -73,6 +73,15 @@ case is clarified on a case-by-case basis.
   $\{\, \{\, \neg a, b \,\}, \{\, a \,\} \,\}$.
 \end{example}
 
+The \emph{primal graph} of a CNF formula is a graph that has a node for every
+variable, and there is an edge between two variables if they coappear in some
+clause. The \emph{treewidth} of a graph $G$ measures how similar $G$ is to a
+tree and is defined as the smallest \emph{width} of any \emph{tree
+  decomposition} of $G$ \citep{DBLP:journals/jct/RobertsonS84}. The \emph{primal
+  treewidth} of a formula is the treewidth of its primal graph. Primal treewidth
+(and treewidth more generally) is a parameter frequently used to describe the
+parameterised complexity of algorithms
+\citep{DBLP:conf/ijcai/BliemMMW17,DBLP:series/txcs/DowneyF13,DBLP:conf/lics/FichteHP20}.
 
 \subsection{Logic-Based Computational Problems}\label{sec:logicproblems}
 
@@ -354,8 +363,7 @@ solve it, and how one can help the algorithm search efficiently.
   following constraint is sufficient.
 
   \begin{constraint}[Channelling]
-    For all $i, j = 1, \dots, n$, we have that
-    $b_{ij} \Leftrightarrow (q_i = j)$.
+    For all $i, j = 1, \dots, n$, we have that $b_{ij} \iff (q_i = j)$.
   \end{constraint}
 
   Finally, the following is an example of a symmetry breaking constraint.
@@ -483,8 +491,7 @@ some of the many books on the subject
       \draw[-Latex] (alarm) -- (johnCalls);
       \draw[-Latex] (alarm) -- (maryCalls);
     \end{tikzpicture}
-    \caption{a Bayesian network}
-    \label{fig:bn}
+    \caption{a Bayesian network}\label{fig:bn}
   \end{subfigure}
   \begin{subfigure}{0.49\textwidth}
     \centering
