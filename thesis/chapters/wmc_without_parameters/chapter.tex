@@ -114,7 +114,7 @@ $w(x) = w(\neg x) = 1$. Next, we formally define another variant of WMC.
   |Z|$ for all $Z \models \phi$.
 \end{definition}
 
-\begin{definition}[Minimum-Cardinality WMC]\label{def:mcwmc}
+\begin{definition}[Minimum-cardinality WMC]\label{def:mcwmc}
   A \emph{minimum-cardinality WMC} instance consists of the same tuple as a WMC
   instance, but its \emph{answer} is defined to be
   \[
@@ -226,7 +226,7 @@ Below we list some properties of the operations on pseudo-Boolean functions that
 can be conveniently represented using our syntax. The proofs of all these
 properties follow directly from the definitions.
 
-\begin{proposition}[Basic Properties]\label{prop:basic}
+\begin{proposition}[Basic properties]\label{prop:basic}
   For any propositional formulas $\phi$ and $\psi$, and
   $a, b, c, d \in \mathbb{R}$,
   \begin{itemize}
@@ -267,7 +267,7 @@ conjunction of literals, we can represent it in text as \texttt{w
   $\langle\phi\rangle$ a b} where $\langle\phi\rangle$ is a representation of
 $\phi$ analogous to the representation of a clause in the DIMACS CNF format.
 
-\begin{definition}[PBP Instance]\label{def:pbp}
+\begin{definition}[PBP instance]\label{def:pbp}
   A PBP instance is a tuple $(F, X, \omega)$, where $X$ is the set of variables,
   $F$ is a set of two-valued pseudo-Boolean functions $2^X \to \mathbb{R}$, and
   $\omega \in \mathbb{R}$ is the scaling factor.\footnote{ Adding scaling factor
@@ -324,7 +324,7 @@ into a WMC encoding algorithm with no slowdown.
       $F \gets F \cup \{\, {[c]}^1_0 \,\}$\;\label{line:foreach1end}
     }
   }
-  \ForEach{$v \in X_I$ such that $\{\ {[v]}_1^p, {[\neg v]}_1^q \,\} \subseteq F$ for some $p$ and $q$\label{line:foreach2start}}{
+  \ForEach{variable $v \in X_I$ such that $\{\ {[v]}_1^p, {[\neg v]}_1^q \,\} \subseteq F$ for some $p$ and $q$\label{line:foreach2start}}{
     $F \gets F \setminus \{\, {[v]}_1^p, {[\neg v]}_1^q \,\} \cup \{\, {[v]}_q^p \,\}$\;\label{line:foreach2end}
   }
 \end{algorithm}
@@ -363,14 +363,14 @@ equivalent PBP instance. We divide the correctness proof into two theorems:
 pseudo-Boolean functions and establishing a canonical transformation from WMC to
 PBP\@.
 
-\begin{theorem}[Early Projection
+\begin{theorem}[Early projection
   \citep{DBLP:conf/aaai/DudekPV20,DBLP:conf/cp/DudekPV20}]\label{thm:early}
   Let $X$ and $Y$ be sets of variables. For all pseudo-Boolean functions
   $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$, if $x \in X
   \setminus Y$, then $\exists_x (f \cdot g) = (\exists_x f) \cdot g$.
 \end{theorem}
 
-\begin{lemma} \label{lemma:sum}
+\begin{lemma}\label{lemma:sum}
   For any pseudo-Boolean function $f\colon 2^X \to \mathbb{R}$, we have that
   $(\exists_X f)(\emptyset) = \sum_{Y \subseteq X} f(Y)$.
 \end{lemma}
@@ -548,7 +548,7 @@ that at most one implication clause per any parameter variable $p \in X_P$ can
   is unchanged.
 \end{proof}
 
-\begin{theorem}[Minimum-Cardinality Correctness]\label{thm:mccorrectness}
+\begin{theorem}[Minimum-cardinality correctness]\label{thm:mccorrectness}
   Let $(\phi, X_I, X_P, w)$ be a minimum-cardinality WMC instance that satisfies
   \cref{cond:2b2,cond:2b3,cond:just_parameter,cond:disjoint} of
   \cref{thm:correctness2} as well as the following:

@@ -155,6 +155,7 @@
 \Crefname{constraint}{Constraint}{Constraints}
 \Crefname{experiment}{Experiment}{Experiments}
 \Crefname{clause}{Clause}{Clauses}
+\Crefname{diagram}{Diagram}{Diagrams}
 \crefname{line}{line}{lines}
 
 \sisetup{range-phrase=--}
@@ -356,22 +357,16 @@
 % * Add additional information from phd_notes and previous versions of some of the papers (e.g., the section of paper1 in wmc-without-parameters that got deleted in paper2).
 % * capitalisation and font for variables (uppercase), constants (lowercase), etc.
 % * consider using listings for all Prolog and maybe ProbLog code (but then everything becomes sf instead of tt)
-% * make all the arrows in tikz pictures (and tree sibling and node distances) all the same. Use -Latex. Only recursion.tex remains (for arrows, not node distances).
-% * notation for graphs: \mathcal{V}, \mathcal{E}, \mathcal{L}
-% * introduction, background, recursion: merge table cells with the same info
-% * eliminate warnings (e.g., overflow, single-spacing)
-% * background: wmc should be defined at the very beginning
+% * make node/sibling distances the same
 % * introduction: define / write a bit about pseudo-Boolean functions (necessary for the next chapter). Maybe make a connection with pseudo-Boolean constraints.
-% * the tikzpicture in the recursion chapter could also be redrawn to be a tree
-% * in algorithms, write forall if selecting more than one variable
-% * Chapter 5 (and maybe elsewhere): tikzcd diagrams should not be referred to as equations
 % * write acknowledgements
-% * make sure to use \text{, } and \text{. } for FOL
-% * be consistent with the capitalisation of paragraphs and example/theorem/etc. names
-% * the spelling of $i$th vs $i$-th
 % * nodes vs vertices
 % * have a ~ before every citep and citet
 % * run everything through a grammar checker
+% * remove unused references
+% * font for FPT
+% * warnings by doom
+% * use of input/output vs data/result in algorithms
 
 \include{chapters/introduction} % 5-14 pages (9 on average)
 \include{chapters/background} % 11-45 pages (27 on average)

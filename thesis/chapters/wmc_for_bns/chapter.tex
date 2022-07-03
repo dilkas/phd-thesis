@@ -402,29 +402,24 @@ $\Imm W = \Imm F = \{\, 0, 1 \,\}$, and $\Imm T = \{\, l, m, h \,\}$.
 \begin{algorithm}[t]
   \caption{Encoding a Bayesian network.}\label{alg:encoding}
   \KwData{vertices $\mathcal{V}$, probability distribution $\Pr$}
-  \KwResult{$\phi\colon 2^U \to \mathbb{R}_{\ge 0}$}
+  \KwResult{pseudo-Boolean function $\phi\colon 2^U \to \mathbb{R}_{\ge 0}$}
   $\phi \gets 1$\;
-  \For{$X \in \mathcal{V}$}{
+  \ForEach{vertex $X \in \mathcal{V}$}{
     \textit{let} $\mathrm{pa}(X) = \{\, Y_1, \dots, Y_n \,\}$\;
     $\mathrm{CPT}_X \gets 0$\;
     \eIf{$|\Imm X| = 2$}{
-      \For{${(y_i)}_{i=1}^n \in \prod_{i = 1}^n \Imm Y_i$}{
+      \ForAll{values ${(y_i)}_{i=1}^n \in \prod_{i = 1}^n \Imm Y_i$}{
         $p_1 \gets \Pr(X = 1 \mid y_1, \dots, y_n)$\;
         $p_0 \gets \Pr(X \ne 1 \mid y_1, \dots, y_n)$\;
-        \nosemic$\mathrm{CPT}_X \gets \mathrm{CPT}_X$\;
-        \pushline$+ p_1[\lambda_{X=1}] \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
-        \dosemic$+ p_0 \overline{[\lambda_{X=1}]} \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
+        $\mathrm{CPT}_X \gets \mathrm{CPT}_X + p_1[\lambda_{X=1}] \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}] + p_0 \overline{[\lambda_{X=1}]} \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
       }
     }{
       \textit{let} $\Imm X = \{\, x_1, \dots, x_m \,\}$\;
-      \For{$x \in \Imm X$ {\rm \textbf{and}} ${(y_i)}_{i=1}^n \in \prod_{i = 1}^n \Imm Y_i$}{
+      \ForAll{values $x \in \Imm X$ {\rm \textbf{and}} ${(y_i)}_{i=1}^n \in \prod_{i = 1}^n \Imm Y_i$}{
         $p_x \gets \Pr(X = x \mid y_1, \dots, y_n)$\;
-        \nosemic$\mathrm{CPT}_X \gets \mathrm{CPT}_X$\;
-        \pushline$+ p_x[\lambda_{X=x}] \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
-        \dosemic$+ \overline{[\lambda_{X=x}]} \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
+        $\mathrm{CPT}_X \gets \mathrm{CPT}_X + p_x[\lambda_{X=x}] \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}] + \overline{[\lambda_{X=x}]} \cdot \prod_{i=1}^n [\lambda_{Y_i=y_i}]$\;
       }
-      \nosemic$\mathrm{CPT}_X \gets \mathrm{CPT}_X \cdot \left( \sum_{i=1}^m [\lambda_{X = x_i}] \right)$\;
-      \pushline\dosemic$\cdot \prod_{i=1}^m \prod_{j=i+1}^m (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]})$\;
+      $\mathrm{CPT}_X \gets \mathrm{CPT}_X \cdot \left( \sum_{i=1}^m [\lambda_{X = x_i}] \right) \cdot \prod_{i=1}^m \prod_{j=i+1}^m (\overline{[\lambda_{X = x_i}]} + \overline{[\lambda_{X = x_j}]})$\;
     }
     $\phi \gets \phi \cdot \mathrm{CPT}_X$\;
   }

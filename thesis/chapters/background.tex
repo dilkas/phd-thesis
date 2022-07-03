@@ -324,11 +324,11 @@ solve it, and how one can help the algorithm search efficiently.
   example in the constraint programming literature. The solution we describe
   here is adapted from a constraint modelling tutorial \citep{minizinc}.
 
-  First, note each column (i.e, \emph{file}) must have exactly one queen. Let
-  $(q_i)_{i=1}^n$ be variables with domains $q_i \in \{\, 1, \dots, n \,\}$,
-  where we use $q_i = j$ to denote that the $i$th column queen is on row (i.e.,
-  \emph{rank}) $j$. Then the entire problem can be described by the following
-  three constraints.
+  First, note that each column (i.e, \emph{file}) must have exactly one queen.
+  Let ${(q_i)}_{i=1}^n$ be variables with domains
+  $q_i \in \{\, 1, \dots, n \,\}$, where we use $q_i = j$ to denote that the
+  $i$\textsuperscript{th} column queen is on row (i.e., \emph{rank}) $j$. Then
+  the entire problem can be described by the following three constraints.
 
   \begin{constraint}\label{exampleconstraint:1}
     $\alldifferent(\{\,q_i\,\}_{i=1}^n)$
@@ -357,10 +357,10 @@ solve it, and how one can help the algorithm search efficiently.
   While some symmetry breaking constraints can be expressed using variables
   ${(q_i)}_{i=1}^n$, others could benefit from a different representation.
   Specifically, let $\mathbf{B} = (b_{ij})$ be an $n \times n$ matrix, where
-  each $b_{ij} \in \{\, \true{}, \false{} \,\}$ indicates whether the $(i,j)$-th
-  square contains a queen. Constraints that connect different representations of
-  the same problem are called \emph{channelling} constraints. In this case, the
-  following constraint is sufficient.
+  each $b_{ij} \in \{\, \true{}, \false{} \,\}$ indicates whether the
+  $(i,j)$\textsuperscript{th} square contains a queen. Constraints that connect
+  different representations of the same problem are called \emph{channelling}
+  constraints. In this case, the following constraint is sufficient.
 
   \begin{constraint}[Channelling]
     For all $i, j = 1, \dots, n$, we have that $b_{ij} \iff (q_i = j)$.
@@ -518,14 +518,14 @@ some of the many books on the subject
     \toprule
     $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
     \midrule
-    \false{} & \false{} & \false{} & 0.999 \\
-    \false{} & \false{} & \true{} & 0.001 \\
-    \false{} & \true{} & \false{} & 0.71 \\
-    \false{} & \true{} & \true{} & 0.29 \\
-    \true{} & \false{} & \false{} & 0.06 \\
-    \true{} & \false{} & \true{} & 0.94 \\
-    \true{} & \true{} & \false{} & 0.05 \\
-    \true{} & \true{} & \true{} & 0.95 \\
+    \rowcolor{gray!10}\multicolumn{2}{c}{} & \false{} & 0.999 \\
+    \rowcolor{gray!10}\multicolumn{2}{c}{\multirow{-2}{*}{\false{}}} & \true{} & 0.001 \\
+    & & \false{} & 0.71 \\
+    \multirow{-2}{*}{\false{}} & \multirow{-2}{*}{\true{}} & \true{} & 0.29 \\
+    \rowcolor{gray!10}& & \false{} & 0.06 \\
+    \rowcolor{gray!10}\multirow{-2}{*}{\true{}} & \multirow{-2}{*}{\false{}} & \true{} & 0.94 \\
+    \multicolumn{2}{c}{} & \false{} & 0.05 \\
+    \multicolumn{2}{c}{\multirow{-2}{*}{\true{}}} & \true{} & 0.95 \\
     \bottomrule
   \end{tabular}
   \caption{An example CPT for $\Pr(A \mid B, E)$ from

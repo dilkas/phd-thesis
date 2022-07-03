@@ -176,12 +176,12 @@ As was briefly mentioned before, the \emph{body} of a clause is represented by a
 tree. It has two parts. First, there is the
 $\arrayd{structure}{\maxNumNodes{}}{[0, \maxNumNodes{} - 1]}$ array that encodes
 the structure of the tree using the following two rules:
-$\variable{structure}[i] = i$ means that the $i$th node is a root, and
-$\variable{structure}[i] = j$ (for $j \ne i$) means that the $i$th node's
-parent is node $j$. The second part is the array
+$\variable{structure}[i] = i$ means that the $i$\textsuperscript{th} node is a
+root, and $\variable{structure}[i] = j$ (for $j \ne i$) means that the
+$i$\textsuperscript{th} node's parent is node $j$. The second part is the array
 $\arrayt{values}{\maxNumNodes{}}{Node}$ such that $\variable{values}[i]$ holds
-the value of the $i$th node, i.e., a representation of the atom or logical
-operator.
+the value of the $i$\textsuperscript{th} node, i.e., a representation of the
+atom or logical operator.
 
 We can use the $\variable{tree}$ constraint \citep{DBLP:conf/cp/FagesL11} to
 forbid cycles in the $\variable{structure}$ array and simultaneously define
@@ -411,7 +411,7 @@ $s_{i+1}-s_i-1$ spaces to be filled with any of the $|\constants{}|$ constants
 or any of the $i$ already-introduced variables.
 
 Let us order the elements of $\predicates{}$, and let $a_i$ be the arity of the
-$i$th predicate. The number of programs is then:
+$i$\textsuperscript{th} predicate. The number of programs is then:
 \begin{equation} \label{eq:counting}
   \sum_{\substack{ \sum_{i=1}^{|\predicates{}|} h_i = n,\\
       |\predicates{}| \le n \le \maxNumClauses{},\\
@@ -606,11 +606,11 @@ exist---\cref{line:propagation_condition} handles this possibility.
   \SetKwFunction{getDependencies}{deps}
   \SetKwProg{Fn}{Function}{:}{}
   \KwData{adjacency matrix $\mathbf{A}$}
-  \Fn{\getDependencies{$p$, \all}} {
+  \Fn{\getDependencies{predicate $p$, flag \all}} {
     $D \gets \{\, \Determined(p) \,\}$\;
     \While{\normalfont\true{}}{
       $D' \gets \emptyset$\;
-      \For{$d \in D$ {\bf and} $q \in \predicates{}$}{
+      \ForEach{dependency $d \in D$ {\bf and} predicate $q \in \predicates{}$}{
         $\edgeExists \gets \mathbf{A}[q][d.\predicate] = \{\, 1 \,\}$\;
         \lIf{$\edgeExists$ {\bf and} $d$ {\bf is} $\Determined(\_)$}{$D' \gets D' \cup \{\, \Determined(q) \,\}$}
         \lElseIf{$\edgeExists$ {\bf and} $d$ {\bf is} $\AlmostDetermined(\_, s, t)$}{$D' \gets D' \cup \{\, \AlmostDetermined(q, s, t) \,\}$}

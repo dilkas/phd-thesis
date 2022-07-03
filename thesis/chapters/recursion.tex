@@ -24,11 +24,17 @@
   \begin{subfigure}{0.49\textwidth}
     \centering
     \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
-        sides=3},edge from parent/.style={draw,-{Latex[length=2mm]}}]
-      \node[draw,circle] {} child {node[draw,ellipse] (b) {$\phi(n)$} child
-        {node[draw,triangle] {}} } child {node[draw,circle] {} child
-        {node[draw,ellipse] (a) {$\phi(n)$}} } ; \draw[-{Latex[length=2mm]}] (a)
-      -- (b);
+        sides=3},edge from parent/.style={draw,-Latex}]
+      \node[draw,circle] {}
+      child {
+        node[draw,ellipse] (b) {$\phi(n)$}
+        child {node[draw,triangle] {}}
+      }
+      child {
+        node[draw,circle] {}
+        child {node[draw,ellipse] (a) {$\phi(n)$}}
+      };
+      \draw[-Latex] (a) -- (b);
     \end{tikzpicture}
     \caption{Before}\label{fig:before}
   \end{subfigure}
@@ -36,13 +42,14 @@
     \centering
     \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
         sides=3}]
-      \node[draw,ellipse] (a) at (0, 0) {$\phi(n)$}; \node[draw,ellipse] (b) at
-      (0, -2) {$\psi(n-1)$}; \node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
-      \node[draw,triangle] (d) at (1, -4) {}; \draw[-{Latex[length=2mm]}] (a) --
-      (b) node [midway,xshift=50] {Domain recursion};
-      \draw[-{Latex[length=2mm]}] (b) -- (c); \draw[-{Latex[length=2mm]}] (b) --
-      (d); \draw[-{Latex[length=2mm]}] (c) to [bend left=45] node
-      [midway,xshift=-30] () {$n \mapsto n-1$} (a);
+      \node[draw,ellipse] (a) at (0, 0) {$\phi(n)$};
+      \node[draw,ellipse] (b) at (0, -2) {$\psi(n-1)$};
+      \node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
+      \node[draw,triangle] (d) at (1, -4) {};
+      \draw[-Latex] (a) -- (b) node [midway,xshift=50] {Domain recursion};
+      \draw[-Latex] (b) -- (c);
+      \draw[-Latex] (b) -- (d);
+      \draw[-Latex] (c) to [bend left=45] node [midway,xshift=-30] () {$n \mapsto n-1$} (a);
     \end{tikzpicture}
     \caption{After}\label{fig:after}
   \end{subfigure}
@@ -381,15 +388,17 @@ new types:
 \begin{figure}[t]
   \centering
   \begin{tikzpicture}[every node/.style={draw,ellipse},edge from
-    parent/.style={draw,-latex},sibling distance=2cm,level 2/.style={sibling
+    parent/.style={draw,-Latex},sibling distance=2cm,level 2/.style={sibling
       distance=6cm}]
-    \node (dr) {$\GDR_{b \gets b \setminus \{\, x \,\}}$} child {node
-      {$\bigvee_{a^\top \subseteq a}$} child {node {$\CR_{b \mapsto b'}$} child
-        {node[circle] {$\wedge$} child {node
-            {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto a^\top, Y \mapsto a^\top \,\})}$}}
-          child {node (ref)
-            {$\Reff_{\{\, a \mapsto a^{\bot}, b \mapsto b' \,\}}$}} }}};
-    \draw[-latex, bend right] (ref) to (dr);
+    \node (dr) {$\GDR_{b \gets b \setminus \{\, x \,\}}$}
+    child {node {$\bigvee_{a^\top \subseteq a}$}
+      child {node {$\CR_{b \mapsto b'}$}
+        child {
+          node[circle] {$\wedge$}
+          child {node {$\bot_{(\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto a^\top, Y \mapsto a^\top \,\})}$}}
+          child {node (ref) {$\Reff_{\{\, a \mapsto a^{\bot}, b \mapsto b' \,\}}$}}
+        }}};
+    \draw[-Latex, bend right] (ref) to (dr);
   \end{tikzpicture}
   \caption{An example FCG constructed by \textsc{Crane}. Label
     $\bigvee_{a^\top \subseteq a}$ denotes set-disjunction, $\land$ denotes
@@ -428,25 +437,30 @@ label of the source.
   \centering
   \begin{subfigure}{0.49\textwidth}
     \centering
-    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
-      \node[draw,circle,label={[text=blue]1}] (top) {} child
-      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
-        {node[draw,ellipse] (ref) {$\Reff$}} child
-        {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}} } child
-      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
-      \draw[-{Latex[length=2mm]}] (ref) to [bend left=45] (top);
+    \begin{tikzpicture}[edge from parent/.style={draw,-Latex}]
+      \node[draw,circle,label={[text=blue]1}] (top) {}
+      child {
+        node[draw,circle,label={[text=blue,xshift=-1mm]2}] {}
+        child {node[draw,ellipse] (ref) {$\Reff$}}
+        child {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]3}] {$\star$}}
+      }
+      child {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}};
+      \draw[-Latex] (ref) to [bend left=45] (top);
     \end{tikzpicture}
     \caption{An example FCG}\label{fig:smallexample1}
   \end{subfigure}
   \begin{subfigure}{0.49\textwidth}
     \centering
-    \begin{tikzpicture}[edge from parent/.style={draw,-{Latex[length=2mm]}}]
-      \node[draw,circle,label={[text=blue]1}] (top) {} child
-      {node[draw,circle,label={[text=blue,xshift=-1mm]2}] {} child
-        {node[draw,circle,label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}} } child
-      {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}} ;
+    \begin{tikzpicture}[edge from parent/.style={draw,-Latex}]
+      \node[draw,circle,label={[text=blue]1}] (top) {}
+      child {
+        node[draw,circle,label={[text=blue,xshift=-1mm]2}] {}
+        child {node[draw,circle,label={[text=blue,xshift=2mm,yshift=-1mm]3}] {$\star$}}
+      }
+      child {node[draw,circle,label={[text=blue,xshift=1mm,yshift=-1mm]4}] {$\star$}};
     \end{tikzpicture}
-    \caption{The underlying tree of \cref{fig:smallexample1}}\label{fig:smallexample2}
+    \caption{The underlying tree of
+      \cref{fig:smallexample1}}\label{fig:smallexample2}
   \end{subfigure}
   \caption{An FCG and its underlying tree. The integers in blue denote the
     pre-order traversal of the underlying tree.}\label{fig:ordering}
@@ -803,7 +817,7 @@ element of the sequence as needed.
 
 Diagrammatically, \texttt{constructDomainMap} attempts to find a
 $\gamma\colon \Doms(c) \to \Doms(d)$ s.t.
-\begin{equation} \label{eq:commute}
+\begin{equation} \label[diagram]{eq:commute}
   \begin{tikzcd}
     V = \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & \Vars(d) \ar[d, "\delta_d"] \\
     \Doms(c) \ar[r, dashed, "\gamma"] \ar[d, hookrightarrow] & \Doms(d) \ar[d, hookrightarrow] \\
@@ -1155,7 +1169,7 @@ from $v$.
   A contradiction node with clause $c$ as a parameter is interpreted as one if
   the clause has groundings and zero otherwise. In this case,
   $c = (\emptyset, \{\, (X, Y) \,\}, \{\, X \mapsto b^\top, Y \mapsto b^\top \,\})$,
-  which can be read as $\forall X, Y \in b^{\top}\text{,
+  which can be read as $\forall X, Y \in b^{\top}\text{.
   }X \ne Y \implies \bot$, i.e., $\forall X, Y \in b^{\top}\text{, }X = Y$. This
   latter sentence is true if and only if $|b^{\top}| < 2$. Therefore, we can use
   the Iverson bracket notation to write $\diamondsuit = [l < 2]$.
@@ -1191,18 +1205,18 @@ descriptions to formulas as we defined them back in ??.
 Let $p \in a \times b$ be a predicate. Then, to restrict all relations
 representable by $p$ to just functions from $a$ to $b$, in FOL one might write
 \begin{gather}
-  \forall X \in a. \forall Y \in b. \forall Z \in b. p(X, Y) \land p(X, Z) \implies Y = Z\nonumber \\
-  \forall X \in a. \exists Y \in b. p(X, Y). \label{eq:def2}
+  \forall X \in a\text{. }\forall Y \in b\text{. }\forall Z \in b\text{. }p(X, Y) \land p(X, Z) \implies Y = Z\nonumber \\
+  \forall X \in a\text{. }\exists Y \in b\text{. }p(X, Y). \label{eq:def2}
 \end{gather}
 The former says that one element of $a$ can map to at \emph{most} one element of
 $b$, and the latter says that each element of $a$ must map to at \emph{least}
 one element of $b$. One might add
 \[
-  \forall W \in a. \forall X \in a. \forall Y \in b. p(W, Y) \land p(X, Y) \implies W = X
+  \forall W \in a\text{. }\forall X \in a\text{. }\forall Y \in b\text{. }p(W, Y) \land p(X, Y) \implies W = X
 \]
 to restrict $p$ to injections or
 \[
-  \forall Y \in b. \exists X \in a. p(X, Y)
+  \forall Y \in b\text{. }\exists X \in a\text{. }p(X, Y)
 \]
 to ensure surjectivity or remove \cref{eq:def2} to consider partial functions.
 Lastly, one can replace all occurrences of $b$ with $a$ so as to model

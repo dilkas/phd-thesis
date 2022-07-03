@@ -192,8 +192,7 @@ notion of width $w$ that is at most primal treewidth plus one and estimate the
 running time of the (execution part of the) algorithm to be proportional to
 $2^w$ \citep{DBLP:conf/cp/DudekPV20}.
 
-\section{Random $k$-CNF Formulas with Varying Primal
-  Treewidth}\label{sec:model}
+\section{Random Formulas with Varying Primal Treewidth}\label{sec:model}
 
 \paragraph*{Notation.}
 For any graph $G$, we write $\mathcal{V}(G)$ for its set of nodes and
@@ -234,7 +233,7 @@ numerical values of weights.
 \begin{algorithm}[t]
   \caption{Generating a random formula.}\label{alg:random}
   \SetKwData{kcnf}{kcnf}
-  \SetKwFunction{NewVariable}{NewVariable}
+  \SetKwFunction{NewVariable}{newVariable}
   \SetKwProg{Fn}{Function}{:}{}
   \KwIn{$\nu,\kappa \in \mathbb{N}^+$ such that $\kappa < \nu$, $\mu \in
     \mathbb{R}_{>0}$, $\rho \in [0, 1]$.}
@@ -254,19 +253,11 @@ numerical values of weights.
     \mid x \in X \,\}$\;\label{line:construct_clause}
   }
   \Return{$\phi$}\;
-  \Fn{\NewVariable{$X$, $G$}}{
+  \Fn{\NewVariable{set of variables $X$, primal graph $G$}}{
     $N \gets \{\, e \in \mathcal{E}(G) \mid |e \cap X| = 1
     \,\}$\;\label{line:13}
-    \If{$N = \emptyset$}{
-      \Return{$x \leftlsquigarrow \mathcal{U}(\{\, x_1, x_2, \dots, x_\nu \,\}
-        \setminus X)$}\;
-    }
-    \nosemic\Return{$x \leftlsquigarrow \left(\{\, x_1, x_2, \dots, x_\nu \,\}
-        \setminus X,\vphantom{\frac{|\{\, z \in X \mid \{\,y, z\,\} \in
-            \mathcal{E}(G) \,\}|}{|N|}}\right.$}\;
-      \pushline\dosemic$\left. y \mapsto \frac{1 - \rho}{\nu - |X|} +
-        \rho\frac{|\{\, z \in X \mid \{\,y, z\,\} \in \mathcal{E}(G)
-          \,\}|}{|N|}\right)$\; \label{line:return}
+    \lIf{$N = \emptyset$}{\Return{$x \leftlsquigarrow \mathcal{U}(\{\, x_1, x_2, \dots, x_\nu \,\} \setminus X)$}}
+    \Return{$x \leftlsquigarrow \left(\{\, x_1, x_2, \dots, x_\nu \,\} \setminus X,\vphantom{\frac{|\{\, z \in X \mid \{\,y, z\,\} \in \mathcal{E}(G) \,\}|}{|N|}}\right.\left. y \mapsto \frac{1 - \rho}{\nu - |X|} + \rho\frac{|\{\, z \in X \mid \{\,y, z\,\} \in \mathcal{E}(G) \,\}|}{|N|}\right)$}\;\label{line:return}
   }
 \end{algorithm}
 
@@ -281,7 +272,7 @@ both formula $\phi$ and its primal graph $G$.\footnote{The idea to directly take
 for-loop adds a clause to $\phi$. This is done by constructing a set $X$ of
 variables to be included in the clause, and then randomly adding either $x$ or
 $\neg x$ to the clause for each $x \in X$ on \cref{line:construct_clause}.
-Function \texttt{NewVariable} randomly selects each new variable $x$, and
+Function \texttt{newVariable} randomly selects each new variable $x$, and
 \cref{line:7,line:8,line:9} add $x$ to the graph and the formula while also
 adding edges between $x$ and all the other variables in the clause. To select
 each variable, \cref{line:13} defines set $N$ to contain all edges with exactly
@@ -352,7 +343,7 @@ algorithms.
 
   The first variable of the second clause is chosen u.a.r.\ from $\{\, x_1, x_2,
   \dots, x_5\,\}$. Suppose it is $x_5$ again. When the function
-  \texttt{NewVariable} tries to choose the second variable, $X = \{\, x_5 \,\}$,
+  \texttt{newVariable} tries to choose the second variable, $X = \{\, x_5 \,\}$,
   and so $N = \{\, \{\, x_1, x_5 \,\}, \{\, x_2, x_5 \,\}\,\}$. The second
   variable is chosen from the discrete probability distribution
   \[
@@ -487,7 +478,7 @@ regions show interquartile ranges. We run the following three experiments,
 setting $\nu = 70$ in all of them as we found that this produces instances of
 suitable difficulty.
 
-\begin{experiment}[Density and Primal Treewidth]\label{exp:density}
+\begin{experiment}[Density and primal treewidth]\label{exp:density}
   Let $\nu = 70$, $\mu$ go from 1 to 4.3 in steps of 0.3, $\rho$ go from 0 to
   0.5 in steps of 0.01, and $\delta = \epsilon = 0$.
 \end{experiment}
