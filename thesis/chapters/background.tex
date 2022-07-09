@@ -312,7 +312,7 @@ solve it, and how one can help the algorithm search efficiently.
   relation specifying allowed combinations of values. Constraints can be
   specified either \emph{intensionally} (i.e., by describing a formula that must
   be satisfied) or \emph{extensionally} (i.e., by listing all tuples). A
-  \emph{solution} to the CSP is an $n$-tuple $(a_i)_{i=1}^n$ such that
+  \emph{solution} to the CSP is an $n$-tuple ${(a_i)}_{i=1}^n$ such that
   $a_i \in D_i$ and the relevant $a_i$'s are in the relations of all the
   constraints in $C$.
 \end{definition}
@@ -331,7 +331,7 @@ solve it, and how one can help the algorithm search efficiently.
   the entire problem can be described by the following three constraints.
 
   \begin{constraint}\label{exampleconstraint:1}
-    $\alldifferent(\{\,q_i\,\}_{i=1}^n)$
+    $\alldifferent({\{\, q_i \,\}}_{i=1}^n)$
   \end{constraint}
 
   \begin{constraint}\label{exampleconstraint:2}
@@ -1055,7 +1055,7 @@ well as operations on them.
     $f+g$, $fg$ & $f+g\colon 2^{X \cup Y} \to \mathbb{R}$, $(f+g)(Z) \coloneqq f(Z)+g(Z)$ & $\mathcal{O}(mn)$ \\
     $f|_{x=0}$ & $f|_{x=0}\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $f|_{x=0}(Z) \coloneqq f(Z)$ & $\mathcal{O}(n)$ \\
     $f|_{x=1}$ & $f|_{x=1}\colon 2^X \to \mathbb{R}$, $f|_{x=1}(Z) \coloneqq f(Z \cup \{\,x\,\})$ & $\mathcal{O}(n)$ \\
-    $\exists_xf$ & $\exists_xf\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_xf(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ \\
+    $\exists_{x}f$ & $\exists_{x}f\colon 2^{X \setminus \{\,x\,\}} \to \mathbb{R}$, $\exists_{x}f(Z) \coloneqq f|_{x=0}(Z) + f|_{x=1}(Z)$ & $\mathcal{O}(n^2)$ \\
     \bottomrule
   \end{tabular}
   \caption{Operations on ADDs, their definitions, and the time complexity of the

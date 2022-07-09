@@ -360,7 +360,7 @@ practice.
 In this section, we describe a way to encode Bayesian networks into WMC without
 restricting oneself to factorable measures and thus having to add extra
 variables. We will refer to it as \texttt{cw}. A Bayesian network is a directed
-acyclic graph with random variables as vertices that defines a probability
+acyclic graph with random variables as nodes that defines a probability
 distribution over them. Let $\mathcal{V}$ denote this set of random variables.
 For any random variable $X \in \mathcal{V}$, let $\Imm X$ denote its set of
 values and $\mathrm{pa}(X)$ its set of parents. The full probability
@@ -401,10 +401,10 @@ $\Imm W = \Imm F = \{\, 0, 1 \,\}$, and $\Imm T = \{\, l, m, h \,\}$.
 
 \begin{algorithm}[t]
   \caption{Encoding a Bayesian network.}\label{alg:encoding}
-  \KwData{vertices $\mathcal{V}$, probability distribution $\Pr$}
+  \KwData{set of random variables (i.e., nodes) $\mathcal{V}$, probability distribution $\Pr$}
   \KwResult{pseudo-Boolean function $\phi\colon 2^U \to \mathbb{R}_{\ge 0}$}
   $\phi \gets 1$\;
-  \ForEach{vertex $X \in \mathcal{V}$}{
+  \ForEach{random variable $X \in \mathcal{V}$}{
     \textit{let} $\mathrm{pa}(X) = \{\, Y_1, \dots, Y_n \,\}$\;
     $\mathrm{CPT}_X \gets 0$\;
     \eIf{$|\Imm X| = 2$}{
@@ -426,8 +426,8 @@ $\Imm W = \Imm F = \{\, 0, 1 \,\}$, and $\Imm T = \{\, l, m, h \,\}$.
   \Return{$\phi$}\;
 \end{algorithm}
 
-\Cref{alg:encoding} shows how a Bayesian network with vertices $\mathcal{V}$ can
-be represented as a weight function $\phi\colon 2^U \to \mathbb{R}_{\ge 0}$. The
+\Cref{alg:encoding} shows how a Bayesian network with nodes $\mathcal{V}$ can be
+represented as a weight function $\phi\colon 2^U \to \mathbb{R}_{\ge 0}$. The
 algorithm begins with the unit function and multiplies it by
 $\mathrm{CPT}_X\colon 2^{\mathcal{E}^*(X)} \to \mathbb{R}_{\ge 0}$ for each
 random variable $X \in \mathcal{V}$. We call each such function a
@@ -705,10 +705,10 @@ their experiments.
 
 For each Bayesian network, we need to choose a probability to compute. Whenever
 a Bayesian network comes with an evidence file, we compute the probability of
-evidence. Otherwise, let $X$ denote the last-mentioned vertex in the Bayesian
-network. If $\true{} \in \Imm X$, then we compute the marginal probability of
-$X = \true{}$. Otherwise, we pick the value of $X$ which is listed first and
-calculate its marginal probability.
+evidence. Otherwise, let $X$ denote the last-mentioned random variable in the
+Bayesian network. If $\true{} \in \Imm X$, then we compute the marginal
+probability of $X = \true{}$. Otherwise, we pick the value of $X$ which is
+listed first and calculate its marginal probability.
 
 For experimental data, we use the Bayesian networks available with \textsc{Ace}
 and \textsc{Cachet} \citep{DBLP:conf/sat/SangBBKP04}, most of which happen to be
@@ -810,20 +810,21 @@ We can explain what makes \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} run
 significantly faster with \texttt{cw} than with any other encoding by
 considering asymptotic upper bounds on the numbers of variables and ADDs based
 on the size and structure of the Bayesian network. Let $n = |\mathcal{V}|$ be
-the number of vertices in the Bayesian network, $d = \max_{X \in \mathcal{V}}
-|\mathrm{pa}(X)|$ the maximum in-degree (i.e., the number of parents), and $v =
-\max_{X \in \mathcal{V}} |\Imm X|$ the maximum number of values per variable.
-\Cref{tbl:asymptotes} shows how \texttt{cw} has fewer variables and fewer ADDs
-than any other encoding. We conjecture that it is primarily the reduced number
-of variables that makes the \textsc{ADDMC} variable ordering heuristics much
-more effective. Note that these are upper bounds and most encodings (including
-\texttt{cw}) can be smaller in certain situations (e.g., with binary random
-variables or when a CPT has repeating probabilities). We equate clauses and ADDs
-(more specifically, factors of the function $\phi$ from \cref{alg:encoding})
-here because \textsc{ADDMC} interprets each clause of any WMC encoding as a
-multiplicative factor of the ADD that represents the entire WMC instance
-\citep{DBLP:conf/aaai/DudekPV20}. For literal-weight encodings, each weight is
-also a factor, but that does not affect our asymptotic bounds.
+the number of nodes in the Bayesian network,
+$d = \max_{X \in \mathcal{V}} |\mathrm{pa}(X)|$ the maximum in-degree (i.e., the
+number of parents), and $v = \max_{X \in \mathcal{V}} |\Imm X|$ the maximum
+number of values per variable. \Cref{tbl:asymptotes} shows how \texttt{cw} has
+fewer variables and fewer ADDs than any other encoding. We conjecture that it is
+primarily the reduced number of variables that makes the \textsc{ADDMC} variable
+ordering heuristics much more effective. Note that these are upper bounds and
+most encodings (including \texttt{cw}) can be smaller in certain situations
+(e.g., with binary random variables or when a CPT has repeating probabilities).
+We equate clauses and ADDs (more specifically, factors of the function $\phi$
+from \cref{alg:encoding}) here because \textsc{ADDMC} interprets each clause of
+any WMC encoding as a multiplicative factor of the ADD that represents the
+entire WMC instance \citep{DBLP:conf/aaai/DudekPV20}. For literal-weight
+encodings, each weight is also a factor, but that does not affect our asymptotic
+bounds.
 
 \section{Conclusions and Future Work}
 
