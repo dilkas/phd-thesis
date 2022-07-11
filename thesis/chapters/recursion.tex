@@ -610,28 +610,27 @@ recursive function. The GDR compilation rule is summarised as
   \[
     (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Z, Y), (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}),
   \]
-  (from $W = \emptyset$) and
+  from $W = \emptyset$ and
   \[
     (\{\, \neg p(x, Y), \neg p(x, Z) \,\}, \{\, (Z, Y) \,\}, \{\, Y \mapsto b, Z \mapsto b \,\})
   \]
-  (from $W = V$).
+  from $W = V$.
 
   When \cref{line:forclause} picks $c = c_2$, then $V = \{\, X, Z \,\}$. The
   subset $W = V$ fails to satisfy the conditions on \cref{line:conditions}
   because of the $Z \ne X$ constraint. The other three subsets of $V$ all
-  generate clauses for $\phi'$:
+  generate clauses for $\phi'$. Indeed, $W = \emptyset$ generates
   \[
-    (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\})
+    (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (Z, X), (X, x), (Z, x) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}),
   \]
-  (from $W = \emptyset$),
+  $W = \{\, X \,\}$ generates
   \[
-    (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{\, Y \mapsto b, Z \mapsto a \,\})
+    (\{\, \neg p(x, Y), \neg p(Z, Y) \,\}, \{\, (Z, x) \,\}, \{\, Y \mapsto b, Z \mapsto a \,\}),
   \]
-  (from $W = \{\, X \,\}$), and
+  and $W = \{\, Z \,\}$ generates
   \[
-    (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b, \,\})
+    (\{\, \neg p(X, Y), \neg p(x, Y) \,\}, \{\, (X, x) \,\}, \{\, X \mapsto a, Y \mapsto b \,\}).
   \]
-  (from $W = \{\, Z \,\}$).
 \end{example}
 
 \subsubsection{Constraint Removal}\label{sec:cr}
@@ -1032,11 +1031,11 @@ queue while filtering out complete FCGs and adding them to $S$ instead. Since
 GDR can be applied to almost all formulas, the search is infinite. In our
 implementation, we stop searching when one of the following conditions is
 satisfied:
-\begin{itemize}
+\begin{enumerate*}[label=(\emph{\alph*})]
   \item the desired number of solutions is found,
-  \item the search tree reaches a certain height,
-  \item or the algorithm times out.
-\end{itemize}
+  \item the search tree reaches a certain height, or
+  \item the algorithm times out.
+\end{enumerate*}
 
 Function \texttt{applyAllRules} (see \cref{alg:applyallrules}) takes a state and
 generates a sequence of new states created by applying one non-greedy rule
@@ -1182,20 +1181,23 @@ In this section, we compare \textsc{Crane} and \textsc{ForcLift}
 functions. (Other WFOMC algorithms such as \textsc{L2C}
 \citep{DBLP:conf/kr/KazemiP16} and probabilistic theorem proving
 \citep{DBLP:journals/cacm/GogateD16} are unable to solve any of the instances
-that \textsc{ForcLift} fails on.) We begin with a description of how such
-functions can be described using FOL\@. \textsc{ForcLift} then translates these
-descriptions to formulas as defined in \cref{def:formula}.
+that \textsc{ForcLift} fails on.) We begin by describing how such functions can
+be expressed in FOL\@. \textsc{ForcLift} then translates these sentences in FOL
+to formulas as defined in \cref{def:formula}.
 
 % Describe what kind of instances we're investigating
-Let $p \in a \times b$ be a predicate. Then, to restrict all relations
-representable by $p$ to just functions from $a$ to $b$, in FOL one might write
-\begin{gather}
-  \forall X \in a\text{. }\forall Y \in b\text{. }\forall Z \in b\text{. }p(X, Y) \land p(X, Z) \implies Y = Z\nonumber \\
-  \forall X \in a\text{. }\exists Y \in b\text{. }p(X, Y). \label{eq:def2}
-\end{gather}
-The former says that one element of $a$ can map to at \emph{most} one element of
-$b$, and the latter says that each element of $a$ must map to at \emph{least}
-one element of $b$. One might add
+Let $p \in a \times b$ be a predicate. To restrict all relations representable
+by $p$ to just functions from $a$ to $b$, in FOL one might write
+\[
+  \forall X \in a\text{. }\forall Y \in b\text{. }\forall Z \in b\text{. }p(X, Y) \land p(X, Z) \implies Y = Z
+\]
+and
+\begin{equation}\label{eq:def2}
+  \forall X \in a\text{. }\exists Y \in b\text{. }p(X, Y).
+\end{equation}
+The former sentence says that one element of $a$ can map to at \emph{most} one
+element of $b$, and the latter sentence says that each element of $a$ must map
+to at \emph{least} one element of $b$. One can then add
 \[
   \forall W \in a\text{. }\forall X \in a\text{. }\forall Y \in b\text{. }p(W, Y) \land p(X, Y) \implies W = X
 \]
@@ -1204,24 +1206,26 @@ to restrict $p$ to injections or
   \forall Y \in b\text{. }\exists X \in a\text{. }p(X, Y)
 \]
 to ensure surjectivity or remove \cref{eq:def2} to consider partial functions.
-Lastly, one can replace all occurrences of $b$ with $a$ so as to model
-endofunctions (i.e., functions with the same domain and codomain) instead. In
-our experiments, we consider all sixteen combinations of these properties, i.e.,
-injectivity, surjectivity, partiality, and endo-.
+Lastly, one can replace all occurrences of $b$ with $a$ to model endofunctions
+(i.e., functions with the same domain and codomain) instead.
 
 % the process: both for running algorithms and for determining complexities
-We run \textsc{Crane} until the search tree reaches height 6 and examine the
-first (i.e., shallowest) five solutions.\footnote{Hence, it is possible that
-  better solutions could be found with more search.} If successful, both
-algorithms generate a circuit or an FCG, which is then manually converted into
-definitions of functions. When assessing the complexity of each such definition,
-we assume that:
-\begin{itemize}
-  \item computing $\binom{n}{k}$ takes $\Theta(nk)$ time,
-  \item and techniques such as dynamic programming or memoization are used to
-        avoid recomputing the same binomial coefficient or function call
-        multiple times.
-\end{itemize}
+In our experiments, we consider all sixteen combinations of these properties,
+i.e., injectivity, surjectivity, partiality, and endo-. \textsc{ForcLift} is
+always run until it terminates. \textsc{Crane} is run until either five
+solutions are found or the search tree reaches height 6.\footnote{The search
+  tree has a high branching factor, so exploring all nodes at depth 5 takes at
+  most a few seconds whereas doing the same for depth 6 can be computationally
+  infeasible in some cases.} If successful, \textsc{ForcLift} generates a
+circuit, and \textsc{Crane} generates one or more (complete) FCGs. In both
+cases, we manually convert the resulting graphs into definitions of functions as
+described in \cref{sec:interpret}. We then assess the complexity of each
+solution and pick the best if \textsc{Crane} returns several solutions of
+varying complexities. When assessing the complexity of each such definition, we
+make two assumptions. First, we can compute the binomial coefficient
+$\binom{n}{k}$ in $\Theta(nk)$ time. Second, techniques such as dynamic
+programming and memoization are used to avoid recomputing the same binomial
+coefficient or function call multiple times.
 
 \begin{table}[t]
   \centering
@@ -1250,36 +1254,24 @@ we assume that:
     complete solution was found.}\label{tbl:results}
 \end{table}
 
-The results are summarised in \cref{tbl:results}. The best-known asymptotic
-complexity for computing total surjections is by \citet{30049}. All other
-best-known complexity results are inferred from the formulas and programs on the
-on-line encyclopedia of integer sequences \citep{oeis}. On instances that could
-already be solved by \textsc{ForcLift}, the two algorithms perform equally well.
-However, \textsc{Crane} is also able to solve all but one instances that
+The experimental results are summarised in \cref{tbl:results}. The best-known
+asymptotic complexity for computing total surjections is by \citet{30049}. All
+other best-known complexity results are inferred from the formulas and programs
+on the on-line encyclopedia of integer sequences \citep{oeis}. On instances that
+could already be solved by \textsc{ForcLift}, the two algorithms perform equally
+well. However, \textsc{Crane} is also able to solve all but one instances that
 \textsc{ForcLift} fails on in at most cubic time.
 
 Let us examine the case of counting (total, non-endomorphic) injections more
-closely. The FCG from \cref{fig:examplefcg,example:interpretation} counts
-injections and is responsible for the first $mn$ entry in the table.\footnote{A
-  very similar solution works for partial injections as well.} For a complete
+closely. The FCG in \cref{fig:examplefcg,example:interpretation} counts
+injections and is responsible for the $mn$ entry in the table.\footnote{A very
+  similar solution works for partial injections as well.} For a complete
 solution, \cref{eq:solution} must be combined with the following base cases:
-$f(0, 0) = 1$, and $f(m, 0) = 0$ for all $m > 0$. Finally, note that $f(m, n)$
-can be evaluated in $\Theta(mn)$ time (for any $m, n \in \mathbb{N}_{0}$) by a
+$f(0, 0) = 1$, and $f(m, 0) = 0$ for all $m > 0$. In other words, these bases
+state that an injection to an empty codomain exists if and only if the domain is
+empty. Finally, note that $f(m, n)$ can be evaluated in $\Theta(mn)$ time by a
 dynamic programming algorithm that computes $f(i, j)$ for all $i = 0, \dots, m$
 and $j = 0, \dots, n$.
-
-\todo[inline,caption={}]{
-  \begin{itemize}
-    \item Double check the results in the table.
-    \item Have a concluding paragraph that describes the importance of these
-          results. For example, that injectivity is now liftable and that my
-          experimental results are far from conclusive in two ways: further
-          search could reveal other solutions (explicitly describe the potential
-          solution for the unsolved case that uses GDR in an unusual way), and
-          who knows what kind of instances might also have become liftable yet
-          remain undiscovered.
-  \end{itemize}
-}
 
   % \item The complexities assume that arithmetic operations on number such as
   %       addition and multiplication take constant time.
@@ -1313,69 +1305,65 @@ and $j = 0, \dots, n$.
 %   \item 2d partial injections, depth 2. Exactly the same circuit as for injections but with base case $f(m, 0) = 1$.
 % \end{itemize}
 
-\section{Discussion}
+\section{Conclusion and Future Work}
 
-\begin{itemize}
-  \item Functions, surjections, and their partial counterparts are/were already
-        liftable. It seems like lifting injectivity (which is a fairly general
-        property) is the main accomplishment. (But this is just the one I
-        noticed. There may be many others as well.)
-  \item My examples for 1 domain are expressible using 2 variables and counting
-        quantifiers, so they're already known to be liftable.
-  \item Recursion is guaranteed to terminate if at least one domain shrinks by
-        at least one. But note that allowing recursive calls with the same
-        domain sizes (e.g., $f(n) = f(n) + \dots$) could be useful because these
-        problematic terms might cancel out.
-  \item Explain the importance of comparing domain sizes to 2. FCGs that compare
-        the size of a domain to an integer can be constructed automatically
-        using compilation rules, although $n$ is upper bounded by the maximum
-        number of variables in any clause of the input formula since there is no
-        rule that would introduce new variables.
-  \item Mention that it only takes a few seconds to find these solutions. Going
-        beyond depth 6 (or sometimes even completing depth 6) is computationally
-        infeasible with the current implementation, but depth at most 5 can be
-        searched within at most a few seconds.
-  \item Note that in some cases different descriptions of the same problem lead
-        to different solutions (with different complexities).
-  \item Explain why these solutions are always computable in polynomial time.
-\end{itemize}
+% A summary of what's been done/achieved and how
 
-\section{Conclusions and Future Work}
+In this chapter, we showed how a state-of-the-art (W)FOMC algorithm can be
+empowered by generalising domain recursion and adding support for cycles in the
+graph that encodes a solution. To construct such graphs, \textsc{Crane}
+supplements \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with three
+new compilation rules and a hybrid search algorithm. In \cref{sec:results}, we
+saw examples of instances that become liftable not just in theory
+\citep{DBLP:journals/jair/Kuzelka21} but with an implemented algorithm as well.
+However, our experiments covered only a small set of instances since some parts
+of \textsc{Crane} are yet to be fully automated. Here we focused on various
+function-counting problems---it remains to be seen what other types of instances
+become liftable as a result.
 
-\paragraph*{Future work.}
-\begin{itemize}
-  \item Transform FCGs to definitions of (possibly recursive) functions on
-        integers. Use a computer algebra system to simplify them.
-  \item Design an algorithm to infer the necessary base cases. (Note that there
-        can be an infinite amount of them when functions have more than one
-        parameter.)
-  \item open questions:
-  \begin{itemize}
-    \item what kind of sequences are computable in this way?
-    \item would using a different logic extend the capabilities
-    of FOMC even further?
-  \end{itemize}
-  \item In our experiments, we consider variations of the function-counting
-        problem. These functions vary in:
-        \begin{itemize}
-          \item whether they are total or partial,
-          \item whether they are injective/surjective/bijective or not,
-          \item and whether the domain and the codomain are the same.
-        \end{itemize}
-        Many versions of this problem were previously unsolvable by any
-        available (W)FOMC algorithm, whereas we can find recursive solutions
-        (that can be evaluated in polynomial time) to all except one of these
-        problems.
-  \item Further work is necessary to fully automate this new way of computing
-        the (W)FOMC of a formula. \textsc{Crane} produces a graph which then
-        needs to be transformed to definitions of (potentially recursive)
-        functions. In some cases, it is necessary to simplify the algebraic
-        expressions in these definitions (e.g., reducing $x-x$ to zero for some
-        expression $x$). Most importantly, the algorithm only gives us the
-        recursive calls but not the base cases. What makes the problem of
-        finding these base cases non-trivial is that the number of base cases is
-        not constant for functions of arity greater than one (i.e., formulas
-        that mention more than one domain). Nonetheless, these remaining
-        challenges are minuscule compared to the broader goal of expanding the
-        capabilities of (W)FOMC to new classes of instances.
-\end{itemize}
+% Correctness/efficiency guarantees?
+
+% \begin{itemize}
+%   \item Explain why these solutions are always computable in polynomial time. A
+%         finite FCG can introduce only a finite amount of new domains (whose
+%         sizes are upper bounded by the input domains) and a finite amount of new
+%         functions. Everything can be computed in polynomial time by DP (but
+%         sometimes not computing some of entries might be faster) as long as it
+%         terminates at all.
+%   \item Recursion is guaranteed to terminate if at least one domain shrinks by
+%         at least one. But note that allowing recursive calls with the same
+%         domain sizes could be useful because these problematic terms might
+%         cancel out. A realistic example based on the solutions that
+%         \textsc{Crane} constructed for the instances in \cref{sec:results} could
+%         look like
+%         \[
+%           f(n) = -f(n) + \sum_{m=0}^{n} \binom{n}{m} f(m).
+%         \]
+%   \item Explain the importance of comparing domain sizes to 2. FCGs that compare
+%         the size of a domain to an integer can be constructed automatically
+%         using compilation rules, although $n$ is upper bounded by the maximum
+%         number of variables in any clause of the input formula since there is no
+%         rule that would introduce new variables.
+% \end{itemize}
+
+% Future work
+
+The most important direction for future work is in fully automating this new way
+of computing the (W)FOMC of a formula. First, we need an algorithm that
+transforms FCGs into definitions of functions. Formalising this process would
+also allow us to prove the correctness of the new compilation rules in
+constructing FCGs that indeed compute the right WMC\@. Second, these definitions
+must be simplified before they can be used, perhaps by a computer algebra
+system. Third, most importantly, we need a way to find the base cases for the
+recursive definitions provided by \textsc{Crane}. What makes this problem
+non-trivial is that the number of base cases is not constant for functions of
+arity greater than one (i.e., formulas that mention more than one domain). On
+the other hand, assuming that a domain is empty can greatly simplify a problem.
+Fourth, since the first solution found by \textsc{Crane} is not always optimal
+in terms of its complexity, an automated way to determine the asymptotic
+complexity of a solution would be helpful as well. Achieving these goals would
+make \textsc{Crane} capable of automatically constructing efficient ways to
+compute a function (e.g., a sequence) of interest. In addition to the potential
+impact to areas of artificial intelligence (AI) such as statistical relational
+AI \citep{DBLP:series/synthesis/2016Raedt}, \textsc{Crane} could be beneficial
+to research in combinatorics as well \citep{DBLP:conf/ilp/BarvinekB0ZK21}.
