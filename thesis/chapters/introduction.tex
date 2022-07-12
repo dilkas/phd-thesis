@@ -26,6 +26,12 @@
 
 % * description and example(s)
 
+% TODO (V) (after `probabilistic inference'): for example, the partition
+% function or marginal or conditional probability given a Bayesian network
+
+% TODO (V) (instead of `probability from a collection of other known
+% probabilities'): the probability of an event given an event space
+
 Probabilistic methods are central to artificial intelligence
 \citep{DBLP:books/aw/RN2020}, data science \citep{provost2013data}, statistics,
 and machine learning \citep{DBLP:books/lib/Bishop07,DBLP:books/daglib/0023091}.
@@ -33,12 +39,13 @@ A fundamental task when working with probabilities is to compute some desired
 probability from a collection of other known probabilities, i.e.,
 \emph{probabilistic inference}. This thesis is about a particular approach to
 probabilistic inference (and other similar computational tasks) and its use in
-performing inference on popular representations of probability distributions
-such as Bayesian networks. More generally, we look at different ways of
-describing arithmetic computations pertinent to probabilistic inference and how
-algorithms interpret those descriptions, leading to solutions of varying
-complexity. We begin with an example that showcases how one can compute a
-probability in various ways depending on how one chooses to reason about it.
+performing inference on structured representations of probability distributions
+such as Bayesian networks and probabilistic logic programs. More generally, we
+look at different ways of describing arithmetic computations pertinent to
+probabilistic inference and how algorithms interpret those descriptions, leading
+to solutions of varying complexity. We begin with an example that showcases how
+one can compute a probability in various ways depending on how one chooses to
+reason about it.
 
 \begin{example}\label{example:veryfirst}
   Suppose we have a biased coin that has a probability $0 \le p \le 1$ of
@@ -111,6 +118,8 @@ are described using a fragment of first-order logic known as \emph{linear
 two extensions combined into one are known as \emph{(symmetric) weighted
   first-order model integration} (WFOMI) \citep{DBLP:conf/uai/FeldsteinB21}.
 
+% TODO (V): (after 'is known as'): AMC (Kimmig et al.) and its continuous
+% generalisation is SP
 Instead of performing addition and multiplication on numbers, one can do so on
 elements of an arbitrary (commutative) semiring. This extension of WMC is known
 as \emph{semiring programming} (SP) \citep{DBLP:journals/ijar/BelleR20}. Another
@@ -156,6 +165,7 @@ complexity theory such as computing the determinant or the permanent of a matrix
 are examples of this sum-of-products computational paradigm
 \citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See
 \cref{table:comparison} for a summary of all of the discussed problems.
+% TODO (V) (after 'network reliability analysis'): See AMC paper for discussions
 
 % Many reductions are possible among instances of these problems, e.g., both
 % WFOMC and SumProd can be reduced to WMC\@.
@@ -177,6 +187,8 @@ important to
 \end{itemize}
 In this thesis, we contribute to all three of these objectives in a variety of
 ways.
+% TODO (V): we particularly find the semantics and benchmarking WMC need further
+% study, which is precisely what we explore.
 
 %% Many algorithms for probabilistic inference have been proposed. Variable
 %% elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
@@ -219,6 +231,8 @@ applicability.
 
 % =========================== A paragraph that partitions the chapters and describes them in broad terms =========
 
+% TODO (V) (until 'another important'): these motivated by semantic and encoding concerns
+% TODO (V) (after 'another important'): these motivated by benchmarking concerns
 We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2}
 we generalise the definition of WMC (to PBP) to take full advantage of the
 capabilities of recent developments in WMC algorithms. In \cref{chapter:wfomc},
@@ -236,6 +250,8 @@ contributions and the structure of this thesis in more detail.
 
 % 1. WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions
 % \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra.
+
+% TODO (V): subsection: details on contributions
 
 Encoding a probabilistic inference problem as an instance of WMC typically
 necessitates adding extra literals and clauses. This is partly so because the
@@ -290,6 +306,7 @@ compilation rules and an algorithm to check whether a recursive call is
 feasible. These improvements allow us to \emph{automatically find efficient
   solutions} to counting fundamental structures such as injections and
 bijections.
+% TODO (V) ('counting ... bijections'): emphasize it
 
 % 7. developed a way of generating (P)LPs that's much more general than anything from before
 % 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data

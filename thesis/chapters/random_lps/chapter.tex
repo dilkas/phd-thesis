@@ -709,19 +709,190 @@ as intended.
     \protect{\cref{example:independence}}.}\label{fig:example}
 \end{figure}
 
+\section{Example Programs}
+
+\todo[inline]{Integrate this into the chapter. See ?? for examples of programs
+  generated using various sets of parameter values. Make sure that the initial
+  overview mentions this section. Modify the surrounding
+  introductions/conclusions from both sides.}
+
+In this appendix, we provide examples of probabilistic logic programs generated
+by the constraint model from \cref{chapter:randomlps}. In all cases, we use
+\[
+  \{\, 0.1, 0.2, \dots, 0.9, 1, 1, 1, 1, 1 \,\}
+\]
+as the multiset of probabilities. Each clause is written on a separate line and
+ends with a full stop. The head and the body of each clause are separated with
+\texttt{:-} (instead of $\gets$). The probability of each clause is prepended to
+the clause, using \texttt{::} as a separator. Probabilities equal to one and
+empty bodies of clauses can be omitted. Conjunction, disjunction, and negation
+are denoted by commas, semicolons, and `\texttt{\textbackslash+}', respectively.
+Parentheses are used to demonstrate precedence, although many of them are
+redundant.
+
+By setting $\predicates{} = [\texttt{p}]$, $\arities{} = [1]$, $\variables{} =
+\{\, \texttt{X} \,\}$, $\constants{} = \emptyset$, $\maxNumNodes{} = 4$, and
+$\maxNumClauses{} = 1$, we get fifteen one-line programs, six of which are
+without negative cycles (as highlighted below). Only the last program has no
+cycles at all.
+
+\begin{enumerate}[label=\arabic*.]
+\item
+\begin{verbatim}
+0.5 :: p(X) :- (\+(p(X))), (p(X)).
+\end{verbatim}
+\item
+\begin{verbatim}
+0.8 :: p(X) :- (\+(p(X))); (p(X)).
+\end{verbatim}
+\hlitem
+\begin{verbatim}
+0.8 :: p(X) :- (p(X)); (p(X)).
+\end{verbatim}
+\hlitem
+\begin{verbatim}
+0.7 :: p(X) :- (p(X)), (p(X)).
+\end{verbatim}
+\item
+\begin{verbatim}
+0.6 :: p(X) :- (p(X)), (\+(p(X))).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(X) :- (p(X)); (\+(p(X))).
+\end{verbatim}
+\hlitem
+\begin{verbatim}
+0.1 :: p(X) :- (p(X)); (p(X)); (p(X)).
+\end{verbatim}
+\hlitem
+\begin{verbatim}
+0.8 :: p(X) :- (p(X)), (p(X)), (p(X)).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(X) :- \+(p(X)).
+\end{verbatim}
+\item
+\begin{verbatim}
+0.1 :: p(X) :- \+(\+(p(X))).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(X) :- \+((p(X)); (p(X))).
+\end{verbatim}
+\item
+\begin{verbatim}
+0.4 :: p(X) :- \+((p(X)), (p(X))).
+\end{verbatim}
+\item
+\begin{verbatim}
+0.4 :: p(X) :- \+(\+(\+(p(X)))).
+\end{verbatim}
+\hlitem
+\begin{verbatim}
+0.7 :: p(X) :- p(X).
+\end{verbatim}
+\hlitem
+\begin{verbatim}
+p(X).
+\end{verbatim}
+\end{enumerate}
+
+Note that:
+\begin{itemize}
+  \item A program such as Program~14, because of its cyclic definition, defines
+        a predicate that has probability zero across all constants. This can
+        more easily be seen as solving equation $0.7x = x$.
+  \item Programs 10 and 14 are not equivalent (i.e., double negation does not
+        cancel out) because Program 10 has a negative cycle and is thus
+        considered to be ill-defined.
+\end{itemize}
+
+To demonstrate variable symmetry reduction in action, we set
+$\predicates{} = [\texttt{p}]$, $\arities{} = [3]$,
+$\variables{} = \{\, \texttt{X}, \texttt{Y}, \texttt{Z} \,\}$,
+$\constants{} = \emptyset$, $\maxNumNodes{} = 1$, $\maxNumClauses{} = 1$, and
+forbid all cycles. This gives us the following five programs:
+
+\begin{itemize}
+\item
+\begin{verbatim}
+0.8 :: p(Z, Z, Z).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(Y, Y, Z).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(Y, Z, Z).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(Y, Z, Y).
+\end{verbatim}
+\item
+\begin{verbatim}
+0.1 :: p(X, Y, Z).
+\end{verbatim}
+\end{itemize}
+
+This is one of many possible programs with
+$\predicates{} = [\texttt{p}, \texttt{q}, \texttt{r}]$,
+$\arities{} = [1, 2, 3]$,
+$\variables{} = \{\, \texttt{X}, \texttt{Y}, \texttt{Z} \,\}$,
+$\constants{} = \{\, \texttt{a}, \texttt{b}, \texttt{c} \,\}$,
+$\maxNumNodes{} = 5$, $\maxNumClauses{} = 5$, and without negative cycles:
+
+\begin{verbatim}
+p(b) :- \+((q(a, b)), (q(X, Y)), (q(Z, X))).
+0.4 :: q(X, X) :- \+(r(Y, Z, a)).
+q(X, a) :- r(Y, Y, Z).
+q(X, a) :- r(Y, b, Z).
+r(Y, b, Z).
+\end{verbatim}
+
+Finally, we set $\predicates{} = [\texttt{p}, \texttt{q}, \texttt{r}]$,
+$\arities{} = [1, 1, 1]$, $\variables{} = \emptyset$,
+$\constants{} = \{\, \texttt{a} \,\}$, $\maxNumNodes{} = 3$,
+$\maxNumClauses{} = 3$, forbid negative cycles, and constrain predicates
+\texttt{p} and \texttt{q} to be independent. The resulting search space contains
+thousands of programs such as:
+
+\begin{itemize}
+\item
+\begin{verbatim}
+0.5 :: p(a) :- (p(a)); (p(a)).
+0.2 :: q(a) :- (q(a)), (q(a)).
+0.4 :: r(a) :- \+(q(a)).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(a) :- p(a).
+0.5 :: q(a) :- (r(a)); (q(a)).
+r(a) :- (r(a)); (r(a)).
+\end{verbatim}
+\item
+\begin{verbatim}
+p(a) :- (p(a)); (p(a)).
+0.6 :: q(a) :- q(a).
+0.7 :: r(a) :- \+(q(a)).
+\end{verbatim}
+\end{itemize}
+
 \section{Experimental Results}\label{sec:1experiments}
 
 We now present the results of two experiments: in \cref{sec:1experiment1} we
 examine the scalability of our constraint model with respect to its parameters
 and in \cref{sec:1experiment2} we demonstrate how the model can be used to
 compare inference algorithms and describe their behaviour across a wide range of
-programs.\footnote{See \cref{theappendix} for examples of programs generated
-  using various sets of parameter values.} The experiments were run on a system
-with Intel Core i5-8250U processor and \SI{8}{\giga\byte} of RAM\@. The
-constraint model was implemented in Java~8 with Choco~4.10.2 \citep{choco}. All
-inference algorithms are implemented in ProbLog~2.1.0.39 and were run using
-Python~3.8.2 with PySDD~0.2.10 and PyEDA~0.28.0. For both sets of experiments,
-we generate programs without negative cycles and use a \SI{60}{\second} timeout.
+programs. The experiments were run on a system with Intel Core i5-8250U
+processor and \SI{8}{\giga\byte} of RAM\@. The constraint model was implemented
+in Java~8 with Choco~4.10.2 \citep{choco}. All inference algorithms are
+implemented in ProbLog~2.1.0.39 and were run using Python~3.8.2 with
+PySDD~0.2.10 and PyEDA~0.28.0. For both sets of experiments, we generate
+programs without negative cycles and use a \SI{60}{\second} timeout.
 
 \subsection{Empirical Performance of the Model}\label{sec:1experiment1}
 

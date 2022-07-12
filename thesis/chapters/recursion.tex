@@ -714,8 +714,7 @@ is as in \cref{example:first}, then
 % Everything Else
 
 \begin{algorithm}[t]
-  \caption{The compilation rule for $\Reff$ nodes.}
-  \label{alg:trycache}
+  \caption{The compilation rule for $\Reff$ nodes.}\label{alg:trycache}
   \KwIn{formula $\phi$, cache $C$}
   \KwOut{a set of chips}
 
@@ -728,10 +727,10 @@ is as in \cref{example:first}, then
   \Fn{\identifyRecursion{formula $\phi$, formula $\psi$, map $\rho = \emptyset$}}{
     \lIf{$|\phi| \ne |\psi|$ {\bf or} $\#\phi \ne \#\psi$}{\Return{\normalfont\texttt{null}}}
     \lIf{$\phi = \emptyset$}{\Return{$\rho$}}
-    \ForEach{clause $c \in \phi$\label{line:for1}}{
-      \ForEach{clause $d \in \psi$ s.t. $\#d=\#c$\label{line:for2}}{
+    \ForEach{clause $c \in \psi$\label{line:for1}}{
+      \ForEach{clause $d \in \phi$ s.t. $\#d=\#c$\label{line:for2}}{
         \ForAll{$(\beta, \gamma) \in \generateMaps{$c$, $d$, $\rho$}$ s.t. $c[\beta, \gamma] = d$\label{line:generateMaps}}{
-          $\rho' \gets \identifyRecursion{$\phi\setminus\{\, c \,\}$, $\psi\setminus\{\, d \,\}$, $\rho\cup\gamma$}$\;\label{line:recursion}
+          $\rho' \gets \identifyRecursion{$\phi\setminus\{\, d \,\}$, $\psi\setminus\{\, c \,\}$, $\rho\cup\gamma$}$\;\label{line:recursion}
           \lIf{$\rho' \ne {\normalfont \texttt{null}}$}{\Return{$\rho'$}}
         }
       }
@@ -763,26 +762,23 @@ is as in \cref{example:first}, then
 For every formula $\psi$ s.t. $\#\psi = \#\phi$ that we have encountered so far,
 function \texttt{identifyRecursion} is called to check whether a recursive call
 is actually feasible. If it is, the function returns a (total) map
-$\rho\colon \Doms(\phi) \to \Doms(\psi)$ that shows how $\phi$ can be
-transformed into $\psi$ by replacing each domain $d \in \Doms(\phi)$ with
-$\rho(d) \in \Doms(\psi)$. Otherwise, \texttt{identifyRecursion} returns
+$\rho\colon \Doms(\psi) \to \Doms(\phi)$ that shows how $\psi$ can be
+transformed into $\phi$ by replacing each domain $d \in \Doms(\psi)$ with
+$\rho(d) \in \Doms(\phi)$. Otherwise, \texttt{identifyRecursion} returns
 \texttt{null} to signify that $\phi$ and $\psi$ are too different for recursion
 to work. This happens if $\phi$ and $\psi$ (or their subformulas explored in
 recursive calls) are structurally different (i.e., the numbers of clauses or the
-hash codes fail to match) or if a clause of $\phi$ cannot be paired with a
-sufficiently similar clause of $\psi$.
+hash codes fail to match) or if a clause of $\psi$ cannot be paired with a
+sufficiently similar clause of $\phi$.
 
 Function \texttt{identifyRecursion} iterates over pairs of clauses of $\phi$ and
 $\psi$ that have the same hash codes. It uses function \texttt{generateMaps} to
 check whether the two clauses are sufficiently similar. If so, the function
 calls itself on the remaining clauses until the map
-$\rho\colon \Doms(\phi) \to \Doms(\psi)$ becomes total, and all clauses are
+$\rho\colon \Doms(\psi) \pfun \Doms(\phi)$ becomes total, and all clauses are
 successfully coupled.
 
-%% If the bijection makes the clauses equal, and the domain map is compatible
-           %%             with previously decided domain mappings, move on to another pair of clauses.
-
-Given two clauses $c \in \phi$ and $d \in \psi$, \texttt{generateMaps} considers
+Given two clauses $c \in \psi$ and $d \in \phi$, \texttt{generateMaps} considers
 all possible bijections\footnote{Although the number of bijections between two
   sets of cardinality $n$ is $n!$, this part of the algorithm is unlikely to
   cause performance issues for two reasons. First, in practice, $n$ is usually
@@ -791,8 +787,8 @@ all possible bijections\footnote{Although the number of bijections between two
   recursive relationship, it is almost always the identity bijection.}
 $\beta\colon \Vars(c) \twoheadrightarrowtail \Vars(d)$ and calls
 \texttt{constructDomainMap}, which then attempts to construct a map
-$\gamma\colon \Doms(c) \to \Doms(d)$ `consistent' with both $\beta$ and (the as
-yet partial map) $\rho\colon \Doms(\phi) \pfun \Doms(\psi)$. The \textbf{yield}
+$\gamma\colon \Doms(c) \to \Doms(d)$ consistent with both $\beta$ and (the as
+yet partial map) $\rho\colon \Doms(\psi) \pfun \Doms(\phi)$. The \textbf{yield}
 keyword in \texttt{generateMaps} works as in programming languages such as C\#,
 JavaScript, and Python, and lazily returns a sequence of values, computing each
 element of the sequence as needed.
@@ -803,29 +799,29 @@ $\gamma\colon \Doms(c) \to \Doms(d)$ s.t.
   \begin{tikzcd}
     V = \Vars(c) \ar[r, tail, two heads, "\beta"] \arrow[d, swap, "\delta_c"] & \Vars(d) \ar[d, "\delta_d"] \\
     \Doms(c) \ar[r, dashed, "\gamma"] \ar[d, hookrightarrow] & \Doms(d) \ar[d, hookrightarrow] \\
-    \Doms(\phi) \ar[r, swap, "\rho", "|" marking, outer sep=5pt] & \Doms(\psi).
+    \Doms(\psi) \ar[r, swap, "\rho", "|" marking, outer sep=5pt] & \Doms(\phi).
   \end{tikzcd}
 \end{equation}
 commutes (and returns \texttt{null} if such a function does not exist). Indeed,
 for every variable in $V = \Vars(c)$, the function returns \texttt{null} if
 either the top rectangle from $V$ to $\Doms(d)$ or the outer rectangle from $V$
-to $\Doms(\psi)$ fails to commute. These checks also ensure that
+to $\Doms(\phi)$ fails to commute. These checks also ensure that
 $\rho \cup \gamma$ is possible on \cref{line:recursion} of the algorithm, i.e.,
 $\rho|_{\dom(\rho)\cap\dom(\gamma)} = \gamma|_{\dom(\rho)\cap\dom(\gamma)}$.
 
 \begin{example}\label{example}
 
   % definitions of formulas and intro
-  Let $\phi \coloneqq \{\, c_1, c_2 \,\}$ be the formula from
-  \cref{example:first} with clauses
+  As in \cref{example:first}, let $\psi \coloneqq \{\, c_1, c_2 \,\}$ be a
+  formula with clauses
   \begin{align*}
     c_1 &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto b \,\}), \\
     c_2 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a, Y \mapsto b, Z \mapsto a \,\}).
   \end{align*}
   Let formula
-  $\psi \coloneqq \phi[\id, \{\, a \mapsto a', b \mapsto b^\bot \,\}]$ be just
-  like $\phi$ but with different domains. In other words,
-  $\psi = \{\, d_1, d_2 \,\}$, where
+  $\phi \coloneqq \psi[\id, \{\, a \mapsto a', b \mapsto b^\bot \,\}]$ be just
+  like $\psi$ but with different domains. In other words,
+  $\phi = \{\, d_1, d_2 \,\}$, where
   \begin{align*}
     d_1 &\coloneqq (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto b^\bot \,\}),\\
     d_2 &\coloneqq (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, Z) \,\}, \{\, X \mapsto a', Y \mapsto b^\bot, Z \mapsto a' \,\}).
@@ -1226,18 +1222,18 @@ coefficient or function call multiple times.
     \xmark & \cmark & & $m \log m$ & $m^{3}$ & $m^{3}$ \\
     \cmark & \xmark & & \multicolumn{3}{c}{Same as injections from $b$ to $a$} \\
     \cmark & \cmark & & \multicolumn{3}{c}{Same as endo-injections} \\
-    \rowcolor{gray!10}\xmark & \xmark & & $m$ & - & $mn$ \\
-    \rowcolor{gray!10}\xmark & \cmark & & $m$ & - & $m^3$ \\
-    \rowcolor{gray!10}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & - & $mn$ \\
-    \rowcolor{gray!10}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & - & - \\
-    \xmark & \xmark & \multirow{3}{*}{Bijections} & $m$ & - & $m$ \\
+    \rowcolor{gray!10}\xmark & \xmark & & $m$ & --- & $mn$ \\
+    \rowcolor{gray!10}\xmark & \cmark & & $m$ & --- & $m^3$ \\
+    \rowcolor{gray!10}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & --- & $mn$ \\
+    \rowcolor{gray!10}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & --- & --- \\
+    \xmark & \xmark & \multirow{3}{*}{Bijections} & $m$ & --- & $m$ \\
     \xmark & \cmark & & \multicolumn{3}{c}{\multirow{2}{*}{Same as (partial) (endo-)injections}} \\
     \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
     \bottomrule
   \end{tabular}
   \caption{The worst-case complexity of counting various types of functions.
     Here, $m$ is the size of domain $a$, and $n$ is the size of domain $b$. All
-    asymptotic complexities are in $\Theta(\cdot)$. A hyphen means that no
+    asymptotic complexities are in $\Theta(\cdot)$. A dash means that no
     complete solution was found.}\label{tbl:results}
 \end{table}
 

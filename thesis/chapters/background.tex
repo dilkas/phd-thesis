@@ -28,6 +28,8 @@ and describe some logic-based computational problems. We refer the reader to the
 book by \citet{DBLP:books/daglib/0029942} for a more detailed introduction to
 logic and its role in computer science.
 
+% TODO (V) (on 'implication'): \neg a \lor b (P: maybe the same with
+% equivalence)
 An \emph{atomic proposition} (also known as \emph{atom} and
 \emph{Boolean/logical/propositional variable}) is a variable with two possible
 (truth) values: \true{} and \false{}. We usually refer to atoms as
@@ -126,6 +128,7 @@ over all literals of $\omega$ \citep{DBLP:journals/ai/ChaviraD08}. Lastly, both
 \mc{} and WMC have been extended to first-order logic
 \citep{DBLP:conf/ijcai/BroeckTMDR11}---this is the topic of
 \cref{chapter:wfomc}.
+% TODO (V) (before the dash): and continuous (WMI)
 
 \begin{example}\label{example:wmc1}
   The model count of the formula in \cref{example:logic} is equal to one. With a
@@ -229,6 +232,7 @@ logic programming engine tries to replace the variables of the query with
 constants such that the resulting formula is a logical consequence of the
 program. If successful, an example of such a mapping is returned; if not, the
 engine returns \false{}.
+% TODO (V): a word on semantics? or not needed? or refer to problog chapter?
 
 \begin{example}
   Consider the following logic program.
@@ -426,6 +430,8 @@ before assuming that a mistake must have been made and restarting the search
 Unless specified otherwise, by \emph{probability distribution} we mean a
 \emph{discrete} probability distribution. Moreover, we are typically only
 interested in probability distributions with \emph{finite support}.
+% TODO (V): might be good to give general definition of probability space (cf
+% Halperin 2003)
 
 With these restrictions, one could define a probability distribution by listing
 all combinations of values and assigning a probability to each. However, in most
@@ -612,6 +618,7 @@ statistical relational artificial intelligence can be found in the work of
   evidence(calls(mary)).
   query(burglary).
 \end{lstlisting}
+% TODO (V): semantics of problog? Or, later?
 
 \begin{lstlisting}[escapeinside={(*}{*)},caption=A BLOG program that computes
   $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}.,
@@ -1154,6 +1161,9 @@ the analysis of breast cancer
 \citep{DBLP:conf/ilp/Corte-RealD017,DBLP:conf/pkdd/NassifKBPSC13}, genetic
 \citep{DBLP:journals/jcb/SakhanenkoG12}, and molecular profiling
 \citep{de2013phenetic} data.
+
+% TODO (V): As should be clear from our discussion, our research fundamental,
+% foundational, and not necessarily motivated by any one application.
 
 Although it is hard to anticipate how the contributions of this work might
 affect all of these applications, efficiency improvements can enable new
