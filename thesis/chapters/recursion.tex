@@ -55,14 +55,14 @@ equivalent notion in (W)FOMC is liftability. A (W)FOMC instance is
 of the domain(s) \citep{jaeger2012liftability}. Over more than a decade, more
 and more classes of instances were shown to be liftable
 \citep{DBLP:conf/kr/BremenK21,DBLP:conf/nips/KazemiKBP16,DBLP:conf/lics/KuusistoL18,DBLP:journals/jair/Kuzelka21}.
-To begin with, we know that the class of all sentences of FOL with up to two
-variables (denoted \FOtwo{}) is liftable \citep{DBLP:conf/nips/Broeck11}. We
-also know that there exists a sentence with three variables for which FOMC is
-$\#\P_{1}$-complete (i.e., \FOthree{} is not liftable)
-\citep{DBLP:conf/pods/BeameBGS15}. Since these two results came out, most of the
-research on (W)FOMC focused on developing faster solutions for the \FOtwo{}
-fragment \citep{DBLP:journals/corr/abs-2110-05992,DBLP:conf/uai/BremenK21} and
-defining new liftable fragments. These fragments include \SFO{} and \SRU{}
+First, \citet{DBLP:conf/nips/Broeck11} showed that the class of all sentences of
+FOL with up to two variables (denoted \FOtwo{}) is liftable. Then
+\citet{DBLP:conf/pods/BeameBGS15} proved that there exists a sentence with three
+variables for which FOMC is $\#\P_{1}$-complete (i.e., \FOthree{} is not
+liftable). Since these two results came out, most of the research on (W)FOMC
+focused on developing faster solutions for the \FOtwo{} fragment
+\citep{DBLP:journals/corr/abs-2110-05992,DBLP:conf/uai/BremenK21} and defining
+new liftable fragments. These fragments include \SFO{} and \SRU{}
 \citep{DBLP:conf/nips/KazemiKBP16}, \Uone{} \citep{DBLP:conf/lics/KuusistoL18},
 \FOtwo{} with tree axioms \citep{DBLP:conf/kr/BremenK21}, and \Ctwo{} (i.e., the
 two variable fragment with counting quantifiers)
@@ -71,7 +71,7 @@ empirical front, there are several open-source implementations of exact WFOMC
 algorithms: \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11},
 probabilistic theorem proving \citep{DBLP:journals/cacm/GogateD16}, and
 \textsc{L2C} \citep{DBLP:conf/kr/KazemiP16}. Approximate counting is supported
-by \textsc{ApproxMC3} \citep{DBLP:conf/ijcai/BremenK20} as well as
+by \textsc{ApproxWFOMC} \citep{DBLP:conf/ijcai/BremenK20} as well as
 \textsc{ForcLift} \citep{DBLP:conf/uai/BroeckCD12} and probabilistic theorem
 proving \citep{DBLP:journals/cacm/GogateD16}.
 
@@ -169,40 +169,53 @@ propagated through the circuit, computing the WMC\@.
 
 The main conceptual difference between \textsc{Crane} and \textsc{ForcLift} is
 that we utilise labelled directed graphs instead of circuits. The cycles in
-these graphs represent recursive calls. See \cref{fig:intuition} for a
-conceptual illustration. An example scenario could work as follows. Suppose the
-original formula $\phi$ depends on a domain of size $n \in \mathbb{N}$. Our
-generalised version of domain recursion transforms $\phi$ into a different
-formula $\psi$ that depends on a domain of size $n-1$. After some number of
-subsequent transformations, the algorithm identifies that a solution to $\psi$
-can be constructed in part by finding a solution to a version of $\phi$ where
-the domain of size $n$ is replaced by a domain of size $n-1$. Recognising $\phi$
-from before, we can add a cycle-forming edge to the graph (highlighted in blue
-in \cref{fig:after}), which can be interpreted as function $f$ relying on
-$f(n-1)$ to compute $f(n)$.
+these graphs represent recursive calls. See \cref{fig:intuition} for an
+illustration of an example scenario. Suppose the original formula $\phi$ depends
+on a domain of size $n \in \mathbb{N}$. Our generalised version of domain
+recursion transforms $\phi$ into a different formula $\psi$ that depends on a
+domain of size $n-1$. After some number of subsequent transformations, the
+algorithm identifies that a solution to $\psi$ can be constructed in part by
+finding a solution to a version of $\phi$ where the domain of size $n$ is
+replaced by a domain of size $n-1$. Recognising $\phi$ from before, we can add a
+cycle-forming edge to the graph (highlighted in blue in \cref{fig:after}), which
+can be interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
 
 % 5.3) contributions, references to sections, shortcomings
 
-\todo[inline,caption={}]{ Once I finalise all of the sections and their order,
-  write up a final introductory paragraph.
-  \begin{itemize}
-    \item To construct these graphs, \textsc{ForcLift} is...
-    \item With additional compilation rules and an algorithm for checking
-          whether a `recursive call' is possible, \textsc{ForcLift}
-          \citep{DBLP:conf/ijcai/BroeckTMDR11} is adapted to be able to
-          construct recursive functions that efficiently solve counting problems
-          that used to be beyond its reach.
-    \item Three `new' compilation rules (generalised domain recursion (introduce
-          the acronym), constraint removal, and the thing that finds loops
-          (identifying possibilities for recursion)) and a novel compilation
-          algorithm (a hybrid of greedy and breadth-first search).
-    \item What we do with the compilation result is different (see below)
-    \item evaluation/interpretation: algebraic simplification, dynamic
-          programming
-    \item limitation: function extraction and simplification need to be
-          automated, same for finding base cases
+To construct such graphs, we introduce a novel search algorithm that replaces
+greedy search used by \textsc{ForcLift} and three compilation rules that work
+together to construct cyclic graphs. We begin with \cref{sec:recprelims} where
+we define the representation used for sentences in FOL as well as discuss
+caching and some notational conventions. Then, at the beginning of
+\cref{sec:methods} we formally define the graphs that replace circuits in
+representing a solution to a (W)FOMC problem and discuss some related notions.
+\Cref{sec:rules} introduces the new compilation rules:
+\begin{itemize}
+  \item a generalisation of domain recursion by \citet{DBLP:conf/nips/Broeck11},
+  \item \emph{constraint removal}---a formula transformation rule that removes
+        the constraints introduced by generalised domain recursion (GDR),
+        introducing a new (smaller) domain instead,
+  \item and a rule for creating recursive calls.
 \end{itemize}
-}
+In a typical solution produced by \textsc{Crane}, these rules are executed in
+exactly this order (interspersed with some other rules), with the edge that
+represents a recursive call pointing back to the node introduced by GDR\@.
+\Cref{sec:search} then describes our new search algorithm that makes fewer
+assumptions than \textsc{ForcLift} about the right order in which compilation
+rules should be applied. In \cref{sec:interpret}, we informally discuss how a
+graph can be interpreted as a collection of (potentially recursive) functions.
+Finally, in \cref{sec:results} we compare \textsc{ForcLift} and \textsc{Crane}
+on a range of function-counting problems. We show that \textsc{Crane} performs
+as well as \textsc{ForcLift} on the instances that were already solvable by
+\textsc{ForcLift} but is also able to handle most instances that
+\textsc{ForcLift} fails on as well.
+
+% \begin{itemize}
+%   \item What we do with the compilation result is different (see below)
+%   \item evaluation/interpretation: algebraic simplification, dynamic programming
+%   \item limitation: function extraction and simplification need to be automated,
+%         same for finding base cases
+% \end{itemize}
 
 % Leftovers
 % \begin{itemize}
@@ -219,7 +232,7 @@ $f(n-1)$ to compute $f(n)$.
 %   \end{itemize}
 % \end{itemize}
 
-\section{Preliminaries}
+\section{Preliminaries}\label{sec:recprelims}
 
 In this section, we describe our format for FOMC instances, introduce some
 notation, and discuss our caching scheme, which is used to identify
@@ -416,8 +429,9 @@ non-tree-like edges (denoted by $\Reff$), while used before, is extended to
 contain the information necessary to support recursive calls. We also add three
 new types:
 \begin{itemize}
-  \item a type for constraint removal denoted by $\CR$,
-  \item a type for GDR denoted by $\GDR$ (both with out-degree one),
+  \item a type for \emph{constraint removal} denoted by $\CR$,
+  \item a type for \emph{generalised domain recursion} denoted by $\GDR$ (both
+        with out-degree one),
   \item and $\star$---a placeholder type (with out-degree zero) for nodes that
         are going to be replaced.
 \end{itemize}
@@ -1101,7 +1115,7 @@ function is always called $f$, and it is defined by the source node.
 The interpretation of a node is decided by its type. Here we describe the
 interpretations of new (or significantly changed) types and refer the reader to
 previous work \citep{DBLP:conf/ijcai/BroeckTMDR11} for information on other
-types. Both $\CR$ and $\GDR$ node do not contribute anything to the definitions
+types. Both $\CR$ and $\GDR$ nodes do not contribute anything to the definitions
 of functions---the interpretation of such a node is simply the interpretation of
 its only direct successor. Obviously, $\star$ nodes also have no interpretation,
 although for a different reason: incomplete FCGs are not meant to be

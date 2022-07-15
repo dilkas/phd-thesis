@@ -26,26 +26,22 @@
 
 % * description and example(s)
 
-% TODO (V) (after `probabilistic inference'): for example, the partition
-% function or marginal or conditional probability given a Bayesian network
-
-% TODO (V) (instead of `probability from a collection of other known
-% probabilities'): the probability of an event given an event space
-
 Probabilistic methods are central to artificial intelligence
 \citep{DBLP:books/aw/RN2020}, data science \citep{provost2013data}, statistics,
 and machine learning \citep{DBLP:books/lib/Bishop07,DBLP:books/daglib/0023091}.
-A fundamental task when working with probabilities is to compute some desired
-probability from a collection of other known probabilities, i.e.,
-\emph{probabilistic inference}. This thesis is about a particular approach to
-probabilistic inference (and other similar computational tasks) and its use in
-performing inference on structured representations of probability distributions
-such as Bayesian networks and probabilistic logic programs. More generally, we
-look at different ways of describing arithmetic computations pertinent to
-probabilistic inference and how algorithms interpret those descriptions, leading
-to solutions of varying complexity. We begin with an example that showcases how
-one can compute a probability in various ways depending on how one chooses to
-reason about it.
+A fundamental task when working with probabilities is to compute the probability
+of an event from some description of a probability space, i.e.,
+\emph{probabilistic inference}. Examples of probabilistic inference include
+computing the partition function of a Markov network or a marginal (or
+conditional) probability from a Bayesian network. This thesis is about a
+particular approach to probabilistic inference (and other similar computational
+tasks) and its use in performing inference on structured representations of
+probability distributions such as Bayesian networks and probabilistic logic
+programs. More generally, we look at different ways of describing arithmetic
+computations pertinent to probabilistic inference and how algorithms interpret
+those descriptions, leading to solutions of varying complexity. We begin with an
+example that showcases how one can compute a probability in various ways
+depending on how one chooses to reason about it.
 
 \begin{example}\label{example:veryfirst}
   Suppose we have a biased coin that has a probability $0 \le p \le 1$ of
@@ -190,28 +186,6 @@ ways.
 % TODO (V): we particularly find the semantics and benchmarking WMC need further
 % study, which is precisely what we explore.
 
-%% Many algorithms for probabilistic inference have been proposed. Variable
-%% elimination \citep{DBLP:journals/ai/Dechter99} works by nondeterministically
-%% choosing an ordering of variables and `summing out' each variable in the chosen
-%% order. The well-known Davis-Putnam algorithm \citep{DBLP:journals/jacm/DavisP60}
-%% for SAT is an example of variable elimination
-%% \citep{DBLP:journals/jair/BacchusDP09}. Recursive conditioning
-%% \citep{DBLP:journals/ai/Darwiche01} is a divide-and-conquer algorithm that relies
-%% on a branch decomposition of the hypergraph to initialise variables in such a
-%% way to split the problem into multiple smaller problems that can be solved
-%% independently. AND/OR search
-%% \citep{DBLP:journals/ai/DechterM07,DBLP:books/sp/Nilsson82} is a similar technique
-%% that utilises pseudo trees of the primal graph instead of branch decompositions.
-%% Belief propagation (also known as message passing) \citep{DBLP:conf/aaai/Pearl82}
-%% is an approximation algorithm that converges to the exact answer when the primal
-%% graph is a tree, and join (or junction) tree algorithm \citep{lauritzen1988local}
-%% extends belief propagation to arbitrary primal graphs via tree decompositions.
-
-% reasoning about logic, graphs, and functions
-
-% In my work, I address this problem by assessing the empirical performance of these algorithms on random instances of different kinds, revealing the weaknesses of the standard definition of WMC, and suggesting more expressive alternatives.
-
-% 2 pages?
 \section{Approach, Contributions, and Outline}
 
 % ==================================== A paragraph on the approach: generalisation, main ideas ====================

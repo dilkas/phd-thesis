@@ -28,19 +28,20 @@ and describe some logic-based computational problems. We refer the reader to the
 book by \citet{DBLP:books/daglib/0029942} for a more detailed introduction to
 logic and its role in computer science.
 
-% TODO (V) (on 'implication'): \neg a \lor b (P: maybe the same with
-% equivalence)
-An \emph{atomic proposition} (also known as \emph{atom} and
+An \emph{atomic proposition} (also known as an \emph{atom} or a
 \emph{Boolean/logical/propositional variable}) is a variable with two possible
 (truth) values: \true{} and \false{}. We usually refer to atoms as
 \emph{variables}. A \emph{formula} is any well-formed expression that connects
 variables using the following Boolean/logical operators (and parentheses):
 negation ($\neg$), disjunction ($\lor$), conjunction ($\land$), (material)
-implication ($\Rightarrow$), and equivalence (i.e., material biconditional)
-($\Leftrightarrow$). A \emph{literal} is either a variable or its negation,
-respectively called \emph{positive} and \emph{negative} literal. A \emph{clause}
-is a disjunction of literals.\footnote{The word \emph{clause} has a different
-  meaning in \cref{sec:lp,chapter:randomlps,chapter:wfomc}.} A formula is in
+implication ($\Rightarrow$), and equivalence (i.e., material biconditional,
+$\Leftrightarrow$). The last two operators are often defined as
+$a \Rightarrow b \equiv \neg a \lor b$ and
+$a \Leftrightarrow b \equiv (a \Rightarrow b) \land (b \Rightarrow a)$. A
+\emph{literal} is either a variable or its negation, respectively called
+\emph{positive} and \emph{negative} literal. A \emph{clause} is a disjunction of
+literals.\footnote{The word \emph{clause} is defined differently in
+  \cref{sec:lp,chapter:randomlps,chapter:wfomc}.} A formula is in
 \emph{conjunctive normal form} (CNF) if it is a conjunction of clauses, and it
 is in $k$-CNF if every clause has exactly $k$ literals. Many other normal forms
 and ways to represent propositional formulas are covered in \cref{sec:kc}.
@@ -128,7 +129,6 @@ over all literals of $\omega$ \citep{DBLP:journals/ai/ChaviraD08}. Lastly, both
 \mc{} and WMC have been extended to first-order logic
 \citep{DBLP:conf/ijcai/BroeckTMDR11}---this is the topic of
 \cref{chapter:wfomc}.
-% TODO (V) (before the dash): and continuous (WMI)
 
 \begin{example}\label{example:wmc1}
   The model count of the formula in \cref{example:logic} is equal to one. With a
@@ -431,7 +431,8 @@ Unless specified otherwise, by \emph{probability distribution} we mean a
 \emph{discrete} probability distribution. Moreover, we are typically only
 interested in probability distributions with \emph{finite support}.
 % TODO (V): might be good to give general definition of probability space (cf
-% Halperin 2003)
+% Halperin 2003). Maybe just point the reader to some books, e.g., the PGM book,
+% the Stroock's book, maybe the Loeve's book (Probability Theory, Vol 1)
 
 With these restrictions, one could define a probability distribution by listing
 all combinations of values and assigning a probability to each. However, in most
