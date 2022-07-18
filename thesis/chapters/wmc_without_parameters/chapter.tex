@@ -772,17 +772,22 @@ inefficient.
 
 \section{Conclusion and Future Work}
 
+% summary
 In this chapter, we showed how the number of variables in a WMC instance can be
 significantly reduced by transforming it into a representation based on
 two-valued pseudo-Boolean functions. In some cases, this led to significant
 improvements in inference speed, allowing $\textsc{DPMC} + \texttt{bklm16++}$ to
 overtake $\textsc{Ace}+\texttt{cd06}$ as the new state of the art WMC technique
-for Bayesian network inference. Moreover, we identified key properties of
-Bayesian network encodings that allow for parameter variable removal. However,
-these properties were rather different for each encoding, and so an interesting
-question for future work is whether they can be unified into a more abstract and
-coherent list of conditions.
+for Bayesian network inference. Incidentally, the new format could be used
+(without any major changes) by the approximate WMC algorithm and the
+distribution-aware sampler by \citet{DBLP:conf/aaai/ChakrabortyFMSV14} as their
+formulation supports non-factorable measures. We also identified key properties
+of Bayesian network encodings that allow for parameter variable removal.
+However, these properties were rather different for each encoding, and so an
+interesting question for future work is whether they can be unified into a more
+abstract and coherent list of conditions.
 
+% other encodings?
 Bayesian network inference was chosen as the example application of WMC because
 it is the first and the most studied one
 \citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
@@ -795,6 +800,7 @@ well-established WMC encoding and inference techniques (such as in the work by
 \citet{DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06}) to be transferred
 to other application domains.
 
+% WFOMC
 Similarly, could weighted first-order model counting (WFOMC) benefit from a more
 flexible approach to weights? The standard (`symmetric') definition of WFOMC
 assigns a pair of weights to each predicate
@@ -803,6 +809,7 @@ that depend on numerical constants in addition to predicates. This idea could
 also be seen as an extension of weighted first-order model integration
 \citep{DBLP:conf/uai/FeldsteinB21} to discrete measurable spaces.
 
+% kernelisation
 Lastly, we noted how the parameter equivalent to primal treewidth used by
 \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20} remains virtually unchanged by our
 transformation despite a significant reduction in instance size. We also know
@@ -818,6 +825,3 @@ algorithm for WMC instances within this more flexible PBP format. Kernelisation
 as well as the parameterised complexity angle on WMC more broadly is an
 underexplored area of research that we approach in more detail in
 \cref{chapter:comparison}.
-
-% What are the directions for the future present themselves that you have not investigated in this thesis?
-% What other lessons can you draw?

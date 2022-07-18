@@ -114,27 +114,29 @@ are described using a fragment of first-order logic known as \emph{linear
 two extensions combined into one are known as \emph{(symmetric) weighted
   first-order model integration} (WFOMI) \citep{DBLP:conf/uai/FeldsteinB21}.
 
-% TODO (V): (after 'is known as'): AMC (Kimmig et al.) and its continuous
-% generalisation is SP
 Instead of performing addition and multiplication on numbers, one can do so on
 elements of an arbitrary (commutative) semiring. This extension of WMC is known
-as \emph{semiring programming} (SP) \citep{DBLP:journals/ijar/BelleR20}. Another
+as \emph{algebraic model counting} (AMC) \citep{DBLP:journals/japll/KimmigBR17}.
+AMC has also been extended to support first-order logic---this is known as
+\emph{semiring programming} \citep{DBLP:journals/ijar/BelleR20}. Another
 important generalisation offered by SP is flexibility in how the numbers that
 are to be multiplied and added (i.e., the \emph{weights}) can be defined. In
-this thesis, we do something similar within the constraints of a modern WMC
-algorithm and call our generalisation \emph{pseudo-Boolean projection} (PBP).
+this thesis, we do something similar within the constraints of a modern
+(propositional) WMC algorithm and call our generalisation \emph{pseudo-Boolean
+  projection} (PBP).
 
 \begin{table}[t]
   \centering
   \begin{tabular}{lll}
     \toprule
-    Problem & Sum/Integral (over) & Product (over) \\
+    Problem(s) & Sum/Integral (over) & Product (over) \\
     \midrule
-    \rowcolor{gray!10}WMC & & literals \\
-    \rowcolor{gray!10}PBP, SP & \multirow{-2}{*}{models of a propositional theory} & arbitrary \\
+    \rowcolor{gray!10}WMC, AMC & & literals \\
+    \rowcolor{gray!10}PBP & \multirow{-2}{*}{models of a propositional theory} & arbitrary \\
     WMI & models of a propositional LRA theory & literals \\
-    \rowcolor{gray!10}WFOMC & models of a first-order theory & \\
-    \rowcolor{gray!10}WFOMI & models of a first-order LRA theory & \multirow{-2}{*}{predicates} \\
+    WFOMI & models of a first-order LRA theory & predicates \\
+    \rowcolor{gray!10}WFOMC & & predicates \\
+    \rowcolor{gray!10}SP & \multirow{-2}{*}{models of a first-order theory} & arbitrary \\
     SumProd & instantiations of discrete variables & functions \\
     Algebraic path & paths in a graph & edges in a path \\
     Permanent & permutations & elements of a matrix \\
@@ -160,8 +162,9 @@ network reliability analysis. Lastly, even famous problems in algebraic
 complexity theory such as computing the determinant or the permanent of a matrix
 are examples of this sum-of-products computational paradigm
 \citep{DBLP:books/daglib/0090316,DBLP:journals/tcs/Valiant79}. See
-\cref{table:comparison} for a summary of all of the discussed problems.
-% TODO (V) (after 'network reliability analysis'): See AMC paper for discussions
+\cref{table:comparison} for a summary of all of the discussed problems and the
+work of \citet{DBLP:journals/japll/KimmigBR17} for a more in-depth discussion on
+some of them.
 
 % Many reductions are possible among instances of these problems, e.g., both
 % WFOMC and SumProd can be reduced to WMC\@.
@@ -181,12 +184,11 @@ important to
         application (e.g., probabilistic inference) domain to a representation
         accepted by the algorithm.
 \end{itemize}
-In this thesis, we contribute to all three of these objectives in a variety of
-ways.
-% TODO (V): we particularly find the semantics and benchmarking WMC need further
-% study, which is precisely what we explore.
+In this thesis, we contribute to all three of these objectives, particularly
+focusing on the semantics of WMC and benchmarking WMC algorithms---two areas
+largely neglected by previous work.
 
-\section{Approach, Contributions, and Outline}
+\section{The Approach}
 
 % ==================================== A paragraph on the approach: generalisation, main ideas ====================
 
@@ -205,9 +207,7 @@ applicability.
 
 % =========================== A paragraph that partitions the chapters and describes them in broad terms =========
 
-% TODO (V) (until 'another important'): these motivated by semantic and encoding concerns
-% TODO (V) (after 'another important'): these motivated by benchmarking concerns
-We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2}
+We establish the following generalisations. In \cref{chapter:wmc1,chapter:wmc2},
 we generalise the definition of WMC (to PBP) to take full advantage of the
 capabilities of recent developments in WMC algorithms. In \cref{chapter:wfomc},
 we generalise some of the procedures and data structures used by a WFOMC
@@ -217,15 +217,16 @@ achieved by developing algorithms that can handle richer data structures.
 Another important idea in this work, particularly
 \cref{chapter:randomlps,chapter:comparison}, is that empirical testing of
 algorithms on a wide range of random instances can help reveal fundamental
-differences in the behaviour of said algorithms. In what follows, we review the
-contributions and the structure of this thesis in more detail.
+differences in the behaviour of said algorithms. In
+\cref{sec:introcontributions}, we review the contributions and the structure of
+this thesis in more detail.
+
+\subsection{Contributions and Outline}\label{sec:introcontributions}
 
 % ==================================== Paragraphs for individual chapters/contributions ===========================
 
 % 1. WMC as a measure on a BA, showing that it's experimentally promising to generalise weight functions
 % \Cref{chapter:wmc1} shows how WMC can be seen as the problem of computing the value of a measure on some element of a Boolean algebra.
-
-% TODO (V): subsection: details on contributions
 
 Encoding a probabilistic inference problem as an instance of WMC typically
 necessitates adding extra literals and clauses. This is partly so because the
@@ -280,7 +281,6 @@ compilation rules and an algorithm to check whether a recursive call is
 feasible. These improvements allow us to \emph{automatically find efficient
   solutions} to counting fundamental structures such as injections and
 bijections.
-% TODO (V) ('counting ... bijections'): emphasize it
 
 % 7. developed a way of generating (P)LPs that's much more general than anything from before
 % 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data

@@ -1312,42 +1312,29 @@ supplements \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with three
 new compilation rules and a hybrid search algorithm. In \cref{sec:results}, we
 saw examples of instances that become liftable not just in theory
 \citep{DBLP:journals/jair/Kuzelka21} but with an implemented algorithm as well.
-However, our experiments covered only a small set of instances since some parts
-of \textsc{Crane} are yet to be fully automated. Here we focused on various
-function-counting problems---it remains to be seen what other types of instances
-become liftable as a result.
+However, our experiments cover only a small set of instances since some parts of
+\textsc{Crane} are yet to be fully automated. Specifically, our experiments
+focus on various function-counting problems---it remains to be seen what other
+types of instances become liftable as a result.
 
-% Correctness/efficiency guarantees?
+An idea pivotal to our work is the generalisation of circuits to graphs. Despite
+the wide variety of circuits that are used in artificial intelligence
+\citep{DBLP:series/faia/Darwiche21}, this is the first time that the addition of
+cycles is shown to make a class of circuits more powerful. An important strand
+for future work is in developing an algorithm that learns FCGs from data
+similarly to the way \textsc{ForcLift} has been utilised in learning Markov
+logic networks \citep{DBLP:conf/aaai/BroeckMD13,DBLP:journals/ml/HaarenBMD16}.
+One could also consider whether some of the many recent applications of circuits
+are suitable for FCGs as well. These applications include the verification and
+explainability of neural networks \citep{DBLP:conf/pods/Darwiche20}, causal
+inference \citep{DBLP:journals/corr/abs-2202-02891}, computing the expectations
+of kernel functions \citep{DBLP:conf/uai/LiZVB21}, and variational inference in
+discrete graphical models \citep{DBLP:conf/nips/ShihE20}.
 
-% \begin{itemize}
-%   \item Explain why these solutions are always computable in polynomial time. A
-%         finite FCG can introduce only a finite amount of new domains (whose
-%         sizes are upper bounded by the input domains) and a finite amount of new
-%         functions. Everything can be computed in polynomial time by DP (but
-%         sometimes not computing some of entries might be faster) as long as it
-%         terminates at all.
-%   \item Recursion is guaranteed to terminate if at least one domain shrinks by
-%         at least one. But note that allowing recursive calls with the same
-%         domain sizes could be useful because these problematic terms might
-%         cancel out. A realistic example based on the solutions that
-%         \textsc{Crane} constructed for the instances in \cref{sec:results} could
-%         look like
-%         \[
-%           f(n) = -f(n) + \sum_{m=0}^{n} \binom{n}{m} f(m).
-%         \]
-%   \item Explain the importance of comparing domain sizes to 2. FCGs that compare
-%         the size of a domain to an integer can be constructed automatically
-%         using compilation rules, although $n$ is upper bounded by the maximum
-%         number of variables in any clause of the input formula since there is no
-%         rule that would introduce new variables.
-% \end{itemize}
-
-% Future work
-
-The most important direction for future work is in fully automating this new way
-of computing the (W)FOMC of a formula. First, we need an algorithm that
-transforms FCGs into definitions of functions. Formalising this process would
-also allow us to prove the correctness of the new compilation rules in
+However, the most important direction for future work is in fully automating
+this new way of computing the (W)FOMC of a formula. First, we need an algorithm
+that transforms FCGs into definitions of functions. Formalising this process
+would also allow us to prove the correctness of the new compilation rules in
 constructing FCGs that indeed compute the right WMC\@. Second, these definitions
 must be simplified before they can be used, perhaps by a computer algebra
 system. Third, most importantly, we need a way to find the base cases for the

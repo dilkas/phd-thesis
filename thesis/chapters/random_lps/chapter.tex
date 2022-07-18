@@ -57,10 +57,11 @@ that any ground atom with predicate $p$ is independent of any ground atom with
 predicate $q$. In this way, we can easily regulate the independence structure of
 the underlying probability distribution. In \cref{sec:counting} we also present
 a combinatorial argument for correctness that counts the number of programs that
-the model produces for various parameter values. We end the chapter with two
-experimental results in \cref{sec:1experiments}: one investigating how the
-constraint model scales when tasked with producing more complex programs, and
-one showing how the model can be used to evaluate and compare probabilistic
+the model produces for various parameter values. We end the chapter with some
+example programs in \cref{sec:examples} and two experimental results in
+\cref{sec:1experiments}. The first experiment investigates how the constraint
+model scales when tasked with producing more complex programs, and the second
+experiment shows how the model can be used to evaluate and compare probabilistic
 inference algorithms.
 
 \section{Preliminaries}
@@ -709,15 +710,10 @@ as intended.
     \protect{\cref{example:independence}}.}\label{fig:example}
 \end{figure}
 
-\section{Example Programs}
+\section{Example Programs}\label{sec:examples}
 
-\todo[inline]{Integrate this into the chapter. See ?? for examples of programs
-  generated using various sets of parameter values. Make sure that the initial
-  overview mentions this section. Modify the surrounding
-  introductions/conclusions from both sides.}
-
-In this appendix, we provide examples of probabilistic logic programs generated
-by the constraint model from \cref{chapter:randomlps}. In all cases, we use
+In this section, we provide examples of probabilistic logic programs generated
+by our constraint model. In all cases, we use
 \[
   \{\, 0.1, 0.2, \dots, 0.9, 1, 1, 1, 1, 1 \,\}
 \]

@@ -18,10 +18,9 @@ either directly or indirectly building on the results of our work.
 
 The contributions of this thesis can be divided into two parts:
 \begin{itemize}
-  \item empirically-motivated contributions that make something new possible or
-        something that already exists more efficient
+  \item empirically-motivated contributions that make WMC more efficient
   \item and (conceptual, theoretical, or experimental) contributions that help
-        us understand something more fully or in a new way.
+        us understand WMC (more fully or in a new way).
 \end{itemize}
 
 % ================================= EMPIRICAL STATE OF THE ART =================================
@@ -35,18 +34,17 @@ pseudo-Boolean functions. In \cref{chapter:wfomc}, we extend the capabilities of
 \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} so that it is able to
 solve more instances in a lifted manner, e.g., instances with injective
 mappings. The empirical contributions of
-\cref{chapter:randomlps,chapter:comparison} are about making new things
-possible, i.e., introducing novel tools and methods. In
-\cref{chapter:randomlps}, we developed a constraint model for (probabilistic)
-logic programs that can be used to generate random programs or enumerate all
-small programs under some given constraints. The constraints include various
-notions of size, the structure/complexity of a clause, and the independence of
-random variables. Finally, in \cref{chapter:comparison}, we present a way to
-generate propositional formulas in CNF with varying primal treewidth. As
-treewidth is a well-known parameter commonly used to describe parameterised
-complexity results \citep{DBLP:series/txcs/DowneyF13}, the same model (or a
-variation thereof) can be used in experimental studies of many other logic-based
-problems as well.
+\cref{chapter:randomlps,chapter:comparison} are about introducing novel tools
+and methods for WMC\@. In \cref{chapter:randomlps}, we developed a constraint
+model for (probabilistic) logic programs that can be used to generate random
+programs or enumerate all small programs under some given constraints. The
+constraints include various notions of size, the structure/complexity of a
+clause, and the independence of random variables. Finally, in
+\cref{chapter:comparison}, we present a way to generate propositional formulas
+in CNF with varying primal treewidth. As treewidth is a well-known parameter
+commonly used to describe parameterised complexity results
+\citep{DBLP:series/txcs/DowneyF13}, the same model (or a variation thereof) can
+be used in experimental studies of many other logic-based problems as well.
 
 % ================================= UNDERSTANDING =================================
 
@@ -138,7 +136,7 @@ In summary, we
 
 In this section, we present a broad overview of how our contributions and the
 questions raised by this work could be taken forward and influence key areas of
-research in computer science, artificial intelligence, and mathematics.
+research in computer science, artificial intelligence (AI), and mathematics.
 
 \subsection{Algorithms and Applications}
 
@@ -173,6 +171,12 @@ WFOMC can become the standard approach to probabilistic inference in statistical
 relational models is by being able to gracefully handle all instances, even if
 it means abandoning efficiency guarantees.
 
+% TODO (V, below): Maybe mention testing our contributions in ML + Robotics
+% applications also important... will let us know significance of encoding
+% improvement (i.e., more expressive encoding = potentially faster
+% applications). Also can ML + Robotics provide strategies for new benchmarking
+% algorithms (i.e., more comprehensive set of benchmarks or a better alignment
+% between real-world and synthetic data).
 Finally, ample opportunities remain to improve WMC encodings that already exist
 as well as connect WMC to new problem domains. In particular, we showed how PBP
 encodings of Bayesian networks are much smaller than the equivalent WMC
@@ -265,29 +269,36 @@ We can state this idea as a (somewhat informal) conjecture.
 
 \subsection{Artificial Intelligence and Combinatorics}
 
-Our hope for the broader field of artificial intelligence is that---similarly to
-the resurgence of symbolic artificial intelligence amidst deep neural networks
-\citep{garnelo2019reconciling}---the field shifts some of its focus from numbers
-and probabilities to structural concepts such as functions and relations. Once a
-solution to, e.g., a WFOMC problem is formulated as a function $f$ rather than
-the evaluation of $f$ on some particular input values, richer ways of reasoning
-become available. For example, instead of asking whether a probability of some
-event is above/below some threshold in a particular situation, one could ask for
-conditions on the input values that are necessary for the probability to be
-sufficiently high/low. Such reasoning capabilities have clear benefits to the
-robustness of artificial agents and to explainability---another rapidly emerging
-area of research
+A swiftly emerging area of research---neural-symbolic AI---attempts to combine
+deep neural networks (the approach to machine learning responsible for many
+recent achievements in the field) with logical reasoning
+\citep{DBLP:conf/ijcai/RaedtDMM20,garnelo2019reconciling,DBLP:series/faia/342}.
+As a result, explicit background knowledge can be seamlessly integrated with
+large amounts of low-level data that deep neural networks are so proficient at
+handling. Similarly, our hope for the broader field of AI is that the field
+shifts some of its focus from numbers and probabilities to structural concepts
+such as functions and relations. Once a solution to, e.g., a WFOMC problem is
+formulated as a function $f$ rather than the evaluation of $f$ on some
+particular input values, richer ways of reasoning become available. For example,
+instead of asking whether a probability of some event is above/below some
+threshold in a particular situation, one could ask for conditions on the input
+values that are necessary for the probability to be sufficiently high/low. Such
+reasoning capabilities have clear benefits to the robustness of artificial
+agents and to explainability---another rapidly emerging area of research
 \citep{DBLP:journals/corr/abs-1909-03012,DBLP:journals/fdata/BelleP21,DBLP:journals/corr/abs-2202-10335}.
 
-Finally, for the benefit of both artificial intelligence and combinatorics, we
-would like to reiterate and expand on the notion of automatic enumerative
-combinatorialist by \citet{DBLP:conf/ilp/BarvinekB0ZK21}. Perhaps (W)FOMC can
-mature into an easy-to-use tool that can compute any function expressible in
-first-order logic, in many cases providing a simple solution via a combination
-of recursive functions. Similarly to how a constraint programmer describes the
-constraints and asks the solver for a solution, a combinatorialist could
-describe what needs to be counted in a logic-based format and receive recursive
-or asymptotic solutions, generating functions, etc.
+For the benefit of both AI and combinatorics, we would like to reiterate and
+expand on the notion of automatic enumerative combinatorialist by
+\citet{DBLP:conf/ilp/BarvinekB0ZK21}. Perhaps (W)FOMC can mature into an
+easy-to-use tool that can compute any function expressible in first-order logic,
+in many cases providing a simple solution via a combination of recursive
+functions. Similarly to how a constraint programmer describes the constraints
+and asks the solver for a solution, a combinatorialist could describe what needs
+to be counted in a logic-based format and receive recursive or asymptotic
+solutions, generating functions, etc.
+
+% TODO (V): Can it play a key role in integrating reasoning and learning? Can it
+% play a role in language understanding as symbolic/syntactic [?]?
 
 % Instead there has been some recent work on making connections between tractable
 % circuits and explainability, and perhaps you can articulate something based on
@@ -298,24 +309,6 @@ or asymptotic solutions, generating functions, etc.
 %     \item some of the tractable circuits are essentially WMC encodings
 %           \citep{DBLP:conf/nips/ShenCD16}
 %   \end{itemize}
-
-%% \begin{itemize}
-%% \item Making it more powerful
-%%   \begin{itemize}
-%%   \item new compilation rules?
-%%   \item powers of negative one?
-%%   \item log factors?
-%%   \item solving recurrence relations in closed form?
-%%   \item division?
-%%   \end{itemize}
-%% \item learning FCGs
-%% \item Generalisations: sometimes restrictions become unnecessary and cause...
-%% \item Reasoning about functions rather than numbers
-%%   \begin{itemize}
-%%   \item asymptotic solutions
-%%   \item Potential application for expressing WFOMC as algebraic expressions over domain sizes. Q: Under what conditions over domain sizes would $\Pr(x) \ge \Pr(y)$ (or same for expectations)? We can solve this as an inequality. This could aid in probabilistic decision making, XAI, etc.
-%%   \end{itemize}
-%% \end{itemize}
 
 %% Many open questions remain about the capabilities of logic-based methods for counting and performing sum-of-products computations, particularly in the context of first-order logic. The answer to a WFOMC instance depends on three things: the formula, the weights, and the domain sizes. By fixing the first two, the instance becomes a logical representation of a function $\mathbb{N}_0^n \to \mathbb{R}_{\ge 0}$, where $n$ is the number of domains. In particular, an unweighed formula $\phi$ that depends on only one domain $\Delta$ represents an integer sequence that we get by computing the model count of $\phi$ across all possible cardinalities of $\Delta$. This observation raises important open questions with the potential to improve WFOMC algorithms, contribute to other counting problems and find new efficiently-computable formulas to sequences of interest.
 

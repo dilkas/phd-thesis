@@ -427,27 +427,25 @@ before assuming that a mistake must have been made and restarting the search
 \section{Representations of Probability
   Distributions}\label{sec:representations}
 
-Unless specified otherwise, by \emph{probability distribution} we mean a
-\emph{discrete} probability distribution. Moreover, we are typically only
-interested in probability distributions with \emph{finite support}.
-% TODO (V): might be good to give general definition of probability space (cf
-% Halperin 2003). Maybe just point the reader to some books, e.g., the PGM book,
-% the Stroock's book, maybe the Loeve's book (Probability Theory, Vol 1)
-
-With these restrictions, one could define a probability distribution by listing
-all combinations of values and assigning a probability to each. However, in most
-realistic scenarios, the same information could be described more succinctly by
-taking advantage of concepts such as random variable \emph{independence},
-\emph{conditional independence}, and \emph{exchangeability}.
-
-In this section, we describe some of the ways to represent a probability
-distribution. \Cref{sec:pgms} is about representations based on graphs whereas
-\cref{sec:probprogramming} covers probabilistic programming languages.
-
-These representations also differ in their ability to reason about groups of
-random variables. \emph{Propositional} models treat each random variable as a
-unique individual. In contrast, \emph{relational} models work over sets of
-individuals and relations among them. See the book by
+In what follows, we assume that the reader is familiar with the basic ideas of
+probability theory. For reference, one might wish to consult a book by, e.g.,
+\citet{loeve} or \citet{stroock2010probability} for a comprehensive treatment of
+probability theory and its measure-theoretic foundations. Unless specified
+otherwise, by \emph{probability distribution} we mean a \emph{discrete}
+probability distribution. Moreover, we are typically only interested in
+probability distributions with \emph{finite support}. With these restrictions,
+one could define a probability distribution by listing all combinations of
+values and assigning a probability to each. However, in most realistic
+scenarios, the same information could be described more succinctly by taking
+advantage of concepts such as random variable \emph{independence},
+\emph{conditional independence}, and \emph{exchangeability}. In this section, we
+describe some of the ways of representing a probability distribution.
+\Cref{sec:pgms} is about representations based on graphs whereas
+\cref{sec:probprogramming} covers probabilistic programming languages. These
+representations also differ in their ability to reason about groups of random
+variables. \emph{Propositional} models treat each random variable as a unique
+individual. In contrast, \emph{relational} models work over sets of individuals
+and relations among them. See the book by
 \citet{DBLP:series/synthesis/2016Raedt} for more detail.
 
 \subsection{Representations Based on Graphical Models}\label{sec:pgms}
@@ -1163,12 +1161,12 @@ the analysis of breast cancer
 \citep{DBLP:journals/jcb/SakhanenkoG12}, and molecular profiling
 \citep{de2013phenetic} data.
 
-% TODO (V): As should be clear from our discussion, our research fundamental,
-% foundational, and not necessarily motivated by any one application.
-
 Although it is hard to anticipate how the contributions of this work might
 affect all of these applications, efficiency improvements can enable new
 applications for which current WMC is not fast enough. This is especially the
 case for WFOMC, where said improvements usually bring classes of instances from
 exponential to polynomial time. At the very least, WMC-based approaches should
 be able to handle bigger and more complex data sets regardless of their origin.
+Note that although we use Bayesian network probabilistic inference as a central
+examples on several occasions, our research is chiefly foundational and not
+necessarily motivated by any one application.
