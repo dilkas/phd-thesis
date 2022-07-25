@@ -401,8 +401,8 @@ $\Imm W = \Imm F = \{\, 0, 1 \,\}$, and $\Imm T = \{\, l, m, h \,\}$.
 
 \begin{algorithm}[t]
   \caption{Encoding a Bayesian network.}\label{alg:encoding}
-  \KwData{set of random variables (i.e., nodes) $\mathcal{V}$, probability distribution $\Pr$}
-  \KwResult{pseudo-Boolean function $\phi\colon 2^U \to \mathbb{R}_{\ge 0}$}
+  \KwIn{set of random variables (i.e., nodes) $\mathcal{V}$, probability distribution $\Pr$}
+  \KwOut{pseudo-Boolean function $\phi\colon 2^U \to \mathbb{R}_{\ge 0}$}
   $\phi \gets 1$\;
   \ForEach{random variable $X \in \mathcal{V}$}{
     \textit{let} $\mathrm{pa}(X) = \{\, Y_1, \dots, Y_n \,\}$\;
@@ -423,7 +423,6 @@ $\Imm W = \Imm F = \{\, 0, 1 \,\}$, and $\Imm T = \{\, l, m, h \,\}$.
     }
     $\phi \gets \phi \cdot \mathrm{CPT}_X$\;
   }
-  \Return{$\phi$}\;
 \end{algorithm}
 
 \Cref{alg:encoding} shows how a Bayesian network with nodes $\mathcal{V}$ can be

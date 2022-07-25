@@ -171,12 +171,6 @@ WFOMC can become the standard approach to probabilistic inference in statistical
 relational models is by being able to gracefully handle all instances, even if
 it means abandoning efficiency guarantees.
 
-% TODO (V, below): Maybe mention testing our contributions in ML + Robotics
-% applications also important... will let us know significance of encoding
-% improvement (i.e., more expressive encoding = potentially faster
-% applications). Also can ML + Robotics provide strategies for new benchmarking
-% algorithms (i.e., more comprehensive set of benchmarks or a better alignment
-% between real-world and synthetic data).
 Finally, ample opportunities remain to improve WMC encodings that already exist
 as well as connect WMC to new problem domains. In particular, we showed how PBP
 encodings of Bayesian networks are much smaller than the equivalent WMC
@@ -189,20 +183,6 @@ fixed-parameter tractable algorithms and/or improvements to the empirical state
 of the art. Similarly, adapting a WMC algorithm to a semiring other than
 $(\mathbb{R}_{\ge 0}, +, \cdot)$ could yield improvements to some of the related
 problems outlined by \citet{DBLP:journals/japll/KimmigBR17}.
-
-%% The two theoretical directions for future work we discuss here are on the arithmetic complexity of WMC/WFOMC and the various notions of completeness of WFOMC algorithms.
-%% \begin{itemize}
-%% \item arithmetic complexity
-%%   \begin{itemize}
-%%   \item prove that transitivity (sequence A006905 in the on-line encyclopedia of integer sequences\footnote{\url{https://oeis.org/A006905}}) cannot be computed in polynomial time.
-%%   \end{itemize}
-%% \item completeness: if an algebraic solution exists, are we able to find it? As we continue to expand the capabilities of WFOMC, the answer clearly is `not yet'. Two parts to this question:
-%%   \begin{itemize}
-%%   \item can a suitable FCG be constructed from the given node types?
-%%   \item can the right combination of compilation rules lead to the construction of such an FCG?
-%%   \item Another important avenue for future research is on the expressive power of various logics and languages. Mention $f(n) = f(f(n-1))$. A different kind of completeness: what kind of sequences and integer functions can be encoded in FOL? What about other kinds of logics and languages? \citep{Benthem2021INTERLEAVINGLA}
-%%   \end{itemize}
-%% \end{itemize}
 
 \subsection{Computational Complexity}
 
@@ -240,11 +220,19 @@ are then turned into WMC instances. As we provide the very first attempts at
 testing WMC algorithms on random data, many opportunities for improvements and
 future work remain.
 
-An interesting opportunity to connect our work on random
-logic programs in \cref{chapter:randomlps} and on (W)FOMC in
-\cref{chapter:wfomc} is by adapting the constraint model to generate (W)FOMC
-instances instead of logic programs. This way one could systematically search
-for interesting instances that, e.g.,
+To begin with, applications of WMC could inspire future work on random instance
+generation in two ways. First, one could generate random instances of some
+application of WMC and convert them to WMC instances or probabilistic logic
+programs. Second, one could analyse the properties of real-world data and
+develop random models that exhibit similar characteristics as has been done
+quite extensively in the SAT community
+\citep{DBLP:conf/ijcai/AnsoteguiBL09,DBLP:conf/tacas/BlasiusFS19,DBLP:journals/ai/Giraldez-CruL16,DBLP:conf/ijcai/Giraldez-CruL17}.
+
+Moreover, an interesting opportunity to connect our work on random logic
+programs in \cref{chapter:randomlps} and on (W)FOMC in \cref{chapter:wfomc} is
+by adapting the constraint model to generate (W)FOMC instances instead of logic
+programs. This way one could systematically search for interesting instances
+that, e.g.,
 \begin{itemize}
   \item reveal differences in the runtime complexity of various algorithms or
   \item demonstrate a gap between the performance of state-of-the-art WFOMC
@@ -296,9 +284,6 @@ functions. Similarly to how a constraint programmer describes the constraints
 and asks the solver for a solution, a combinatorialist could describe what needs
 to be counted in a logic-based format and receive recursive or asymptotic
 solutions, generating functions, etc.
-
-% TODO (V): Can it play a key role in integrating reasoning and learning? Can it
-% play a role in language understanding as symbolic/syntactic [?]?
 
 % Instead there has been some recent work on making connections between tractable
 % circuits and explainability, and perhaps you can articulate something based on

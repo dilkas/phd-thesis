@@ -61,12 +61,12 @@ FOL with up to two variables (denoted \FOtwo{}) is liftable. Then
 variables for which FOMC is $\#\P_{1}$-complete (i.e., \FOthree{} is not
 liftable). Since these two results came out, most of the research on (W)FOMC
 focused on developing faster solutions for the \FOtwo{} fragment
-\citep{DBLP:journals/corr/abs-2110-05992,DBLP:conf/uai/BremenK21} and defining
+\citep{DBLP:conf/uai/BremenK21,DBLP:conf/aaai/MalhotraS22} and defining
 new liftable fragments. These fragments include \SFO{} and \SRU{}
 \citep{DBLP:conf/nips/KazemiKBP16}, \Uone{} \citep{DBLP:conf/lics/KuusistoL18},
 \FOtwo{} with tree axioms \citep{DBLP:conf/kr/BremenK21}, and \Ctwo{} (i.e., the
 two variable fragment with counting quantifiers)
-\citep{DBLP:journals/jair/Kuzelka21,DBLP:journals/corr/abs-2110-05992}. On the
+\citep{DBLP:journals/jair/Kuzelka21,DBLP:conf/aaai/MalhotraS22}. On the
 empirical front, there are several open-source implementations of exact WFOMC
 algorithms: \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11},
 probabilistic theorem proving \citep{DBLP:journals/cacm/GogateD16}, and
@@ -79,15 +79,18 @@ proving \citep{DBLP:journals/cacm/GogateD16}.
 % solutions? How does mine differ?)
 % simple unliftable instances -> recursion
 
+% TODO (after 'construct recursive solutions'): Might be good at this point to
+% enumerate a few examples of problems that can be handled by the contribution
+
 However, none of the publicly available exact (W)FOMC algorithms can efficiently
 compute functions as simple as a factorial.\footnote{The problem of computing
   the factorial can be described using two variables and counting quantifiers,
-  so it is known to be liftable in theory \citep{DBLP:journals/jair/Kuzelka21}.}
-We claim that this shortcoming is due to the inability of these algorithms to
-construct recursive solutions. The topic of recursion in the context of WFOMC
-has been studied before but in limited ways.
-\Citet{DBLP:conf/ilp/BarvinekB0ZK21} use WFOMC to generate numerical data which
-is then used to conjecture recurrence relations that explain that data.
+  so it is known to be liftable in principle
+  \citep{DBLP:journals/jair/Kuzelka21}.} We claim that this shortcoming is due
+to the inability of these algorithms to construct recursive solutions. The topic
+of recursion in the context of WFOMC has been studied before but in limited
+ways. \Citet{DBLP:conf/ilp/BarvinekB0ZK21} use WFOMC to generate numerical data
+which is then used to conjecture recurrence relations that explain that data.
 \Citet{DBLP:conf/nips/Broeck11} introduced the idea of \emph{domain recursion}.
 Intuitively, domain recursion partitions a domain of size $n$ into a single
 explicitly named constant and the remaining domain of size $n-1$. However, many
@@ -121,6 +124,9 @@ compilation and evaluation/propagation.\footnote{There is also an intermediate
 the input (or some derivative) formula, gradually constructing a circuit. In the
 second part, the weights of the instance (and sometimes constants) are
 propagated through the circuit, computing the WMC\@.
+% TODO: Maybe explain somewhere that when lifting is not possible, classical WMC
+% is computed. Also explain that under the assumption that the weights of the
+% predicates is the same across all instances WFOMC is the same as WMC.
 
 \begin{figure}[t]
   \centering
@@ -209,6 +215,7 @@ on a range of function-counting problems. We show that \textsc{Crane} performs
 as well as \textsc{ForcLift} on the instances that were already solvable by
 \textsc{ForcLift} but is also able to handle most instances that
 \textsc{ForcLift} fails on as well.
+% TODO: the GDR part is unclear
 
 % \begin{itemize}
 %   \item What we do with the compilation result is different (see below)
@@ -655,12 +662,17 @@ recursive function. The GDR compilation rule is summarised as
     $\phi' \gets \emptyset$\;
     \ForEach{clause $(L, C, \delta) \in \phi$}{
       $C' \gets \{\, (a, b) \in C \mid b \ne x \,\}$\;\label{line:constraintremoval}
-      \nosemic$\delta' \gets v \mapsto \begin{cases} d' & \text{if} \delta(v) = d\\ \delta(v) & \text{otherwise;} \end{cases}$\;\label{line:newdelta}
+      \nosemic$\delta' \gets v \mapsto
+      \begin{cases}
+        d' & \text{if } \delta(v) = d\\
+        \delta(v) & \text{otherwise;}
+      \end{cases}$\;\label{line:newdelta}
       $\phi' \gets \phi' \cup \{\, (L, C', \delta') \,\}$\;
     }
     $S \gets S \cup \{\, (\CR_{d \mapsto d'}, \langle\phi'\rangle) \,\}$\;
   }
 \end{algorithm}
+% TODO: capital letters for domains? Maybe Greek capital letters?
 
 Recall that GDR on a domain $d$ creates constraints of the form $X_i \ne x$ for
 some constant $x \in d$ and family of variables $X_i \in d$. Once certain
@@ -1171,6 +1183,21 @@ from $v$.
   $f(0, n)$ and $f(m, 0)$ for all $m, n \in \mathbb{N}_{0}$.
 \end{example}
 
+% TODO: It is hard to say for sure but I think the examiners as well as the
+% readers of a potential paper will complain how the technical section ends. You
+% need to find a proposition or in the worst case at least a conjecture that
+% says that crane does something provably better or for certain compared to
+% previous work. There are some papers in statistical rel learning but don't
+% mention any formal results. But don't think given the kind of technical
+% notation you have introduced it is justified to leave things without any
+% claim. How about a proposition like: given a factorial function expressed in
+% the following fragment of fo logic, the algorithm crane computes...
+%
+% You could then point out that forklift does not have such a claim
+%
+% If intermediate claims leading up to the final proposition can be provided for
+% the other steps u introduce that much the better.
+
 \section{Empirical Results}\label{sec:results} % Newly Domain-Liftable Formulas
 
 In this section, we compare \textsc{Crane} and \textsc{ForcLift}
@@ -1269,38 +1296,6 @@ of the codomain. Finally, note that $f(m, n)$ can be evaluated in $\Theta(mn)$
 time by a dynamic programming algorithm that computes $f(i, j)$ for all
 $i = 0, \dots, m$ and $j = 0, \dots, n$.
 
-  % \item The complexities assume that arithmetic operations on number such as
-  %       addition and multiplication take constant time.
-  % \item In some cases (e.g., when counting injections from... to...), we might
-  %       immediately recognize that the answer must be zero. Whether such cases
-  %       can be handled efficiently or not by our approach depends on the
-  %       definitions of functions and the order of evaluation. (We still get the
-  %       right answer, though.)
-  % \item All complexity results are for the worst case. In particular, optimal
-  %       best-case complexity is usually $\Theta(1)$ (see above for why).
-
-% Other results
-% \begin{itemize}
-%   \item 1d bijections and 1d injections (note that it's the same problem). Depth
-%         3 solution:
-%         \begin{align*}
-%           f(n) &= \sum_{m=0}^n \binom{n}{m} (-1)^{n-m}g(n, m) \\
-%           g(n, m) &= \sum_{l=0}^n \binom{n}{l}[l < 2]g(n-l, m-1) \\
-%                &= g(n, m - 1) + ng(n - 1, m - 1),
-%         \end{align*}
-%         which works with base case $g(n, 0) = 1$.
-%   \item 1d partial injections. 2 solutions at depth 6, but they're too
-%         complicated to check by hand. A contradiction with $X \ne x$ constraints
-%         makes things complicated.
-%   \item 2d bijections. Depth 3:
-%         \begin{align*}
-%           f(m, n) &= \sum_{l=0}^m \binom{m}{l} [l < 2] (1 - [l < 1])f(m-l, n-1) \\
-%                   &= mf(m-1, n-1),
-%         \end{align*}
-%         which works with base cases $f(0, 0) = 1$, $f(0, n) = 0$, $f(m, 0) = 0$.
-%   \item 2d partial injections, depth 2. Exactly the same circuit as for injections but with base case $f(m, 0) = 1$.
-% \end{itemize}
-
 \section{Conclusion and Future Work}
 
 % A summary of what's been done/achieved and how
@@ -1310,12 +1305,16 @@ empowered by generalising domain recursion and adding support for cycles in the
 graph that encodes a solution. To construct such graphs, \textsc{Crane}
 supplements \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with three
 new compilation rules and a hybrid search algorithm. In \cref{sec:results}, we
-saw examples of instances that become liftable not just in theory
+saw examples of instances that become liftable not just in principle
 \citep{DBLP:journals/jair/Kuzelka21} but with an implemented algorithm as well.
 However, our experiments cover only a small set of instances since some parts of
 \textsc{Crane} are yet to be fully automated. Specifically, our experiments
 focus on various function-counting problems---it remains to be seen what other
 types of instances become liftable as a result.
+% TODO: So perhaps you don't have any concrete results but I think it is
+% important to at least state using a conjecture what kind of classes you hope
+% you can capture. If you don't make it explicit or even provide a concrete set
+% of suggestions, you cannot expect the reader to arrive at this on their own.
 
 An idea pivotal to our work is the generalisation of circuits to graphs. Despite
 the wide variety of circuits that are used in artificial intelligence
@@ -1331,6 +1330,10 @@ inference \citep{DBLP:journals/corr/abs-2202-02891}, computing the expectations
 of kernel functions \citep{DBLP:conf/uai/LiZVB21}, and variational inference in
 discrete graphical models \citep{DBLP:conf/nips/ShihE20}.
 
+% TODO ('what makes... one domain'): Again you cannot expect the reader to gain
+% this insight by reading the technical work. You have to make this explicit.
+% You might even use a paragraph separation and title it a remark to point out
+% obvious mathematical properties of your construction.
 However, the most important direction for future work is in fully automating
 this new way of computing the (W)FOMC of a formula. First, we need an algorithm
 that transforms FCGs into definitions of functions. Formalising this process

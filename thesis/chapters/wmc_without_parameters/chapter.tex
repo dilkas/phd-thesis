@@ -311,8 +311,8 @@ into a WMC encoding algorithm with no slowdown.
   \caption{WMC to PBP transformation.}\label{alg:transformation}
   \SetKwFunction{rename}{rename}
   \SetKwProg{Fn}{Function}{:}{}
-  \KwData{WMC (or minimum-cardinality WMC) instance $(\phi, X_I, X_P, w)$}
-  \KwResult{PBP instance $(F, X_I, \omega)$}
+  \KwIn{WMC (or minimum-cardinality WMC) instance $(\phi, X_I, X_P, w)$}
+  \KwOut{PBP instance $(F, X_I, \omega)$}
   $F \gets \emptyset$\;
   $\omega \gets 1$\;
   \ForEach{clause $c \in \phi$\label{line:foreach1start}}{

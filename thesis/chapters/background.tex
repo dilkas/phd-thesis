@@ -232,7 +232,6 @@ logic programming engine tries to replace the variables of the query with
 constants such that the resulting formula is a logical consequence of the
 program. If successful, an example of such a mapping is returned; if not, the
 engine returns \false{}.
-% TODO (V): a word on semantics? or not needed? or refer to problog chapter?
 
 \begin{example}
   Consider the following logic program.
@@ -439,10 +438,10 @@ values and assigning a probability to each. However, in most realistic
 scenarios, the same information could be described more succinctly by taking
 advantage of concepts such as random variable \emph{independence},
 \emph{conditional independence}, and \emph{exchangeability}. In this section, we
-describe some of the ways of representing a probability distribution.
+describe some representations of probability distributions and their semantics.
 \Cref{sec:pgms} is about representations based on graphs whereas
 \cref{sec:probprogramming} covers probabilistic programming languages. These
-representations also differ in their ability to reason about groups of random
+representations also differ in their ability to reason about sets of random
 variables. \emph{Propositional} models treat each random variable as a unique
 individual. In contrast, \emph{relational} models work over sets of individuals
 and relations among them. See the book by
@@ -596,7 +595,8 @@ statistical relational artificial intelligence can be found in the work of
 \citet{DBLP:conf/ilp/2008p}, \citet{DBLP:conf/icse/GordonHNR14}, and
 \citet{DBLP:series/synthesis/2016Raedt}, respectively.
 
-\begin{lstlisting}[caption=A ProbLog program that computes
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[frame=tb,caption=A ProbLog program that computes
   $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}.,
   label={lst:problog}]
   neighbour(john).
@@ -617,11 +617,12 @@ statistical relational artificial intelligence can be found in the work of
   evidence(calls(mary)).
   query(burglary).
 \end{lstlisting}
-% TODO (V): semantics of problog? Or, later?
+\end{minipage}
 
-\begin{lstlisting}[escapeinside={(*}{*)},caption=A BLOG program that computes
-  $\protect{\Pr(B \mid J, M)}$ for the scenario described in \cref{example:bn}.,
-  label={lst:blog}]
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[escapeinside={(*}{*)},frame=tb,caption=A BLOG
+  program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described
+  in \cref{example:bn}., label={lst:blog}]
   type Neighbour;
   distinct Neighbour John, Mary;
 
@@ -643,6 +644,7 @@ statistical relational artificial intelligence can be found in the work of
   obs Calls(Mary) = true;
   query Burglary;
 \end{lstlisting}
+\end{minipage}
 
 \Cref{lst:problog,lst:blog} contain two probabilistic programs that encode the
 information in \cref{example:bn}. In preparation for \cref{chapter:randomlps},
