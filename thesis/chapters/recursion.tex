@@ -29,8 +29,11 @@
 of models of a sentence in first-order logic (FOL) given the size(s) of its
 domain(s) \citep{DBLP:conf/pods/BeameBGS15}. \emph{Symmetric weighted FOMC}
 (WFOMC) extends FOMC with (pairs of) weights on predicates and asks for a
-weighted sum across all models instead. WFOMC emerged as the dominant approach
-to \emph{lifted (probabilistic) inference}. Lifted inference techniques exploit
+weighted sum across all models instead. By fixing the sizes of the domains, a
+WFOMC instance can be rewritten as a WMC instance---in fact, the WFOMC algorithm
+by \citet{DBLP:conf/ijcai/BroeckTMDR11} can do so when it is unable to solve the
+instance in a lifted manner. WFOMC emerged as the dominant approach to
+\emph{lifted (probabilistic) inference}. Lifted inference techniques exploit
 symmetries in probabilistic models by reasoning about sets rather than
 individuals \citep{DBLP:conf/ecai/Kersting12}. By doing so, many instances
 become solvable in polynomial time \citep{DBLP:conf/nips/Broeck11}. Lifted
@@ -79,9 +82,6 @@ proving \citep{DBLP:journals/cacm/GogateD16}.
 % solutions? How does mine differ?)
 % simple unliftable instances -> recursion
 
-% TODO (after 'construct recursive solutions'): Might be good at this point to
-% enumerate a few examples of problems that can be handled by the contribution
-
 However, none of the publicly available exact (W)FOMC algorithms can efficiently
 compute functions as simple as a factorial.\footnote{The problem of computing
   the factorial can be described using two variables and counting quantifiers,
@@ -103,25 +103,22 @@ solution always terminates.
 % 5.1) An overview of how ForcLift/Crane work.
 
 In this work, we show how to relax these restrictions in a way that results in a
-stronger (W)FOMC algorithm, capable of handling more instances in a lifted
-manner. The ideas presented in this chapter are implemented in
-\textsc{Crane}---an extension of the arguably most well-known WFOMC algorithm
-\textsc{ForcLift} written in Scala. \textsc{ForcLift} works in two stages:
-compilation and evaluation/propagation.\footnote{There is also an intermediate
-  stage called \emph{smoothing} that takes place between compilation and
-  evaluation. As our changes to smoothing are quite elementary, we do not
-  discuss them to not distract the reader from the main contributions of this
-  chapter.} In the first part, various \emph{(compilation) rules} are applied to
-the input (or some derivative) formula, gradually constructing a circuit. In the
-second part, the weights of the instance (and sometimes constants) are
-propagated through the circuit, computing the WMC\@.
-% TODO: Maybe explain somewhere that when lifting is not possible, classical WMC
-% is computed. Also explain that under the assumption that the weights of the
-% predicates is the same across all instances WFOMC is the same as WMC.
+stronger (W)FOMC algorithm, capable of handling more instances (e.g., counting
+various injective mappings) in a lifted manner. The ideas presented in this
+chapter are implemented in \textsc{Crane}---an extension of the arguably most
+well-known WFOMC algorithm \textsc{ForcLift} written in Scala. \textsc{ForcLift}
+works in two stages: compilation and evaluation/propagation.\footnote{There is
+  also an intermediate stage called \emph{smoothing} that takes place between
+  compilation and evaluation. As our changes to smoothing are quite elementary,
+  we do not discuss them to not distract the reader from the main contributions
+  of this chapter.} In the first part, various \emph{(compilation) rules} are
+applied to the input (or some derivative) formula, gradually constructing a
+circuit. In the second part, the weights of the instance (and sometimes
+constants) are propagated through the circuit, computing the WMC\@.
 
 \begin{figure}[t]
   \centering
-  \begin{subfigure}{0.40\textwidth}
+  \begin{subfigure}{0.50\textwidth}
     \centering
     \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
         sides=3},edge from parent/.style={draw,-Latex}]
@@ -142,19 +139,17 @@ propagated through the circuit, computing the WMC\@.
       cycles}\label{fig:before}
   \end{subfigure}
   \hspace{0.08\textwidth}
-  \begin{subfigure}{0.50\textwidth}
+  \begin{subfigure}{0.40\textwidth}
     \centering
-    \begin{tikzpicture}[triangle/.style = {regular polygon, regular polygon
-        sides=3}]
-      \node[draw,ellipse] (a) at (0, 0) {$\phi(n)$};
-      \node[draw,ellipse] (b) at (0, -2) {$\psi(n-1)$};
-      \node[draw,ellipse] (c) at (-1, -4) {$\phi(n-1)$};
-      \node[draw,triangle] (d) at (1, -4) {};
-      \draw[-Latex] (a) -- (b) node [midway,xshift=50] {Domain recursion};
-      \draw[-Latex] (b) -- (c);
-      \draw[-Latex] (b) -- (d);
-      \draw[-Latex,ultra thick,blue] (c) to [bend left=45] node [midway,xshift=-30] () {$n \mapsto n-1$} (a);
-    \end{tikzpicture}
+    \begin{forest}
+      for tree={ellipse,draw,edge={-Latex}}
+      [$\phi(n)$, name=n1,
+      [$\psi(n)$, edge label={node[midway,left] {GDR}},
+      [$\phi(n-1)$, edge label={node[midway,left] {CR}}, name=n3]
+      ]
+      ]
+      \draw[-Latex,ultra thick,blue] (n3) to [bend right=45] node [midway,xshift=30] () {$n \mapsto n-1$} (n1);
+    \end{forest}
     \caption{The kind of non-tree-like edges that are only supported by
       \textsc{Crane}, i.e., those that create directed cycles}\label{fig:after}
   \end{subfigure}
@@ -166,69 +161,54 @@ propagated through the circuit, computing the WMC\@.
 
 The main conceptual difference between \textsc{Crane} and \textsc{ForcLift} is
 that we utilise labelled directed graphs instead of circuits. The cycles in
-these graphs represent recursive calls. See \cref{fig:intuition} for an
-illustration of an example scenario. Suppose the original formula $\phi$ depends
-on a domain of size $n \in \mathbb{N}$. Our generalised version of domain
-recursion transforms $\phi$ into a different formula $\psi$ that depends on a
-domain of size $n-1$. After some number of subsequent transformations, the
-algorithm identifies that a solution to $\psi$ can be constructed in part by
-finding a solution to a version of $\phi$ where the domain of size $n$ is
-replaced by a domain of size $n-1$. Recognising $\phi$ from before, we can add a
-cycle-forming edge to the graph (highlighted in blue in \cref{fig:after}), which
-can be interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$.
+these graphs represent recursive calls. See \cref{fig:after} for an illustration
+of an example scenario. Suppose the original formula $\phi$ depends on a domain
+of size $n \in \mathbb{N}$. \emph{Generalised domain recursion} (GDR), one of
+the new compilation rules, transforms $\phi$ into a different formula $\psi$
+that has an additional constant and some new \emph{constraints}. After some
+additional transformations, the constraints in $\psi$ become `uniform' and can
+be removed, replacing the domain of size $n$ with a new domain of size
+$n-1$---this is the responsibility of the \emph{constraint removal} (CR)
+compilation rule. Afterwards, another new compilation rule recognizes that the
+resulting formula $\phi(n-1)$ is just like the input formula $\phi(n)$ except it
+refers to a different domain. This observation allows us to add a cycle-forming
+edge to the graph (highlighted in blue in \cref{fig:after}), which can be
+interpreted as function $f$ relying on $f(n-1)$ to compute $f(n)$. To construct
+such graphs, we also introduce a novel search algorithm that replaces the greedy
+search used by \textsc{ForcLift}.
+
+% 1. GDR: We assume that some form of domain recursion seems like a natural first step (moreso than any of the other compilation rules used by \textsc{ForcLift}). We relax the restrictions and see what kind of formulas we end up with.
+% 2. CR: A recursive solution to a computational problem always has some notion of 'this subproblem is just like the original problem but smaller'. In the case of first-order knowledge compilation, the canonical choice for such notion is when two formulas are isomorphic up to domains. To make this notion work with GDR, we need a way to undo the inequality constraints introduced by GDR while checking whether the constraints can be removed uniformly.
+% 3. Ref: 'to solve a problem, we need to solve a smaller instance of the same problem' <- that's just a recursive call.
+% 4. Search: Greedy search is not enough. There is no reason for it to be enough. That's juts an implicit assumption in previous work.
+
+% \begin{itemize}
+%   \item a generalisation of domain recursion by \citet{DBLP:conf/nips/Broeck11},
+%   \item \emph{constraint removal} (CR)---a formula transformation rule that removes
+%         the constraints introduced by generalised domain recursion (GDR),
+%         introducing a new (smaller) domain instead,
+%   \item and a rule for creating recursive calls.
+% \end{itemize}
 
 % 5.3) contributions, references to sections, shortcomings
 
-To construct such graphs, we introduce a novel search algorithm that replaces
-greedy search used by \textsc{ForcLift} and three compilation rules that work
-together to construct cyclic graphs. We begin with \cref{sec:recprelims} where
-we define the representation used for sentences in FOL as well as discuss
-caching and some notational conventions. Then, at the beginning of
-\cref{sec:methods} we formally define the graphs that replace circuits in
+\Cref{sec:recprelims} defines the representation used for sentences in FOL as
+well as discuss caching and some notational conventions. At the beginning of
+\cref{sec:methods}, we formally define the graphs that replace circuits in
 representing a solution to a (W)FOMC problem and discuss some related notions.
-\Cref{sec:rules} introduces the new compilation rules:
-\begin{itemize}
-  \item a generalisation of domain recursion by \citet{DBLP:conf/nips/Broeck11},
-  \item \emph{constraint removal}---a formula transformation rule that removes
-        the constraints introduced by generalised domain recursion (GDR),
-        introducing a new (smaller) domain instead,
-  \item and a rule for creating recursive calls.
-\end{itemize}
-In a typical solution produced by \textsc{Crane}, these rules are executed in
-exactly this order (interspersed with some other rules), with the edge that
-represents a recursive call pointing back to the node introduced by GDR\@.
-\Cref{sec:search} then describes our new search algorithm that makes fewer
-assumptions than \textsc{ForcLift} about the right order in which compilation
-rules should be applied. In \cref{sec:interpret}, we informally discuss how a
-graph can be interpreted as a collection of (potentially recursive) functions.
-Finally, in \cref{sec:results} we compare \textsc{ForcLift} and \textsc{Crane}
-on a range of function-counting problems. We show that \textsc{Crane} performs
-as well as \textsc{ForcLift} on the instances that were already solvable by
-\textsc{ForcLift} but is also able to handle most instances that
-\textsc{ForcLift} fails on as well.
-% TODO: the GDR part is unclear
+\Cref{sec:rules} introduces the new compilation rules. \Cref{sec:search} then
+describes our new search algorithm that makes fewer assumptions than
+\textsc{ForcLift} about the right order in which compilation rules should be
+applied. In \cref{sec:interpret}, we discuss how a graph can be interpreted as a
+collection of (potentially recursive) functions. Finally, in \cref{sec:results}
+we compare \textsc{ForcLift} and \textsc{Crane} on a range of function-counting
+problems. We show that \textsc{Crane} performs as well as \textsc{ForcLift} on
+the instances that were already solvable by \textsc{ForcLift} but is also able
+to handle most of the instances that \textsc{ForcLift} fails on.
 
-% \begin{itemize}
-%   \item What we do with the compilation result is different (see below)
-%   \item evaluation/interpretation: algebraic simplification, dynamic programming
-%   \item limitation: function extraction and simplification need to be automated,
-%         same for finding base cases
-% \end{itemize}
-
-% Leftovers
-% \begin{itemize}
-%   \item compilation works by always having a formula as input and
-%         adding nodes to the circuit/FCG that constitute the solution the that
-%         formula.
-%   \item Workflow after
-%   \begin{itemize}
-%     \item Compile the formula to a graph
-%     \item Extract the definitions of functions
-%     \item Simplify
-%     \item Supplement with base cases
-%     \item Evaluate to get the answer
-%   \end{itemize}
-% \end{itemize}
+% In a typical solution produced by \textsc{Crane}, these rules are executed in
+% exactly this order (interspersed with some other rules), with the edge that
+% represents a recursive call pointing back to the node introduced by GDR\@.
 
 \section{Preliminaries}\label{sec:recprelims}
 
@@ -239,7 +219,7 @@ is on unweighted model counting, \textsc{ForcLift}'s
 \citep{DBLP:conf/ijcai/BroeckTMDR11} support for weights trivially transfers to
 \textsc{Crane} as well.
 
-Our representation of FOMC instances is heavily based on the format used
+Our representation of FOMC instances is largely based on the format used
 internally by \textsc{ForcLift}, some aspects of which are described by
 \citet{DBLP:conf/ijcai/BroeckTMDR11}. \textsc{ForcLift} is able to translate
 sentences in a variant of function-free many-sorted FOL with equality to this
@@ -247,9 +227,10 @@ internal format. An \emph{atom} is $p(t_1, \dots, t_n)$ for some predicate $p$
 and terms $t_{1}, \dots, t_{n}$. Here, $n \in \mathbb{N}_0$ is the \emph{arity}
 of $p$. A \emph{term} is either a constant or a variable. A \emph{literal} is
 either an atom or the negation of an atom (denoted by
-$\neg p(t_1, \dots, t_n)$). Let $\mathcal{D}$ be the set of all domains; note
-that this set expands during compilation.
-% TODO: explain \mathcal{D} in a bit more detail
+$\neg p(t_1, \dots, t_n)$). Let $\mathcal{D}$ be the set of all domains.
+Initially, $\mathcal{D}$ contains all domains mentioned by the input (W)FOMC
+instance. During compilation, new domains added to $\mathcal{D}$ by some of the
+compilation rules.
 
 \begin{definition}[Constraint]\label{def:constraint}
   An \emph{(inequality) constraint} is a pair $(a, b)$, where $a$ is a variable,
@@ -430,9 +411,9 @@ non-tree-like edges (denoted by $\Reff$), while used before, is extended to
 contain the information necessary to support recursive calls. We also add three
 new types:
 \begin{itemize}
-  \item a type for \emph{constraint removal} denoted by $\CR$,
-  \item a type for \emph{generalised domain recursion} denoted by $\GDR$ (both
-        with out-degree one),
+  \item a type for constraint removal denoted by $\CR$,
+  \item a type for generalised domain recursion denoted by $\GDR$ (both with
+        out-degree one),
   \item and $\star$---a placeholder type (with out-degree zero) for nodes that
         are going to be replaced.
 \end{itemize}
@@ -690,8 +671,8 @@ replaces $\Omega$ with $\Omega'$ (on \cref{line:newdelta}).
     c_3 &= (\{\, \neg p(X, Y), \neg p(Z, Y) \,\}, \{\, (X, x), (Z, X), (Z, x) \,\}, \{\, X \mapsto \Gamma, Y \mapsto \Delta^\bot, Z \mapsto \Gamma \,\}).
   \end{align*}
   Domain $\Gamma$ and with its element $x \in \Gamma$ satisfy the preconditions
-  for constraint removal. The rule introduces a new domain $\Gamma'$ and
-  transforms $\phi$ to $\phi' = (c_1', c_2', c_3')$, where
+  for CR\@. The rule introduces a new domain $\Gamma'$ and transforms $\phi$ to
+  $\phi' = (c_1', c_2', c_3')$, where
   \begin{align*}
     c_1' &= c_1, \\
     c_2' &= (\{\, \neg p(X, Y), \neg p(X, Z) \,\}, \{\, (Y, Z) \,\}, \{\, X \mapsto \Gamma', Y \mapsto \Delta^\bot, Z \mapsto \Delta^\bot \,\}), \\
@@ -919,12 +900,12 @@ applied to each encountered formula as soon and as many times as possible (in a
 predefined order). Most rules are greedy, i.e., those that produce a sink node
 with no leftover formula, those that simplify the formula without changing the
 FCG, and those that split the formula into parts that can be solved
-independently. The constraint removal rule described in \cref{sec:cr} is greedy.
-On the other hand, non-greedy rules signify uncertain choices that we may want
-to retract. They also correspond to edges in the implicit search tree; thus, the
-first solution found by the search algorithm always has the fewest applications
-of non-greedy rules. These rules include the $\GDR$ and $\Reff$ rules described
-in \cref{sec:dr,sec:ref}, respectively, and some rules from previous work
+independently. The CR rule described in \cref{sec:cr} is greedy. On the other
+hand, non-greedy rules signify uncertain choices that we may want to retract.
+They also correspond to edges in the implicit search tree; thus, the first
+solution found by the search algorithm always has the fewest applications of
+non-greedy rules. These rules include the $\GDR$ and $\Reff$ rules described in
+\cref{sec:dr,sec:ref}, respectively, and some rules from previous work
 \citep{DBLP:conf/ijcai/BroeckTMDR11} such as atom counting, inclusion-exclusion,
 independent partial grounding, and shattering.
 
@@ -1112,6 +1093,19 @@ However, we only call \texttt{mergeFcgs} with $G$'s that have at least one
 $\star$, so the return value of the initial call to the function is never
 \texttt{null}.
 
+\begin{claim}\label{claim:recursion}
+  Using the new compilation rules and search algorithm, \textsc{Crane} is able
+  to construct an FCG for the problem of counting partial injections described
+  in \cref{example:first}. Moreover, this FCG encodes a solution that can be
+  evaluated in $\Theta(mn)$ time, where $m = |\Gamma|$ and $n = |\Delta|$.
+\end{claim}
+
+In \cref{sec:results}, we provide experimental evidence that proves
+\cref{claim:recursion} as well as similar results on some other
+function-counting problems. None of the previous (W)FOMC algorithms
+\citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16,DBLP:conf/kr/KazemiP16}
+can solve these newly liftable instances.
+
 \section{How to Interpret an FCG}\label{sec:interpret}
 
 When \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} compiles a WFOMC
@@ -1173,8 +1167,8 @@ from $v$.
   $\{\, \Gamma \mapsto \Gamma', \Delta \mapsto \Delta^\bot \,\}$ tells us that
   the interpretation of the $\Reff$ node should be the same as that of the
   source node, but with domains $\Gamma$ and $\Delta$ replaced with $\Gamma'$
-  and $\Delta^{\bot}$, respectively. Domain $\Gamma'$ was created by a
-  constraint removal rule applied on $\Gamma$, so $|\Gamma'| = m - 1$. Now
+  and $\Delta^{\bot}$, respectively. Domain $\Gamma'$ was created by the CR rule
+  applied on $\Gamma$, so $|\Gamma'| = m - 1$. Now
   $\Delta^{\bot} = \Delta \setminus \Delta^{\top}$, and $|\Delta^{\top}| = l$,
   so $|\Delta^{\bot}| = n - l$. Thus, the interpretation of the $\Reff$ node is
   a recursive call to $f(m - 1, n - l)$. Therefore,
@@ -1185,21 +1179,6 @@ from $v$.
   input formula for any domain sizes, one just needs to find the base cases
   $f(0, n)$ and $f(m, 0)$ for all $m, n \in \mathbb{N}_{0}$.
 \end{example}
-
-% TODO: It is hard to say for sure but I think the examiners as well as the
-% readers of a potential paper will complain how the technical section ends. You
-% need to find a proposition or in the worst case at least a conjecture that
-% says that crane does something provably better or for certain compared to
-% previous work. There are some papers in statistical rel learning but don't
-% mention any formal results. But don't think given the kind of technical
-% notation you have introduced it is justified to leave things without any
-% claim. How about a proposition like: given a factorial function expressed in
-% the following fragment of fo logic, the algorithm crane computes...
-%
-% You could then point out that forklift does not have such a claim
-%
-% If intermediate claims leading up to the final proposition can be provided for
-% the other steps u introduce that much the better.
 
 \section{Empirical Results}\label{sec:results} % Newly Domain-Liftable Formulas
 
@@ -1308,19 +1287,31 @@ In this chapter, we showed how a state-of-the-art (W)FOMC algorithm can be
 empowered by generalising domain recursion and adding support for cycles in the
 graph that encodes a solution. To construct such graphs, \textsc{Crane}
 supplements \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with three
-new compilation rules and a hybrid search algorithm. In \cref{sec:results}, we
-saw examples of instances that become liftable not just in principle
-\citep{DBLP:journals/jair/Kuzelka21} but with an implemented algorithm as well.
-However, our experiments cover only a small set of instances since some parts of
-\textsc{Crane} are yet to be fully automated. Specifically, our experiments
-focus on various function-counting problems---it remains to be seen what other
-types of instances become liftable as a result.
-% 1) Found that injectivity is the main example of something that is now liftable
-% 2) \Ctwo{}?
-% TODO: So perhaps you don't have any concrete results but I think it is
-% important to at least state using a conjecture what kind of classes you hope
-% you can capture. If you don't make it explicit or even provide a concrete set
-% of suggestions, you cannot expect the reader to arrive at this on their own.
+new compilation rules and a hybrid search algorithm. The experiments in
+\cref{sec:results} revealed a range of counting problems that are liftable to
+\textsc{Crane} but not to any other (W)FOMC algorithm. The common thread across
+these newly liftable problems is (partial) injectivity. Thus, we can formulate
+the following conjecture.
+
+\begin{conjecture}
+  Let \IFO{} be the class of formulas in FOL that contain clauses with at most
+  two variables as well as any number of copies
+  \begin{align*}
+    (\forall X \in \Gamma\text{. }\forall Y \in \Delta\text{. }\forall Z \in \Delta\text{. }Y \ne Z &\implies \neg p(X, Y) \lor \neg p(X, Z)) \land \\
+    (\forall X \in \Gamma\text{. }\forall Y \in \Delta\text{. }\forall Z \in \Gamma\text{. }X \ne Z &\implies \neg p(X, Y) \lor \neg p(Z, Y)).
+  \end{align*}
+  for some predicate $p$ and domains $\Gamma$ and $\Delta$. Then \IFO{} is
+  liftable by \textsc{Crane}.
+\end{conjecture}
+
+Since the tasks of counting injections and bijections fall into the \Ctwo{}
+fragment as well, we can formulate an even stronger conjecture.
+
+\begin{conjecture}
+  \Ctwo{} is liftable by \textsc{Crane} by either reformulating formulas in
+  \Ctwo{} to avoid counting quantifiers or extending \textsc{Crane} to support
+  them.
+\end{conjecture}
 
 An idea pivotal to our work is the generalisation of circuits to graphs. Despite
 the wide variety of circuits that are used in artificial intelligence
@@ -1336,10 +1327,6 @@ inference \citep{DBLP:journals/corr/abs-2202-02891}, computing the expectations
 of kernel functions \citep{DBLP:conf/uai/LiZVB21}, and variational inference in
 discrete graphical models \citep{DBLP:conf/nips/ShihE20}.
 
-% TODO ('what makes... one domain'): Again you cannot expect the reader to gain
-% this insight by reading the technical work. You have to make this explicit.
-% You might even use a paragraph separation and title it a remark to point out
-% obvious mathematical properties of your construction.
 However, the most important direction for future work is in fully automating
 this new way of computing the (W)FOMC of a formula. First, we need an algorithm
 that transforms FCGs into definitions of functions. Formalising this process
@@ -1347,15 +1334,17 @@ would also allow us to prove the correctness of the new compilation rules in
 constructing FCGs that indeed compute the right WMC\@. Second, these definitions
 must be simplified before they can be used, perhaps by a computer algebra
 system. Third, most importantly, we need a way to find the base cases for the
-recursive definitions provided by \textsc{Crane}. What makes this problem
-non-trivial is that the number of base cases is not constant for functions of
-arity greater than one (i.e., formulas that mention more than one domain). On
-the other hand, assuming that a domain is empty can greatly simplify a problem.
-Fourth, since the first solution found by \textsc{Crane} is not always optimal
-in terms of its complexity, an automated way to determine the asymptotic
-complexity of a solution would be helpful as well. Achieving these goals would
-make \textsc{Crane} capable of automatically constructing efficient ways to
-compute a function (e.g., a sequence) of interest. In addition to the potential
-impact to areas of artificial intelligence (AI) such as statistical relational
-AI \citep{DBLP:series/synthesis/2016Raedt}, \textsc{Crane} could be beneficial
-to research in combinatorics as well \citep{DBLP:conf/ilp/BarvinekB0ZK21}.
+recursive definitions provided by \textsc{Crane}. Fourth, since the first
+solution found by \textsc{Crane} is not always optimal in terms of its
+complexity, an automated way to determine the asymptotic complexity of a
+solution would be helpful as well. Achieving these goals would make
+\textsc{Crane} capable of automatically constructing efficient ways to compute a
+function (e.g., a sequence) of interest. In addition to the potential impact to
+areas of artificial intelligence (AI) such as statistical relational AI
+\citep{DBLP:series/synthesis/2016Raedt}, \textsc{Crane} could be beneficial to
+research in combinatorics as well \citep{DBLP:conf/ilp/BarvinekB0ZK21}.
+
+% What makes this problem non-trivial is that the number of base cases is not
+% constant for functions of arity greater than one (i.e., formulas that mention
+% more than one domain). On the other hand, assuming that a domain is empty can
+% greatly simplify a problem.
