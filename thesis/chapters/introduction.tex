@@ -37,18 +37,18 @@ conditional) probability from a Bayesian network. This thesis is about a
 particular approach to probabilistic inference (and other similar computational
 tasks) and its use in performing inference on structured representations of
 probability distributions such as Bayesian networks and probabilistic logic
-programs. More generally, we look at different ways of describing arithmetic
+programs. More generally, we look at various ways of describing arithmetic
 computations pertinent to probabilistic inference and how algorithms interpret
 those descriptions, leading to solutions of varying complexity. We begin with an
 example that showcases how one can compute a probability in various ways
 depending on how one chooses to reason about it.
 
 \begin{example}\label{example:veryfirst}
-  Suppose we have a biased coin that has a probability $0 \le p \le 1$ of
-  landing heads. What is the probability that it lands heads \emph{at least
-    once} if we toss it \emph{three times}? More formally, we have three
-  independent Bernoulli random variables $X_1$, $X_2$, and $X_3$ such that
-  $X_i \sim \Bernoulli(p)$ for all $i$, and we want to compute
+  Suppose we have a biased coin with probability $0 \le p \le 1$ of landing
+  heads. What is the probability that it lands heads \emph{at least once} if we
+  toss it \emph{three times}? More formally, we have three independent Bernoulli
+  random variables $X_1$, $X_2$, and $X_3$ such that $X_i \sim \Bernoulli(p)$
+  for all $i$, and we want to compute
   \[
     P \coloneqq \Pr(X_1 = 1 \cup X_2 = 1 \cup X_3 = 1).
   \]
@@ -173,7 +173,7 @@ WMC is a rapidly growing area of research. Publications describing novel WMC
 algorithms continue to appear each year
 \citep{DBLP:conf/cp/DudekPV20,DBLP:conf/cp/KorhonenJ21}. Furthermore, a
 competition\footnote{\url{https://mccompetition.org/}} (as well as a workshop)
-for model counting and extensions thereof started running annually in 2020
+for model counting and its extensions started running annually in 2020
 \citep{DBLP:journals/jea/FichteHH21}. Given all of this, it is all the more
 important to
 \begin{itemize}
@@ -200,10 +200,10 @@ e.g., the Lebesgue integral generalises the Riemann integral, and Einstein's
 general theory of relativity generalises Newton's law of universal gravitation.
 An example of generalisation closer to home is the emergence of solvers for,
 e.g., Boolean satisfiability (SAT), constraint programming, integer programming,
-and linear programming, that can be used to solve many decision and optimisation
-problems. While designing algorithms for specific problems remains a valuable
-enterprise, there is indisputable value in having a range of tools with broader
-applicability.
+and linear programming, which can be used to solve many decision and
+optimisation problems. While designing algorithms for specific problems remains
+a valuable enterprise, there is indisputable value in having a range of tools
+with broader applicability.
 
 % =========================== A paragraph that partitions the chapters and describes them in broad terms =========
 
@@ -214,7 +214,7 @@ we generalise some of the procedures and data structures used by a WFOMC
 algorithm to make it applicable to a wider range of problem instances. The main
 idea behind this work is that, in many cases, efficiency improvements can be
 achieved by developing algorithms that can handle richer data structures.
-Another important idea in this work, particularly
+Another important idea in this work, particularly in
 \cref{chapter:randomlps,chapter:comparison}, is that empirical testing of
 algorithms on a wide range of random instances can help reveal fundamental
 differences in the behaviour of said algorithms. In
@@ -268,19 +268,18 @@ published as:
 % 6. showed how a WFOMC algorithm can discover recursive solutions
 
 In \cref{chapter:wfomc}, our attention shifts to another version of WMC, namely,
-WFOMC as well as its unweighted variant FOMC\@. Despite being around for more
-than a decade, practical (W)FOMC algorithms are still unable to compute
-functions as simple as a factorial. In this chapter, we argue that the
-capabilities of FOMC algorithms are severely limited by their inability to
-express arbitrary recursive computations. To \emph{enable arbitrary recursion},
-we relax the restrictions that typically accompany domain recursion and
-generalise circuits used to express a solution to an FOMC problem to graphs that
-may contain cycles. To this end, we enhance the most well-established WFOMC
-algorithm \textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with new
-compilation rules and an algorithm to check whether a recursive call is
-feasible. These improvements allow us to \emph{automatically find efficient
-  solutions} to counting fundamental structures such as injections and
-bijections.
+WFOMC and its unweighted variant FOMC\@. Despite being around for more than a
+decade, practical (W)FOMC algorithms are still unable to compute functions as
+simple as a factorial. In this chapter, we argue that the capabilities of FOMC
+algorithms are severely limited by their inability to express arbitrary
+recursive computations. To \emph{enable arbitrary recursion}, we relax the
+restrictions that typically accompany domain recursion and generalise circuits
+used to express a solution to an FOMC problem to graphs that may contain cycles.
+To this end, we enhance the most well-established WFOMC algorithm
+\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} with new compilation
+rules and an algorithm to check whether a recursive call is feasible. These
+improvements allow us to \emph{automatically find efficient solutions} to
+counting fundamental structures such as injections and bijections.
 
 % 7. developed a way of generating (P)LPs that's much more general than anything from before
 % 8. showed the remarkable similarity of various ProbLog inference algorithms when applied to such random data
@@ -391,20 +390,21 @@ of weights.
 
 We end the introduction with a visual description of the topics covered in this
 thesis. \Cref{fig:overview} lists some of the key concepts of this work and
-shows how each chapter of the thesis relates to these concepts and interactions
-between them. \Cref{chapter:background} covers a selection of topics related to
-this work and refers the reader to suitable literature for further information.
-\Cref{chapter:wmc1} examines the definition of WMC more closely and suggests a
-way to bypass it, leading to a more succinct encoding of Bayesian network
-probabilistic inference compatible with the \textsc{ADDMC} algorithm. Then
-\cref{chapter:wmc2} describes WMC encodings for Bayesian networks, defines PBP,
-shows how to transform WMC instances to PBP instances, and how the \textsc{DPMC}
-algorithm benefits from this new format. In \cref{chapter:wfomc}, we expand the
-capabilities of the WFOMC algorithm \textsc{ForcLift} to new (previously
-unsolvable) instances. \Cref{chapter:randomlps} describes a constraint model
-that can generate random (probabilistic) logic programs in the ProbLog
-\citep{DBLP:conf/ijcai/RaedtKT07} language---a well known use-case of WMC\@.
-\Cref{chapter:comparison} develops an algorithm for generating random WMC
-instances and uses it showcase some important differences in the behaviour of
-WMC algorithms. Finally, \cref{chapter:conclusion} summarises our results and
-provides a perspective for potential future work.
+shows how each chapter of the thesis relates to these concepts and the
+interactions between them. \Cref{chapter:background} covers a selection of
+topics related to this work and refers the reader to suitable literature for
+further information. \Cref{chapter:wmc1} examines the definition of WMC more
+closely and suggests a way to bypass it, leading to a more succinct encoding of
+Bayesian network probabilistic inference compatible with the \textsc{ADDMC}
+algorithm. Then \cref{chapter:wmc2} describes WMC encodings for Bayesian
+networks, defines PBP, shows how to transform WMC instances to PBP instances,
+and how the \textsc{DPMC} algorithm benefits from this new format. In
+\cref{chapter:wfomc}, we expand the capabilities of the WFOMC algorithm
+\textsc{ForcLift} to new (previously unsolvable) instances.
+\Cref{chapter:randomlps} describes a constraint model that can generate random
+(probabilistic) logic programs in the ProbLog \citep{DBLP:conf/ijcai/RaedtKT07}
+language---a well-known use-case of WMC\@. \Cref{chapter:comparison} develops an
+algorithm for generating random WMC instances and uses it to showcase some
+important differences in the behaviour of WMC algorithms. Finally,
+\cref{chapter:conclusion} summarises our results and provides a perspective for
+potential future work.

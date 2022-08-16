@@ -1,9 +1,9 @@
 % >= 5 pages
 \chapter{Conclusion}\label{chapter:conclusion}
 
-In \cref{sec:contributions} we review the contributions of this thesis and in
+In \cref{sec:contributions} we review the contributions of this thesis, and in
 \cref{sec:future} we provide a perspective on how future work could develop,
-either directly or indirectly building on the results of our work.
+either directly or indirectly based on the results of our work.
 
 \section{Contributions}\label{sec:contributions}
 % ================================= CONTRIBUTIONS (reiterating their importance) =================================
@@ -31,18 +31,17 @@ tractability of the propositional and first-order variants of WMC\@. In
 improved by generalising weights from their standard definition based on
 literals to one capable of representing a richer subset of all possible
 pseudo-Boolean functions. In \cref{chapter:wfomc}, we extend the capabilities of
-\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} so that it is able to
-solve more instances in a lifted manner, e.g., instances with injective
-mappings. The empirical contributions of
-\cref{chapter:randomlps,chapter:comparison} are about introducing novel tools
-and methods for WMC\@. In \cref{chapter:randomlps}, we developed a constraint
-model for (probabilistic) logic programs that can be used to generate random
-programs or enumerate all small programs under some given constraints. The
-constraints include various notions of size, the structure/complexity of a
-clause, and the independence of random variables. Finally, in
-\cref{chapter:comparison}, we present a way to generate propositional formulas
-in CNF with varying primal treewidth. As treewidth is a well-known parameter
-commonly used to describe parameterised complexity results
+\textsc{ForcLift} \citep{DBLP:conf/ijcai/BroeckTMDR11} so that it can solve more
+instances in a lifted manner, e.g., instances with injective mappings. The
+empirical contributions of \cref{chapter:randomlps,chapter:comparison} are about
+introducing novel tools and methods for WMC\@. In \cref{chapter:randomlps}, we
+developed a constraint model for (probabilistic) logic programs that can be used
+to generate random programs or enumerate all small programs under some given
+constraints. The constraints include various notions of size, the
+structure/complexity of a clause, and the independence of random variables.
+Finally, in \cref{chapter:comparison}, we present a way to generate
+propositional formulas in CNF with varying primal treewidth. As treewidth is a
+well-known parameter commonly used to describe parameterised complexity results
 \citep{DBLP:series/txcs/DowneyF13}, the same model (or a variation thereof) can
 be used in experimental studies of many other logic-based problems as well.
 
@@ -67,7 +66,7 @@ conditional probabilities more succinctly and can lead to improved probabilistic
 inference speed for Bayesian networks. In \cref{chapter:wmc2}, we continue the
 work on generalising WMC and formally define the generalisation as
 pseudo-Boolean projection (PBP). Moreover, we show that previous work on WMC
-encodings is not in vain and the benefits can (in most cases) be transferred to
+encodings is not in vain, and the benefits can (in most cases) be transferred to
 PBP\@. Lastly, \cref{chapter:wfomc} contains two important lessons. First,
 `circuits' with cycles can be more expressive than their acyclic predecessors.
 Second, first-order model counting (and first-order knowledge compilation in
@@ -149,7 +148,7 @@ In this thesis, we contributed to the development and applicability of three WMC
 algorithms: \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20}, \textsc{DPMC}
 \citep{DBLP:conf/cp/DudekPV20}, and \textsc{ForcLift}
 \citep{DBLP:conf/ijcai/BroeckTMDR11}. The first two are propositional WMC
-algorithms based on ADDs whereas \textsc{ForcLift} is a WMC algorithm for
+algorithms based on ADDs, whereas \textsc{ForcLift} is a WMC algorithm for
 first-order logic based on knowledge compilation. While in this work we focused
 exclusively on exact algorithms, all of them could be adapted to approximate
 instead. An approximation technique called \emph{lifted relax, compensate and
@@ -175,8 +174,8 @@ Finally, ample opportunities remain to improve WMC encodings that already exist
 as well as connect WMC to new problem domains. In particular, we showed how PBP
 encodings of Bayesian networks are much smaller than the equivalent WMC
 encodings and can be handled more efficiently by a WMC algorithm. Designing PBP
-encodings for other applications of WMC and to new problem domains could be
-similarly beneficial. Moreover, back in \cref{chapter:introduction} we compared
+encodings for other applications of WMC and new problem domains could be
+similarly beneficial. Moreover, back in \cref{chapter:introduction}, we compared
 WMC to a range of other computational problems that ask to compute a sum of
 products. Establishing efficient reductions among these problems could yield new
 fixed-parameter tractable algorithms and/or improvements to the empirical state
@@ -206,11 +205,11 @@ interest in computing such sequences efficiently, the existence of many such
 sequences with no efficient formulas suggests that a tractable solution might
 not exist. However, we have no proof of that, i.e., no arithmetic circuit lower
 bounds for sequences that have been known for decades and are easy to describe
-in natural language and in logic. So far, the most notable hardness result
+in natural language and logic. So far, the most notable hardness result
 states that there exists a sentence in first-order logic with three variables
 for which FOMC is $\#\P_1$-complete \citep{DBLP:conf/pods/BeameBGS15}. Having
 similar hardness results for sentences that are both simple and practical would
-be a significant advancement to the field.
+be a significant advancement in the field.
 
 \subsection{Random Instances}
 
@@ -272,11 +271,11 @@ instead of asking whether a probability of some event is above/below some
 threshold in a particular situation, one could ask for conditions on the input
 values that are necessary for the probability to be sufficiently high/low. Such
 reasoning capabilities have clear benefits to the robustness of artificial
-agents and to explainability---another rapidly emerging area of research
+agents and explainability---another rapidly emerging area of research
 \citep{DBLP:journals/corr/abs-1909-03012,DBLP:journals/fdata/BelleP21,DBLP:journals/corr/abs-2202-10335}.
 
 For the benefit of both AI and combinatorics, we would like to reiterate and
-expand on the notion of automatic enumerative combinatorialist by
+expand on the notion of an automatic enumerative combinatorialist by
 \citet{DBLP:conf/ilp/BarvinekB0ZK21}. Perhaps (W)FOMC can mature into an
 easy-to-use tool that can compute any function expressible in first-order logic,
 in many cases providing a simple solution via a combination of recursive

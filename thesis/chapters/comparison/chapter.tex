@@ -249,8 +249,7 @@ numerical values of weights.
       \,\}$\;\label{line:8}
       $X \gets X \cup \{\, x \,\}$\;\label{line:9}
     }
-    $\phi \gets \phi \cup \{\, l \leftlsquigarrow \mathcal{U}\{\, x, \neg x \,\}
-    \mid x \in X \,\}$\;\label{line:construct_clause}
+    $\phi \gets \phi \cup \{\, \{\, l \leftlsquigarrow \mathcal{U}\{\, x, \neg x \,\} \mid x \in X \,\} \,\}$\;\label{line:construct_clause}
   }
   \Return{$\phi$}\;
   \Fn{\NewVariable{set of variables $X$, primal graph $G$}}{

@@ -17,7 +17,7 @@ based on graphs (i.e., probabilistic graphical models) and those based on text
 various representations of Boolean and pseudo-Boolean functions. These
 representations (and algorithms that compile into them) are crucial in many WMC
 and probabilistic inference algorithms. We end the chapter with
-\cref{sec:applications} which provides an overview of the applications of WMC
+\cref{sec:applications}, which provides an overview of the applications of WMC
 and its impact on areas such as bioinformatics, natural language processing, and
 robotics.
 
@@ -186,21 +186,21 @@ and constraint programming.
 
 In this subsection, we give a brief introduction to logic programming.
 Specifically, we focus on Prolog---the most popular logic programming language
-to date. We do not, however, attempt to cover all (or even most) of the
-capabilities of Prolog but rather focus on the main concepts and ideas relevant
-to our work in \cref{chapter:randomlps}. Note that different descriptions of
-logic programming often use different (and mutually inconsistent) terminologies.
-Here we prioritise names and definitions that are sufficiently general for our
-needs and reasonably consistent with the terminology used in logic. For more
-details on logic programming and Prolog, we refer the reader to some of the
-numerous books on the subject
+yet. We do not, however, attempt to cover all (or even most) of the capabilities
+of Prolog but rather focus on the main concepts and ideas relevant to our work
+in \cref{chapter:randomlps}. Note that different descriptions of logic
+programming often use different (and mutually inconsistent) terminologies. Here
+we prioritise names and definitions that are sufficiently general for our needs
+and reasonably consistent with the terminology used in logic. For more details
+on logic programming and Prolog, we refer the reader to some of the numerous
+books on the subject
 \citep{DBLP:books/daglib/0041598,DBLP:books/daglib/0067951}.
 
 A \emph{logic program} is a finite sequence\footnote{Although it is common to
   define logic programs as sets, the order is important for efficiency and can
   be the difference between finite and infinite running time.} of clauses. A
 \emph{clause} consists of a head and a body. If a clause has an empty body, it
-is a \emph{fact}, otherwise it is a \emph{rule}. The Prolog syntax for a fact
+is a \emph{fact}; otherwise it is a \emph{rule}. The Prolog syntax for a fact
 and a rule is \verb+h.+ and \verb+h :- b.+, respectively, where \texttt{h} is
 the head and \texttt{b} is the body, although we often write
 $\texttt{h} \gets \texttt{b}$ instead.
@@ -246,7 +246,7 @@ ancestor(X, Z) :- parent(X, Z); (parent(X, Y), ancestor(Y, Z)).
     \texttt{ancestor(X, Z)} \gets \texttt{parent(X, Z)} \lor (\texttt{parent(X, Y)} \land \texttt{ancestor(Y, Z)}).
   \]
 
-  This program has three clauses. The first two clauses are facts whereas the
+  This program has three clauses. The first two clauses are facts, whereas the
   last clause is a rule. The program uses two predicates (\texttt{parent} and
   \texttt{ancestor}), three constants (\texttt{sky}, \texttt{will}, and
   \texttt{zoe}), and the last clauses uses three variables (\texttt{X},
@@ -439,7 +439,7 @@ scenarios, the same information could be described more succinctly by taking
 advantage of concepts such as random variable \emph{independence},
 \emph{conditional independence}, and \emph{exchangeability}. In this section, we
 describe some representations of probability distributions and their semantics.
-\Cref{sec:pgms} is about representations based on graphs whereas
+\Cref{sec:pgms} is about representations based on graphs, whereas
 \cref{sec:probprogramming} covers probabilistic programming languages. These
 representations also differ in their ability to reason about sets of random
 variables. \emph{Propositional} models treat each random variable as a unique
@@ -454,10 +454,9 @@ Perhaps the best-known representations of probability distributions are
 use a graph-based representation to compactly encode a probability distribution.
 These graphs can be either directed (as in the case of Bayesian networks) or
 undirected (as in the case of Markov networks). This section provides a brief
-overview of these two networks, although there are also other PGMs such as
-factor graphs
-\citep{DBLP:journals/spm/Loeliger04,DBLP:series/synthesis/2016Raedt} as well as
-graphical models that capture concepts other than probabilities, e.g.,
+overview of these two networks although there are also other PGMs such as factor
+graphs \citep{DBLP:journals/spm/Loeliger04,DBLP:series/synthesis/2016Raedt} as
+well as graphical models that capture concepts other than probabilities, e.g.,
 constraint networks, cost networks, and influence diagrams
 \citep{DBLP:series/synthesis/2019Dechter}. For more information on PGMs, see
 some of the many books on the subject
@@ -648,8 +647,8 @@ statistical relational artificial intelligence can be found in the work of
 
 \Cref{lst:problog,lst:blog} contain two probabilistic programs that encode the
 information in \cref{example:bn}. In preparation for \cref{chapter:randomlps},
-let us examine the syntax and semantics of ProbLog a bit more closely. ProbLog
-clauses are exactly like Prolog clauses (see \cref{sec:lp}) but with \verb+p ::+
+let us examine the syntax and semantics of ProbLog more closely. ProbLog clauses
+are exactly like Prolog clauses (see \cref{sec:lp}) but with \verb+p ::+
 prepended, for some probability \texttt{p}. Without \verb+::+, the probability
 associated with the clause is implicitly equal to 1. ProbLog also has keywords
 \texttt{evidence} and \texttt{query} that are used to define one or more
@@ -688,9 +687,9 @@ are:
         \citep{DBLP:journals/fmsd/BaharFGHMPS97}.
 \end{itemize}
 The first two items on this list are described in \cref{sec:nnf,sec:sdds},
-respectively, and the last two are covered in a bit more detail in
-\cref{sec:dds}. While knowledge compilation is a process (which is performed by
-algorithms), here our focus is on the representations themselves.
+respectively, and the last two are covered in more detail in \cref{sec:dds}.
+While knowledge compilation is a process (which is performed by algorithms),
+here our focus is on the representations themselves.
 
 \subsection{NNF and d-DNNF}\label{sec:nnf}
 
@@ -887,13 +886,13 @@ propositional formula that it represents.
 
 \subsection{Other Decision Diagrams}\label{sec:dds}
 
-NNF and d-DNNF are \emph{normal forms} of propositional formulas. This means
-that---even though they can be represented diagrammatically as trees or
-circuits---a formula in (d-D)NNF (just like in CNF) is still a formula. The same
-applies to SDDs: while we defined them as nested sets and tuples,
-$\langle S \rangle$ of an SDD $S$ is just a propositional formula with a certain
-structure. In contrast, the two representations we describe here---BDDs and
-ADDs---are defined as DAGs rather than normal forms.
+NNF and d-DNNF are \emph{normal forms} of propositional formulas. Thus---even
+though they can be represented diagrammatically as trees or circuits---a formula
+in (d-D)NNF (just like in CNF) is still a formula. The same applies to SDDs:
+while we defined them as nested sets and tuples, $\langle S \rangle$ of an SDD
+$S$ is just a propositional formula with a certain structure. In contrast, the
+two representations we describe here---BDDs and ADDs---are defined as DAGs
+rather than normal forms.
 
 Both BDDs and ADDs represent functions. BDDs represent \emph{Boolean functions},
 i.e., maps of the form ${\{\, 0, 1 \,\}}^n \to \{\, 0, 1 \,\}$ for some
@@ -1022,8 +1021,8 @@ interpreted as a subset of $X$).
   $f(\{\,y\,\}) = 0.3$ and $\sigma\colon \{\,x, y\,\} \to \mathbb{N}^+$ be the
   variable ordering function defined as $\sigma(x) = 1$, and $\sigma(y) = 2$.
   Then the \emph{canonical} ADD for $f$ under $\sigma$ is pictured in
-  \cref{fig:add}\footnote{Also see \cref{fig:bdd} for a BDD equivalent to the
-    d-DNNF and the SDD in \cref{fig:kc}.} and can be formally defined as
+  \cref{fig:add}\footnote{See \cref{fig:bdd} for a BDD equivalent to the d-DNNF
+    and the SDD in \cref{fig:kc}.} and can be formally defined as
   $(G, a, \rho, \chi, \epsilon)$, where:
   \begin{itemize}
     \item $\mathcal{V}(G) = \{\,a, b, c, d\,\}$,
@@ -1069,7 +1068,7 @@ well as operations on them.
   \caption{Operations on ADDs, their definitions, and the time complexity of the
     best-known algorithm for performing each operation. Let
     $f\colon 2^X \to \mathbb{R}$ and $g\colon 2^Y \to \mathbb{R}$ be
-    pseudo-Boolean functions represented by ADDs with $n$ and $m$ nodes
+    pseudo-Boolean functions represented by ADDs with $n$ and $m$ nodes,
     respectively, and let $r \in \mathbb{R}$, and
     $x \in X$.}\label{tbl:complexity}
 \end{table}
@@ -1132,7 +1131,7 @@ well-researched application of WMC, however, is inference for PGMs such as
 Bayesian networks
 \citep{DBLP:conf/ecai/BartKLM16,DBLP:conf/ijcai/ChaviraD05,DBLP:conf/sat/ChaviraD06,DBLP:conf/kr/Darwiche02,DBLP:conf/aaai/SangBK05}.
 Originally, this approach was motivated by \emph{context-specific independence},
-i.e., the independence of random variables that is created by conditioning the
+i.e., the independence of random variables created by conditioning the
 probability distribution \citep{DBLP:conf/uai/BoutilierFGK96}. Deconstructing a
 graphical model to a propositional formula makes such independencies easier to
 exploit \citep{DBLP:conf/kr/Darwiche02}. Moreover, WMC is used for inference in
@@ -1169,6 +1168,6 @@ applications for which current WMC is not fast enough. This is especially the
 case for WFOMC, where said improvements usually bring classes of instances from
 exponential to polynomial time. At the very least, WMC-based approaches should
 be able to handle bigger and more complex data sets regardless of their origin.
-Note that although we use Bayesian network probabilistic inference as a central
-examples on several occasions, our research is chiefly foundational and not
-necessarily motivated by any one application.
+Note that although we use Bayesian network probabilistic inference as the
+principal example on several occasions, our research is chiefly foundational and
+not necessarily motivated by any one application.
