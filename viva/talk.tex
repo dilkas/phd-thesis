@@ -1,0 +1,416 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish]{babel}
+\usepackage[UKenglish]{isodate}
+\usepackage{booktabs}
+% \usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{tikz}
+% \usepackage{complexity}
+\usepackage{empheq}
+\usepackage{spot}
+
+% \usetikzlibrary{arrows}
+% \usetikzlibrary{positioning}
+\usetikzlibrary{overlay-beamer-styles}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{shapes}
+\usetikzlibrary{decorations.pathreplacing}
+
+\tikzstyle{every picture}+=[remember picture]
+
+\beamertemplatenavigationsymbolsempty
+
+\definecolor{predicate}{HTML}{1b9e77}
+\definecolor{probability}{HTML}{e7298a}
+\definecolor{variable}{HTML}{d95f02}
+\definecolor{constant}{HTML}{7570b3}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+
+\DeclareMathOperator{\ifff}{:-}
+\DeclareMathOperator{\prob}{::}
+\DeclareMathOperator{\negg}{\backslash+}
+
+\author{Paulius Dilkas}
+\title{Generalising Weighted Model Counting}
+\institute{University of Edinburgh, UK}
+\date{1st November 2022}
+
+\begin{document}
+%\addtobeamertemplate{block begin}{\setlength\abovedisplayskip{0pt}}
+
+\begin{frame}[noframenumbering,plain]
+  \tikz[remember picture,overlay]{
+    \node at ([yshift=25pt,xshift=30pt]current page.south)
+    {\includegraphics[height=40pt]{inf.png}};
+    \node at ([yshift=25pt,xshift=75pt]current page.south)
+    {\includegraphics[height=40pt]{ecr.jpg}};
+    \node at ([yshift=20pt,xshift=140pt]current page.south)
+    {\includegraphics[height=20pt]{epsrc.png}};
+  }
+  \titlepage
+\end{frame}
+
+\begin{frame}{Weighted Model Counting}
+  \begin{example}
+    We have a biased coin that has a probability \structure{$p \in [0, 1]$} of
+    landing heads. What is the probability that it lands heads \alert{at least
+      once} if we toss it \alert{three times}?
+  \end{example}
+  \begin{block}{In Propositional Logic\ldots}
+    \begin{itemize}
+      \item Formula: \structure{$x_{1} \lor x_{2} \lor x_{3}$}
+      \item Weights: \structure{$w(x_{i}) = p$}, \structure{$w(\neg x_{i}) = 1-p$} for \structure{$i = 1, 2, 3$}
+      \item Models: \structure{$\mathcal{P}(\{\, x_{1}, x_{2}, x_{3} \,\}) \setminus \{\, \emptyset \,\}$}
+    \end{itemize}
+  \end{block}
+  \begin{block}{In First-Order Logic\ldots}
+    \begin{itemize}
+      \item Formula: \structure{$\exists x \in \{\,1, 2, 3\,\}\text{. }P(x)$}
+      \item Weights: \structure{$w(P) = p$}, \structure{$w(\neg P) = 1 - p$}
+      \item Models: \structure{$\mathcal{P}(\{\, P(1), P(2), P(3) \,\}) \setminus \{\, \emptyset \,\}$}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Significance}
+  \begin{block}{Applications}
+  \begin{itemize}
+    \item Probabilistic inference: graphical models, statistical relational models, probabilistic programming
+    \item Neural-symbolic artificial intelligence
+    \item Bioinformatics
+    \item Robotics
+    \item Natural language processing
+    \item Enumerative combinatorics
+  \end{itemize}
+  \end{block}
+  \begin{block}{Impact}
+    \begin{columns}
+      \begin{column}{0.50\textwidth}
+        \begin{itemize}
+          \item Suitable WMC algorithm
+          \item Appropriate input format
+          \item Lifted reasoning
+          \item Expressive data structures
+        \end{itemize}
+      \end{column}
+      \begin{column}{0.1\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{arrow.png}
+      \end{column}
+      \begin{column}{0.40\textwidth}
+        \begin{itemize}
+          \item \structure{$>100 \times$} speedup
+          \item provable tractability
+        \end{itemize}
+      \end{column}
+    \end{columns}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Contributions}
+  \begin{columns}[t]
+    \begin{column}{0.46\textwidth}
+      \centering
+      \includegraphics[width=0.5\textwidth]{trees.png}
+      \begin{block}{Generalising Representations}
+        \begin{itemize}
+          \item Beyond weights on literals
+          \item Circuits for recursion
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \centering
+      \includegraphics[width=0.5\textwidth]{dice}
+      \begin{block}{Random-Instance Experiments}
+        \begin{itemize}
+          \item Application-specific parameters%
+          \begin{itemize}
+            \item \textsc{ProbLog} predicates, arities
+          \end{itemize}
+          \item Parameters of hardness
+          \begin{itemize}
+            \item density, primal treewidth
+          \end{itemize}
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}Generalising Representations\par%
+  \end{beamercolorbox}
+  \vfill
+\end{frame}
+
+\begin{frame}{WMC and Measures on Boolean Algebras}
+  \begin{definition}
+    A \alert{measure} is a function
+    \structure{$\mu\colon \mathcal{P}(\mathcal{P}(X)) \to \mathbb{R}_{\ge 0}$}
+    such that:
+    \begin{itemize}
+      \item \structure{$\mu(\bot) = 0$};
+      \item \structure{$\mu(x \lor y) = \mu(x) + \mu(y)$} whenever
+            \structure{$x \land y = \bot$}.
+    \end{itemize}
+  \end{definition}
+  \begin{block}{Observation}
+    WMC corresponds to the process of calculating the value of
+    \structure{$\mu(x)$} for some
+    \structure{$x \in \mathcal{P}(\mathcal{P}(X))$}.
+  \end{block}
+  \begin{block}{Observation}
+    Classical WMC is only able to evaluate \alert{factorable} measures (c.f., a
+    collection of mutually independent random variables).
+  \end{block}
+  \begin{theorem}[Informal Version]
+    It is always possible to add more variables to turn a non-factorable measure
+    into a factorable measure.
+  \end{theorem}
+  However, that is not necessarily a good idea!
+\end{frame}
+
+\begin{frame}{Experiments with Bayesian Networks}
+    \hspace*{-0.5cm}\input{scatter1}
+\end{frame}
+
+\begin{frame}{Transforming Known WMC Encodings into PBP}
+  For any propositional formula \structure{$\phi$} over a set of variables
+  \structure{$X$} and \structure{$p, q \in \mathbb{R}$}, let
+  \structure{$[\phi]^p_q\colon 2^X \to \mathbb{R}$} be the pseudo-Boolean
+  function defined as
+  \[
+    [\phi]^p_q(Y) \coloneqq
+    \begin{cases}
+      p & \text{if } Y \models \phi \\
+      q & \text{otherwise}
+    \end{cases}
+  \]
+  for any \structure{$Y \subseteq X$}.
+  \pause
+  \begin{example}
+    \begin{center}
+      \begin{tabular}{llll}
+        \toprule
+        Clauses & \onslide<3->{In CNF} & \onslide<4->{Pseudo-Boolean Functions} & \\
+        \midrule
+        $\neg x \Rightarrow p$ & \onslide<3->{$x \lor p$} & \onslide<4->{$[\neg x]_1^{0.2}$}\tikz \coordinate (one); & \\
+        $p \Rightarrow \neg x$ & \onslide<3->{$\neg x \lor \neg p$} & & \tikz \coordinate (two); \onslide<5->{$[x]^{0.8}_{0.2}$} \\
+        $x \Rightarrow q$ & \onslide<3->{$\neg x \lor q$} & \onslide<4->{$[x]_1^{0.8}$} \tikz \coordinate (three); & \\
+        $q \Rightarrow x$ & \onslide<3->{$x \lor \neg q$} & & \\
+        $\neg x$ & \onslide<3->{$\neg x$} & \onslide<4->{$[\neg x]_0^1$} & \onslide<5->{$[\neg x]_0^1$} \\
+        \bottomrule
+      \end{tabular}
+    \end{center}
+  \end{example}
+  \onslide<5->{
+    \begin{tikzpicture}[remember picture,overlay]
+      \draw[-latex,blue] (one) -- (two);
+      \draw[-latex,blue] (three) -- (two);
+    \end{tikzpicture}
+  }
+\end{frame}
+
+\begin{frame}{Some Instances Become Tractable as a Result}
+  \centering
+  \includegraphics[width=\textwidth]{scatter2}
+\end{frame}
+
+\begin{frame}{First-Order Logic and Recursive Computations}
+  \begin{example}[Counting \structure{$P\colon M \to N$} Injections]
+    \begin{columns}
+      \begin{column}{0.7\textwidth}
+        \begin{block}{Input Formula}
+          \begin{gather*}
+            \forall x \in M\text{. }\exists y \in N\text{. }P(x, y) \\
+            \forall x \in M\text{. }\forall y, z \in N\text{. }P(x, y) \land P(x, z) \Rightarrow y=z \\
+            \forall w, x \in M\text{. }\forall y \in N\text{. }P(w, y) \land P(x, y) \Rightarrow w=x
+          \end{gather*}
+        \end{block}
+      \end{column}
+      \begin{column}{0.3\textwidth}
+        \centering
+        \begin{tikzpicture}[every node/.style={draw,ellipse},edge from parent/.style={draw,-latex},sibling distance=10mm,level distance=10mm]
+          \node[fill=red!50] (dr) {}
+          child {node {}
+            child {node[fill=red!50] {}
+              child {node {}
+                child {node {}}
+                child {node[fill=red!50] (ref) {}}
+              }}};
+          \draw[-latex, bend right,red] (ref) to (dr);
+        \end{tikzpicture}
+      \end{column}
+    \end{columns}
+    \begin{block}{Recursive Solution}
+    \[
+      f(m, n) =
+      \begin{cases}
+        1 & \text{if } m = 0 \text{ and } n = 0 \\
+        0 & \text{if } m > 0 \text{ and } n = 0 \\
+        f(m, n-1) + m \cdot f(m-1, n-1) & \text{otherwise.}
+      \end{cases}
+    \]
+    \end{block}
+  \end{example}
+\end{frame}
+
+\begin{frame}{First-Order Knowledge Compilation}
+  \begin{block}{Workflow Before}
+    \begin{enumerate}
+      \item Compile the formula to a \alert{circuit}
+      \item Evaluate to get the answer
+    \end{enumerate}
+  \end{block}
+  \begin{block}{Workflow After}
+    \begin{enumerate}
+      \item Compile the formula to a \alert{graph}
+      \item Extract the definitions of functions
+      \item Simplify
+      \item Supplement with \alert{base cases}
+      \item Evaluate to get the answer
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+\begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}Random-Instance Experiments\par%
+  \end{beamercolorbox}
+  \vfill
+\end{frame}
+
+\begin{frame}{A Constraint Model for (Probabilistic) Logic Programs}
+  \begin{columns}
+    \hspace*{-0.7cm}\begin{column}{0.75\textwidth}
+      \begin{empheq}[left ={\color{color5}\empheqlbrace}]{equation}
+        \begin{align*}
+      \textcolor{probability}{0.2} \prob &\textcolor{predicate}{\mathtt{stress}}(\textcolor{variable}{\mathsf{P}}) \ifff \textcolor{predicate}{\mathtt{person}}(\textcolor{variable}{\mathsf{P}}). \\
+      \textcolor{probability}{0.3} \prob &\textcolor{predicate}{\mathtt{influences}}(\textcolor{variable}{\mathsf{P}_1}, \textcolor{variable}{\mathsf{P}_2}) \ifff \textcolor{predicate}{\mathtt{friend}}(\textcolor{variable}{\mathsf{P}_1}, \textcolor{variable}{\mathsf{P}_2}). \\
+      \textcolor{probability}{0.1} \prob &\textcolor{predicate}{\mathtt{cancer\_spont}}(\textcolor{variable}{\mathsf{P}}) \ifff \textcolor{predicate}{\mathtt{person}}(\textcolor{variable}{\mathsf{P}}). \\
+      \textcolor{probability}{0.3} \prob &\textcolor{predicate}{\mathtt{cancer\_smoke}}(\textcolor{variable}{\mathsf{P}}) \ifff \textcolor{predicate}{\mathtt{person}}(\textcolor{variable}{\mathsf{P}}). \\
+                                         &\textcolor{predicate}{\mathtt{smokes}}(\textcolor{variable}{\mathsf{X}}) \ifff \textcolor{predicate}{\mathtt{stress}}(\textcolor{variable}{\mathsf{X}}). \\
+                                         &\textcolor{predicate}{\mathtt{smokes}}(\textcolor{variable}{\mathsf{X}}) \ifff \textcolor{predicate}{\mathtt{smokes}}(\textcolor{variable}{\mathsf{Y}}), \textcolor{predicate}{\mathtt{influences}}(\textcolor{variable}{\mathsf{Y}}, \textcolor{variable}{\mathsf{X}}). \\
+                                         &\textcolor{predicate}{\mathtt{cancer}}(\textcolor{variable}{\mathsf{P}}) \ifff \textcolor{predicate}{\mathtt{cancer\_spont}}(\textcolor{variable}{\mathsf{P}}). \\
+                                         &\textcolor{predicate}{\mathtt{cancer}}(\textcolor{variable}{\mathsf{P}}) \ifff \tikz \coordinate (start);\textcolor{predicate}{\mathtt{smokes}}(\textcolor{variable}{\mathsf{P}}), \textcolor{predicate}{\mathtt{cancer\_smoke}}(\textcolor{variable}{\mathsf{P}})\tikz \coordinate (end);. \\
+                                         &\textcolor{predicate}{\mathtt{person}}(\textcolor{constant}{\mathit{mary}}). \\
+                                         &\textcolor{predicate}{\mathtt{person}}(\textcolor{constant}{\mathit{albert}}). \\
+                                         &\textcolor{predicate}{\mathtt{friend}}(\textcolor{constant}{\mathit{albert}}, \textcolor{constant}{\mathit{mary}}).
+        \end{align*}
+      \end{empheq}
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      \begin{itemize}
+      \item[\textcolor{predicate}{\textbullet}] predicates, arities
+      \item[\textcolor{variable}{\textbullet}] variables
+      \item[\textcolor{constant}{\textbullet}] constants
+      \item[\textcolor{probability}{\textbullet}] probabilities
+      \item[\textcolor{color5}{\textbullet}] length
+      \item[\textcolor{color6}{\textbullet}] complexity
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \begin{tikzpicture}[overlay]
+    \draw [decorate,decoration={brace,amplitude=10pt,mirror},color=color6] (start) -- (end);
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{\textsc{ProbLog} Inference Algorithms on Random Instances}
+  \centering
+  \input{line_plots.tex}
+\end{frame}
+
+\begin{frame}{Random WMC Instances}
+  \begin{block}{Key Idea}
+    Parameter \structure{$\rho \in [0, 1]$} biases the probability distribution
+    towards adding variables that would introduce fewer new edges in the primal
+    graph.
+  \end{block}
+  \begin{example}
+    \begin{columns}
+      \begin{column}{0.65\linewidth}
+        Partially-constructed formula:
+        \[
+          (\neg x_{5} \lor x_{2} \lor x_{1}) \land (x_{5} \lor \alert{\mathord{?}} \lor \mathord{?}).
+        \]
+      \end{column}
+      \begin{column}{0.25\linewidth}
+        Its primal graph:
+
+        \begin{tikzpicture}
+          \node (a) at (0.5, 1) {$x_{1}$};
+          \node (b) at (0, 0) {$x_{2}$};
+          \node (c) at (1, 0) {\spot{$x_{5}$}};
+          \node (d) at (2, 1) {$x_{3}$};
+          \node (e) at (2, 0) {$x_{4}$};
+          \draw (a) -- (b);
+          \draw[blue,thick] (b) -- (c);
+          \draw[blue,thick] (c) -- (a);
+          \draw (current bounding box.north east) rectangle (current bounding box.south west);
+        \end{tikzpicture}
+      \end{column}
+    \end{columns}
+
+    Base probability of each variable being chosen:
+    \[
+      \frac{1 - \rho}{4}.
+    \]
+
+    Both \structure{$x_{1}$} and \structure{$x_{2}$} get a bonus probability of
+    \structure{$\rho/2$} for each being the endpoint of \alert{one} out of
+    the \alert{two} neighbourhood edges.
+  \end{example}
+\end{frame}
+
+ \begin{frame}{How WMC Algorithms Scale w.r.t. Primal Treewidth}
+  We fit the model \structure{$\ln t \sim \alpha w + \beta$}, i.e.,
+  \structure{$t \sim e^{\beta}{(e^{\alpha})}^{w}$}, where \structure{$t$} is
+  \alert{runtime}, and \structure{$w$} is \alert{primal treewidth}.
+
+  \centering
+  \includegraphics{linearbase.pdf}
+\end{frame}
+
+\begin{frame}{What Have We Learned?}
+  \begin{itemize}
+    \item Pseudo-Boolean functions as an alternative to literal weights
+    \item Cycles in graphs that encode recursive calls
+    \item WMC is not always the bottleneck in probabilistic inference
+    \item WMC algorithms based on algebraic decision diagrams are fundamentally different:
+    \begin{itemize}
+      \item they can supports non-literal weights
+      \item their running time depends on the numerical values of weights
+      \item they peak at higher density
+      \item they scale worse w.r.t.\ primal treewidth
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% IMPORTANCE, ORIGINALITY, CORRECTNESS
+
+% Originality:
+% 1. Representations for WMC problems that go beyond the "CNF + literal weights" tradition (e.g., PBP)
+% 2. Circuits with cycles + the 'recursive-algebraic' POV of WFOMC
+% 3. Experimental studies of WMC algorithms on random instances with varying:
+% a) application-specific parameters (e.g., predicate arities)
+% b) parameters that determine the hardness of the problem (e.g., density and primal treewidth)
+
+% Importance (why these things are important to study):
+% What is the benefit for academic understanding, the general public, a specific avenue? Why this question in particular?
+% 1. A simpler representation of a problem often leads to a faster solution. In my work, this is because ADDs are capable of representing more than just clauses.
+% 2. Interpreting a circuit/graph as a collection of algebraically-defined functions highlights the kinds of computations that are not yet supported by WFOMC algorithms
+% 3. Important observation: WMC is usually not the bottleneck of ProbLog inference
+% 4. Important observation: ADD-based WMC algorithms are fundamentally different in that:
+% a) their running time depends on the numerical values of weights
+% b) they scale worse w.r.t. primal treewidth
+% c) they peak at higher density
+
+\end{document}
