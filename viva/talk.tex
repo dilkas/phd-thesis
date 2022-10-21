@@ -35,7 +35,7 @@
 \author{Paulius Dilkas}
 \title{Generalising Weighted Model Counting}
 \institute{University of Edinburgh, UK}
-\date{1st November 2022}
+\date{Viva Voce}
 
 \begin{document}
 %\addtobeamertemplate{block begin}{\setlength\abovedisplayskip{0pt}}
@@ -261,22 +261,44 @@
   \end{example}
 \end{frame}
 
-\begin{frame}{First-Order Knowledge Compilation}
-  \begin{block}{Workflow Before}
-    \begin{enumerate}
-      \item Compile the formula to a \alert{circuit}
-      \item Evaluate to get the answer
-    \end{enumerate}
-  \end{block}
-  \begin{block}{Workflow After}
-    \begin{enumerate}
-      \item Compile the formula to a \alert{graph}
-      \item Extract the definitions of functions
-      \item Simplify
-      \item Supplement with \alert{base cases}
-      \item Evaluate to get the answer
-    \end{enumerate}
-  \end{block}
+% \begin{frame}{First-Order Knowledge Compilation}
+%   \begin{block}{Workflow Before}
+%     \begin{enumerate}
+%       \item Compile the formula to a \alert{circuit}
+%       \item Evaluate to get the answer
+%     \end{enumerate}
+%   \end{block}
+%   \begin{block}{Workflow After}
+%     \begin{enumerate}
+%       \item Compile the formula to a \alert{graph}
+%       \item Extract the definitions of functions
+%       \item Simplify
+%       \item Supplement with \alert{base cases}
+%       \item Evaluate to get the answer
+%     \end{enumerate}
+%   \end{block}
+% \end{frame}
+
+\begin{frame}{Resulting Improvements to Counting Functions}
+  Let \structure{$M$} and \structure{$N$} be two sets with cardinalities
+  \structure{$|M| = m$} and \structure{$|N| = n$}.
+
+  The new compilation rules enable \textsc{ForcLift} to efficiently count
+  \structure{$M \to N$} functions such as:
+  \begin{itemize}
+    \item injections in \structure{$\Theta(mn)$} time
+          \begin{itemize}
+            \item best: \structure{$\Theta(m)$}
+          \end{itemize}
+    \item partial injections in \structure{$\Theta(mn)$} time
+          \begin{itemize}
+            \item best: \structure{$\Theta({\min\{\, m, n \,\}}^2)$}
+          \end{itemize}
+          \item bijections in \structure{$\Theta(m)$} time
+          \begin{itemize}
+            \item \alert{optimal!}
+          \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -379,19 +401,28 @@
   \includegraphics{linearbase.pdf}
 \end{frame}
 
-\begin{frame}{What Have We Learned?}
-  \begin{itemize}
-    \item Pseudo-Boolean functions as an alternative to literal weights
-    \item Cycles in graphs that encode recursive calls
-    \item WMC is not always the bottleneck in probabilistic inference
-    \item WMC algorithms based on algebraic decision diagrams are fundamentally different:
+% Mention the applicability of WMC and the two main strands of my contributions
+\begin{frame}{Summary}
+  \begin{block}{What Have We Learned?}
     \begin{itemize}
-      \item they can supports non-literal weights
-      \item their running time depends on the numerical values of weights
-      \item they peak at higher density
-      \item they scale worse w.r.t.\ primal treewidth
+      \item Pseudo-Boolean functions as an alternative to literal weights
+      \item Cycles in graphs that encode recursive calls
+      \item WMC is not always the bottleneck in probabilistic inference
+      \item WMC algorithms based on algebraic decision diagrams are fundamentally different:
+      \begin{itemize}
+        \item they can supports non-literal weights
+        \item their running time depends on the numerical values of weights
+        \item they peak at higher density
+        \item they scale worse w.r.t.\ primal treewidth
+      \end{itemize}
     \end{itemize}
-  \end{itemize}
+  \end{block}
+  \begin{block}{Future Directions}
+    \begin{itemize}
+      \item PBP\@: new encodings, kernelization, pseudo-Boolean solvers
+      \item WFOMC\@: full automation and new applications (e.g., in AI)
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 % IMPORTANCE, ORIGINALITY, CORRECTNESS
