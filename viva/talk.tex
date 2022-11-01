@@ -74,7 +74,7 @@
   \end{block}
 \end{frame}
 
-\begin{frame}{Significance}
+\begin{frame}{Significance of WMC and This Work}
   \begin{block}{Applications}
   \begin{itemize}
     \item Probabilistic inference: graphical models, statistical relational models, probabilistic programming
@@ -101,8 +101,8 @@
       \end{column}
       \begin{column}{0.40\textwidth}
         \begin{itemize}
-          \item \structure{$>100 \times$} speedup
           \item provable tractability
+          \item experimental speedup
         \end{itemize}
       \end{column}
     \end{columns}
@@ -165,6 +165,7 @@
     \structure{$\mu(x)$} for some
     \structure{$x \in \mathcal{P}(\mathcal{P}(X))$}.
   \end{block}
+  \pause
   \begin{block}{Observation}
     Classical WMC is only able to evaluate \alert{factorable} measures (c.f., a
     collection of mutually independent random variables).
@@ -176,9 +177,9 @@
   However, that is not necessarily a good idea!
 \end{frame}
 
-\begin{frame}{Experiments with Bayesian Networks}
-    \hspace*{-0.5cm}\input{scatter1}
-\end{frame}
+% \begin{frame}{Experiments with Bayesian Networks}
+%     \hspace*{-0.5cm}\input{scatter1}
+% \end{frame}
 
 \begin{frame}{Transforming Known WMC Encodings into PBP}
   For any propositional formula \structure{$\phi$} over a set of variables
@@ -193,34 +194,31 @@
     \end{cases}
   \]
   for any \structure{$Y \subseteq X$}.
-  \pause
   \begin{example}
     \begin{center}
       \begin{tabular}{llll}
         \toprule
-        Clauses & \onslide<3->{In CNF} & \onslide<4->{Pseudo-Boolean Functions} & \\
+        Clauses & In CNF & Pseudo-Boolean Functions & \\
         \midrule
-        $\neg x \Rightarrow p$ & \onslide<3->{$x \lor p$} & \onslide<4->{$[\neg x]_1^{0.2}$}\tikz \coordinate (one); & \\
-        $p \Rightarrow \neg x$ & \onslide<3->{$\neg x \lor \neg p$} & & \tikz \coordinate (two); \onslide<5->{$[x]^{0.8}_{0.2}$} \\
-        $x \Rightarrow q$ & \onslide<3->{$\neg x \lor q$} & \onslide<4->{$[x]_1^{0.8}$} \tikz \coordinate (three); & \\
-        $q \Rightarrow x$ & \onslide<3->{$x \lor \neg q$} & & \\
-        $\neg x$ & \onslide<3->{$\neg x$} & \onslide<4->{$[\neg x]_0^1$} & \onslide<5->{$[\neg x]_0^1$} \\
+        $\neg x \Rightarrow p$ & $x \lor p$ & $[\neg x]_1^{0.2}$\tikz \coordinate (one); & \\
+        $p \Rightarrow \neg x$ & $\neg x \lor \neg p$ & & \tikz \coordinate (two); $[x]^{0.8}_{0.2}$ \\
+        $x \Rightarrow q$ & $\neg x \lor q$ & $[x]_1^{0.8}$ \tikz \coordinate (three); & \\
+        $q \Rightarrow x$ & $x \lor \neg q$ & & \\
+        $\neg x$ & $\neg x$ & $[\neg x]_0^1$ & $[\neg x]_0^1$ \\
         \bottomrule
       \end{tabular}
     \end{center}
   \end{example}
-  \onslide<5->{
-    \begin{tikzpicture}[remember picture,overlay]
-      \draw[-latex,blue] (one) -- (two);
-      \draw[-latex,blue] (three) -- (two);
-    \end{tikzpicture}
-  }
+  \begin{tikzpicture}[remember picture,overlay]
+    \draw[-latex,blue] (one) -- (two);
+    \draw[-latex,blue] (three) -- (two);
+  \end{tikzpicture}
 \end{frame}
 
-\begin{frame}{Some Instances Become Tractable as a Result}
-  \centering
-  \includegraphics[width=\textwidth]{scatter2}
-\end{frame}
+% \begin{frame}{Some Instances Become Tractable as a Result}
+%   \centering
+%   \includegraphics[width=\textwidth]{scatter2}
+% \end{frame}
 
 \begin{frame}{First-Order Logic and Recursive Computations}
   \begin{example}[Counting \structure{$P\colon M \to N$} Injections]
@@ -407,7 +405,7 @@
     \begin{itemize}
       \item Pseudo-Boolean functions as an alternative to literal weights
       \item Cycles in graphs that encode recursive calls
-      \item WMC is not always the bottleneck in probabilistic inference
+%      \item WMC is not always the bottleneck in probabilistic inference
       \item WMC algorithms based on algebraic decision diagrams are fundamentally different:
       \begin{itemize}
         \item they can supports non-literal weights
