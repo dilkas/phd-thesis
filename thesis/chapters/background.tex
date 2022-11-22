@@ -521,12 +521,12 @@ some of the many books on the subject
     \toprule
     $b$ & $e$ & $a$ & $\Pr(A = a \mid B = b, E = e)$ \\
     \midrule
-    \rowcolor{gray!10}\multicolumn{2}{c}{} & \false{} & 0.999 \\
-    \rowcolor{gray!10}\multicolumn{2}{c}{\multirow{-2}{*}{\false{}}} & \true{} & 0.001 \\
+    \rowcolor{gray!25}\multicolumn{2}{c}{} & \false{} & 0.999 \\
+    \rowcolor{gray!25}\multicolumn{2}{c}{\multirow{-2}{*}{\false{}}} & \true{} & 0.001 \\
     & & \false{} & 0.71 \\
     \multirow{-2}{*}{\false{}} & \multirow{-2}{*}{\true{}} & \true{} & 0.29 \\
-    \rowcolor{gray!10}& & \false{} & 0.06 \\
-    \rowcolor{gray!10}\multirow{-2}{*}{\true{}} & \multirow{-2}{*}{\false{}} & \true{} & 0.94 \\
+    \rowcolor{gray!25}& & \false{} & 0.06 \\
+    \rowcolor{gray!25}\multirow{-2}{*}{\true{}} & \multirow{-2}{*}{\false{}} & \true{} & 0.94 \\
     \multicolumn{2}{c}{} & \false{} & 0.05 \\
     \multicolumn{2}{c}{\multirow{-2}{*}{\true{}}} & \true{} & 0.95 \\
     \bottomrule
@@ -577,16 +577,17 @@ models.
 
 \subsection{Probabilistic Programming}\label{sec:probprogramming}
 
+% BLOG \citep{DBLP:conf/ijcai/MilchMRSOK05}, NP-BLOG \citep{DBLP:conf/uai/CarbonettoKFP05}
+
 Augmenting a programming language with probabilities is another common way to
 compactly represent probability distributions. Logic programming languages, in
 particular, have been frequently used for this purpose. Examples of
 probabilistic logic programming languages include the independent choice logic
 \citep{DBLP:journals/ai/Poole97,DBLP:conf/ilp/Poole08}, PRISM
-\citep{DBLP:conf/ijcai/SatoK97,DBLP:conf/ilp/SatoK08}, BLOG
-\citep{DBLP:conf/ijcai/MilchMRSOK05}, NP-BLOG
-\citep{DBLP:conf/uai/CarbonettoKFP05}, ProbLog \citep{DBLP:conf/ijcai/RaedtKT07}
-and CP-logic \citep{DBLP:journals/tplp/VennekensDB09}. Functional and imperative
-programming languages have also seen some use, examples of which include BUGS
+\citep{DBLP:conf/ijcai/SatoK97,DBLP:conf/ilp/SatoK08}, ProbLog
+\citep{DBLP:conf/ijcai/RaedtKT07} and CP-logic
+\citep{DBLP:journals/tplp/VennekensDB09}. Functional and imperative programming
+languages have also seen some use, examples of which include BUGS
 \citep{gilks1994language}, IBAL \citep{DBLP:conf/ijcai/Pfeffer01}, Church
 \citep{DBLP:conf/uai/GoodmanMRBT08}, and Stan \citep{stan}. More information on
 probabilistic logic programming, probabilistic programming more generally, and
@@ -617,35 +618,34 @@ statistical relational artificial intelligence can be found in the work of
   query(burglary).
 \end{lstlisting}
 \end{minipage}
+% \noindent\begin{minipage}{\linewidth}
+% \begin{lstlisting}[escapeinside={(*}{*)},frame=tb,caption=A BLOG
+%   program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described
+%   in \cref{example:bn}., label={lst:blog}]
+%   type Neighbour;
+%   distinct Neighbour John, Mary;
 
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}[escapeinside={(*}{*)},frame=tb,caption=A BLOG
-  program that computes $\protect{\Pr(B \mid J, M)}$ for the scenario described
-  in \cref{example:bn}., label={lst:blog}]
-  type Neighbour;
-  distinct Neighbour John, Mary;
+%   random Boolean Burglary   (*$\sim$*) BooleanDistrib(0.001);
+%   random Boolean Earthquake (*$\sim$*) BooleanDistrib(0.002);
 
-  random Boolean Burglary   (*$\sim$*) BooleanDistrib(0.001);
-  random Boolean Earthquake (*$\sim$*) BooleanDistrib(0.002);
+%   random Boolean Alarm (*$\sim$*) case[Burglary, Earthquake] in {
+%     [false, false] -> BooleanDistrib(0.001),
+%     [false, true]  -> BooleanDistrib(0.29),
+%     [true, false]  -> BooleanDistrib(0.94),
+%     [true, true]   -> BooleanDistrib(0.95)
+%   };
 
-  random Boolean Alarm (*$\sim$*) case[Burglary, Earthquake] in {
-    [false, false] -> BooleanDistrib(0.001),
-    [false, true]  -> BooleanDistrib(0.29),
-    [true, false]  -> BooleanDistrib(0.94),
-    [true, true]   -> BooleanDistrib(0.95)
-  };
+%   random Boolean Calls(Neighbour n) (*$\sim$*)
+%     if Alarm then BooleanDistrib(0.8)
+%     else BooleanDistrib(0.1);
 
-  random Boolean Calls(Neighbour n) (*$\sim$*)
-    if Alarm then BooleanDistrib(0.8)
-    else BooleanDistrib(0.1);
+%   obs Calls(John) = true;
+%   obs Calls(Mary) = true;
+%   query Burglary;
+% \end{lstlisting}
+% \end{minipage}
 
-  obs Calls(John) = true;
-  obs Calls(Mary) = true;
-  query Burglary;
-\end{lstlisting}
-\end{minipage}
-
-\Cref{lst:problog,lst:blog} contain two probabilistic programs that encode the
+\Cref{lst:problog} contains a probabilistic program that encodes the
 information in \cref{example:bn}. In preparation for \cref{chapter:randomlps},
 let us examine the syntax and semantics of ProbLog more closely. ProbLog clauses
 are exactly like Prolog clauses (see \cref{sec:lp}) but with \verb+p ::+

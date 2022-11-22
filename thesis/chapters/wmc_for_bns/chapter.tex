@@ -97,7 +97,7 @@ necessarily faster.
     Name in logic & Boolean-algebraic notation & Set-theoretic notation \\
     \midrule
     Atoms (elements of $U$) & $a, b$ & $a, b$ \\
-    \rowcolor{gray!10} Models (elements of $2^U$) & $\neg a \land \neg b, a \land \neg b, \neg a \land b, a \land b$ & $\emptyset, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\}$ \\
+    \rowcolor{gray!25} Models (elements of $2^U$) & $\neg a \land \neg b, a \land \neg b, \neg a \land b, a \land b$ & $\emptyset, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\}$ \\
                   & $\top$ & $\{\, \emptyset, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
                   & $\neg a \lor \neg b, a \Rightarrow b$ & $\{\, \emptyset, \{\, a \,\}, \{\, b \,\} \,\}, \{\, \emptyset, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
                   & $b \Rightarrow a, a \lor b$ & $\{\, \emptyset, \{\, a \,\}, \{\, a, b \,\} \,\}, \{\, \{\, a \,\}, \{\, b \,\}, \{\, a, b \,\} \,\}$ \\
@@ -286,10 +286,12 @@ increased efficiency and decreased memory usage
 
 Since many measures of interest may not be factorable, a well-known way to
 encode them into instances of WMC is by adding more literals
-\citep{DBLP:journals/ai/ChaviraD08}. We can use the measure-theoretic
-perspective on WMC to show that this is always possible, however, as ensuing
-sections will demonstrate, it can make the inference task much harder in
-practice.
+\citep{DBLP:journals/ai/ChaviraD08}.\footnote{Similar encoding ideas have been
+  proposed for the independent choice logic as well
+  \citep{DBLP:journals/ai/Poole97,DBLP:conf/ilp/Poole08}.} We can use the
+measure-theoretic perspective on WMC to show that this is always possible,
+however, as ensuing sections will demonstrate, it can make the inference task
+much harder in practice.
 
 \begin{theorem}
   For any set $U$ and measure $\mu\colon 2^{2^U} \to \mathbb{R}_{\ge 0}$, there
@@ -671,7 +673,7 @@ encoding and inference. For inference, we use \textsc{Ace} for \texttt{cd05}
 \citep{DBLP:conf/ijcai/ChaviraD05}, \texttt{cd06}
 \citep{DBLP:conf/sat/ChaviraD06}, and \texttt{d02}
 \citep{DBLP:conf/kr/Darwiche02};
-\textsc{Cachet}\footnote{\url{https://cs.rochester.edu/u/kautz/Cachet/}}
+\textsc{Cachet}\footnote{\url{https://henrykautz.com/Cachet/index.htm}}
 \citep{DBLP:conf/sat/SangBBKP04} for \texttt{sbk05}
 \citep{DBLP:conf/aaai/SangBK05}; and \textsc{c2d}
 \citep{DBLP:conf/ecai/Darwiche04} for compilation and \textsc{query-dnnf}

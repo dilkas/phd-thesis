@@ -90,7 +90,7 @@ contributions of this chapter include several key experimental findings about
 the behaviour of WMC algorithms---namely,
 \textsc{c2d}\footnote{\url{http://reasoning.cs.ucla.edu/c2d/}}
 \citep{DBLP:conf/ecai/Darwiche04},
-\textsc{Cachet}\footnote{\url{https://cs.rochester.edu/u/kautz/Cachet/}}
+\textsc{Cachet}\footnote{\url{https://henrykautz.com/Cachet/index.htm}}
 \citep{DBLP:conf/sat/SangBBKP04},
 \textsc{d4}\footnote{\url{https://www.cril.univ-artois.fr/KC/d4.html}}
 \citep{DBLP:conf/ijcai/LagniezM17},
@@ -103,7 +103,7 @@ programming algorithms than it is for all other algorithms. Second, we present
 statistical evidence that all the algorithms scale exponentially w.r.t.\ primal
 treewidth and estimate how the base of that exponential changes w.r.t.\ density.
 Third, we show how the performance of ADD-based algorithms gradually improves
-w.r.t the proportion of weights that have repeating values and sharply improves
+w.r.t.\ the proportion of weights that have repeating values and sharply improves
 w.r.t.\ the proportion of weights set to zero and one.
 
 % 1. Other parameters include structural entropy
@@ -219,24 +219,26 @@ Our random model is based on the following parameters:
 The first three parameters are the standard parameters used to generate random
 $k$-CNF formulas with $\nu\mu$ clauses (up to rounding). We expect to observe
 (possibly different) values of $\mu$ that maximize the running time of each
-algorithm for fixed values of $\nu$ and $\kappa$. Parameters $\delta$ and
-$\epsilon$ control the numerical values of weights and are part of the model
-because the running time of \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20}---and
-other algorithms based on ADDs---depends on these values. Weights such as zero
-and one are particularly `simplifying' because they are respectively the
+algorithm for fixed values of $\nu$ and $\kappa$.
+
+Parameters $\delta$ and $\epsilon$ control the numerical values of weights
+similarly to determinism and parameter equality---facets of local structure
+considered in the literature on probabilistic
+models~\citep{DBLP:journals/ai/VlasselaerMBR16}. While all other WMC algorithms
+disregard the weights, \textsc{DPMC}~\citep{DBLP:conf/cp/DudekPV20} can exploit
+both determinism and equal weights to solve the problem faster. Weights such as
+zero and one are particularly `simplifying' because they are respectively the
 additive and multiplicative identities. Having them propagate through the
 algorithm reduces the size of many ADDs used by \textsc{DPMC}, making the
 algorithm more efficient. Including many copies of the same weight (e.g., 0.5)
-can similarly simplify ADDs as well. Other WMC algorithms are indifferent to the
-numerical values of weights.
+can similarly simplify ADDs as well.
 
 \begin{algorithm}[t]
   \caption{Generating a random formula.}\label{alg:random}
   \SetKwData{kcnf}{kcnf}
   \SetKwFunction{NewVariable}{newVariable}
   \SetKwProg{Fn}{Function}{:}{}
-  \KwIn{$\nu,\kappa \in \mathbb{N}^+$ such that $\kappa < \nu$, $\mu \in
-    \mathbb{R}_{>0}$, $\rho \in [0, 1]$.}
+  \KwIn{$\nu,\kappa \in \mathbb{N}^+$ (such that $\kappa < \nu$), $\mu \in \mathbb{R}_{>0}$, $\rho \in [0, 1]$.}
   \KwOut{A $k$-CNF formula $\phi$.}
   $\phi \gets \text{empty CNF formula}$\;
   $G \gets \text{empty graph}$\;
@@ -466,16 +468,16 @@ about the behaviour of \textsc{DPMC} \citep{DBLP:conf/cp/DudekPV20} apply to
 \textsc{ADDMC} as well, with the addendum that the tree decomposition implicitly
 used by \textsc{ADDMC} may have a significantly higher width. \textsc{DPMC} is
 run with tree decomposition-based planning (using one iteration of \textsc{htd})
-and ADD-based execution---the combination that was originally found to be most
-effective. We restrict our attention to 3-CNF formulas, generate 100 satisfiable
-instances for each \emph{combination} of parameters, and run each of the five
-algorithms with a \SI{500}{\second} time limit and an \SI{8}{\gibi\byte} memory
-limit. While both limits are somewhat low, we prioritise large numbers of
-instances to increase the accuracy and reliability of our results. Unless stated
-otherwise, in each plot of this section, lines denote median values, and shaded
-regions show interquartile ranges. We run the following three experiments,
-setting $\nu = 70$ in all of them as we found that this produces instances of
-suitable difficulty.
+and ADD-based execution---the combination that was found to be most effective by
+\citet{DBLP:conf/cp/DudekPV20}. We restrict our attention to 3-CNF formulas,
+generate 100 satisfiable instances for each \emph{combination} of parameters,
+and run each of the five algorithms with a \SI{500}{\second} time limit and an
+\SI{8}{\gibi\byte} memory limit. While both limits are somewhat low, we
+prioritise large numbers of instances to increase the accuracy and reliability
+of our results. Unless stated otherwise, in each plot of this section, lines
+denote median values, and shaded regions show interquartile ranges. We run the
+following three experiments, setting $\nu = 70$ in all of them as we found that
+this produces instances of suitable difficulty.
 
 \begin{experiment}[Density and primal treewidth]\label{exp:density}
   Let $\nu = 70$, $\mu$ go from 1 to 4.3 in steps of 0.3, $\rho$ go from 0 to
@@ -611,7 +613,7 @@ advantage on low-density high-primal-treewidth instances.
 % A median instance with all weights equal to 0.5 is about three times easier
 % than a median instance with completely random weights.
 Finally, \cref{exp:delta,exp:epsilon} investigate how changing the numerical
-values of weights can simplify a WMC instance. The results are in plotted
+values of weights can simplify a WMC instance. The results are plotted in
 \cref{fig:delta_epsilon}. As expected, the running time of all algorithms other
 than \textsc{DPMC} stay the same regardless of the value of $\delta$ or
 $\epsilon$. The running time of \textsc{DPMC}, however, experiences a sharp

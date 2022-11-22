@@ -230,11 +230,12 @@ properties follow directly from the definitions.
   For any propositional formulas $\phi$ and $\psi$, and
   $a, b, c, d \in \mathbb{R}$,
   \begin{itemize}
-    \item ${[\phi]}^a_b = {[\neg \phi]}^b_a$;
-    \item $c + {[\phi]}^a_b = {[\phi]}^{a+c}_{b+c}$;
-    \item $c \cdot {[\phi]}^a_b = {[\phi]}^{ac}_{bc}$;
-    \item ${[\phi]}^a_b \cdot {[\phi]}^c_d = {[\phi]}^{ac}_{bd}$;
-    \item ${[\phi]}^1_0 \cdot {[\psi]}_0^1 = {[\phi \land \psi]}_0^1$.
+    \item ${[\phi]}^a_b = {[\neg \phi]}^b_a$\space\space;
+    \item $c + {[\phi]}^a_b = {[\phi]}^{a+c}_{b+c}$\space\space;
+    \item $c \cdot {[\phi]}^a_b = {[\phi]}^{ac}_{bc}$\space\space;
+    \item ${[\phi]}^a_b \cdot {[\phi]}^c_d = {[\phi]}^{ac}_{bd}$\space\space;
+    \item
+          ${[\phi]}^1_0 \cdot {[\psi]}_0^1 = {[\phi \land \psi]}_0^1$\space\space.
   \end{itemize}
   And for any pair of pseudo-Boolean functions $f, g \colon 2^X \to \mathbb{R}$
   and $x \in X$, $(fg)|_{x=i} = f|_{x=i} \cdot g|_{x=i}$ for $i = 0, 1$.
@@ -631,7 +632,7 @@ instance using \texttt{e} and transforming it into a PBP instance using
 \textsc{DPMC}\footnote{\url{https://github.com/vardigroup/DPMC}}, we also
 include WMC algorithms used in the papers that introduce each encoding:
 \textsc{Ace} for \texttt{cd05}, \texttt{cd06}, and \texttt{d02};
-\textsc{Cachet}\footnote{\url{https://cs.rochester.edu/u/kautz/Cachet/}}
+\textsc{Cachet}\footnote{\url{https://henrykautz.com/Cachet/index.htm}}
 \citep{DBLP:conf/sat/SangBBKP04} for \texttt{sbk05}; and
 \textsc{c2d}\footnote{\url{http://reasoning.cs.ucla.edu/c2d/}}
 \citep{DBLP:conf/ecai/Darwiche04} with

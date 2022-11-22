@@ -1150,8 +1150,8 @@ from $v$.
   $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \square$, where $\square$ is the
   interpretation of the remaining subgraph, and $l$ iterates over all possible
   sizes of $\Delta^{\top}$. It also creates two subdomains
-  $\Delta^{\top}, \Delta^{\bot} \subseteq b$ that partition $\Delta$, i.e., as
-  the size of $\Delta^{\top}$ increases, the size of $\Delta^{\bot}$
+  $\Delta^{\top}, \Delta^{\bot} \subseteq \Delta$ that partition $\Delta$, i.e.,
+  as the size of $\Delta^{\top}$ increases, the size of $\Delta^{\bot}$
   correspondingly decreases. Nodes labelled $\land$ correspond to
   multiplication. Therefore,
   $f(m, n) = \sum_{l = 0}^{n} \binom{n}{l} \diamondsuit \times \heartsuit$,
@@ -1252,15 +1252,15 @@ coefficient or function call multiple times.
     \multicolumn{3}{c}{Function Class} & \multicolumn{3}{c}{Asymptotic Complexity of Counting} \\
     Partial & Endo- & Class & Best Known & With \textsc{ForcLift} & With \textsc{Crane} \\
     \midrule
-    \rowcolor{gray!10}\cmark/\xmark & \cmark/\xmark & Functions & $\log m$ & $m$ & $m$ \\
+    \rowcolor{gray!25}\cmark/\xmark & \cmark/\xmark & Functions & $\log m$ & $m$ & $m$ \\
     \xmark & \xmark & \multirow{4}{*}{Surjections} & $n \log m$ & $m^{3}+n^{3}$ & $m^{3}+n^{3}$ \\
     \xmark & \cmark & & $m \log m$ & $m^{3}$ & $m^{3}$ \\
     \cmark & \xmark & & \multicolumn{3}{c}{Same as injections from $\Delta$ to $\Gamma$} \\
     \cmark & \cmark & & \multicolumn{3}{c}{Same as endo-injections} \\
-    \rowcolor{gray!10}\xmark & \xmark & & $m$ & --- & $mn$ \\
-    \rowcolor{gray!10}\xmark & \cmark & & $m$ & --- & $m^3$ \\
-    \rowcolor{gray!10}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & --- & $mn$ \\
-    \rowcolor{gray!10}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & --- & --- \\
+    \rowcolor{gray!25}\xmark & \xmark & & $m$ & --- & $mn$ \\
+    \rowcolor{gray!25}\xmark & \cmark & & $m$ & --- & $m^3$ \\
+    \rowcolor{gray!25}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & --- & $mn$ \\
+    \rowcolor{gray!25}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & --- & --- \\
     \xmark & \xmark & \multirow{3}{*}{Bijections} & $m$ & --- & $m$ \\
     \xmark & \cmark & & \multicolumn{3}{c}{\multirow{2}{*}{Same as (partial) (endo-)injections}} \\
     \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
