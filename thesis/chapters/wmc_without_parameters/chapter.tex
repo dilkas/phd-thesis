@@ -17,15 +17,16 @@ deterministic, decomposable negation normal form
 \citep{DBLP:journals/jancl/Darwiche01}, and sentential decision diagrams (SDDs)
 \citep{DBLP:conf/ijcai/Darwiche11}, perhaps parameter variables could be avoided
 via direct compilation to a more convenient representation. Direct compilation
-of Bayesian networks to SDDs has been investigated
-\citep{DBLP:conf/ecsqaru/ChoiKD13}. However, SDDs only support weights on
-literals, and so are not expressive enough to avoid the issue.
-\Citet{DBLP:conf/uai/GogateD10} propose a format based on weighted clauses and
-probabilistic semantics inspired by Markov networks. However, with a new
-representation comes the need to invent new encodings and inference algorithms.
-Moreover, to the best of our knowledge, neither approach
-\citep{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10} has a publicly
-available implementation.
+of Bayesian networks to SDDs \citep{DBLP:conf/ecsqaru/ChoiKD13} and
+probabilistic SDDs \citep{DBLP:conf/nips/ShenCD16} have been investigated.
+However, SDDs only support weights on literals, and so are not expressive enough
+to avoid the issue. \Citet{DBLP:conf/uai/GogateD10} propose a format based on
+weighted clauses and probabilistic semantics inspired by Markov networks.
+However, with a new representation comes the need to invent new encodings and
+inference algorithms. Moreover, to the best of our knowledge, none of these
+approaches
+\citep{DBLP:conf/ecsqaru/ChoiKD13,DBLP:conf/uai/GogateD10,DBLP:conf/nips/ShenCD16}
+has a publicly available implementation.
 
 In this work, we introduce a new computational problem called
 \emph{pseudo-Boolean projection} (PBP)---a generalisation of the conditional
@@ -756,9 +757,9 @@ faster than \texttt{d02++} when run with \textsc{DPMC}.
 It is also worth noting that there was no observable difference in the width of
 the project-join tree used by \textsc{DPMC} (which is equivalent to the primal
 treewidth of the input formula \citep{DBLP:conf/cp/DudekPV20}) before and after
-applying \cref{alg:transformation}---the observed performance improvement is
-more likely related to the variable ordering heuristic used by
-ADDs.\footnote{The data on this (along with the implementation of
+applying \cref{alg:transformation}. Hence, the observed performance improvement
+is more likely due to ADDs being smaller as a result of there being fewer
+variables.\footnote{The data on this (along with the implementation of
   \cref{alg:transformation}) is available at
   \url{https://github.com/dilkas/wmc-without-parameters}.}
 

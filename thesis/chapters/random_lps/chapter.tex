@@ -80,39 +80,42 @@ inference algorithms.
 % clauses, and a \emph{ProbLog program} is a set of clause-probability pairs
 % \citep{DBLP:journals/tplp/FierensBRSGTJR15}.
 
-All constraint variables that we use in this chapter are integer or set
-variables, however, if an integer refers to a logical construct (e.g., a logical
-variable or a constant), we will make no distinction between the two. We say
-that a constraint variable is \emph{(fully) determined} if its domain (at the
-time) has exactly one value. We let $\Box$ denote the absent/disabled value of
-an optional variable \citep{DBLP:conf/cpaior/MearsSSTMW14}. We write
-$\arrayd{a}{b}{c}$ to mean that $\variable{a}$ is an array of variables of
-length $b$ such that each element of $\variable{a}$ has domain $c$. Similarly,
-we write $\arrayt{a}{b}{c}$ to denote an array $\variable{a}$ of length $b$ such
-that each element of $\variable{a}$ has type $\variable{c}$. Finally, we assume
-that all arrays start with index zero.
+We begin by outlining some bespoke notation that will be useful in describing
+arrays of constraint variables as well as the overall structure of our model.
+Let $\Box$ denote the absent/disabled value of an optional variable
+\citep{DBLP:conf/cpaior/MearsSSTMW14}. We write $\arrayd{a}{b}{c}$ to mean that
+$\variable{a}$ is an array of variables of length $b$ such that each element of
+$\variable{a}$ has domain $c$. For example, the constraint variables
+${(q_i)}_{i=1}^n$ used in \cref{example:n_queens} for the $n$ queens problem can
+be written as $\arrayd{q}{n}{\{\, 1, \dots, n \,\}}$. Similarly, we write
+$\arrayt{a}{b}{c}$ to denote an array $\variable{a}$ of length $b$ such that
+each element of $\variable{a}$ has type $\variable{c}$. We assume that all
+arrays start with index zero. All constraint variables that we use in this
+chapter are integer or set variables, however, if an integer refers to a logical
+construct (e.g., a logical variable or a constant), we will make no distinction
+between the two. We say that a constraint variable is \emph{(fully) determined}
+if its domain (at the time) has exactly one value.
 
-\paragraph*{Parameters of the model.} We begin by defining sets and lists of the
-primitives used in constructing logic programs: a list of predicates
-$\predicates{}$, a list of their corresponding arities $\arities{}$ (so
-$|\arities{}|$ = $|\predicates{}|$), a set of variables $\variables{}$, and a
-set of constants $\constants{}$. Either $\variables{}$ or $\constants{}$ can be
-empty, but we assume that $|\constants{}| + |\variables{}| > 0$. Similarly, the
-model supports zero-arity predicates but requires at least one predicate to have
-non-zero arity. For notational convenience, we also set
-$\maxArity{} = \max \arities{}$. Next, we need a measure of how complex a body
-of a clause can be. As we represent each body by a tree (see \cref{sec:bodies}),
-we set $\maxNumNodes{} \ge 1$ to be the maximum number of nodes in the tree
-representation of any clause. We also set $\maxNumClauses{}$ to be the maximum
-number of clauses in a program. We must have that
-$\maxNumClauses{} \ge |\predicates{}|$ because we require each predicate to have
-at least one clause that defines it. The model supports enforcing predicate
-independence (see \cref{sec:independence}), so a set of independent pairs of
-predicates is another parameter. Since this model can generate probabilistic as
-well as non-probabilistic programs, each clause is paired with a probability
-which is randomly selected from a given list---our last parameter. For
-generating non-probabilistic programs, one can set this list to
-$\langle 1 \rangle$. Finally, we define
+\paragraph*{Parameters of the model.} First, we define some sets and lists of
+primitives: a list of predicates $\predicates{}$, a list of their corresponding
+arities $\arities{}$ (so $|\arities{}|$ = $|\predicates{}|$), a set of variables
+$\variables{}$, and a set of constants $\constants{}$. Either $\variables{}$ or
+$\constants{}$ can be empty, but we assume that
+$|\constants{}| + |\variables{}| > 0$. Similarly, the model supports zero-arity
+predicates but requires at least one predicate to have non-zero arity. For
+notational convenience, we also set $\maxArity{} = \max \arities{}$. Next, we
+need a measure of how complex a body of a clause can be. As we represent each
+body by a tree (see \cref{sec:bodies}), we set $\maxNumNodes{} \ge 1$ to be the
+maximum number of nodes in the tree representation of any clause. We also set
+$\maxNumClauses{}$ to be the maximum number of clauses in a program. We must
+have that $\maxNumClauses{} \ge |\predicates{}|$ because we require each
+predicate to have at least one clause that defines it. The model supports
+enforcing predicate independence (see \cref{sec:independence}), so a set of
+independent pairs of predicates is another parameter. Since this model can
+generate probabilistic as well as non-probabilistic programs, each clause is
+paired with a probability which is randomly selected from a given list---our
+last parameter. For generating non-probabilistic programs, one can set this list
+to $\langle 1 \rangle$. Finally, we define
 $\tokens{} = \{\, \neg, \land, \lor, \top \,\}$ as the set of tokens that
 (together with atoms) form a clause. All decision variables of the model can now
 be divided into $2 \times \maxNumClauses{}$ separate groups, treating the body

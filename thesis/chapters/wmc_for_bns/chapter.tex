@@ -87,6 +87,22 @@ findings outlined in this section while also showing that the performance of
 each encoding depends on the WMC algorithm in use, and smaller encodings are not
 necessarily faster.
 
+\textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} is conceptually similar to
+\emph{symbolic variable elimination} (SVE) \citep{DBLP:conf/aaai/SannerA12} and
+related attempts \citep{DBLP:conf/ijcai/SannerM05} to perform probabilistic
+inference by multiplying ADDs and eliminating variables. Indeed, on a graphical
+model with binary random variables, the principal advantage of \textsc{ADDMC}
+over SVE comes only from more flexibility in what heuristics guide the order of
+multiplications and eliminations. Both algorithms have heuristics for the orders
+in which variables appear in an ADD and are eliminated. \textsc{ADDMC} also has
+a heuristic for the order in which ADDs are multiplied. SVE has a built-in
+bucket elimination \citep{DBLP:journals/ai/Dechter99} heuristic: it multiplies
+all ADDs that have some variable $v$ and then eliminates $v$. As an alternative
+to bucket elimination, \textsc{ADDMC} finds Bouquet's method
+\citep{bouquet1999gestion} to be equally strong. Here, two ADDs are multiplied
+if they have the same worst (rather than best) variable according to the
+variable elimination heuristic.
+
 \section{Boolean Algebras, Power Sets, and Propositional
   Logic}\label{sec:prelims}
 
@@ -290,8 +306,8 @@ encode them into instances of WMC is by adding more literals
   proposed for the independent choice logic as well
   \citep{DBLP:journals/ai/Poole97,DBLP:conf/ilp/Poole08}.} We can use the
 measure-theoretic perspective on WMC to show that this is always possible,
-however, as ensuing sections will demonstrate, it can make the inference task
-much harder in practice.
+however, as we demonstrate and explain in \cref{sec:2experiments}, superfluous
+variables can mislead heuristics, leading to significantly longer runtimes.
 
 \begin{theorem}
   For any set $U$ and measure $\mu\colon 2^{2^U} \to \mathbb{R}_{\ge 0}$, there
@@ -371,9 +387,11 @@ $\prod_{X \in \mathcal{V}} \Pr(X \mid \mathrm{pa}(X))$. For discrete Bayesian
 networks (and we only consider discrete networks here), each factor of this
 product can be represented by a \emph{conditional probability table} (CPT). See
 \cref{fig:example_bn} for an example Bayesian network that we will refer to
-throughout this section. For this network, $\mathcal{V} = \{\, W, F, T \,\}$,
-$\mathrm{pa}(W) = \emptyset$, $\mathrm{pa}(F) = \mathrm{pa}(T) = \{\, W \,\}$,
-$\Imm W = \Imm F = \{\, 0, 1 \,\}$, and $\Imm T = \{\, l, m, h \,\}$.
+throughout this section. This network has three nodes, i.e.,
+$\mathcal{V} = \{\, W, F, T \,\}$. Two of them are binary (i.e.,
+$\Imm W = \Imm F = \{\, 0, 1 \,\}$) and one is not (i.e.,
+$\Imm T = \{\, l, m, h \,\}$). Also $\mathrm{pa}(W) = \emptyset$, and
+$\mathrm{pa}(F) = \mathrm{pa}(T) = \{\, W \,\}$.
 
 \begin{definition}[Indicator variables]
   Let $X \in \mathcal{V}$ be a random variable. If $X$ is binary (i.e.,
@@ -461,14 +479,16 @@ This function can be represented by an ADD
 \citep{DBLP:journals/fmsd/BaharFGHMPS97}. \textsc{ADDMC} takes an ADD
 $\psi\colon 2^{U} \to \mathbb{R}_{\ge 0}$ (expressed as a product of smaller
 ADDs) and returns $(\exists_U\psi)(\emptyset)$ \citep{DBLP:conf/aaai/DudekPV20}.
-In this section, we prove that the function $\phi$ produced by
-\cref{alg:encoding} can be used by \textsc{ADDMC} to correctly compute any
-marginal probability of the Bayesian network that was encoded as
-$\phi$.\footnote{Note that it can just as well compute \emph{any} probability
-  expressed using the random variables in $\mathcal{V}$.} We begin with
-\cref{lemma:cpt} which shows that any conditional weight function produces the
-right answer when given a valid encoding of variable-value assignments relevant
-to the CPT\@.
+In other words, once \textsc{ADDMC} projects all of the variables in $U$, the
+remaining function $\exists_{U}\psi$ has domain $\{\,\emptyset\,\}$ and maps
+$\emptyset$ to the final answer. In this section, we prove that the function
+$\phi$ produced by \cref{alg:encoding} can be used by \textsc{ADDMC} to
+correctly compute any marginal probability of the Bayesian network that was
+encoded as $\phi$.\footnote{Note that it can just as well compute \emph{any}
+  probability expressed using the random variables in $\mathcal{V}$.} We begin
+with \cref{lemma:cpt} which shows that any conditional weight function produces
+the right answer when given a valid encoding of variable-value assignments
+relevant to the CPT\@.
 
 \begin{lemma}\label{lemma:cpt}
   Let $X \in \mathcal{V}$ be a random variable with parents
@@ -574,8 +594,8 @@ weights? The factors of $\phi$ that restrict the values of indicator variables
 for non-binary random variables are already expressed as a product of sums of
 0/1-valued functions, i.e., a kind of CNF\@. Disregarding these functions, each
 conditional weight function $\mathrm{CPT}_X$ is represented by a sum with a term
-for every subset of $\mathcal{E}^*(X)$. To encode these terms, we introduce
-\emph{extended weight clauses} to the WMC format used by \textsc{Cachet}
+for every subset of $\mathcal{E}^*(X)$. To encode these terms, we alter the
+representation of weights in the WMC format used by \textsc{Cachet}
 \citep{DBLP:conf/sat/SangBBKP04}. For instance, here is a representation of the
 Bayesian network from \cref{fig:example_bn}:
 \[
@@ -596,9 +616,24 @@ Bayesian network from \cref{fig:example_bn}:
   \end{array}
 \]
 where each indicator variable is eventually replaced with a unique positive
-integer. Each line prefixed with a $w$ can be split into four parts: the `main'
-variable (always not negated), conditions (possibly none), and two weights. For
-example, the line
+integer.
+
+In the original format, a line such as
+\[
+  \begin{array}{lrrll}
+    w &1 &0.3
+  \end{array}
+\]
+would encode two weights: $w(x_{1}) = 0.3$, and $w(\neg x_{1}) = 1 - 0.3 = 0.7$,
+and a line such as
+\[
+  \begin{array}{lrrll}
+    w &2 &-1
+  \end{array}
+\]
+would encode $w(x_{2}) = w(\neg x_{2}) = 1$. Here, we split each line prefixed
+with a $w$ into four parts: the `main' variable (always not negated), conditions
+(possibly none), and two weights. For example, the line
 \[
   \begin{array}{lrrll}
     w &\lambda\sb{T=m} &-\lambda\sb{W=1} &0.3 &1
@@ -794,38 +829,57 @@ significantly on (as-of-yet unknown) properties of the Bayesian networks.
 
 \begin{table}[t]
   \centering
-  \begin{tabular}{m{0.4\linewidth} c c}
+  \begin{tabular}{m{0.4\linewidth} c c c}
     \toprule
-    Encoding(s) & Variables & Clauses/ADDs \\
+    Encoding(s) & Variables & Clauses & ADDs \\
     \midrule
-    \texttt{bklm16}, \texttt{cd05}, \texttt{cd06}, \texttt{sbk05} & $O(nv^{d+1})$ & $O(nv^{d+1})$ \\
-    \texttt{cw} & $O(nv)$ & $O(nv^2)$ \\
-    \texttt{d02} & $O(nv^{d+1})$ & $O(ndv^{d+1})$ \\
+    \texttt{bklm16}, \texttt{cd05}, \texttt{cd06}, \texttt{sbk05} & $O(nv^{d+1})$ & $O(nv^{d+1})$ & \\
+    \texttt{cw} & $O(nv)$ & & $O(nv^2)$ \\
+    \texttt{d02} & $O(nv^{d+1})$ & $O(ndv^{d+1})$ & \\
     \bottomrule
   \end{tabular}
   \caption{Asymptotic upper bounds on the numbers of variables and clauses/ADDs
-    for each encoding.}\label{tbl:asymptotes}
+    for each encoding. Note that most encodings (including \texttt{cw}) can be
+    smaller in certain situations (e.g., with binary random variables or when a
+    CPT has repeating probabilities).}\label{tbl:asymptotes}
 \end{table}
 
-We can explain what makes \textsc{ADDMC} \citep{DBLP:conf/aaai/DudekPV20} run
-significantly faster with \texttt{cw} than with any other encoding by
-considering asymptotic upper bounds on the numbers of variables and ADDs based
-on the size and structure of the Bayesian network. Let $n = |\mathcal{V}|$ be
-the number of nodes in the Bayesian network,
+We provide two plausible explanations for why \textsc{ADDMC}
+\citep{DBLP:conf/aaai/DudekPV20} runs significantly faster with \texttt{cw} than
+with any other encoding. First, we note that data sets on which
+$\textsc{ADDMC}+\texttt{cw}$ significantly outperformed the state of the art
+have many CPTs with all probabilities set to either zero or one. Perhaps such
+determinism as well as other aspects of local structure such as parameter
+equality and context-specific independence
+\citep{DBLP:conf/uai/BoutilierFGK96,DBLP:journals/ai/VlasselaerMBR16} become
+easier for \textsc{ADDMC} to detect given the less-obfuscated \texttt{cw} input
+format. Second, we can establish asymptotic upper bounds on the numbers of
+variables and ADDs based on the size and structure of the Bayesian network. Let
+$n = |\mathcal{V}|$ be the number of nodes in the Bayesian network,
 $d = \max_{X \in \mathcal{V}} |\mathrm{pa}(X)|$ the maximum in-degree (i.e., the
 number of parents), and $v = \max_{X \in \mathcal{V}} |\Imm X|$ the maximum
 number of values per variable. \Cref{tbl:asymptotes} shows how \texttt{cw} has
-fewer variables and fewer ADDs than any other encoding. We conjecture that it is
+asymptotically fewer variables than any other encoding. We conjecture that it is
 primarily the reduced number of variables that makes the \textsc{ADDMC} variable
-ordering heuristics much more effective. Note that these are upper bounds and
-most encodings (including \texttt{cw}) can be smaller in certain situations
-(e.g., with binary random variables or when a CPT has repeating probabilities).
-We equate clauses and ADDs (more specifically, factors of the function $\phi$
-from \cref{alg:encoding}) here because \textsc{ADDMC} interprets each clause of
-any WMC encoding as a multiplicative factor of the ADD that represents the
-entire WMC instance \citep{DBLP:conf/aaai/DudekPV20}. For literal-weight
-encodings, each weight is also a factor, but that does not affect our asymptotic
-bounds.
+ordering heuristics more effective. To begin with, ADDs that rely on fewer
+variables can be significantly smaller, thus providing a boost to the
+algorithm's performance. Moreover, classical WMC encodings have variables whose
+only purpose is to hold a weight and be associated (e.g., via $\Leftrightarrow$)
+with another variable, i.e., \emph{parameter variables} (see \cref{chapter:wmc2}
+for more details). Heuristics used by \textsc{ADDMC} such as maximum cardinality
+search \citep{DBLP:journals/siamcomp/TarjanY84} and lexicographic search for
+perfect orders \citep{DBLP:journals/siamcomp/RoseTL76} are likely to put such
+variables one after another. However, in some cases it might be better to keep
+them close to the variables they are associated with.
+
+\Cref{tbl:asymptotes} also shows that \texttt{cw} has asymptotically fewer ADDs
+than any WMC encoding has clauses unless each node of the Bayesian network has
+at most one parent. Clauses and ADDs (more specifically, factors of the function
+$\phi$ from \cref{alg:encoding}) are somewhat comparable since \textsc{ADDMC}
+interprets each clause of any WMC encoding as a multiplicative factor of the ADD
+that represents the entire WMC instance \citep{DBLP:conf/aaai/DudekPV20}. For
+literal-weight encodings, each weight is also a factor, but that does not affect
+our asymptotic bounds.
 
 \section{Conclusions and Future Work}
 

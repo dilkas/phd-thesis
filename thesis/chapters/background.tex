@@ -76,15 +76,77 @@ case is clarified on a case-by-case basis.
   $\{\, \{\, \neg a, b \,\}, \{\, a \,\} \,\}$.
 \end{example}
 
-The \emph{primal graph} of a CNF formula is a graph that has a node for every
-variable, and there is an edge between two variables if they coappear in some
-clause. The \emph{treewidth} of a graph $G$ measures how similar $G$ is to a
-tree and is defined as the smallest \emph{width} of any \emph{tree
-  decomposition} of $G$ \citep{DBLP:journals/jct/RobertsonS84}. The \emph{primal
-  treewidth} of a formula is the treewidth of its primal graph. Primal treewidth
-(and treewidth more generally) is a parameter frequently used to describe the
-parameterised complexity of algorithms
+\emph{Primal treewidth} is a parameter we use in \cref{chapter:comparison} to
+quantify the structural hardness of a formula. The primal treewidth of a CNF
+formula $\phi$ is the treewidth of the primal graph of $\phi$. The \emph{primal
+  graph} of a CNF formula is a graph that has a node for every variable, and
+there is an edge between two variables if they coappear in some clause. The
+\emph{treewidth} of a graph $G$ measures how similar $G$ is to a tree and is
+stated in \cref{def:treewidth}. Primal treewidth (and treewidth more generally)
+is a parameter frequently used to describe the parameterised complexity of
+algorithms
 \citep{DBLP:conf/ijcai/BliemMMW17,DBLP:series/txcs/DowneyF13,DBLP:conf/lics/FichteHP20}.
+For a graph $G$, let $\mathcal{V}(G)$ denote the set of nodes of $G$ and
+$\mathcal{E}(G)$ denote the set of edges of $G$.
+
+\begin{definition}[\cite{DBLP:journals/jct/RobertsonS84}]\label{def:treewidth}
+  A \emph{tree decomposition} of a graph $G$ is a pair $(T, \chi)$, where $T$ is
+  a tree and $\chi\colon \mathcal{V}(T) \to 2^{\mathcal{V}(G)}$ is a labelling
+  function, with the following properties:
+  \begin{itemize}
+    \item $\bigcup_{t \in \mathcal{V}(T)} \chi(t) = \mathcal{V}(G)$;
+    \item for every edge $e \in \mathcal{E}(G)$, there is $t \in \mathcal{V}(T)$
+          such that $e$ has both endpoints in $\chi(t)$;
+    \item for all $t, t', t'' \in \mathcal{V}(T)$, if $t'$ is on the path
+          between $t$ and $t''$, then
+          $\chi(t) \cap \chi(t'') \subseteq \chi(t')$.
+  \end{itemize}
+  The \emph{width} of tree decomposition $(T, \chi)$ is
+  $\max_{t \in \mathcal{V}(T)} |\chi(t)| - 1$. The \emph{treewidth} of graph $G$
+  is the smallest $w$ such that $G$ has a tree decomposition of width $w$.
+\end{definition}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.29\textwidth}
+    \centering
+    \begin{tikzpicture}
+      \node (one) at (0, 1) {$x_1$};
+      \node (two) at (1, 1) {$x_2$};
+      \node (three) at (0, 0) {$x_3$};
+      \node (four) at (1, 0) {$x_4$};
+      \draw (one) -- (two);
+      \draw (one) -- (three);
+      \draw (one) -- (four);
+      \draw (two) -- (four);
+      \draw (three) -- (four);
+    \end{tikzpicture}
+  \caption{the primal graph of $\phi$}\label{fig:primal}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.69\textwidth}
+    \centering
+    \begin{tikzpicture}[every text node part/.style={align=center}]
+      \node[circle,draw] (one) {$x_1$ $x_2$\\$x_4$};
+      \node[circle,draw,right=of one] (two) {$x_1$ $x_3$\\$x_4$};
+      \draw (one) -- (two);
+    \end{tikzpicture}
+    \caption{a minimum-width tree decomposition of the primal
+      graph}\label{fig:decomposition}
+  \end{subfigure}
+  \caption{Two graphs associated with formula $\phi$ from
+    \cref{example:treewidth}}\label{fig:decompositions}
+\end{figure}
+
+\begin{example}\label{example:treewidth}
+  Let $\phi$ be the formula
+  $(x_{4} \lor \neg x_{3} \lor x_{1}) \land (\neg x_{2} \lor x_{4}) \land (\neg x_{1} \lor x_{2} \lor x_{4})$.
+  The primal graph of $\phi$ is pictured in \cref{fig:primal}; it is one edge
+  away from being a complete graph since only $x_{2}$ and $x_{3}$ do not appear
+  in a clause together. \Cref{fig:decomposition} shows a tree decomposition of
+  the primal graph of width 2. Since the graph in \cref{fig:primal} does not
+  have a tree decomposition of width 1, the treewidth of the primal graph is 2,
+  and thus the primal treewidth of $\phi$ is also 2.
+\end{example}
 
 \subsection{Logic-Based Computational Problems}\label{sec:logicproblems}
 
@@ -320,7 +382,7 @@ solve it, and how one can help the algorithm search efficiently.
   constraints in $C$.
 \end{definition}
 
-\begin{example}[$n$ queens]
+\begin{example}[$n$ queens]\label{example:n_queens}
   Imagine an $n \times n$ chess board. How can one place $n$ queens on the board
   so that no two queens threaten each other (i.e., are not on the same column,
   row, or diagonal)? This is the famous \emph{$n$ queens problem}---a common
@@ -928,12 +990,8 @@ partially based on the original definition by
 \citet{DBLP:journals/fmsd/BaharFGHMPS97} as well as recent work by
 \citet{DBLP:conf/cp/DudekPV20} but states some details more explicitly. The
 definition can also be generalised to use any set instead of $\mathbb{R}$ and to
-represent several functions instead of just one.
-
-\paragraph*{Notation.}
-Let $G$ be a directed graph. Then $\mathcal{V}(G)$ denotes the set of nodes of
-$G$, $\mathcal{E}(G)$ denotes the set of edges of $G$, and $\mathcal{L}(G)$
-denotes the set of sinks of $G$.
+represent several functions instead of just one. For a directed graph $G$, let
+$\mathcal{L}(G)$ denote the set of sinks of $G$.
 
 \begin{definition}\label{def:add}
   Given a set of variables $X$ and a variable ordering represented as an

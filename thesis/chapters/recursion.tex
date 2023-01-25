@@ -85,10 +85,9 @@ proving \citep{DBLP:journals/cacm/GogateD16}.
 % simple unliftable instances -> recursion
 
 However, none of the publicly available exact (W)FOMC algorithms can efficiently
-compute functions as simple as a factorial.\footnote{The problem of computing
-  the factorial can be described using two variables and counting quantifiers,
-  so it is known to be liftable in principle
-  \citep{DBLP:journals/jair/Kuzelka21}, but an algorithm that can lift such an
+compute functions as simple as a factorial.\footnote{There is previous work
+  \citep{DBLP:journals/jair/Kuzelka21,DBLP:conf/ijcai/Broeck16} showing how FOMC
+  can compute factorials in principle, but an algorithm that can lift such an
   instance in practice does not exist.} We claim that this shortcoming is due to
 the inability of these algorithms to construct recursive solutions. The topic of
 recursion in the context of WFOMC has been studied before but in limited ways.
@@ -552,11 +551,13 @@ literal, consider two possibilities: $X = x$ and $X \ne x$.
 \end{example}
 
 % Original domain recursion
-\citet{DBLP:conf/nips/Broeck11} imposes stringent preconditions on the input
+\citet{DBLP:conf/nips/Broeck11} imposes stringent conditions on the input
 formula to ensure that the expanded version of the formula (as in
-\cref{example:dr}) can be handled efficiently. For example, at least one clause
-must contain a variable that occurs in all of its atoms. The clauses in this
-expanded formula are then partitioned into three parts based on whether the
+\cref{example:dr}) can be handled efficiently. For instance,
+\cref{example:first} cannot be handled by \textsc{ForcLift} because there is no
+root binding class, i.e., the two root variables belong to different equivalence
+classes with respect to the binding relationship. The clauses in this expanded
+formula are then partitioned into three parts based on whether the
 transformation introduced constants or constraints or both. The aforementioned
 conditions ensure that these parts can be treated independently.
 
@@ -643,12 +644,32 @@ example below.
 
 \subsubsection{Constraint Removal}\label{sec:cr}
 
+Recall that GDR on a domain $\Omega$ creates constraints of the form $X_i \ne x$
+for some constant $x \in \Omega$ and family of variables $X_i \in \Omega$. Once
+certain conditions are satisfied, we can eliminate these constraints and replace
+$\Omega$ with a new domain $\Omega'$, which can be interpreted as
+$\Omega \setminus \{\, x \,\}$. These conditions are that a constraint of the
+form $X \ne x$ exists for all variables $X \in \Omega$ across all clauses, and
+such constraints are the only place where $x$ occurs. We formalise the
+conditions as \cref{def:replaceable}.
+
+\begin{definition}\label{def:replaceable}
+  With respect to a formula $\phi$, a pair $(\Omega, x)$ of a domain
+  $\Omega \in \mathcal{D}$ and its element $x \in \Omega$ is called
+  \emph{replaceable} if
+  \begin{itemize}
+    \item $x$ does not occur in any literal of any clause of $\phi$,
+    \item and for each clause $c = (L, C, \delta_c) \in \phi$ and variable
+          $X \in \Vars(c)$, either $\delta_c(X) \ne \Omega$ or $(X, x) \in C$.
+  \end{itemize}
+\end{definition}
+
 \begin{algorithm}[t]
   \caption{The compilation rule for $\CR$ nodes.}\label{alg:constraintremoval}
   \KwIn{formula $\phi$, set of all relevant domains $\mathcal{D}$}
   \KwOut{set of chips $S$}
   $S \gets \emptyset$\;
-  \ForEach{domain $\Omega \in \mathcal{D}$ and element $x \in \Omega$ s.t. $x$ does not occur in any literal of any clause of $\phi$ {\bf and} for each clause $c = (L, C, \delta_c) \in \phi$ and variable $X \in \Vars(c)$, either $\delta_c(X) \ne \Omega$ or $(X, x) \in C$\label{line:crconditions}}{
+  \ForEach{replaceable pair $(\Omega \in \mathcal{D}, x \in \Omega)$\label{line:crconditions}}{
     add a new domain $\Omega'$ to $\mathcal{D}$\;
     $\phi' \gets \emptyset$\;
     \ForEach{clause $(L, C, \delta) \in \phi$}{
@@ -664,14 +685,7 @@ example below.
   }
 \end{algorithm}
 
-Recall that GDR on a domain $\Omega$ creates constraints of the form $X_i \ne x$
-for some constant $x \in \Omega$ and family of variables $X_i \in \Omega$. Once
-certain conditions are satisfied, \cref{alg:constraintremoval} can eliminate
-these constraints and replace $\Omega$ with a new domain $\Omega'$, which can be
-interpreted as $\Omega \setminus \{\, x \,\}$. These conditions (on
-\cref{line:crconditions} of the algorithm) are that a constraint of the form
-$X \ne x$ exists for all variables $X \in \Omega$ across all clauses, and such
-constraints are the only place where $x$ occurs. The algorithm then proceeds to
+Once a replaceable pair is found, \cref{alg:constraintremoval} proceeds to
 construct the new formula by removing constraints (on
 \cref{line:constraintremoval}) and constructing a new domain map $\delta'$ that
 replaces $\Omega$ with $\Omega'$ (on \cref{line:newdelta}).
@@ -1109,9 +1123,9 @@ $\star$, so the return value of the initial call to the function is never
   evaluated in $\Theta(mn)$ time, where $m = |\Gamma|$ and $n = |\Delta|$.
 \end{claim}
 
-In \cref{sec:results}, we provide experimental evidence that proves
-\cref{claim:recursion} as well as similar results on some other
-function-counting problems. None of the previous (W)FOMC algorithms
+Our experiments in \cref{sec:results} confirm \cref{claim:recursion} and
+establish similar results on other function-counting problems. None of the
+previous (W)FOMC algorithms
 \citep{DBLP:conf/ijcai/BroeckTMDR11,DBLP:journals/cacm/GogateD16,DBLP:conf/kr/KazemiP16}
 can solve these newly liftable instances.
 
@@ -1229,23 +1243,37 @@ endofunctions (i.e., functions with the same domain and codomain) instead.
 
 % the process: both for running algorithms and for determining complexities
 In our experiments, we consider all sixteen combinations of these properties,
-i.e., injectivity, surjectivity, partiality, and endo-. \textsc{ForcLift} is
-always run until it terminates. \textsc{Crane} is run until either five
-solutions are found or the search tree reaches height six.\footnote{The search
-  tree has a high branching factor, so exploring all nodes at depth five takes
-  at most a few seconds, whereas doing the same for depth six can be
-  computationally infeasible in some cases.} If successful, \textsc{ForcLift}
-generates a circuit, and \textsc{Crane} generates one or more (complete) FCGs.
-In both cases, we manually convert the resulting graphs into definitions of
-functions as described in \cref{sec:interpret}. We then assess the complexity of
-each solution and pick the best if \textsc{Crane} returns several solutions of
-varying complexities. When assessing the complexity of each such definition, we
-make two assumptions. First, we can compute the binomial coefficient
-$\binom{n}{k}$ in $\Theta(nk)$ time. Second, techniques such as dynamic
-programming and memoization are used to avoid recomputing the same binomial
-coefficient or function call multiple times.
+i.e., injectivity, surjectivity, partiality, and endo-. We run each algorithm
+once on each of the sixteen instances.\footnote{While domain sizes have to be
+  specified as part of the input, they are immaterial to the search procedure.}
+\textsc{ForcLift} is always run until it terminates; \textsc{Crane} is run until
+either five solutions are found or the search tree reaches height
+six.\footnote{The search tree has a high branching factor, so exploring all
+  nodes at depth five takes at most a few seconds, whereas doing the same for
+  depth six can be computationally infeasible in some cases.} If successful,
+\textsc{ForcLift} generates a circuit, and \textsc{Crane} generates one or more
+(complete) FCGs. In both cases, we manually convert the resulting graphs into
+definitions of functions as described in \cref{sec:interpret}. We then assess
+the complexity of each solution by hand and pick the best in case \textsc{Crane}
+returns several solutions of varying complexities.
 
-\begin{table}[t]
+% how the complexity of a solution is determined
+Previous work often compares WFOMC algorithms by running them on a few instances
+with increasing domain sizes and measuring runtime
+\citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11,DBLP:conf/aaai/BroeckD12}.
+However, we can do much better and identify the exact worst-case asymptotic
+complexity of a solution produced by either \textsc{Crane} or \textsc{ForcLift}.
+The asymptotic complexity of a solution can be determined by considering the
+total number of arithmetic operations needed to follow the definitions of
+constituent functions without recomputing the same quantity multiple times. In
+particular, we assume that each function call and binomial coefficient is
+computed at most once. We also assume that computing $\binom{n}{k}$ takes
+$\Theta(nk)$ time. For example, the complexity of \cref{eq:solution} is
+$\Theta(mn)$ since $f(m, n)$ can be computed by a dynamic programming algorithm
+that computes $f(i, j)$ for all $i = 0, \dots, m$ and $j = 0, \dots, n$, taking
+a constant amount of time on the computation of each $f(i, j)$.
+
+\begin{table}
   \centering
   \begin{tabular}{cccccc}
     \toprule
@@ -1259,40 +1287,60 @@ coefficient or function call multiple times.
     \cmark & \cmark & & \multicolumn{3}{c}{Same as endo-injections} \\
     \rowcolor{gray!25}\xmark & \xmark & & $m$ & --- & $mn$ \\
     \rowcolor{gray!25}\xmark & \cmark & & $m$ & --- & $m^3$ \\
-    \rowcolor{gray!25}\cmark & \xmark & & $\min\{\, m, n \,\}^2$ & --- & $mn$ \\
+    \rowcolor{gray!25}\cmark & \xmark & & ${\min\{\, m, n \,\}}^2$ & --- & $mn$ \\
     \rowcolor{gray!25}\cmark & \cmark & \multirow{-4}{*}{Injections} & $m^2$ & --- & --- \\
     \xmark & \xmark & \multirow{3}{*}{Bijections} & $m$ & --- & $m$ \\
     \xmark & \cmark & & \multicolumn{3}{c}{\multirow{2}{*}{Same as (partial) (endo-)injections}} \\
     \cmark & \cmark/\xmark & & \multicolumn{3}{c}{} \\
     \bottomrule
   \end{tabular}
-  \caption{The worst-case complexity of counting various types of functions.
-    Here, $m$ is the size of domain $\Gamma$, and $n$ is the size of domain
-    $\Delta$. All asymptotic complexities are in $\Theta(\cdot)$. A dash means
-    that no complete solution was found.}\label{tbl:results}
+  \caption{The worst-case complexity of counting various types of functions. All
+    asymptotic complexities are in $\Theta(\cdot)$. A dash means that the
+    algorithm was not able to find a solution.}\label{tbl:results}
 \end{table}
 
-The experimental results are in \cref{tbl:results}. Previous work often compares
-WFOMC algorithms by running them on a few instances with increasing domain sizes
-and measuring runtime
-\citep{DBLP:conf/nips/Broeck11,DBLP:conf/ijcai/BroeckTMDR11,DBLP:conf/aaai/BroeckD12}.
-However, we can do better than that and identify the exact worst-case asymptotic
-complexity of a solution produced by either \textsc{Crane} or \textsc{ForcLift}.
-The best-known asymptotic complexity for computing total surjections is by
-\citet{30049}. All other best-known complexity results are inferred from the
-formulas and programs on the on-line encyclopedia of integer sequences
+Reasoning in this way, we get the following solutions, where $m$ is the size of
+domain $\Gamma$, and $n$ is the size of domain $\Delta$:
+\begin{enumerate}
+  \item $\Theta(m)$ solution for counting $\Gamma \to \Gamma$ functions:
+        \[
+        f(m) = {\left(-1 + \sum_{l=0}^{m} \binom{m}{l} [l < 2]\right)}^{m} = m^{m}.
+        \]
+  \item $\Theta(m^3 + n^3)$ solution for counting $\Gamma \to \Delta$
+        surjections:
+        \begin{align*}
+          f(m, n) &= \sum_{l=0}^{m} \binom{m}{l}{(-1)}^{m-l} \sum_{k=0}^{n} \binom{n}{k} {(-1)}^{n-k} {\left( \sum_{j=0}^{k} \binom{k}{j} [j < 2] \right)}^{l} \\
+                  &= \sum_{l=0}^{m} \binom{m}{l}{(-1)}^{m-l} \sum_{k=0}^{n} \binom{n}{k} {(-1)}^{n-k} {(k+1)}^{l}.
+        \end{align*}
+  \item $\Theta(m^{3})$ solution for counting $\Gamma \to \Gamma$ surjections:
+        \begin{align*}
+          f(m) &= \sum_{l=0}^{m} \binom{m}{l}{(-1)}^{m-l} \sum_{k=0}^{m} \binom{m}{k} {(-1)}^{m-k} {\left( \sum_{j=0}^{k} \binom{k}{j} [j < 2] \right)}^{l} \\
+                  &= \sum_{l=0}^{m} \binom{m}{l}{(-1)}^{m-l} \sum_{k=0}^{m} \binom{m}{k} {(-1)}^{m-k} {(k+1)}^{l}.
+        \end{align*}
+  \item $\Theta(mn)$ solution for counting $\Gamma \to \Delta$ injections and
+        partial injections (with different base cases):
+        \[
+        f(m, n) = \sum_{l=0}^m \binom{m}{l} [l<2] f(m-l, n-1) = f(m, n-1) + mf(m-1, n-1).
+        \]
+  \item $\Theta(m^{3})$ solution for counting $\Gamma \to \Gamma$ injections:
+        \begin{align*}
+          f(m) &= \sum_{l=0}^{m} \binom{m}{l} {(-1)}^{m-l} g(m, l); \\
+          g(m, l) &= \sum_{k=0}^{l} \binom{l}{k} [k < 2] g(m - 1, l - k) = g(m - 1, l) + lg(m - 1, l - 1).
+        \end{align*}
+  \item $\Theta(m)$ solution for counting $\Gamma \twoheadrightarrowtail \Delta$
+        bijections:
+        \[
+          f(m, n) = mf(m-1, n-1).
+        \]
+\end{enumerate}
+These results are summarised in \cref{tbl:results}, where we compare the
+solutions found by both algorithms to the best known ways of computing the same
+quantities. The best-known asymptotic complexity for computing total surjections
+is by \citet{30049}. All other best-known complexity results are inferred from
+the formulas and programs on the on-line encyclopedia of integer sequences
 \citep{oeis}. On instances that could already be solved by \textsc{ForcLift},
 the two algorithms perform equally well. However, \textsc{Crane} can also solve
 all but one instances that \textsc{ForcLift} fails on in at most cubic time.
-
-Let us examine the case of counting partial (non-endomorphic) injections more
-closely. The FCG in \cref{fig:examplefcg,example:interpretation} counts partial
-injections and is responsible for the $mn$ entry in the table. For a complete
-solution, \cref{eq:solution} must be combined with the base case $f(0, n) = 1$
-for all $n \in \mathbb{N}_{0}$. This base case says that the empty partial map
-is the only partial injection with an empty domain. Finally, note that $f(m, n)$
-can be evaluated in $\Theta(mn)$ time by a dynamic programming algorithm that
-computes $f(i, j)$ for all $i = 0, \dots, m$ and $j = 0, \dots, n$.
 
 \section{Conclusion and Future Work}
 
@@ -1330,22 +1378,8 @@ algorithm. Since the tasks of counting injections and bijections fall into the
   them.
 \end{conjecture}
 
-An idea pivotal to our work is the generalisation of circuits to graphs. Despite
-the wide variety of circuits that are used in artificial intelligence
-\citep{DBLP:series/faia/Darwiche21}, this is the first time that the addition of
-cycles is shown to make a class of circuits more powerful. An important strand
-for future work is in developing an algorithm that learns FCGs from data
-similarly to the way \textsc{ForcLift} has been utilised in learning Markov
-logic networks \citep{DBLP:conf/aaai/BroeckMD13,DBLP:journals/ml/HaarenBMD16}.
-One could also consider whether some of the many recent applications of circuits
-are suitable for FCGs as well. These applications include the verification and
-explainability of neural networks \citep{DBLP:conf/pods/Darwiche20}, causal
-inference \citep{DBLP:journals/corr/abs-2202-02891}, computing the expectations
-of kernel functions \citep{DBLP:conf/uai/LiZVB21}, and variational inference in
-discrete graphical models \citep{DBLP:conf/nips/ShihE20}.
-
-However, the most important direction for future work is to fully automate this
-new way of computing the (W)FOMC of a formula. First, we need an algorithm that
+The most important direction for future work is to fully automate this new way
+of computing the (W)FOMC of a formula. First, we need an algorithm that
 transforms FCGs into definitions of functions. Formalising this process would
 also allow us to prove the correctness of the new compilation rules in
 constructing FCGs that indeed compute the right WMC\@. Second, these definitions
@@ -1360,6 +1394,17 @@ function (e.g., a sequence) of interest. In addition to the potential impact on
 areas of artificial intelligence (AI) such as statistical relational AI
 \citep{DBLP:series/synthesis/2016Raedt}, \textsc{Crane} could be beneficial to
 research in combinatorics as well \citep{DBLP:conf/ilp/BarvinekB0ZK21}.
+
+Another important strand for future work is in developing an algorithm that
+learns FCGs from data similarly to the way \textsc{ForcLift} has been utilised
+in learning Markov logic networks
+\citep{DBLP:conf/aaai/BroeckMD13,DBLP:journals/ml/HaarenBMD16}. One could also
+consider whether some of the many recent applications of circuits are suitable
+for FCGs as well. These applications include the verification and explainability
+of neural networks \citep{DBLP:conf/pods/Darwiche20}, causal inference
+\citep{DBLP:journals/corr/abs-2202-02891}, computing the expectations of kernel
+functions \citep{DBLP:conf/uai/LiZVB21}, and variational inference in discrete
+graphical models \citep{DBLP:conf/nips/ShihE20}.
 
 % What makes this problem non-trivial is that the number of base cases is not
 % constant for functions of arity greater than one (i.e., formulas that mention
