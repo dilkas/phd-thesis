@@ -94,7 +94,8 @@ arrays start with index zero. All constraint variables that we use in this
 chapter are integer or set variables, however, if an integer refers to a logical
 construct (e.g., a logical variable or a constant), we will make no distinction
 between the two. We say that a constraint variable is \emph{(fully) determined}
-if its domain (at the time) has exactly one value.
+if, in the course of constraint solving, all but one possible domain value is
+dismissed.
 
 \paragraph*{Parameters of the model.} First, we define some sets and lists of
 primitives: a list of predicates $\predicates{}$, a list of their corresponding
